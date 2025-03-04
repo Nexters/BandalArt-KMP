@@ -1,6 +1,6 @@
-import com.netxters.bandalart.convention.kotlin
-import com.netxters.bandalart.convention.libs
-import com.netxters.bandalart.convention.kspKmp
+package com.netxters.bandalart.buildlogic.primitive
+
+import com.netxters.bandalart.buildlogic.primitive.kspKmp
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

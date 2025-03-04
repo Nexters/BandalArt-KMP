@@ -1,7 +1,5 @@
-import com.netxters.bandalart.convention.androidExtensions
-import com.netxters.bandalart.convention.isAndroidProject
-import com.netxters.bandalart.convention.libs
-import com.netxters.bandalart.convention.testImplementation
+package com.netxters.bandalart.buildlogic.primitive
+
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test

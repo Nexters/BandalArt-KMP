@@ -1,4 +1,4 @@
-package com.netxters.bandalart.convention
+package com.netxters.bandalart.buildlogic.primitive
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension

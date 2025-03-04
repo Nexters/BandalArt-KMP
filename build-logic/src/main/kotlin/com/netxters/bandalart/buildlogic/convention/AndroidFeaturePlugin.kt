@@ -1,8 +1,11 @@
-import com.netxters.bandalart.convention.Plugins.KOTLIN_PARCELIZE
-import com.netxters.bandalart.convention.applyPlugins
-import com.netxters.bandalart.convention.implementation
-import com.netxters.bandalart.convention.libs
-import com.netxters.bandalart.convention.project
+package com.netxters.bandalart.buildlogic.convention
+
+import com.netxters.bandalart.buildlogic.primitive.BuildLogicPlugin
+import com.netxters.bandalart.buildlogic.primitive.Plugins.KOTLIN_PARCELIZE
+import com.netxters.bandalart.buildlogic.primitive.applyPlugins
+import com.netxters.bandalart.buildlogic.primitive.implementation
+import com.netxters.bandalart.buildlogic.primitive.libs
+import com.netxters.bandalart.buildlogic.primitive.project
 import org.gradle.kotlin.dsl.dependencies
 
 internal class AndroidFeaturePlugin : BuildLogicPlugin(

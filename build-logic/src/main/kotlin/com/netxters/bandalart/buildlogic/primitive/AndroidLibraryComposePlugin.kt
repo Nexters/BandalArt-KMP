@@ -1,7 +1,6 @@
+package com.netxters.bandalart.buildlogic.primitive
+
 import com.android.build.gradle.LibraryExtension
-import com.netxters.bandalart.convention.Plugins
-import com.netxters.bandalart.convention.applyPlugins
-import com.netxters.bandalart.convention.configureCompose
 import org.gradle.kotlin.dsl.configure
 
 internal class AndroidLibraryComposePlugin : BuildLogicPlugin(

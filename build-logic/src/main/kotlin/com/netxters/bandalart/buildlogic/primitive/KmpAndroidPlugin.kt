@@ -1,7 +1,5 @@
-import com.netxters.bandalart.convention.android
-import com.netxters.bandalart.convention.configureAndroid
-import com.netxters.bandalart.convention.kotlin
-import com.netxters.bandalart.convention.libraryAndroidOptions
+package com.netxters.bandalart.buildlogic.primitive
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget

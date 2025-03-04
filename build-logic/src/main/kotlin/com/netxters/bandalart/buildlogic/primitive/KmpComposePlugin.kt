@@ -1,7 +1,5 @@
-import com.netxters.bandalart.convention.android
-import com.netxters.bandalart.convention.compose
-import com.netxters.bandalart.convention.composeCompiler
-import com.netxters.bandalart.convention.kotlin
+package com.netxters.bandalart.buildlogic.primitive
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag

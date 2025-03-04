@@ -1,4 +1,5 @@
-import com.netxters.bandalart.convention.kotlin
+package com.netxters.bandalart.buildlogic.primitive
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

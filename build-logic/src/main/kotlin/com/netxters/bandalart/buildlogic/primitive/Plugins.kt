@@ -1,4 +1,4 @@
-package com.netxters.bandalart.convention
+package com.netxters.bandalart.buildlogic.primitive
 
 internal object Plugins {
     const val JAVA_LIBRARY = "java-library"

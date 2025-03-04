@@ -1,8 +1,4 @@
-import com.netxters.bandalart.convention.Plugins
-import com.netxters.bandalart.convention.applyPlugins
-import com.netxters.bandalart.convention.implementation
-import com.netxters.bandalart.convention.libs
-import org.gradle.kotlin.dsl.dependencies
+package com.netxters.bandalart.buildlogic.primitive
 
 //internal class AndroidFirebasePlugin : BuildLogicPlugin(
 //    {

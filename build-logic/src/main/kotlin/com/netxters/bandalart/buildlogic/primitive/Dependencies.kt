@@ -1,4 +1,4 @@
-package com.netxters.bandalart.convention
+package com.netxters.bandalart.buildlogic.primitive
 
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler

@@ -1,9 +1,6 @@
+package com.netxters.bandalart.buildlogic.primitive
+
 import androidx.room.gradle.RoomExtension
-import com.netxters.bandalart.convention.Plugins
-import com.netxters.bandalart.convention.applyPlugins
-import com.netxters.bandalart.convention.implementation
-import com.netxters.bandalart.convention.ksp
-import com.netxters.bandalart.convention.libs
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
