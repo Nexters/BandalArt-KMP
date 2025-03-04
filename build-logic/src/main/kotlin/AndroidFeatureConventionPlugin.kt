@@ -1,8 +1,8 @@
-import com.netxters.bandalart.android.convention.Plugins.KOTLIN_PARCELIZE
-import com.netxters.bandalart.android.convention.applyPlugins
-import com.netxters.bandalart.android.convention.implementation
-import com.netxters.bandalart.android.convention.libs
-import com.netxters.bandalart.android.convention.project
+import com.netxters.bandalart.convention.Plugins.KOTLIN_PARCELIZE
+import com.netxters.bandalart.convention.applyPlugins
+import com.netxters.bandalart.convention.implementation
+import com.netxters.bandalart.convention.libs
+import com.netxters.bandalart.convention.project
 import org.gradle.kotlin.dsl.dependencies
 
 internal class AndroidFeatureConventionPlugin : BuildLogicConventionPlugin(

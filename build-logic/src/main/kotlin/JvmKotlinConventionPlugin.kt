@@ -1,8 +1,8 @@
-import com.netxters.bandalart.android.convention.Plugins
-import com.netxters.bandalart.android.convention.ApplicationConfig
-import com.netxters.bandalart.android.convention.applyPlugins
-import com.netxters.bandalart.android.convention.detektPlugins
-import com.netxters.bandalart.android.convention.libs
+import com.netxters.bandalart.convention.Plugins
+import com.netxters.bandalart.convention.ApplicationConfig
+import com.netxters.bandalart.convention.applyPlugins
+import com.netxters.bandalart.convention.detektPlugins
+import com.netxters.bandalart.convention.libs
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies

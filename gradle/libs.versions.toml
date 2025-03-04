@@ -57,6 +57,11 @@ filekit = "0.8.8"
 cmptoast = "1.0.4"
 
 test-kotest = "5.8.1"
+kotlinStdlib = "2.1.10"
+kotlinTest = "2.1.10"
+runner = "1.5.2"
+core = "1.5.0"
+junit = "1.1.5"
 
 [libraries]
 
@@ -136,6 +141,11 @@ compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.re
 filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.ref = "filekit" }
 filekit-compose = { group = "io.github.vinceglb", name = "filekit-compose", version.ref = "filekit" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+core = { group = "androidx.test", name = "core", version.ref = "core" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 

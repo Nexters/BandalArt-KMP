@@ -44,7 +44,7 @@ tasks.register('projectDependencyGraph') {
             if (project.plugins.hasPlugin('com.android.library')) {
                 androidLibraryProjects.add(project)
             }
-            if (project.plugins.hasPlugin('com.android.dynamic-feature')) {
+            if (project.plugins.hasPlugin('com.android.dynamic-core')) {
                 androidDynamicFeatureProjects.add(project)
             }
             if (project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('java')) {

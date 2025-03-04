@@ -1,7 +1,7 @@
 import com.android.build.gradle.LibraryExtension
-import com.netxters.bandalart.android.convention.Plugins
-import com.netxters.bandalart.android.convention.applyPlugins
-import com.netxters.bandalart.android.convention.configureCompose
+import com.netxters.bandalart.convention.Plugins
+import com.netxters.bandalart.convention.applyPlugins
+import com.netxters.bandalart.convention.configureCompose
 import org.gradle.kotlin.dsl.configure
 
 internal class AndroidLibraryComposeConventionPlugin : BuildLogicConventionPlugin(

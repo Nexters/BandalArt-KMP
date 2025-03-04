@@ -1,8 +1,8 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.netxters.bandalart.android.convention.Plugins
-import com.netxters.bandalart.android.convention.applyPlugins
-import com.netxters.bandalart.android.convention.configureAndroid
-import com.netxters.bandalart.android.convention.libs
+import com.netxters.bandalart.convention.Plugins
+import com.netxters.bandalart.convention.applyPlugins
+import com.netxters.bandalart.convention.configureAndroid
+import com.netxters.bandalart.convention.libs
 import org.gradle.kotlin.dsl.configure
 
 internal class AndroidApplicationConventionPlugin : BuildLogicConventionPlugin(
@@ -13,6 +13,8 @@ internal class AndroidApplicationConventionPlugin : BuildLogicConventionPlugin(
             configureAndroid(this)
 
             defaultConfig {
+                applicationId = libs.versions.packageName.get()
+                minSdk = libs.versions.minSdk.get().toInt()
                 targetSdk = libs.versions.targetSdk.get().toInt()
 
                 val major = libs.versions.majorVersion.get().toInt()
