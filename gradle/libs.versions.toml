@@ -65,6 +65,7 @@ gradle-android = { group = "com.android.tools.build", name = "gradle", version.r
 gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
 gradle-androidx-room = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
 compose-compiler-extension = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
+gradle-compose = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
 
 kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
 
@@ -105,19 +106,19 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
-koin-compose-viewmodel-navigation =  { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
-koin-androidx-startup = {group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "koin"}
+koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
+koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "koin" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
-androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite"}
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite" }
 
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "kotlin-detekt" }
 javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javax-inject" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie-compose" }
-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier"}
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebook-shimmer" }
 compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-marker", version.ref = "compose-stable-marker" }
 
@@ -136,7 +137,7 @@ filekit-compose = { group = "io.github.vinceglb", name = "filekit-compose", vers
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
 
 kmp-firebase-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "kotlin-firebase" }
-kmp-firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "kotlin-firebase"  }
+kmp-firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "kotlin-firebase" }
 firebase-common = { module = "com.google.firebase:firebase-common-ktx", version.ref = "firebase-common" }
 
 [plugins]
@@ -171,6 +172,11 @@ bandalart-android-feature = { id = "bandalart.android.feature", version = "unspe
 bandalart-android-room = { id = "bandalart.android.room", version = "unspecified" }
 bandalart-jvm-kotlin = { id = "bandalart.jvm.kotlin", version = "unspecified" }
 bandalart-kotest = { id = "bandalart.kotest", version = "unspecified" }
+bandalart-kmp-compose = { id = "bandalart.kmp.compose", version = "unspecified" }
+bandalart-kmp-android = { id = "bandalart.kmp.android", version = "unspecified" }
+bandalart-kmp-ios = { id = "bandalart.kmp.ios", version = "unspecified" }
+bandalart-kmp-firebase = { id = "bandalart.kmp.firebase", version = "unspecified" }
+
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
