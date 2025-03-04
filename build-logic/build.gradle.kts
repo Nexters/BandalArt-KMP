@@ -2,7 +2,6 @@
 
 plugins {
     `kotlin-dsl`
-    kotlin("jvm") version libs.versions.kotlin.core.get()
 }
 
 gradlePlugin {
@@ -13,7 +12,7 @@ gradlePlugin {
         "android.library" to "AndroidLibraryPlugin",
         "android.library.compose" to "AndroidLibraryComposePlugin",
         "android.feature" to "AndroidFeaturePlugin",
-        "android.room" to "AndroidRoomPlugin",
+        // "android.room" to "AndroidRoomPlugin",
         "jvm.kotlin" to "JvmKotlinPlugin",
         "kotest" to "KotestPlugin",
         "kmp" to "KmpPlugin",
@@ -57,6 +56,6 @@ fun NamedDomainObjectContainer<PluginDeclaration>.pluginRegister(data: Pair<Stri
     val (pluginName, className) = data
     register(pluginName) {
         id = "bandalart.$pluginName"
-        implementationClass = className
+        implementationClass = "com.nexters.bandalart.buildlogic.primitive.${className}"
     }
 }

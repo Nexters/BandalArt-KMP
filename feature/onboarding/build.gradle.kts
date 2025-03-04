@@ -6,24 +6,23 @@ plugins {
     id("bandalart.kotlin.serialization")
 }
 
-android.namespace = "com.nexters.bandalart.feature.splash"
+android.namespace = "com.nexters.bandalart.feature.onboarding"
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.ui)
             implementation(projects.core.common)
-            implementation(projects.core.data)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.jetbrains.androidx.navigation.compose)
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.koin.core)
 
-            implementation(libs.coil.compose)
+            implementation(libs.coil3.compose)
         }
     }
 }

@@ -9,8 +9,8 @@ android.namespace = "com.nexters.bandalart.core.ui"
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.datastore.core)
-            api(projects.core.model)
+            api(libs.androidx.datastore)
+            api(libs.androidx.datastore.preferences)
 
             implementation(libs.kotlinx.datetime)
         }

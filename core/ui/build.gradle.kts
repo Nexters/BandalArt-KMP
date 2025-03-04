@@ -11,13 +11,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.designsystem)
-            api(projects.core.model)
 
-            implementation(libs.coil.compose)
-            implementation(libs.coil.ktor)
-
-            implementation(libs.ktor.client)
-            implementation(libs.ktor.client.auth)
+            implementation(libs.coil3.compose)
         }
     }
 }

@@ -12,7 +12,7 @@ android-gradle-plugin = "8.8.1"
 
 google-service = "4.4.2"
 
-kotlin-core = "2.1.10"
+kotlin = "2.1.10"
 kotlin-detekt = "1.23.6"
 kotlin-ktlint-gradle = "12.1.2"
 kotlin-ktlint-source = "0.50.0"
@@ -62,9 +62,9 @@ test-kotest = "5.8.1"
 [libraries]
 
 gradle-android = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
-gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
+gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 gradle-androidx-room = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
-compose-compiler-extension = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
+compose-compiler-extension = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 gradle-compose = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
 
 kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
@@ -99,7 +99,6 @@ androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = 
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 jetbrains-androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "jetbrains-androidx-navigation" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -122,8 +121,8 @@ napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebook-shimmer" }
 compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-marker", version.ref = "compose-stable-marker" }
 
-test-kotest-framework = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "test-kotest" }
-test-kotest-assertion = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "test-kotest" }
+test-kotest-framework = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "test-kotest" }
+test-kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "test-kotest" }
 
 coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
 landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
@@ -136,26 +135,26 @@ filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.re
 filekit-compose = { group = "io.github.vinceglb", name = "filekit-compose", version.ref = "filekit" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
 
-kmp-firebase-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "kotlin-firebase" }
-kmp-firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "kotlin-firebase" }
-firebase-common = { module = "com.google.firebase:firebase-common-ktx", version.ref = "firebase-common" }
+kmp-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", version.ref = "kotlin-firebase" }
+kmp-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "kotlin-firebase" }
+firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebase-common" }
 
 [plugins]
 
 google-service = { id = "com.google.gms.google-services", version.ref = "google-service" }
 
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "kotlin-detekt" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-core" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-ktlint-gradle" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-core" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-core" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-core" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 
@@ -165,11 +164,11 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 # Plugins defined by this project
 bandalart-android-application = { id = "bandalart.android.application", version = "unspecified" }
 bandalart-android-application-compose = { id = "bandalart.android.application.compose", version = "unspecified" }
-bandalart-android-firebase = { id = "bandalart.android.firebase", version = "unspecified" }
+#bandalart-android-firebase = { id = "bandalart.android.firebase", version = "unspecified" }
 bandalart-android-library = { id = "bandalart.android.library", version = "unspecified" }
 bandalart-android-library-compose = { id = "bandalart.android.library.compose", version = "unspecified" }
 bandalart-android-feature = { id = "bandalart.android.feature", version = "unspecified" }
-bandalart-android-room = { id = "bandalart.android.room", version = "unspecified" }
+#bandalart-android-room = { id = "bandalart.android.room", version = "unspecified" }
 bandalart-jvm-kotlin = { id = "bandalart.jvm.kotlin", version = "unspecified" }
 bandalart-kotest = { id = "bandalart.kotest", version = "unspecified" }
 bandalart-kmp = { id = "bandalart.kmp", version = "unspecified" }
@@ -180,7 +179,7 @@ bandalart-kmp-firebase = { id = "bandalart.kmp.firebase", version = "unspecified
 bandalart-kotlin-serialization = { id = "bandalart.kotlin.serialization", version = "unspecified" }
 bandalart-room = { id = "bandalart.room", version = "unspecified" }
 
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 

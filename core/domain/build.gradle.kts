@@ -2,15 +2,13 @@ plugins {
     id("bandalart.kmp")
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
-    id("bandalart.room")
 }
 
-android.namespace = "com.nexters.bandalart.core.ui"
+android.namespace = "com.nexters.bandalart.core.domain"
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.datetime)
         }
     }
 }
