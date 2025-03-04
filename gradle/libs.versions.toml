@@ -43,7 +43,8 @@ javax-inject = "1"
 lottie-compose = "6.1.0"
 napier = "2.7.1"
 facebook-shimmer = "0.5.0"
-firebase-bom = "33.9.0"
+kotlin-firebase = "2.1.0"
+firebase-common = "21.0.0"
 firebase-crashlytics = "3.0.3"
 ksp = "2.1.10-1.0.30"
 compose-stable-marker = "1.0.5"
@@ -57,11 +58,6 @@ filekit = "0.8.8"
 cmptoast = "1.0.4"
 
 test-kotest = "5.8.1"
-kotlinStdlib = "2.1.10"
-kotlinTest = "2.1.10"
-runner = "1.5.2"
-core = "1.5.0"
-junit = "1.1.5"
 
 [libraries]
 
@@ -123,9 +119,6 @@ javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "j
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie-compose" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier"}
 facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebook-shimmer" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-marker", version.ref = "compose-stable-marker" }
 
 test-kotest-framework = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "test-kotest" }
@@ -141,11 +134,10 @@ compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.re
 filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.ref = "filekit" }
 filekit-compose = { group = "io.github.vinceglb", name = "filekit-compose", version.ref = "filekit" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
-androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
-core = { group = "androidx.test", name = "core", version.ref = "core" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+
+kmp-firebase-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "kotlin-firebase" }
+kmp-firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "kotlin-firebase"  }
+firebase-common = { module = "com.google.firebase:firebase-common-ktx", version.ref = "firebase-common" }
 
 [plugins]
 
@@ -203,3 +195,8 @@ androidx-compose = [
 #    "landscapist-coil3",
 #    "landscapist-placeholder",
 #]
+
+kmp-firebase = [
+    "kmp-firebase-analytics",
+    "kmp-firebase-crashlytics",
+]
