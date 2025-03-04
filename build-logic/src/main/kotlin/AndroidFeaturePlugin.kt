@@ -5,7 +5,7 @@ import com.netxters.bandalart.convention.libs
 import com.netxters.bandalart.convention.project
 import org.gradle.kotlin.dsl.dependencies
 
-internal class AndroidFeatureConventionPlugin : BuildLogicConventionPlugin(
+internal class AndroidFeaturePlugin : BuildLogicPlugin(
     {
         applyPlugins(
             "bandalart.android.library",

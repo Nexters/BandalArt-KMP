@@ -12,7 +12,7 @@ import org.gradle.kotlin.dsl.KotlinClosure2
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
-internal class KotestConventionPlugin : BuildLogicConventionPlugin({
+internal class KotestConventionPlugin : BuildLogicPlugin({
     useTestPlatformForTarget()
     dependencies {
         testImplementation(libs.test.kotest.framework)

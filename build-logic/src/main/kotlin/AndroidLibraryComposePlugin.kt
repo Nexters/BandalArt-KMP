@@ -4,7 +4,7 @@ import com.netxters.bandalart.convention.applyPlugins
 import com.netxters.bandalart.convention.configureCompose
 import org.gradle.kotlin.dsl.configure
 
-internal class AndroidLibraryComposeConventionPlugin : BuildLogicConventionPlugin(
+internal class AndroidLibraryComposePlugin : BuildLogicPlugin(
     {
         applyPlugins(Plugins.ANDROID_LIBRARY, Plugins.KOTLIN_COMPOSE)
 

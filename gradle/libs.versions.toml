@@ -172,10 +172,13 @@ bandalart-android-feature = { id = "bandalart.android.feature", version = "unspe
 bandalart-android-room = { id = "bandalart.android.room", version = "unspecified" }
 bandalart-jvm-kotlin = { id = "bandalart.jvm.kotlin", version = "unspecified" }
 bandalart-kotest = { id = "bandalart.kotest", version = "unspecified" }
+bandalart-kmp = { id = "bandalart.kmp", version = "unspecified" }
 bandalart-kmp-compose = { id = "bandalart.kmp.compose", version = "unspecified" }
 bandalart-kmp-android = { id = "bandalart.kmp.android", version = "unspecified" }
 bandalart-kmp-ios = { id = "bandalart.kmp.ios", version = "unspecified" }
 bandalart-kmp-firebase = { id = "bandalart.kmp.firebase", version = "unspecified" }
+bandalart-kotlin-serialization = { id = "bandalart.kotlin.serialization", version = "unspecified" }
+bandalart-room = { id = "bandalart.room", version = "unspecified" }
 
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }

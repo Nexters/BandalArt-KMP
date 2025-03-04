@@ -34,11 +34,11 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 
-include(":core:ui")
-include(":core:ui")
 include(":core:common")
 include(":core:data")
-include(":core:ui")
+include(":core:database")
+include(":core:datastore")
+include(":core:designsystem")
 include(":core:ui")
 
 include(":core:complete")

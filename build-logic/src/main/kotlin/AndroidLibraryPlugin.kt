@@ -5,7 +5,7 @@ import com.netxters.bandalart.convention.configureAndroid
 import com.netxters.bandalart.convention.libs
 import org.gradle.kotlin.dsl.configure
 
-internal class AndroidLibraryConventionPlugin : BuildLogicConventionPlugin({
+internal class AndroidLibraryPlugin : BuildLogicPlugin({
     applyPlugins(Plugins.ANDROID_LIBRARY, Plugins.KOTLIN_ANDROID)
 
     extensions.configure<LibraryExtension> {

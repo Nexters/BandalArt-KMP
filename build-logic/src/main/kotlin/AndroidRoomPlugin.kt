@@ -7,7 +7,7 @@ import com.netxters.bandalart.convention.libs
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
-class AndroidRoomConventionPlugin : BuildLogicConventionPlugin(
+class AndroidRoomPlugin : BuildLogicPlugin(
     {
         applyPlugins(Plugins.ANDROIDX_ROOM, Plugins.KOTLINX_SERIALIZATION, Plugins.KSP)
 

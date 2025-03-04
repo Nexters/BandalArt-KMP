@@ -1,9 +1,9 @@
 plugins {
-    id("template.convention.kmp")
-    id("template.convention.kmp.android")
-    id("template.convention.kmp.ios")
-    id("template.convention.kmp.compose")
-    id("template.convention.kotlin.serialization")
+    id("bandalart.kmp")
+    id("bandalart.kmp.android")
+    id("bandalart.kmp.ios")
+    id("bandalart.kmp.compose")
+    id("bandalart.kotlin.serialization")
 }
 
 android.namespace = "com.nexters.bandalart.feature.splash"
