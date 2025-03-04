@@ -14,7 +14,7 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.common)
 
-            implementation(libs.jetbrains.androidx.navigation.compose)
+            implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)

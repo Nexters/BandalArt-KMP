@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.ide.kmp.KotlinAndroidSourceSetMarker.Companion.android
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
@@ -62,7 +61,7 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
 
                 implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.jetbrains.androidx.navigation.compose)
+                implementation(libs.navigation.compose)
 
                 api(libs.androidx.datastore)
                 api(libs.androidx.datastore.preferences)
