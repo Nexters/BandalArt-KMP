@@ -9,6 +9,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 internal fun Project.configureAndroid(extension: CommonExtension<*, *, *, *, *, *>) {
     extension.apply {
+        namespace?.let {
+            this.namespace = it
+        }
+
         compileSdk = libs.versions.compileSdk.get().toInt()
 
         defaultConfig {

@@ -13,7 +13,6 @@ android-gradle-plugin = "8.8.1"
 google-service = "4.4.2"
 
 kotlin-core = "2.1.10"
-kotlin-detekt = "1.23.6"
 kotlin-ktlint-gradle = "12.1.2"
 kotlin-ktlint-source = "0.50.0"
 
@@ -38,6 +37,7 @@ androidx-room = "2.7.0-alpha13"
 androidx-sqlite = "2.5.0-beta01"
 app-update = "2.1.0"
 
+detekt = "1.23.6"
 desugar-jdk-libs = "2.1.4"
 javax-inject = "1"
 lottie-compose = "6.1.0"
@@ -61,11 +61,16 @@ test-kotest = "5.8.1"
 
 [libraries]
 
-gradle-android = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
-gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
-gradle-room = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
-gradle-compose-compiler = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
-gradle-compose = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
+room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
+compose-compiler-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
+compose-gradle-plugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
+detekt-gradle-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+firebase-gradle-plugin = { group = "com.google.gms", name = "google-services", version.ref = "google-service" }
+kotlinx-serialization-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-core" }
+firebase-crashlytics-gradle-plugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebase-crashlytics" }
 
 kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
 
@@ -113,7 +118,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite" }
 
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "kotlin-detekt" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javax-inject" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie-compose" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
@@ -143,7 +148,6 @@ firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx",
 google-service = { id = "com.google.gms.google-services", version.ref = "google-service" }
 
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
-kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "kotlin-detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-core" }
 kotlin-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-ktlint-gradle" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-core" }
@@ -157,7 +161,8 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 # Plugins defined by this project
 bandalart-android-application = { id = "bandalart.android.application", version = "unspecified" }
@@ -205,4 +210,16 @@ androidx-compose = [
 kmp-firebase = [
     "kmp-firebase-analytics",
     "kmp-firebase-crashlytics",
+]
+
+plugins = [
+    "android-gradle-plugin",
+    "kotlin-gradle-plugin",
+    "compose-compiler-gradle-plugin",
+    "compose-gradle-plugin",
+    "ksp-gradle-plugin",
+    "firebase-gradle-plugin",
+    "kotlinx-serialization-gradle-plugin",
+    "detekt-gradle-plugin",
+    "firebase-crashlytics-gradle-plugin"
 ]

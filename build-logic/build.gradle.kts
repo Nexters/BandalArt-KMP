@@ -42,11 +42,7 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(libs.gradle.android)
-    compileOnly(libs.gradle.kotlin)
-    compileOnly(libs.gradle.room)
-    compileOnly(libs.gradle.compose.compiler)
-    compileOnly(libs.gradle.compose)
+    implementation(libs.bundles.plugins)
 
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }

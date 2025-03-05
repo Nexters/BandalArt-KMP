@@ -41,6 +41,7 @@ include(":core:datastore")
 include(":core:designsystem")
 include(":core:domain")
 include(":core:ui")
+include(":core:navigation")
 
 include(":feature:complete")
 include(":feature:home")
