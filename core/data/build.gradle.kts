@@ -9,9 +9,9 @@ android.namespace = "com.nexters.bandalart.core.common"
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.core.common)
-            api(projects.core.database)
-            api(projects.core.datastore)
+            implementation(projects.core.common)
+            implementation(projects.core.database)
+            implementation(projects.core.datastore)
 
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)

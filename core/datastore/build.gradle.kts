@@ -11,8 +11,6 @@ kotlin {
         commonMain.dependencies {
             api(libs.androidx.datastore)
             api(libs.androidx.datastore.preferences)
-
-            implementation(libs.kotlinx.datetime)
         }
     }
 }

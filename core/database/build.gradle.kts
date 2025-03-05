@@ -10,7 +10,6 @@ android.namespace = "com.nexters.bandalart.core.ui"
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.datetime)
         }
     }
 }

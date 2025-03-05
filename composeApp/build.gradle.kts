@@ -2,13 +2,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.compose.multiplatform)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.androidx.room)
+    id("bandalart.kmp")
+    id("bandalart.kmp.compose")
+    id("bandalart.kmp.ios")
+    id("bandalart.android.application")
+    // id("bandalart.room")
     // alias(libs.plugins.buildkonfig)
 }
 
@@ -46,6 +44,19 @@ kotlin {
 
         commonMain {
             dependencies {
+                implementation(projects.core.common)
+                implementation(projects.core.data)
+                implementation(projects.core.database)
+                implementation(projects.core.datastore)
+                implementation(projects.core.designsystem)
+                implementation(projects.core.domain)
+                implementation(projects.core.ui)
+
+                implementation(projects.feature.complete)
+                implementation(projects.feature.home)
+                implementation(projects.feature.onboarding)
+                implementation(projects.feature.splash)
+
                 // compileOnly(libs.compose.stable.marker)
 
                 implementation(libs.kotlinx.coroutines.core)
@@ -156,13 +167,13 @@ android {
     }
 }
 
-dependencies {
-    add("kspAndroid", libs.androidx.room.compiler)
-    add("kspIosX64", libs.androidx.room.compiler)
-    add("kspIosArm64", libs.androidx.room.compiler)
-    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
+//dependencies {
+//    add("kspAndroid", libs.androidx.room.compiler)
+//    add("kspIosX64", libs.androidx.room.compiler)
+//    add("kspIosArm64", libs.androidx.room.compiler)
+//    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+//}
+//
+//room {
+//    schemaDirectory("$projectDir/schemas")
+//}

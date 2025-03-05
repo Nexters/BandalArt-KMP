@@ -5,7 +5,8 @@ import org.gradle.kotlin.dsl.configure
 
 internal class AndroidApplicationPlugin : BuildLogicPlugin(
     {
-        applyPlugins(Plugins.ANDROID_APPLICATION, Plugins.KOTLIN_ANDROID)
+        // applyPlugins(Plugins.ANDROID_APPLICATION, Plugins.KOTLIN_ANDROID)
+        applyPlugins(Plugins.ANDROID_APPLICATION)
 
         extensions.configure<ApplicationExtension> {
             configureAndroid(this)
