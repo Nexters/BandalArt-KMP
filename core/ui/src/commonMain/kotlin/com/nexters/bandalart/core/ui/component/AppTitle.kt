@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import bandalart.composeapp.generated.resources.Res
-import bandalart.composeapp.generated.resources.bandalart
+import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.bandalart
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.Gray900

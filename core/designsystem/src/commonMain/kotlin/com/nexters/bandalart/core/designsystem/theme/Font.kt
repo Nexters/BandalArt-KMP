@@ -6,18 +6,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import bandalart.composeapp.generated.resources.Res
-import bandalart.composeapp.generated.resources.krona_one_regular
-import bandalart.composeapp.generated.resources.neurimbo_gothic_regular
-import bandalart.composeapp.generated.resources.pretendard_black
-import bandalart.composeapp.generated.resources.pretendard_bold
-import bandalart.composeapp.generated.resources.pretendard_extra_bold
-import bandalart.composeapp.generated.resources.pretendard_extra_light
-import bandalart.composeapp.generated.resources.pretendard_light
-import bandalart.composeapp.generated.resources.pretendard_medium
-import bandalart.composeapp.generated.resources.pretendard_regular
-import bandalart.composeapp.generated.resources.pretendard_semi_bold
-import bandalart.composeapp.generated.resources.pretendard_thin
+import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.krona_one_regular
+import bandalart.core.designsystem.generated.resources.neurimbo_gothic_regular
+import bandalart.core.designsystem.generated.resources.pretendard_black
+import bandalart.core.designsystem.generated.resources.pretendard_bold
+import bandalart.core.designsystem.generated.resources.pretendard_extra_bold
+import bandalart.core.designsystem.generated.resources.pretendard_extra_light
+import bandalart.core.designsystem.generated.resources.pretendard_light
+import bandalart.core.designsystem.generated.resources.pretendard_medium
+import bandalart.core.designsystem.generated.resources.pretendard_regular
+import bandalart.core.designsystem.generated.resources.pretendard_semi_bold
+import bandalart.core.designsystem.generated.resources.pretendard_thin
 import org.jetbrains.compose.resources.Font
 
 @Composable

@@ -1,0 +1,142 @@
+<resources>
+    <!--  AppName-->
+    <string name="app_name">Bandalart</string>
+    <string name="app_name_dev">Bandalart.dev</string>
+
+    <!-- OnBoardingScreen.kt -->
+    <string name="onboarding_first_title">Say goodbye to complex and\noverwhelming Mandalart!</string>
+    <string name="onboarding_second_title">Now, plan effortlessly\nwith Bandalart!</string>
+    <string name="onboarding_start">Get Started</string>
+
+    <!-- CompleteScreen.kt -->
+    <string name="complete_title">You\'ve achieved all the goals in Bandalart. Truly amazing!</string>
+    <string name="complete_chart">Completed Bandalart</string>
+    <string name="complete_save">Save</string>
+    <string name="complete_share">Share</string>
+
+    <!--  HomeScreen.kt -->
+    <string name="home_default_emoji">default emoji</string>
+    <string name="home_share_url">Come and see the Bandalart I made!\n%1$s</string>
+    <string name="home_empty_title">Please enter your main goal</string>
+    <string name="home_complete_ratio">Completion Rate %1$d%</string>
+    <string name="home_complete">All Goals Completed!</string>
+    <string name="home_share">Share</string>
+
+    <!-- BandalartChart.kt -->
+    <string name="home_layout_id">Sub %1$d</string>
+    <string name="home_sub1_id">Sub 1</string>
+    <string name="home_sub2_id">Sub 2</string>
+    <string name="home_sub3_id">Sub 3</string>
+    <string name="home_sub4_id">Sub 4</string>
+    <string name="home_main_id">Main</string>
+
+    <!-- BandalartCell.kt -->
+    <string name="home_main_cell">Main Goal</string>
+    <string name="home_sub_cell">Sub Goal</string>
+    <string name="please_input_main_goal">Please enter the main goal first.</string>
+    <string name="please_input_sub_goal">Please enter the sub goal first.</string>
+
+    <!-- HomeTopbar.kt -->
+    <string name="bandalart">BANDALART</string>
+    <string name="home_list">List</string>
+    <string name="home_add">Add</string>
+
+    <!--  BandalartListBottomSheet.kt -->
+    <string name="bandalart_list_empty_title">New Bandalart %1$d</string>
+    <string name="bandalart_list_title">Bandalart List</string>
+    <string name="bandalart_list_add">Add a Bandalart</string>
+
+    <!-- BandalartDropDownMenu.kt -->
+    <string name="dropdown_save">Save</string>
+    <string name="dropdown_delete">Delete</string>
+
+    <!--  BandalartBottomSheet.kt -->
+    <string name="bottomsheet_header_maincell_enter_title">Enter Main Goal</string>
+    <string name="bottomsheet_header_maincell_edit_title">Edit Main Goal</string>
+    <string name="bottomsheet_header_subcell_enter_title">Enter Sub Goal</string>
+    <string name="bottomsheet_header_subcell_edit_title">Edit Sub Goal</string>
+    <string name="bottomsheet_header_taskcell_enter_title">Enter Task</string>
+    <string name="bottomsheet_header_taskcell_edit_title">Edit Task</string>
+    <string name="bottomsheet_title">Goal Name (Required)</string>
+    <string name="bottomsheet_title_placeholder">Enter within 24 characters</string>
+    <string name="bottomsheet_color">Color Theme</string>
+    <string name="bottomsheet_duedate">Due Date (Optional)</string>
+    <string name="bottomsheet_duedate_placeholder">Please select a due date</string>
+    <string name="bottomsheet_description">Notes (Optional)</string>
+    <string name="bottomsheet_description_placeholder">Please enter notes</string>
+    <string name="bottomsheet_is_completed">Achievement Status</string>
+    <string name="bottomsheet_completed">Achieved</string>
+    <string name="bottomsheet_in_completed">Not Achieved</string>
+    <string name="bottomsheet_delete">Delete</string>
+    <string name="bottomsheet_reset">Reset</string>
+    <string name="bottomsheet_done">Done</string>
+
+    <!-- BandalartDatePicker.kt -->
+    <string name="datepicker_year">%1$s</string>
+    <string name="datepicker_month">%1$s</string>
+    <string name="datepicker_day">%1$s</string>
+
+    <!-- BandalartDeleteAlertDialog -->
+    <string name="delete_bandalart_dialog_empty_title">Do you want to delete\nthe Bandalart?</string>
+    <string name="delete_bandalart_dialog_title">Do you want to delete\nthe '%1$s' Bandalart?</string>
+    <string name="delete_bandalart_dialog_message">Deleted Bandalart cannot be restored</string>
+
+    <string name="delete_bandalart_maincelll_dialog_empty_title">Do you want to delete\nthe main goal?</string>
+    <string name="delete_bandalart_maincell_dialog_title">Do you want to delete\nthe main goal\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_maincell_dialog_message">Sub goals and tasks will all be deleted</string>
+
+    <string name="delete_bandalart_subcell_dialog_empty_title">Do you want to delete\nthe sub goal?</string>
+    <string name="delete_bandalart_subcell_dialog_title">Do you want to delete\nthe sub goal\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_subcell_dialog_message">All associated tasks will be deleted.</string>
+
+    <string name="delete_bandalart_taskcell_dialog_empty_title">Do you want to delete\nthe task?</string>
+    <string name="delete_bandalart_taskcell_dialog_title">Do you want to delete\nthe task\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_taskcell_dialog_message">""</string>
+
+    <string name="delete_bandalart_delete">Delete</string>
+    <string name="delete_bandalart_cancel">Cancel</string>
+
+    <!-- NetworkErrorAlertDialog -->
+    <string name="network_error_dialog_title">Failed to load Bandalart due to network issues.</string>
+    <string name="network_error_dialog_message">Please try again.</string>
+    <string name="network_error_retry_message">Retry</string>
+
+    <!-- BandalartSkeletonScreen.kt-->
+    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="skeleton_complete_ratio">Completion Rate (-%)</string>
+
+
+    <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
+    <string name="data_validation">Request succeeded but data validation failed</string>
+    <string name="create_bandalart">Created a new bandalart.</string>
+    <string name="limit_create_bandalart">You can create up to 5 bandalarts.</string>
+    <string name="save_bandalart_image">Bandalart has been saved to the gallery.</string>
+    <string name="delete_bandalart">New Bandalart created.</string>
+
+    <!-- image descrption -->
+    <string name="empty_emoji_description">Empty Emoji Icon</string>
+    <string name="edit_description">Edit Icon</string>
+    <string name="arrow_forward_description">Arrow Forward Icon</string>
+    <string name="option_description">Option Icon</string>
+    <string name="check_description">Check Icon</string>
+    <string name="share_description">Share Icon</string>
+    <string name="add_description">Add Icon</string>
+    <string name="complete_description">Complete Icon</string>
+    <string name="hamburger_description">Hamburger Icon</string>
+    <string name="clear_description">Clear Icon</string>
+    <string name="delete_description">Delete Icon</string>
+    <string name="app_icon_description">App Icon</string>
+    <string name="gallery_icon">Gallery Icon</string>
+
+    <!--  label -->
+    <string name="skeleton_trans_animate_label">Hamburger Icon</string>
+    <string name="server_error_dialog_title">Failed to load Bandalart due to server issues.</string>
+    <string name="server_error_dialog_message">Please try again.</string>
+    <string name="server_error_retry_message">Retry</string>
+
+    <!-- in-app update -->
+    <string name="update_ready_to_install">App update is ready to install.</string>
+    <string name="update_action_restart">Restart</string>
+    <string name="app_version_info">Version: v%s</string>
+
+</resources>

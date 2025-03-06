@@ -23,17 +23,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import bandalart.composeapp.generated.resources.Res
-import bandalart.composeapp.generated.resources.delete_description
-import bandalart.composeapp.generated.resources.ic_circle_cross
-import bandalart.composeapp.generated.resources.network_error_retry_message
+import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.delete_description
+import bandalart.core.designsystem.generated.resources.ic_circle_cross
+import bandalart.core.designsystem.generated.resources.network_error_retry_message
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun NetworkErrorAlertDialog(
+fun ServerErrorAlertDialog(
     title: String,
     message: String,
     onConfirmClick: () -> Unit,
@@ -108,10 +108,10 @@ fun NetworkErrorAlertDialog(
 
 // @ComponentPreview
 // @Composable
-// private fun NetworkErrorAlertDialogPreview() {
+// private fun ServerErrorAlertDialogPreview() {
 //     BandalartTheme {
 //         NetworkErrorAlertDialog(
-//             title = "네트워크 문제로 표를\n불러오지 못했어요",
+//             title = "서버 문제로 표를\n불러오지 못했어요",
 //             message = "다시 시도해주시기 바랍니다.",
 //             onConfirmClick = {},
 //         )

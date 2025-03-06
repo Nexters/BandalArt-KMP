@@ -1,0 +1,143 @@
+<resources>
+    <!--  AppName-->
+    <string name="app_name">バンダラート</string>
+    <string name="app_name_dev">バンダラート.dev</string>
+
+    <!-- OnBoardingScreen.kt -->
+    <string name="onboarding_first_title">複雑で手に負えない\nマンダラートにさようなら！</string>
+    <string name="onboarding_second_title">今からバンダラートと一緒に\n気軽に計画を立ててみましょう</string>
+    <string name="onboarding_start">始める</string>
+
+    <!-- CompleteScreen.kt -->
+    <string name="complete_title">バンダラートのすべての目標を達成しました。\n素晴らしいですね！</string>
+    <string name="complete_chart">達成完了バンダラート</string>
+    <string name="complete_save">保存</string>
+    <string name="complete_share">共有</string>
+
+    <!--  HomeScreen.kt -->
+    <string name="home_default_emoji">default emoji</string>
+    <string name="home_share_url">私が作ったバンダラートを見に来てください！\n%1$s</string>
+    <string name="home_empty_title">メイン目標を入力してください</string>
+    <string name="home_complete_ratio">達成率 %1$d%</string>
+    <string name="home_complete">達成完了！</string>
+    <string name="home_share">共有</string>
+
+    <!-- BandalartChart.kt -->
+    <string name="home_layout_id">Sub %1$d</string>
+    <string name="home_sub1_id">Sub 1</string>
+    <string name="home_sub2_id">Sub 2</string>
+    <string name="home_sub3_id">Sub 3</string>
+    <string name="home_sub4_id">Sub 4</string>
+    <string name="home_main_id">Main</string>
+
+    <!-- BandalartCell.kt -->
+    <string name="home_main_cell">メイン目標</string>
+    <string name="home_sub_cell">サブ目標</string>
+    <string name="please_input_main_goal">先にメイン目標を入力してください。</string>
+    <string name="please_input_sub_goal">先にサブ目標を入力してください。</string>
+
+    <!-- HomeTopbar.kt -->
+    <string name="bandalart">バンダラート</string>
+    <string name="home_list">リスト</string>
+    <string name="home_add">追加</string>
+
+    <!--  BandalartListBottomSheet.kt -->
+    <string name="bandalart_list_empty_title">新しいバンダラート %1$d</string>
+    <string name="bandalart_list_title">バンダラートリスト</string>
+    <string name="bandalart_list_add">バンダラートを追加</string>
+
+    <!-- BandalartDropDownMenu.kt -->
+    <string name="dropdown_save">保存</string>
+    <string name="dropdown_delete">削除</string>
+
+    <!--  BandalartBottomSheet.kt -->
+    <string name="bottomsheet_header_maincell_enter_title">メイン目標を入力</string>
+    <string name="bottomsheet_header_maincell_edit_title">メイン目標を編集</string>
+    <string name="bottomsheet_header_subcell_enter_title">サブ目標を入力</string>
+    <string name="bottomsheet_header_subcell_edit_title">サブ目標を編集</string>
+    <string name="bottomsheet_header_taskcell_enter_title">タスクを入力</string>
+    <string name="bottomsheet_header_taskcell_edit_title">タスクを編集</string>
+    <string name="bottomsheet_title">目標名（必須）</string>
+    <string name="bottomsheet_title_placeholder">24文字以内で入力してください</string>
+    <string name="bottomsheet_color">カラーテーマ</string>
+    <string name="bottomsheet_duedate">期限（任意）</string>
+    <string name="bottomsheet_duedate_placeholder">期限を選択してください</string>
+    <string name="bottomsheet_description">メモ（任意）</string>
+    <string name="bottomsheet_description_placeholder">メモを入力してください</string>
+    <string name="bottomsheet_is_completed">達成状況</string>
+    <string name="bottomsheet_completed">達成</string>
+    <string name="bottomsheet_in_completed">未達成</string>
+    <string name="bottomsheet_delete">削除</string>
+    <string name="bottomsheet_reset">リセット</string>
+    <string name="bottomsheet_done">完了</string>
+
+    <!-- BandalartDatePicker.kt -->
+    <string name="datepicker_year">%1$s年</string>
+    <string name="datepicker_month">%1$s月</string>
+    <string name="datepicker_day">%1$s日</string>
+
+    <!-- BandalartDeleteAlertDialog -->
+    <string name="delete_bandalart_dialog_empty_title">バンダラートを削除しますか？</string>
+    <string name="delete_bandalart_dialog_title">「%1$s」\nバンダラートを削除しますか？</string>
+    <string name="delete_bandalart_dialog_message">削除したバンダラートは復元できません。</string>
+
+    <string name="delete_bandalart_maincelll_dialog_empty_title">メイン目標を削除しますか？</string>
+    <string name="delete_bandalart_maincell_dialog_title">「%1$s」\nメイン目標を削除しますか？</string>
+    <string name="delete_bandalart_maincell_dialog_message">サブ目標とタスクがすべて削除されます</string>
+
+    <string name="delete_bandalart_subcell_dialog_empty_title">サブ目標を削除しますか？</string>
+    <string name="delete_bandalart_subcell_dialog_title">「%1$s」\nサブ目標を削除しますか？</string>
+    <string name="delete_bandalart_subcell_dialog_message">関連するタスクがすべて削除されます</string>
+
+    <string name="delete_bandalart_taskcell_dialog_empty_title">タスクを削除しますか？</string>
+    <string name="delete_bandalart_taskcell_dialog_title">「%1$s」\nタスクを削除しますか？</string>
+    <string name="delete_bandalart_taskcell_dialog_message">""</string>
+
+    <string name="delete_bandalart_delete">削除</string>
+    <string name="delete_bandalart_cancel">キャンセル</string>
+
+    <!-- NetworkErrorAlertDialog -->
+    <string name="network_error_dialog_title">ネットワークの問題で表を\n読み込めませんでした</string>
+    <string name="network_error_dialog_message">もう一度お試しください。</string>
+    <string name="network_error_retry_message">再試行</string>
+
+    <!-- ServerErrorAlertDialog -->
+    <string name="server_error_dialog_title">サーバーの問題で表を\n読み込めませんでした</string>
+    <string name="server_error_dialog_message">もう一度お試しください。</string>
+    <string name="server_error_retry_message">再試行</string>
+
+    <!-- BandalartSkeletonScreen.kt-->
+    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="skeleton_complete_ratio">達成率 (-%)</string>
+
+    <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
+    <string name="data_validation">リクエストは成功しましたがデータの検証に失敗しました</string>
+    <string name="create_bandalart">新しいバンダラートを作成しました。</string>
+    <string name="limit_create_bandalart">バンダラートは最大5個まで作成できます。</string>
+    <string name="save_bandalart_image">バンダラートがギャラリーに保存されました。</string>
+    <string name="delete_bandalart">バンダラートが削除されました。</string>
+
+    <!-- image descrption -->
+    <string name="empty_emoji_description">空の絵文字アイコン</string>
+    <string name="edit_description">編集アイコン</string>
+    <string name="arrow_forward_description">進むアイコン</string>
+    <string name="option_description">オプションアイコン</string>
+    <string name="check_description">チェックアイコン</string>
+    <string name="share_description">共有アイコン</string>
+    <string name="add_description">追加アイコン</string>
+    <string name="complete_description">完了アイコン</string>
+    <string name="hamburger_description">メニューアイコン</string>
+    <string name="clear_description">クリアアイコン</string>
+    <string name="delete_description">削除アイコン</string>
+    <string name="app_icon_description">アプリアイコン</string>
+    <string name="gallery_icon">ギャラリーアイコン</string>
+
+    <!--  label -->
+    <string name="skeleton_trans_animate_label">メニューアイコン</string>
+
+    <!-- in-app update -->
+    <string name="update_ready_to_install">アプリのアップデートのインストール準備が完了しました。</string>
+    <string name="update_action_restart">再起動</string>
+    <string name="app_version_info">バージョン: v%s</string>
+
+</resources>

@@ -1,0 +1,144 @@
+<resources>
+    <!--  AppName-->
+    <string name="app_name">반다라트</string>
+    <string name="app_name_dev">반다라트.dev</string>
+
+    <!-- OnBoardingScreen.kt -->
+    <string name="onboarding_first_title">복잡하고 막막한\n만다라트 계획표는 이제 안녕!</string>
+    <string name="onboarding_second_title">이제 반다라트와 함께\n부담 없이 계획을 세워봐요</string>
+    <string name="onboarding_start">시작하기</string>
+
+    <!-- CompleteScreen.kt -->
+    <string name="complete_title">반다라트의 모든 목표를 달성했어요.\n정말 대단해요!</string>
+    <string name="complete_chart">달성 완료 반다라트</string>
+    <string name="complete_save">저장하기</string>
+    <string name="complete_share">공유하기</string>
+
+    <!--  HomeScreen.kt -->
+    <string name="home_default_emoji">default emoji</string>
+    <string name="home_share_url">제가 만든 반다라트를 구경하러오세요!\n%1$s</string>
+    <string name="home_empty_title">메인목표를 입력해주세요</string>
+    <string name="home_complete_ratio">달성률 %1$d%</string>
+    <string name="home_complete">달성 완료!</string>
+    <string name="home_share">공유하기</string>
+
+    <!-- BandalartChart.kt -->
+    <string name="home_layout_id">Sub %1$d</string>
+    <string name="home_sub1_id">Sub 1</string>
+    <string name="home_sub2_id">Sub 2</string>
+    <string name="home_sub3_id">Sub 3</string>
+    <string name="home_sub4_id">Sub 4</string>
+    <string name="home_main_id">Main</string>
+
+    <!-- BandalartCell.kt -->
+    <string name="home_main_cell">메인목표</string>
+    <string name="home_sub_cell">서브목표</string>
+    <string name="please_input_main_goal">메인 목표를 먼저 입력해주세요.</string>
+    <string name="please_input_sub_goal">서브 목표를 먼저 입력해주세요.</string>
+
+    <!-- HomeTopbar.kt -->
+    <string name="bandalart">반다라트</string>
+    <string name="home_list">목록</string>
+    <string name="home_add">추가</string>
+
+    <!--  BandalartListBottomSheet.kt -->
+    <string name="bandalart_list_empty_title">새 반다라트 %1$d</string>
+    <string name="bandalart_list_title">반다라트 목록</string>
+    <string name="bandalart_list_add">반다라트 추가</string>
+
+    <!-- BandalartDropDownMenu.kt -->
+    <string name="dropdown_save">저장하기</string>
+    <string name="dropdown_delete">삭제하기</string>
+
+    <!--  BandalartBottomSheet.kt -->
+    <string name="bottomsheet_header_maincell_enter_title">메인목표 입력</string>
+    <string name="bottomsheet_header_maincell_edit_title">메인목표 수정</string>
+    <string name="bottomsheet_header_subcell_enter_title">서브목표 입력</string>
+    <string name="bottomsheet_header_subcell_edit_title">서브목표 수정</string>
+    <string name="bottomsheet_header_taskcell_enter_title">태스크 입력</string>
+    <string name="bottomsheet_header_taskcell_edit_title">태스크 수정</string>
+    <string name="bottomsheet_title">목표 이름 (필수)</string>
+    <string name="bottomsheet_title_placeholder">15자 이내로 입력해주세요</string>
+    <string name="bottomsheet_color">색상 테마</string>
+    <string name="bottomsheet_duedate">마감일 (선택)</string>
+    <string name="bottomsheet_duedate_placeholder">마감일을 선택해주세요</string>
+    <string name="bottomsheet_description">메모 (선택)</string>
+    <string name="bottomsheet_description_placeholder">메모를 입력해주세요</string>
+    <string name="bottomsheet_is_completed">달성 여부</string>
+    <string name="bottomsheet_completed">달성</string>
+    <string name="bottomsheet_in_completed">미달성</string>
+    <string name="bottomsheet_delete">삭제</string>
+    <string name="bottomsheet_reset">초기화</string>
+    <string name="bottomsheet_done">완료</string>
+
+    <!-- BandalartDatePicker.kt -->
+    <string name="datepicker_year">%1$s년</string>
+    <string name="datepicker_month">%1$s월</string>
+    <string name="datepicker_day">%1$s일</string>
+
+    <!-- BandalartDeleteAlertDialog -->
+    <string name="delete_bandalart_dialog_empty_title">반다라트를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_dialog_title">'%1$s'\n반다라트를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_dialog_message">삭제한 반다라트는 다시 복구할 수 없어요.</string>
+
+    <string name="delete_bandalart_maincelll_dialog_empty_title">메인목표를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_maincell_dialog_title">\&apos;%1$s\&apos;\n메인목표를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_maincell_dialog_message">서브목표와 태스크들이 모두 삭제돼요</string>
+
+    <string name="delete_bandalart_subcell_dialog_empty_title">서브목표를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_subcell_dialog_title">\&apos;%1$s\&apos;\n서브목표를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_subcell_dialog_message">속해있는 하위 태스크들이 모두 삭제돼요</string>
+
+    <string name="delete_bandalart_taskcell_dialog_empty_title">태스크를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_taskcell_dialog_title">\&apos;%1$s\&apos;\n태스크를 삭제하시겠어요?</string>
+    <string name="delete_bandalart_taskcell_dialog_message">""</string>
+
+    <string name="delete_bandalart_delete">삭제하기</string>
+    <string name="delete_bandalart_cancel">취소</string>
+
+    <!-- NetworkErrorAlertDialog -->
+    <string name="network_error_dialog_title">네트워크 문제로 표를\n불러오지 못했어요</string>
+    <string name="network_error_dialog_message">다시 시도해주시기 바랍니다.</string>
+    <string name="network_error_retry_message">다시 시도</string>
+
+    <!-- ServerErrorAlertDialog -->
+    <string name="server_error_dialog_title">서버 문제로 표를\n불러오지 못했어요</string>
+    <string name="server_error_dialog_message">다시 시도해주시기 바랍니다.</string>
+    <string name="server_error_retry_message">다시 시도</string>
+
+    <!-- BandalartSkeletonScreen.kt-->
+    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="skeleton_complete_ratio">달성률 (-%)</string>
+
+
+    <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
+    <string name="data_validation">Request succeeded but data validation failed</string>
+    <string name="create_bandalart">새로운 반다라트를 생성했어요.</string>
+    <string name="limit_create_bandalart">반다라트는 최대 5개 생성할 수 있어요.</string>
+    <string name="save_bandalart_image">반다라트가 갤러리에 저장되었어요.</string>
+    <string name="delete_bandalart">반다라트가 삭제되었어요.</string>
+
+    <!-- image descrption -->
+    <string name="empty_emoji_description">Empty Emoji Icon</string>
+    <string name="edit_description">Edit Icon</string>
+    <string name="arrow_forward_description">Arrow Forward Icon</string>
+    <string name="option_description">Option Icon</string>
+    <string name="check_description">Check Icon</string>
+    <string name="share_description">Share Icon</string>
+    <string name="add_description">Add Icon</string>
+    <string name="complete_description">Complete Icon</string>
+    <string name="hamburger_description">Hamburger Icon</string>
+    <string name="clear_description">Clear Icon</string>
+    <string name="delete_description">Delete Icon</string>
+    <string name="app_icon_description">App Icon</string>
+    <string name="gallery_icon">Gallery Icon</string>
+
+    <!--  label -->
+    <string name="skeleton_trans_animate_label">Hamburger Icon</string>
+
+    <!-- in-app update -->
+    <string name="update_ready_to_install">앱의 업데이트 설치 준비가 완료되었습니다.</string>
+    <string name="update_action_restart">재시작</string>
+    <string name="app_version_info">버전 정보: v%s</string>
+
+</resources>
