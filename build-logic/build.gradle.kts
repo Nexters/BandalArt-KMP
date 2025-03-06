@@ -10,7 +10,6 @@ gradlePlugin {
         "android.application.compose" to "AndroidApplicationComposePlugin",
         "android.library" to "AndroidLibraryPlugin",
         "android.library.compose" to "AndroidLibraryComposePlugin",
-        "android.feature" to "AndroidFeaturePlugin",
         "jvm.kotlin" to "JvmKotlinPlugin",
         "kotest" to "KotestPlugin",
         "kmp" to "KmpPlugin",

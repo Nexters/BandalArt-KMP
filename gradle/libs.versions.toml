@@ -24,7 +24,7 @@ kotlinx-collections-immutable = "0.3.8"
 compose-multiplatform = "1.8.0-alpha02"
 androidx-core = "1.15.0"
 androidx-datastore = "1.1.2"
-androidx-lifecycle-runtime = "2.9.0-alpha10"
+androidx-lifecycle-runtime = "2.9.0-alpha11"
 androidx-splash = "1.0.1"
 androidx-startup = "1.2.0"
 androidx-activity-compose = "1.10.0"
@@ -37,7 +37,7 @@ androidx-room = "2.7.0-alpha13"
 androidx-sqlite = "2.5.0-beta01"
 app-update = "2.1.0"
 
-detekt = "1.23.6"
+detekt = "1.23.7"
 desugar-jdk-libs = "2.1.4"
 javax-inject = "1"
 lottie-compose = "6.1.0"
@@ -89,6 +89,7 @@ app-update = { group = "com.google.android.play", name = "app-update", version.r
 app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "app-update" }
 
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle-runtime" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
