@@ -14,19 +14,17 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-class DetektPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            applyPlugins("io.gitlab.arturbosch.detekt")
+internal class DetektPlugin : BuildLogicPlugin(
+    {
+        applyPlugins("io.gitlab.arturbosch.detekt")
 
-            configureDetekt(extensions.getByType<DetektExtension>())
+        configureDetekt(extensions.getByType<DetektExtension>())
 
-            dependencies {
-                detektPlugins(libs.detekt.formatting)
-            }
+        dependencies {
+            detektPlugins(libs.detekt.formatting)
         }
-    }
-}
+    },
+)
 
 fun Project.configureDetekt(extension: DetektExtension) {
     extension.apply {

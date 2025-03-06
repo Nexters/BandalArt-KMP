@@ -8,25 +8,23 @@ import com.nexters.bandalart.buildlogic.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.internal.builtins.StandardNames.FqNames.target
 
-class RoomPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            applyPlugins(Plugins.KSP)
+internal class RoomPlugin : BuildLogicPlugin(
+    {
+        applyPlugins(Plugins.KSP)
 
-            kotlin {
-                with(sourceSets) {
-                    getByName("commonMain").apply {
-                        dependencies {
-                            implementation(libs.androidx.room.runtime)
-                            implementation(libs.androidx.sqlite.bundled)
-                        }
-                    }
+        kotlin {
+            with(sourceSets) {
+                commonMain.dependencies {
+                    implementation(libs.androidx.room.runtime)
+                    implementation(libs.androidx.sqlite.bundled)
                 }
             }
-            dependencies {
-                kspKmp(libs.androidx.room.compiler)
-            }
         }
-    }
-}
+
+        dependencies {
+            kspKmp(libs.androidx.room.compiler)
+        }
+    },
+)

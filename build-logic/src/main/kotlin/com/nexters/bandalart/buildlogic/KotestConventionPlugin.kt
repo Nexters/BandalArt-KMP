@@ -16,6 +16,7 @@ import org.gradle.kotlin.dsl.withType
 
 internal class KotestConventionPlugin : BuildLogicPlugin({
     useTestPlatformForTarget()
+
     dependencies {
         testImplementation(libs.test.kotest.framework)
     }
