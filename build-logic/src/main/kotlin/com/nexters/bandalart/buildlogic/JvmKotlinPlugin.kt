@@ -1,10 +1,10 @@
 package com.nexters.bandalart.buildlogic
 
-import com.nexters.bandalart.buildlogic.configure.ApplicationConfig
 import com.nexters.bandalart.buildlogic.configure.Plugins
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.detektPlugins
 import com.nexters.bandalart.buildlogic.configure.libs
+import org.gradle.api.JavaVersion
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
@@ -14,12 +14,12 @@ internal class JvmKotlinPlugin : BuildLogicPlugin({
     applyPlugins(Plugins.JAVA_LIBRARY, Plugins.KOTLIN_JVM)
 
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = ApplicationConfig.JavaVersion
-        targetCompatibility = ApplicationConfig.JavaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     extensions.configure<KotlinProjectExtension> {
-        jvmToolchain(ApplicationConfig.JavaVersionAsInt)
+        jvmToolchain(17)
     }
 
     dependencies {

@@ -27,7 +27,7 @@ internal fun Project.configureAndroid(extension: CommonExtension<*, *, *, *, *, 
         }
 
         extensions.configure<KotlinProjectExtension> {
-            jvmToolchain(ApplicationConfig.JavaVersionAsInt)
+            jvmToolchain(17)
         }
 
         dependencies {
