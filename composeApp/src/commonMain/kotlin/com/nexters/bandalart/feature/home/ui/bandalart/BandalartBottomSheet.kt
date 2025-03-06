@@ -272,7 +272,7 @@ fun BandalartBottomSheet(
                             if (bottomSheetData.cellData.dueDate.isNullOrEmpty()) {
                                 BottomSheetContentPlaceholder(text = stringResource(Res.string.bottomsheet_duedate_placeholder))
                             } else {
-                                BottomSheetContentText(text = bottomSheetData.cellData.dueDate.toStringLocalDateTime(getLocale()))
+                                BottomSheetContentText(text = bottomSheetData.cellData.dueDate!!.toStringLocalDateTime(getLocale()))
                             }
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

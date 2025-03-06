@@ -59,18 +59,12 @@ kotlin {
                 implementation(projects.feature.onboarding)
                 implementation(projects.feature.splash)
 
-                // compileOnly(libs.compose.stable.marker)
-
-                implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.collections.immutable)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.navigation.compose)
-
-                api(libs.androidx.datastore)
-                api(libs.androidx.datastore.preferences)
 
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)

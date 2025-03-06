@@ -122,7 +122,7 @@ private fun MainCellContent(
         EmptyMainCellContent(cellTextColor)
     } else {
         FilledCellContent(
-            title = cellData.title,
+            title = cellData.title!!,
             isCompleted = cellData.isCompleted,
             textColor = cellTextColor,
             fontWeight = FontWeight.W700,
@@ -141,7 +141,7 @@ private fun SubCellContent(
         EmptySubCellContent(cellTextColor)
     } else {
         FilledCellContent(
-            title = cellData.title,
+            title = cellData.title!!,
             isCompleted = cellData.isCompleted,
             textColor = cellTextColor,
             fontWeight = FontWeight.W700,
@@ -157,7 +157,7 @@ private fun TaskCellContent(cellData: BandalartCellEntity) {
         EmptyTaskContent()
     } else {
         FilledCellContent(
-            title = cellData.title,
+            title = cellData.title!!,
             isCompleted = cellData.isCompleted,
             textColor = cellTextColor,
             fontWeight = FontWeight.W500,

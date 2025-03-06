@@ -2,6 +2,7 @@ plugins {
     id("bandalart.kmp")
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
+    id("bandalart.room")
 }
 
 android.namespace = "com.nexters.bandalart.core.common"
@@ -12,8 +13,8 @@ kotlin {
             implementation(projects.core.common)
             implementation(projects.core.database)
             implementation(projects.core.datastore)
+            implementation(projects.core.domain)
 
-            implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
         }
     }

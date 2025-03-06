@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalContracts::class)
 
-package com.nexters.bandalart.core.domain.util
+package com.nexters.bandalart.core.database
 
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -22,6 +22,7 @@ import kotlin.contracts.ExperimentalContracts
 // callInPlace: 계약의 종류 중 하나, callInPlace 계약은 이 함수가 람다를 'in-place'로, 즉 현재 위치에서 호출한다는 것을 나타냄
 // 람다를 나중에 다른 곳에서 호출하지 않고, 람다를 받자마자 즉시 실행한다는 것을 의미
 
+@OptIn(ExperimentalContracts::class)
 internal inline fun <T> runSuspendCatching(block: () -> T): Result<T> {
     // Kotlin 의 contract(계약) 시스템을 이용해 block 이 정확히 한번만 호출 되어야 함을 나타냄
     contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }

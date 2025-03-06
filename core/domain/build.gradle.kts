@@ -9,6 +9,9 @@ android.namespace = "com.nexters.bandalart.core.domain"
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+
+            compileOnly(libs.compose.stable.marker)
         }
     }
 }
