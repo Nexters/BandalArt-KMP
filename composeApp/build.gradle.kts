@@ -1,21 +1,15 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
     id("bandalart.kmp")
     id("bandalart.kmp.compose")
     id("bandalart.kmp.ios")
+    id("bandalart.kmp.firebase")
     id("bandalart.android.application")
     // alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-
     val xcfName = "ComposeApp"
 
     listOf(

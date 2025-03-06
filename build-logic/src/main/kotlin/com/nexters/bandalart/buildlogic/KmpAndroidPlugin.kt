@@ -13,6 +13,7 @@ class KmpAndroidPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
             }
+
             kotlin {
                 androidTarget {
                     compilations.all {
@@ -26,6 +27,7 @@ class KmpAndroidPlugin : Plugin<Project> {
                     }
                 }
             }
+
             android {
                 configureAndroid()
             }

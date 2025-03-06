@@ -12,6 +12,7 @@ internal class AndroidLibraryPlugin : BuildLogicPlugin({
 
     extensions.configure<LibraryExtension> {
         configureAndroid(this)
+        configureKmp()
 
         defaultConfig.apply {
             targetSdk = libs.versions.targetSdk.get().toInt()

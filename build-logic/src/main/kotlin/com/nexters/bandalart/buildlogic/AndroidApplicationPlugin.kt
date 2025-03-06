@@ -13,6 +13,7 @@ internal class AndroidApplicationPlugin : BuildLogicPlugin(
 
         extensions.configure<ApplicationExtension> {
             configureAndroid(this)
+            configureKmp()
 
             defaultConfig {
                 applicationId = libs.versions.packageName.get()
