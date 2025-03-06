@@ -31,7 +31,7 @@ internal fun Project.configureAndroid(extension: CommonExtension<*, *, *, *, *, 
 
         dependencies {
             coreLibraryDesugaring(libs.desugar.jdk.libs)
-            detektPlugins(libs.detekt.formatting)
+            // detektPlugins(libs.detekt.formatting)
         }
     }
 }
