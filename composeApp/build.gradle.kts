@@ -30,47 +30,41 @@ kotlin {
     }
 
     sourceSets {
-        androidMain {
-            dependencies {
-                implementation(libs.androidx.compose.ui.tooling.preview)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.splash)
+        androidMain.dependencies {
+            implementation(libs.androidx.compose.ui.tooling.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.splash)
 
-                implementation(libs.koin.android)
-                // implementation(libs.koin.androidx.startup)
-            }
+            implementation(libs.koin.android)
+            // implementation(libs.koin.androidx.startup)
         }
 
-        commonMain {
-            dependencies {
-                implementation(projects.core.common)
-                implementation(projects.core.data)
-                implementation(projects.core.database)
-                implementation(projects.core.datastore)
-                implementation(projects.core.designsystem)
-                implementation(projects.core.domain)
-                implementation(projects.core.navigation)
-                implementation(projects.core.ui)
+        commonMain.dependencies {
+            implementation(projects.core.common)
+            implementation(projects.core.data)
+            implementation(projects.core.database)
+            implementation(projects.core.datastore)
+            implementation(projects.core.designsystem)
+            implementation(projects.core.domain)
+            implementation(projects.core.navigation)
+            implementation(projects.core.ui)
 
-                implementation(projects.feature.complete)
-                implementation(projects.feature.home)
-                implementation(projects.feature.onboarding)
-                implementation(projects.feature.splash)
+            implementation(projects.feature.complete)
+            implementation(projects.feature.home)
+            implementation(projects.feature.onboarding)
+            implementation(projects.feature.splash)
 
-                implementation(libs.navigation.compose)
+            implementation(libs.navigation.compose)
 
-                implementation(libs.koin.core)
-                implementation(libs.koin.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
-                implementation(libs.cmptoast)
-                implementation(libs.napier)
-            }
+            implementation(libs.cmptoast)
+            implementation(libs.napier)
         }
     }
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 }
 
 android {

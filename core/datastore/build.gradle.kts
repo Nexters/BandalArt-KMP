@@ -16,4 +16,6 @@ kotlin {
             api(libs.androidx.datastore.preferences)
         }
     }
+
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 }

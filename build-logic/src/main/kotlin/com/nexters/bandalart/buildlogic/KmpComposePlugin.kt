@@ -14,14 +14,13 @@ class KmpComposePlugin : Plugin<Project> {
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
             }
+
             if (plugins.hasPlugin("com.android.library")) {
                 android {
                     buildFeatures.compose = true
                 }
             }
-            composeCompiler {
-                featureFlags.add(ComposeFeatureFlag.StrongSkipping)
-            }
+
             kotlin {
                 with(sourceSets) {
                     getByName("commonMain").apply {

@@ -163,26 +163,7 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
-# Plugins defined by this project
-bandalart-android-application = { id = "bandalart.android.application", version = "unspecified" }
-bandalart-android-application-compose = { id = "bandalart.android.application.compose", version = "unspecified" }
-#bandalart-android-firebase = { id = "bandalart.android.firebase", version = "unspecified" }
-bandalart-android-library = { id = "bandalart.android.library", version = "unspecified" }
-bandalart-android-library-compose = { id = "bandalart.android.library.compose", version = "unspecified" }
-bandalart-android-feature = { id = "bandalart.android.feature", version = "unspecified" }
-#bandalart-android-room = { id = "bandalart.android.room", version = "unspecified" }
-bandalart-jvm-kotlin = { id = "bandalart.jvm.kotlin", version = "unspecified" }
-bandalart-kotest = { id = "bandalart.kotest", version = "unspecified" }
-bandalart-kmp = { id = "bandalart.kmp", version = "unspecified" }
-bandalart-kmp-compose = { id = "bandalart.kmp.compose", version = "unspecified" }
-bandalart-kmp-android = { id = "bandalart.kmp.android", version = "unspecified" }
-bandalart-kmp-ios = { id = "bandalart.kmp.ios", version = "unspecified" }
-bandalart-kmp-firebase = { id = "bandalart.kmp.firebase", version = "unspecified" }
-bandalart-kotlin-serialization = { id = "bandalart.kotlin.serialization", version = "unspecified" }
-bandalart-room = { id = "bandalart.room", version = "unspecified" }
-
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
-android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 
 [bundles]

@@ -19,4 +19,6 @@ kotlin {
             implementation(libs.uri.kmp)
         }
     }
+
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 }

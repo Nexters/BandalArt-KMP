@@ -7,6 +7,10 @@ plugins {
 
 android.namespace = "com.nexters.bandalart.core.ui"
 
+kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
 compose.resources {
     publicResClass = true
 }
