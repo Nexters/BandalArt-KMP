@@ -1,7 +1,7 @@
 package com.nexters.bandalart.buildlogic
 
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 internal fun Project.configureKmp() {
     kotlinMultiPlatform {
@@ -9,7 +9,7 @@ internal fun Project.configureKmp() {
             compilations.all {
                 compileTaskProvider.configure {
                     compilerOptions {
-                        jvmTarget.set(JVM_11)
+                        jvmTarget.set(JvmTarget.JVM_17)
                     }
                 }
             }

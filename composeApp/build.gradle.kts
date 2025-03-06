@@ -6,8 +6,6 @@ plugins {
     id("bandalart.kmp.compose")
     id("bandalart.kmp.ios")
     id("bandalart.android.application")
-    id("bandalart.android.feature")
-    // id("bandalart.room")
     // alias(libs.plugins.buildkonfig)
 }
 
@@ -59,37 +57,14 @@ kotlin {
                 implementation(projects.feature.onboarding)
                 implementation(projects.feature.splash)
 
-                implementation(libs.kotlinx.collections.immutable)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.kotlinx.serialization.json)
-
-                implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.navigation.compose)
 
-                implementation(libs.androidx.room.runtime)
-                implementation(libs.androidx.sqlite.bundled)
-
-                api(libs.koin.core)
+                implementation(libs.koin.core)
                 implementation(libs.koin.compose)
-                implementation(libs.koin.compose.viewmodel)
 
-                implementation(libs.napier)
-                implementation(libs.uri.kmp)
-                implementation(libs.compottie)
-                implementation(libs.filekit.core)
                 implementation(libs.cmptoast)
-
-                implementation(libs.coil3.compose)
-                implementation(libs.landscapist.coil3)
-                implementation(libs.landscapist.placeholder)
-
-                implementation(libs.filekit.core)
-                implementation(libs.filekit.compose)
+                implementation(libs.napier)
             }
-        }
-
-        iosMain {
-            dependencies {}
         }
     }
 
@@ -101,14 +76,6 @@ kotlin {
 android {
     namespace = "com.nexters.bandalart"
     compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-
-        versionCode = 1
-        versionName = "1.0"
-    }
 
     signingConfigs {
         create("release") {

@@ -12,7 +12,6 @@ gradlePlugin {
         "android.library" to "AndroidLibraryPlugin",
         "android.library.compose" to "AndroidLibraryComposePlugin",
         "android.feature" to "AndroidFeaturePlugin",
-        // "android.room" to "AndroidRoomPlugin",
         "jvm.kotlin" to "JvmKotlinPlugin",
         "kotest" to "KotestPlugin",
         "kmp" to "KmpPlugin",
@@ -20,6 +19,7 @@ gradlePlugin {
         "kmp.android" to "KmpAndroidPlugin",
         "kmp.ios" to "KmpIosPlugin",
         "kmp.firebase" to "KmpFirebasePlugin",
+        "kmp.feature" to "KmpFeaturePlugin",
         "kotlin.serialization" to "KotlinSerializationPlugin",
         "room" to "RoomPlugin",
     )

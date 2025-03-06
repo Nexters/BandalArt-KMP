@@ -5,7 +5,7 @@ import org.gradle.kotlin.dsl.configure
 
 internal class AndroidLibraryComposePlugin : BuildLogicPlugin(
     {
-        applyPlugins(Plugins.ANDROID_LIBRARY, Plugins.KOTLIN_COMPOSE)
+        applyPlugins(Plugins.KOTLIN_COMPOSE)
 
         extensions.configure<LibraryExtension> {
             configureCompose(this)
