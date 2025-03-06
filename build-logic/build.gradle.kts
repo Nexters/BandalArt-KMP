@@ -52,6 +52,6 @@ fun NamedDomainObjectContainer<PluginDeclaration>.pluginRegister(data: Pair<Stri
     val (pluginName, className) = data
     register(pluginName) {
         id = "bandalart.$pluginName"
-        implementationClass = "com.nexters.bandalart.buildlogic.primitive.${className}"
+        implementationClass = "com.nexters.bandalart.buildlogic.${className}"
     }
 }

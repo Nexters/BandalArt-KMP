@@ -6,6 +6,7 @@ plugins {
     id("bandalart.kmp.compose")
     id("bandalart.kmp.ios")
     id("bandalart.android.application")
+    id("bandalart.android.feature")
     // id("bandalart.room")
     // alias(libs.plugins.buildkonfig)
 }
@@ -50,6 +51,7 @@ kotlin {
                 implementation(projects.core.datastore)
                 implementation(projects.core.designsystem)
                 implementation(projects.core.domain)
+                implementation(projects.core.navigation)
                 implementation(projects.core.ui)
 
                 implementation(projects.feature.complete)
