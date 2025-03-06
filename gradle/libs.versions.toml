@@ -54,7 +54,6 @@ koin = "4.1.0-Beta5"
 uri-kmp = "0.0.19"
 compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
-filekit = "0.8.8"
 cmptoast = "1.0.4"
 
 test-kotest = "5.8.1"
@@ -137,8 +136,6 @@ landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-p
 
 uri-kmp = { group = "com.eygraber", name = "uri-kmp", version.ref = "uri-kmp" }
 compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
-filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.ref = "filekit" }
-filekit-compose = { group = "io.github.vinceglb", name = "filekit-compose", version.ref = "filekit" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
 
 kmp-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", version.ref = "kotlin-firebase" }
