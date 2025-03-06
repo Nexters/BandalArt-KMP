@@ -1,5 +1,6 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.libs
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
@@ -16,7 +17,7 @@ import org.gradle.kotlin.dsl.withType
 class DetektPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("io.gitlab.arturbosch.detekt")
+            applyPlugins("io.gitlab.arturbosch.detekt")
 
             configureDetekt(extensions.getByType<DetektExtension>())
 

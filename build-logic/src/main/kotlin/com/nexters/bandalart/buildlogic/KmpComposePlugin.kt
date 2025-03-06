@@ -1,6 +1,7 @@
 package com.nexters.bandalart.buildlogic
 
 import com.nexters.bandalart.buildlogic.configure.android
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.compose
 import com.nexters.bandalart.buildlogic.configure.kotlin
 import org.gradle.api.Plugin
@@ -9,10 +10,10 @@ import org.gradle.api.Project
 class KmpComposePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("org.jetbrains.compose")
-                apply("org.jetbrains.kotlin.plugin.compose")
-            }
+            applyPlugins(
+                "org.jetbrains.compose",
+                "org.jetbrains.kotlin.plugin.compose",
+            )
 
             if (plugins.hasPlugin("com.android.library")) {
                 android {

@@ -1,5 +1,7 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.Plugins
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.kotlin
 import com.nexters.bandalart.buildlogic.configure.kspKmp
 import com.nexters.bandalart.buildlogic.configure.libs
@@ -10,9 +12,7 @@ import org.gradle.kotlin.dsl.dependencies
 class RoomPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("com.google.devtools.ksp")
-            }
+            applyPlugins(Plugins.KSP)
 
             kotlin {
                 with(sourceSets) {
