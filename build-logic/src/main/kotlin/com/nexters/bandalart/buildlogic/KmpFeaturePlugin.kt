@@ -12,7 +12,7 @@ class KmpFeaturePlugin : Plugin<Project> {
                 "bandalart.kmp.android",
                 "bandalart.kmp.ios",
                 "bandalart.kmp.compose",
-                // apply("bandalart.detekt"),
+                "bandalart.detekt",
             )
         }
     }

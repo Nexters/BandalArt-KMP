@@ -2,10 +2,9 @@ package com.nexters.bandalart.buildlogic
 
 import com.nexters.bandalart.buildlogic.configure.android
 import com.nexters.bandalart.buildlogic.configure.compose
-import com.nexters.bandalart.buildlogic.configure.composeCompiler
+import com.nexters.bandalart.buildlogic.configure.kotlin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 class KmpComposePlugin : Plugin<Project> {
     override fun apply(target: Project) {

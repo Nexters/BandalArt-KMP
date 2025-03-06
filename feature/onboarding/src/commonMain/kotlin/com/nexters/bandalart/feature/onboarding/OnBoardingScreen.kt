@@ -194,7 +194,7 @@ internal fun OnBoardingScreen(
                                                 else -> ONBOARDING_EN_LOTTIE_FILE
                                             },
                                             iterations = Int.MAX_VALUE,
-                                            modifier = Modifier.fillMaxSize()
+                                            modifier = Modifier.fillMaxSize(),
                                         )
                                     }
                                 }

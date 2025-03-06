@@ -8,7 +8,6 @@ gradlePlugin {
     val conventionPluginClasses = listOf(
         "android.application" to "AndroidApplicationPlugin",
         "android.application.compose" to "AndroidApplicationComposePlugin",
-        // "android.firebase" to "AndroidFirebasePlugin",
         "android.library" to "AndroidLibraryPlugin",
         "android.library.compose" to "AndroidLibraryComposePlugin",
         "android.feature" to "AndroidFeaturePlugin",
@@ -22,6 +21,7 @@ gradlePlugin {
         "kmp.feature" to "KmpFeaturePlugin",
         "kotlin.serialization" to "KotlinSerializationPlugin",
         "room" to "RoomPlugin",
+        "detekt" to "DetektPlugin",
     )
 
     plugins {

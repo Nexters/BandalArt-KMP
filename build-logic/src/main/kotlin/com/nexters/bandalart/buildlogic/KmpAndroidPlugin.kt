@@ -2,6 +2,7 @@ package com.nexters.bandalart.buildlogic
 
 import com.nexters.bandalart.buildlogic.configure.android
 import com.nexters.bandalart.buildlogic.configure.configureAndroid
+import com.nexters.bandalart.buildlogic.configure.kotlin
 import com.nexters.bandalart.buildlogic.configure.libraryAndroidOptions
 import org.gradle.api.Plugin
 import org.gradle.api.Project
