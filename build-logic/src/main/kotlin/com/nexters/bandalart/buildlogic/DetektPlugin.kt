@@ -1,16 +1,16 @@
 package com.nexters.bandalart.buildlogic
 
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
-import com.nexters.bandalart.buildlogic.configure.libs
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
 import com.nexters.bandalart.buildlogic.configure.detektPlugins
+import com.nexters.bandalart.buildlogic.configure.libs
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import org.gradle.api.JavaVersion
+import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
@@ -53,6 +53,8 @@ fun Project.configureDetekt(extension: DetektExtension) {
     plugins.withType<DetektPlugin> {
         tasks.withType<Detekt> detekt@{
             finalizedBy(reportMerge)
+
+            jvmTarget = JavaVersion.VERSION_17.toString()
 
             source = project.files("./").asFileTree
 
