@@ -24,9 +24,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.app_version_info
 import bandalart.core.designsystem.generated.resources.save_bandalart_image
+import bandalart.core.designsystem.generated.resources.Res
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer

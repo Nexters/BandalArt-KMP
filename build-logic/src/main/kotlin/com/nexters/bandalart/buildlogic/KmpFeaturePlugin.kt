@@ -1,5 +1,6 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

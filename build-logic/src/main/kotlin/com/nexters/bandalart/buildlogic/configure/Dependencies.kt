@@ -1,4 +1,4 @@
-package com.nexters.bandalart.buildlogic
+package com.nexters.bandalart.buildlogic.configure
 
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler

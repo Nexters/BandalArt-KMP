@@ -1,5 +1,7 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.kotlinMultiPlatform
+import com.nexters.bandalart.buildlogic.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

@@ -1,4 +1,4 @@
-package com.nexters.bandalart.buildlogic
+package com.nexters.bandalart.buildlogic.configure
 
 internal object Plugins {
     const val JAVA_LIBRARY = "java-library"

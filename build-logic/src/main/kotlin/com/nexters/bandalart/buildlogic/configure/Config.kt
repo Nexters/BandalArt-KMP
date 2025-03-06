@@ -1,4 +1,4 @@
-package com.nexters.bandalart.buildlogic
+package com.nexters.bandalart.buildlogic.configure
 
 internal object ApplicationConfig {
     val JavaVersion = org.gradle.api.JavaVersion.VERSION_17

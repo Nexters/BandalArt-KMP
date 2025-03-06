@@ -1,5 +1,9 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
+import com.nexters.bandalart.buildlogic.configure.implementation
+import com.nexters.bandalart.buildlogic.configure.libs
+import com.nexters.bandalart.buildlogic.configure.project
 import org.gradle.kotlin.dsl.dependencies
 
 internal class AndroidFeaturePlugin : BuildLogicPlugin(

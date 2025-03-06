@@ -1,5 +1,10 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.ApplicationConfig
+import com.nexters.bandalart.buildlogic.configure.Plugins
+import com.nexters.bandalart.buildlogic.configure.applyPlugins
+import com.nexters.bandalart.buildlogic.configure.detektPlugins
+import com.nexters.bandalart.buildlogic.configure.libs
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies

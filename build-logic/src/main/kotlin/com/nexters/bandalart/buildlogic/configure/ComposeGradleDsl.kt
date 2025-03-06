@@ -1,4 +1,4 @@
-package com.nexters.bandalart.buildlogic
+package com.nexters.bandalart.buildlogic.configure
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

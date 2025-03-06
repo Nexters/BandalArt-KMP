@@ -1,5 +1,9 @@
 package com.nexters.bandalart.buildlogic
 
+import com.nexters.bandalart.buildlogic.configure.androidExtensions
+import com.nexters.bandalart.buildlogic.configure.isAndroidProject
+import com.nexters.bandalart.buildlogic.configure.libs
+import com.nexters.bandalart.buildlogic.configure.testImplementation
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
