@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 internal fun Project.configureKmp() {
-    kotlinMultiPlatform {
+    kotlin {
         androidTarget {
             compilations.all {
                 compileTaskProvider.configure {

@@ -6,20 +6,14 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.the
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 internal val Project.libs
     get() = the<LibrariesForLibs>()
 
 internal fun Project.applyPlugins(vararg plugins: String) {
     plugins.forEach(pluginManager::apply)
-}
-
-internal fun Project.kotlinMultiPlatform(action: KotlinMultiplatformExtension.() -> Unit) {
-    extensions.configure(action)
 }
 
 internal val Project.isAndroidProject: Boolean
