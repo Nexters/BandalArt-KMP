@@ -1,5 +1,6 @@
 package com.nexters.bandalart.buildlogic.configure
 
+import androidx.room.gradle.RoomExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
@@ -29,6 +30,10 @@ fun Project.kotlinAndroidOptions(configure: KotlinAndroidProjectExtension.() -> 
 
 fun Project.libraryAndroidOptions(configure: LibraryAndroidComponentsExtension.() -> Unit) {
     extensions.configure(configure)
+}
+
+internal fun Project.room(action: RoomExtension.() -> Unit) {
+    extensions.configure(action)
 }
 
 fun Project.configureAndroid() {

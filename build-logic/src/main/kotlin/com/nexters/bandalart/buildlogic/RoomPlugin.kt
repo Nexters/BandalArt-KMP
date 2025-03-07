@@ -5,14 +5,12 @@ import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.kotlin
 import com.nexters.bandalart.buildlogic.configure.kspKmp
 import com.nexters.bandalart.buildlogic.configure.libs
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import com.nexters.bandalart.buildlogic.configure.room
 import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.kotlin.gradle.internal.builtins.StandardNames.FqNames.target
 
 internal class RoomPlugin : BuildLogicPlugin(
     {
-        applyPlugins(Plugins.KSP)
+        applyPlugins(Plugins.ANDROIDX_ROOM, Plugins.KSP)
 
         kotlin {
             with(sourceSets) {
@@ -25,6 +23,10 @@ internal class RoomPlugin : BuildLogicPlugin(
 
         dependencies {
             kspKmp(libs.androidx.room.compiler)
+        }
+
+        room {
+            schemaDirectory("$projectDir/schemas")
         }
     },
 )
