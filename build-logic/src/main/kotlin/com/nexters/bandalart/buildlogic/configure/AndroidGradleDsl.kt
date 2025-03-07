@@ -36,6 +36,7 @@ fun Project.configureAndroid() {
         namespace?.let {
             this.namespace = it
         }
+
         compileSdkVersion(libs.versions.compileSdk.get().toInt())
 
         defaultConfig {

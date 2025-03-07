@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.google.service) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.ksp.gradle.plugin) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
 }
 
 tasks.register("bundleRelease", type = Exec::class) {

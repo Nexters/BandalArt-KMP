@@ -4,9 +4,6 @@ import com.nexters.bandalart.buildlogic.configure.android
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.compose
 import com.nexters.bandalart.buildlogic.configure.kotlin
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.internal.builtins.StandardNames.FqNames.target
 
 internal class KmpComposePlugin : BuildLogicPlugin(
     {
@@ -28,6 +25,7 @@ internal class KmpComposePlugin : BuildLogicPlugin(
                     implementation(compose.dependencies.foundation)
                     implementation(compose.dependencies.material3)
                     implementation(compose.dependencies.ui)
+                    implementation(compose.dependencies.runtime)
                     implementation(compose.dependencies.components.resources)
                     implementation(compose.dependencies.components.uiToolingPreview)
                 }
