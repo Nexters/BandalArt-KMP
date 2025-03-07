@@ -12,7 +12,6 @@ import Firebase
 @main
 struct iosApp: App {
     init() {
-        AppModuleKt.doInitKoin()
         FirebaseApp.configure()
     }
     var body: some Scene {
