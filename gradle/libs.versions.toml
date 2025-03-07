@@ -39,7 +39,6 @@ app-update = "2.1.0"
 detekt = "1.23.7"
 desugar-jdk-libs = "2.1.5"
 javax-inject = "1"
-lottie-compose = "6.1.0"
 napier = "2.7.1"
 facebook-shimmer = "0.5.0"
 kotlin-firebase = "2.1.0"
@@ -56,7 +55,6 @@ buildkonfig = "0.15.2"
 cmptoast = "1.0.4"
 
 test-kotest = "5.8.1"
-core = "1.15.0"
 
 [libraries]
 
@@ -78,7 +76,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 
-androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "androidx-datastore" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidx-datastore" }
 androidx-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splash" }
@@ -136,6 +134,7 @@ cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmpt
 
 kmp-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", version.ref = "kotlin-firebase" }
 kmp-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "kotlin-firebase" }
+kmp-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "kotlin-firebase" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebase-common" }
 
 [plugins]
@@ -182,11 +181,6 @@ androidx-compose = [
 #    "landscapist-coil3",
 #    "landscapist-placeholder",
 #]
-
-kmp-firebase = [
-    "kmp-firebase-analytics",
-    "kmp-firebase-crashlytics",
-]
 
 plugins = [
     "android-gradle-plugin",

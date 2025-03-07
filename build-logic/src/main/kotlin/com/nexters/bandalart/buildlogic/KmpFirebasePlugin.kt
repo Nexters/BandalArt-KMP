@@ -14,6 +14,7 @@ internal class KmpFirebasePlugin : BuildLogicPlugin(
                 commonMain.dependencies {
                     implementation(libs.kmp.firebase.analytics)
                     implementation(libs.kmp.firebase.crashlytics)
+                    implementation(libs.kmp.firebase.config)
                 }
 
                 androidMain.dependencies {

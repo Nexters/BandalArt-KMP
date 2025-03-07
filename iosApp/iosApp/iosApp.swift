@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+import ComposeApp
+import Firebase
 
 @main
 struct iosApp: App {
+    init() {
+        AppModuleKt.doInitKoin()
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()

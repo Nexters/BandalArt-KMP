@@ -1,6 +1,8 @@
 package com.nexters.bandalart
 
 import android.app.Application
+import com.google.firebase.Firebase
+import com.google.firebase.initialize
 import com.nexters.bandalart.di.initKoin
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -17,6 +19,8 @@ class BandalartApplication : Application() {
         initKoin {
             androidContext(this@BandalartApplication)
         }
+
+        Firebase.initialize(this)
 
         multiplatform.network.cmptoast.AppContext.apply { set(applicationContext) }
     }
