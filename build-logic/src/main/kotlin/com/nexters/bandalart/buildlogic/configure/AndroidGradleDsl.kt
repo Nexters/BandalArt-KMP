@@ -54,9 +54,12 @@ fun Project.configureAndroid() {
             targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = true
         }
+
         dependencies {
-            add("coreLibraryDesugaring", libs.desugar.jdk.libs)
+            coreLibraryDesugaring(libs.desugar.jdk.libs)
+            // detektPlugins(libs.detekt.formatting)
         }
+
         testOptions {
             unitTests {
                 isIncludeAndroidResources = true

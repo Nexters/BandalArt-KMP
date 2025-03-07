@@ -1,11 +1,12 @@
 import java.util.Properties
 
 plugins {
+    id("bandalart.detekt")
+    id("bandalart.android.application")
     id("bandalart.kmp")
     id("bandalart.kmp.compose")
     id("bandalart.kmp.ios")
     id("bandalart.kmp.firebase")
-    id("bandalart.android.application")
     // alias(libs.plugins.buildkonfig)
 }
 
