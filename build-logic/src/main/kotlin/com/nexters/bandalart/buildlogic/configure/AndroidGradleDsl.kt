@@ -57,7 +57,6 @@ fun Project.configureAndroid() {
 
         dependencies {
             coreLibraryDesugaring(libs.desugar.jdk.libs)
-            // detektPlugins(libs.detekt.formatting)
         }
 
         testOptions {

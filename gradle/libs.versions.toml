@@ -15,6 +15,7 @@ google-service = "4.4.2"
 kotlin-core = "2.1.10"
 kotlin-ktlint-gradle = "12.1.2"
 kotlin-ktlint-source = "0.50.0"
+ktlint = "1.5.0"
 
 kotlinx-coroutines = "1.10.1"
 kotlinx-datetime = "0.6.1"
@@ -38,7 +39,6 @@ app-update = "2.1.0"
 
 detekt = "1.23.7"
 desugar-jdk-libs = "2.1.5"
-javax-inject = "1"
 napier = "2.7.1"
 facebook-shimmer = "0.5.0"
 kotlin-firebase = "2.1.0"
@@ -53,6 +53,7 @@ uri-kmp = "0.0.19"
 compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
 cmptoast = "1.0.4"
+spotless = "7.0.1"
 
 test-kotest = "5.8.1"
 
@@ -68,6 +69,7 @@ ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devt
 firebase-gradle-plugin = { group = "com.google.gms", name = "google-services", version.ref = "google-service" }
 kotlinx-serialization-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-core" }
 firebase-crashlytics-gradle-plugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebase-crashlytics" }
+spotless-gradle-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
 
@@ -157,6 +159,7 @@ androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
@@ -192,5 +195,6 @@ plugins = [
     "firebase-gradle-plugin",
     "kotlinx-serialization-gradle-plugin",
     "detekt-gradle-plugin",
-    "firebase-crashlytics-gradle-plugin"
+    "firebase-crashlytics-gradle-plugin",
+    "spotless-gradle-plugin"
 ]

@@ -21,6 +21,8 @@ gradlePlugin {
         "kotlin.serialization" to "KotlinSerializationPlugin",
         "room" to "RoomPlugin",
         "detekt" to "DetektPlugin",
+        "spotless" to "SpotlessPlugin",
+        "lint" to "LintPlugin",
     )
 
     plugins {

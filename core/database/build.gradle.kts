@@ -1,4 +1,5 @@
 plugins {
+    id("bandalart.lint")
     id("bandalart.kmp")
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
