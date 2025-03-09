@@ -13,15 +13,3 @@ plugins {
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.ksp.gradle.plugin) apply false
 }
-
-tasks.register("bundleRelease", type = Exec::class) {
-    commandLine(project.rootDir.resolve("gradlew"), "bundle")
-    workingDir = project.rootDir
-}
-
-tasks.register("release") {
-    dependsOn(tasks["clean"])
-    dependsOn(tasks["bundleRelease"])
-    mustRunAfter(tasks["clean"])
-}
-
