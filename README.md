@@ -38,13 +38,12 @@
 
 - IDE : Android Studio Ladybug
 - JDK : Java 17을 실행할 수 있는 JDK
-- Kotlin Language : 2.0.21
+- Kotlin Language : 2.1.10
 
 ### Language
 
 - Kotlin
 ### Architecture
-- [Circuit](https://github.com/Nexters/BandalArt-KMP/tree/develop)
 - Modularization Based on [Now in Android](https://github.com/android/nowinandroid) with Clean Architecture
 
 ### Libraries
@@ -55,7 +54,7 @@
   - Lifecycle & ViewModel Compose
   - Navigation
   - DataStore
-  - StartUp
+  - ~StartUp~
   - Splash
   - Room
   - In-app update
@@ -65,20 +64,22 @@
   - Material3
   - Navigation
 
-- Dagger Hilt
+- ~Dagger Hilt~ -> Koin
 - ~Ktor~
 - ~Retrofit~
-- Timber
-- Lottie
+- ~Timber~ -> [Napier](https://github.com/AAkira/Napier)
+- ~Lottie~ -> [compottie](https://github.com/alexzhirkevich/compottie)
 - Facebook Shimmer
-- Firebase(Analytics, Crashlytics)
+- ~Firebase(Analytics, Crashlytics)~ -> Kotlin Firebase(Analytics, Crashlytics)
 - [Compose-Stable-Marker](https://github.com/skydoves/compose-stable-marker)
 - [Circuit](https://slackhq.github.io/circuit/)
+- [uri-kmp](https://github.com/eygraber/uri-kmp)
+- [CMPToast](https://github.com/Chaintech-Network/CMPToast)
 
 #### Test & Code analysis
 - Kotest
 
-- Ktlint
+- Spotless
 - Detekt
 
 #### Gradle Dependency
@@ -94,16 +95,15 @@
 │   ├── MainActivity
 │   └── Application
 ├── build-logic
-├── buildSrc
 ├── core
+│   ├── common
 │   ├── data
+│   ├── database
 │   ├── datastore
 │   ├── designsystem
 │   ├── domain
 │   ├── navigation
-│   ├── network
 │   └── ui
-├── fastlane
 ├── feature
 │   ├── complete
 │   ├── home
