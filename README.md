@@ -28,9 +28,11 @@
 |<img width="240" src="https://github.com/Nexters/BandalArt-Android/assets/51016231/b85bbed8-7c2e-4fa5-9a27-f5e327ae71f6.gif">|<img width="240" src="https://github.com/Nexters/BandalArt-Android/assets/51016231/addaf2a8-31f8-4c1c-8cad-c49c5fd24a48.gif">|<img width="240" src="https://github.com/Nexters/BandalArt-Android/assets/51016231/cd9776e0-0be0-46e3-87ea-7ef88e215054.gif">
 
 ## Article
-[Custom Splash Screen 만드는 방법(Splash Screen API을 사용하는 경우)](https://velog.io/@mraz3068/How-to-make-Custom-Splash-Screen-with-Splash-Screen-API)
+[[KMP] 반다라트 iOS 앱 출시 완료!](https://velog.io/@mraz3068/Bandalart-iOS-App-Deployment-Complete)
 
 [In-app update 적용해보기 with Compose](https://velog.io/@mraz3068/Implementing-In-app-update-with-Compose)
+
+[Custom Splash Screen 만드는 방법(Splash Screen API을 사용하는 경우)](https://velog.io/@mraz3068/How-to-make-Custom-Splash-Screen-with-Splash-Screen-API)
 
 ## Development
 
@@ -85,6 +87,8 @@
 #### Gradle Dependency
 
 - Gradle Version Catalog
+
+check Circuit implementation [here](https://github.com/Nexters/BandalArt-KMP/tree/develop)
 
 ## Module
 ![image](https://github.com/user-attachments/assets/c45b3830-95b2-4b20-9280-7004fc812350)
