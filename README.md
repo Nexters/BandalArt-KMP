@@ -70,7 +70,7 @@
 - ~Timber~ -> [Napier](https://github.com/AAkira/Napier)
 - ~Lottie~ -> [compottie](https://github.com/alexzhirkevich/compottie)
 - Facebook Shimmer
-- ~Firebase(Analytics, Crashlytics)~ -> Kotlin Firebase(Analytics, Crashlytics)
+- ~Firebase(Analytics, Crashlytics)~ -> [Kotlin Firebase(Analytics, Crashlytics)](https://github.com/GitLiveApp/firebase-kotlin-sdk?tab=readme-ov-file)
 - [Compose-Stable-Marker](https://github.com/skydoves/compose-stable-marker)
 - [Circuit](https://slackhq.github.io/circuit/)
 - [uri-kmp](https://github.com/eygraber/uri-kmp)
