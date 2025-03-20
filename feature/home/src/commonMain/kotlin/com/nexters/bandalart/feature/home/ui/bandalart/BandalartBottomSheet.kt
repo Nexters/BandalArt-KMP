@@ -40,12 +40,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
@@ -118,6 +120,14 @@ fun BandalartBottomSheet(
     }
     val showBottomGradient by remember(scrollState.value) {
         derivedStateOf { scrollState.value < scrollState.maxValue }
+    }
+
+    val titleTextFieldValue = remember {
+        mutableStateOf(TextFieldValue(bottomSheetData.cellData.title ?: ""))
+    }
+
+    val descriptionTextFieldValue = remember {
+        mutableStateOf(TextFieldValue(bottomSheetData.cellData.description ?: ""))
     }
 
     ModalBottomSheet(
@@ -201,11 +211,10 @@ fun BandalartBottomSheet(
                         }
                         Column(modifier = Modifier.padding(top = 10.dp)) {
                             BandalartTextField(
-                                value = bottomSheetData.cellData.title ?: "",
+                                value = titleTextFieldValue.value,
                                 onValueChange = { title ->
-                                    onHomeUiAction(
-                                        HomeUiAction.OnCellTitleUpdate(title, getLocale()),
-                                    )
+                                    titleTextFieldValue.value = title
+                                    onHomeUiAction(HomeUiAction.OnCellTitleUpdate(title.text, getLocale()))
                                 },
                                 placeholder = stringResource(Res.string.bottomsheet_title_placeholder),
                             )
@@ -295,8 +304,7 @@ fun BandalartBottomSheet(
                             onDueDateSelect = { dueDateResult ->
                                 onHomeUiAction(HomeUiAction.OnDueDateSelect(dueDateResult.toString()))
                             },
-                            currentDueDate = bottomSheetData.cellData.dueDate?.toLocalDateTime()
-                                ?: LocalDateTime.now(),
+                            currentDueDate = bottomSheetData.cellData.dueDate?.toLocalDateTime() ?: LocalDateTime.now(),
                         )
                     }
                     Spacer(modifier = Modifier.height(28.dp))
@@ -304,9 +312,10 @@ fun BandalartBottomSheet(
                     Spacer(modifier = Modifier.height(12.dp))
                     Column {
                         BandalartTextField(
-                            value = bottomSheetData.cellData.description ?: "",
+                            value = descriptionTextFieldValue.value,
                             onValueChange = { description ->
-                                onHomeUiAction(HomeUiAction.OnDescriptionUpdate(description))
+                                descriptionTextFieldValue.value = description
+                                onHomeUiAction(HomeUiAction.OnDescriptionUpdate(description.text))
                             },
                             placeholder = stringResource(Res.string.bottomsheet_description_placeholder),
                         )

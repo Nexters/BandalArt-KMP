@@ -114,14 +114,14 @@ fun HomeHeader(
                     .wrapContentHeight(),
             ) {
                 Text(
-                    text = bandalartData.title ?: stringResource(Res.string.home_empty_title),
-                    color = if (bandalartData.title.isNullOrEmpty()) Gray300 else Gray900,
+                    text = bandalartData.titleText.ifEmpty { stringResource(Res.string.home_empty_title) },
+                    color = if (bandalartData.titleText.isEmpty()) Gray300 else Gray900,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.W700,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .clickable {
-                            onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.title.isNullOrEmpty(), cellData))
+                            onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
                         },
                     letterSpacing = (-0.4).sp,
                 )

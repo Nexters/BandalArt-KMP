@@ -27,10 +27,10 @@ internal fun HomeDialogs(
         is DialogState.BandalartDelete -> {
             uiState.bandalartData?.let { bandalart ->
                 BandalartDeleteAlertDialog(
-                    title = if (bandalart.title.isNullOrEmpty()) {
+                    title = if (bandalart.titleText.isEmpty()) {
                         stringResource(Res.string.delete_bandalart_dialog_empty_title)
                     } else {
-                        stringResource(Res.string.delete_bandalart_dialog_title, bandalart.title)
+                        stringResource(Res.string.delete_bandalart_dialog_title, bandalart.titleText)
                     },
                     message = stringResource(Res.string.delete_bandalart_dialog_message),
                     onDeleteClick = {
