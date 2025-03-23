@@ -21,10 +21,9 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.0.1</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
-    <true/>
+    <string>2</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>NSPhotoLibraryAddUsageDescription</key>
@@ -54,7 +53,6 @@
        <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
 
-    <!-- 추가된 항목 -->
     <key>NSHumanReadableCopyright</key>
     <string>© 2025 easyhooon</string>
 
