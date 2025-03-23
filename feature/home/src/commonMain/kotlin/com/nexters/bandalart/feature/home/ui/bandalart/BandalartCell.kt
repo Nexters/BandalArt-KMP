@@ -83,9 +83,9 @@ fun BandalartCell(
             .background(getCellBackgroundColor(bandalartData, cellType, cellData))
             .clickable {
                 when (cellType) {
-                    CellType.MAIN -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.title.isNullOrEmpty(), cellData))
-                    CellType.SUB -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.SUB, bandalartData.title.isNullOrEmpty(), cellData))
-                    else -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.TASK, bandalartData.title.isNullOrEmpty(), cellData))
+                    CellType.MAIN -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
+                    CellType.SUB -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.SUB, bandalartData.titleText.isEmpty(), cellData))
+                    else -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.TASK, bandalartData.titleText.isEmpty(), cellData))
                 }
             },
         contentAlignment = Alignment.Center,

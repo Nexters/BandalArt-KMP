@@ -58,7 +58,7 @@ class HomeViewModel(
     private fun observeBandalartCompletion() {
         viewModelScope.launch {
             bandalartFlow.collect { bandalart ->
-                if (bandalart.isCompleted && !bandalart.title.isNullOrEmpty()) {
+                if (bandalart.isCompleted && bandalart.titleText.isNotEmpty()) {
                     val isBandalartCompleted = checkCompletedBandalartId(bandalart.id)
                     if (isBandalartCompleted) {
                         delay(500L)
@@ -66,7 +66,7 @@ class HomeViewModel(
                         delay(500L)
                         navigateToComplete(
                             bandalart.id,
-                            bandalart.title,
+                            bandalart.titleText,
                             bandalart.profileEmoji.orEmpty(),
                             _uiState.value.bandalartChartUrl.orEmpty(),
                         )
@@ -408,9 +408,7 @@ class HomeViewModel(
 
         _uiState.update {
             val currentBottomSheet = (it.bottomSheet as? BottomSheetState.Cell) ?: return@update it
-            val validatedTitle = if (title.length > maxLength) {
-                currentBottomSheet.cellData.title ?: ""
-            } else title
+            val validatedTitle = if (title.length > maxLength) { currentBottomSheet.cellData.title ?: "" } else title
 
             it.copy(
                 bottomSheet = currentBottomSheet.copy(

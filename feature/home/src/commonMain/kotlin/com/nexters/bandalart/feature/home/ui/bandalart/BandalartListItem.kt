@@ -147,7 +147,7 @@ fun BandalartListItem(
                 }
             }
             Text(
-                text = bandalartItem.title ?: "",
+                text = bandalartItem.titleText,
                 color = if (bandalartItem.isGeneratedTitle) Gray300 else Gray900,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W700,

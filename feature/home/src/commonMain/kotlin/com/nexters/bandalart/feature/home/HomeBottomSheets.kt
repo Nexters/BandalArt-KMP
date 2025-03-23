@@ -1,6 +1,7 @@
 package com.nexters.bandalart.feature.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.input.TextFieldValue
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.bandalart_list_empty_title
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
@@ -72,11 +73,11 @@ internal fun HomeBottomSheets(
 private fun updateBandalartListTitles(list: List<BandalartUiModel>): List<BandalartUiModel> {
     var counter = 1
     return list.map { item ->
-        if (item.title.isNullOrEmpty()) {
+        if (!item.hasTitleText) {
             val updatedTitle = stringResource(Res.string.bandalart_list_empty_title, counter)
             counter += 1
             item.copy(
-                title = updatedTitle,
+                title = TextFieldValue(updatedTitle),
                 isGeneratedTitle = true,
             )
         } else {
