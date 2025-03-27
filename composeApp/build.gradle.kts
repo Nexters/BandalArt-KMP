@@ -31,6 +31,7 @@ kotlin {
 
             implementation(libs.koin.android)
             // implementation(libs.koin.androidx.startup)
+            implementation(libs.kotzilla.sdk)
         }
 
         commonMain.dependencies {

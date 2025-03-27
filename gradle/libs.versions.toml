@@ -54,6 +54,7 @@ compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
 cmptoast = "1.0.4"
 spotless = "7.0.1"
+kotzilla = "1.0.1"
 
 test-kotest = "5.8.1"
 
@@ -61,6 +62,7 @@ test-kotest = "5.8.1"
 
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
+kotzilla-plugin = { group = "io.kotzilla", name = "kotzilla-plugin", version.ref = "kotzilla" }
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
 compose-compiler-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
 compose-gradle-plugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
@@ -138,6 +140,7 @@ kmp-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", v
 kmp-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "kotlin-firebase" }
 kmp-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "kotlin-firebase" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebase-common" }
+kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla"}
 
 [plugins]
 
@@ -163,6 +166,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
+kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla"}
 
 [bundles]
 
