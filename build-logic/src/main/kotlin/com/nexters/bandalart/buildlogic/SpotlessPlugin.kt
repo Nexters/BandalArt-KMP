@@ -54,7 +54,7 @@ private val licenseHeaderXml =
     buildString {
         append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
         append("<!--\n")
-        append("     Copyright \$YEAR [YOUR_NAME]\n")
+        append("     Copyright \$YEAR easyhooon\n")
         append("     Licensed under the Apache License, Version 2.0 (the \"License\");\n")
         append("     you may not use this file except in compliance with the License.\n")
         append("     You may obtain a copy of the License at\n")
