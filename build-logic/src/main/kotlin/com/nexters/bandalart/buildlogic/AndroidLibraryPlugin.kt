@@ -12,7 +12,7 @@ internal class AndroidLibraryPlugin : BuildLogicPlugin({
     applyPlugins(Plugins.ANDROID_LIBRARY, Plugins.KOTLIN_ANDROID)
 
     extensions.configure<LibraryExtension> {
-        configureAndroid(this)
+        configureAndroid()
         configureKmp()
 
         defaultConfig.apply {

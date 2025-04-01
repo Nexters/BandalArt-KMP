@@ -3,43 +3,43 @@ package com.nexters.bandalart.buildlogic.configure
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
-fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? {
     return add("implementation", dependencyNotation)
 }
 
-fun DependencyHandler.api(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.api(dependencyNotation: Any): Dependency? {
     return add("api", dependencyNotation)
 }
 
-fun DependencyHandler.ksp(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.ksp(dependencyNotation: Any): Dependency? {
     return add("ksp", dependencyNotation)
 }
 
-fun DependencyHandler.androidTestImplementation(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.androidTestImplementation(dependencyNotation: Any): Dependency? {
     return add("androidTestImplementation", dependencyNotation)
 }
 
-fun DependencyHandler.debugImplementation(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.debugImplementation(dependencyNotation: Any): Dependency? {
     return add("debugImplementation", dependencyNotation)
 }
 
-fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? {
     return add("testImplementation", dependencyNotation)
 }
 
-fun DependencyHandler.coreLibraryDesugaring(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.coreLibraryDesugaring(dependencyNotation: Any): Dependency? {
     return add("coreLibraryDesugaring", dependencyNotation)
 }
 
-fun DependencyHandler.detektPlugins(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.detektPlugins(dependencyNotation: Any): Dependency? {
     return add("detektPlugins", dependencyNotation)
 }
 
-fun DependencyHandler.compileOnly(dependencyNotation: Any): Dependency? {
+internal fun DependencyHandler.compileOnly(dependencyNotation: Any): Dependency? {
     return add("compileOnly", dependencyNotation)
 }
 
-fun DependencyHandler.project(
+internal fun DependencyHandler.project(
     path: String,
     configuration: String? = null,
 ): Dependency {

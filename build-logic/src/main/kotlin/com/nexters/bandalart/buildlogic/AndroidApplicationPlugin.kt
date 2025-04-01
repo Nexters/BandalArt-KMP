@@ -13,7 +13,7 @@ internal class AndroidApplicationPlugin : BuildLogicPlugin(
         applyPlugins(Plugins.ANDROID_APPLICATION)
 
         extensions.configure<ApplicationExtension> {
-            configureAndroid(this)
+            configureAndroid()
             configureKmp()
 
             defaultConfig {

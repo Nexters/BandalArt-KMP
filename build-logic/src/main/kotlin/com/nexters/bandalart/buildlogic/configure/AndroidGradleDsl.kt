@@ -11,24 +11,25 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
-fun Project.androidApplication(action: BaseAppModuleExtension.() -> Unit) {
+internal fun Project.androidApplication(action: BaseAppModuleExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-fun Project.androidLibrary(action: LibraryExtension.() -> Unit) {
+internal fun Project.androidLibrary(action: LibraryExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-fun Project.android(action: TestedExtension.() -> Unit) {
+internal fun Project.android(action: TestedExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-fun Project.kotlinAndroidOptions(configure: KotlinAndroidProjectExtension.() -> Unit) {
+internal fun Project.kotlinAndroidOptions(configure: KotlinAndroidProjectExtension.() -> Unit) {
     extensions.configure(configure)
 }
 
-fun Project.libraryAndroidOptions(configure: LibraryAndroidComponentsExtension.() -> Unit) {
+internal fun Project.libraryAndroidOptions(configure: LibraryAndroidComponentsExtension.() -> Unit) {
     extensions.configure(configure)
 }
 
@@ -36,7 +37,7 @@ internal fun Project.room(action: RoomExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-fun Project.configureAndroid() {
+internal fun Project.configureAndroid() {
     android {
         namespace?.let {
             this.namespace = it
@@ -57,6 +58,10 @@ fun Project.configureAndroid() {
 
         dependencies {
             coreLibraryDesugaring(libs.desugar.jdk.libs)
+        }
+
+        extensions.configure<KotlinProjectExtension> {
+            jvmToolchain(17)
         }
 
         testOptions {

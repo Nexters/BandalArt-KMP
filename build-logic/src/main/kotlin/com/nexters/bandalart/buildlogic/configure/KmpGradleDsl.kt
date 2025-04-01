@@ -7,11 +7,11 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
+internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-fun DependencyHandlerScope.kspKmp(
+internal fun DependencyHandlerScope.kspKmp(
     artifact: Provider<MinimalExternalModuleDependency>,
 ) {
     add("kspAndroid", artifact)
