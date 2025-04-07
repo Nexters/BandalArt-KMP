@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.core.common
 
 import android.app.Application
@@ -20,7 +36,9 @@ import java.io.FileOutputStream
 
 import android.net.Uri as AndroidUri // Android 플랫폼용 Uri
 
-actual class ImageHandlerProvider(private val context: Application) {
+actual class ImageHandlerProvider(
+    private val context: Application
+) {
     private val contentResolver: ContentResolver get() = context.contentResolver
 
     @Suppress("TooGenericExceptionCaught")
@@ -29,10 +47,12 @@ actual class ImageHandlerProvider(private val context: Application) {
             val file = File(saveBitmapToDisk(bitmap))
             val androidUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
-            val intent = ShareCompat.IntentBuilder(context)
-                .setStream(androidUri)
-                .setType("image/png")
-                .intent
+            val intent =
+                ShareCompat
+                    .IntentBuilder(context)
+                    .setStream(androidUri)
+                    .setType("image/png")
+                    .intent
 
             context.startActivity(Intent.createChooser(intent, null).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK))
         } catch (e: Exception) {
@@ -41,20 +61,20 @@ actual class ImageHandlerProvider(private val context: Application) {
     }
 
     @Suppress("TooGenericExceptionCaught")
-    actual fun bitmapToFileUri(bitmap: ImageBitmap): Uri? {
-        return try {
+    actual fun bitmapToFileUri(bitmap: ImageBitmap): Uri? =
+        try {
             val file = File(saveBitmapToDisk(bitmap))
             FileProvider.getUriForFile(context, "${context.packageName}.provider", file).toKmpUri()
         } catch (e: Exception) {
             Napier.e("Failed to convert bitmap to URI: ${e.message}")
             null
         }
-    }
 
     @Suppress("TooGenericExceptionCaught")
     actual fun shareImage(imageUri: Uri) {
         try {
-            ShareCompat.IntentBuilder(context)
+            ShareCompat
+                .IntentBuilder(context)
                 .setStream(imageUri.toAndroidUri())
                 .setType("image/png")
                 .startChooser()
@@ -80,14 +100,15 @@ actual class ImageHandlerProvider(private val context: Application) {
     actual fun saveImageToGallery(bitmap: ImageBitmap) {
         try {
             val fileName = "bandalart_${Clock.System.now().toEpochMilliseconds()}.png"
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                    put(MediaStore.Images.Media.IS_PENDING, 1)
+            val contentValues =
+                ContentValues().apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                        put(MediaStore.Images.Media.IS_PENDING, 1)
+                    }
                 }
-            }
 
             val imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             imageUri?.let { uri ->
@@ -111,8 +132,9 @@ actual class ImageHandlerProvider(private val context: Application) {
         try {
             val fileName = "bandalart_${Clock.System.now().toEpochMilliseconds()}.png"
             val contentValues = createContentValues(fileName)
-            val destinationUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                ?: return
+            val destinationUri =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    ?: return
 
             copyUriContent(imageUri.toAndroidUri(), destinationUri)
             updatePendingStatus(destinationUri, contentValues)
@@ -121,16 +143,20 @@ actual class ImageHandlerProvider(private val context: Application) {
         }
     }
 
-    private fun createContentValues(fileName: String) = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-            put(MediaStore.Images.Media.IS_PENDING, 1)
+    private fun createContentValues(fileName: String) =
+        ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
         }
-    }
 
-    private fun copyUriContent(sourceUri: AndroidUri, destinationUri: AndroidUri) {
+    private fun copyUriContent(
+        sourceUri: AndroidUri,
+        destinationUri: AndroidUri
+    ) {
         contentResolver.openInputStream(sourceUri)?.use { input ->
             contentResolver.openOutputStream(destinationUri)?.use { output ->
                 input.copyTo(output)
@@ -138,7 +164,10 @@ actual class ImageHandlerProvider(private val context: Application) {
         }
     }
 
-    private fun updatePendingStatus(uri: AndroidUri, contentValues: ContentValues) {
+    private fun updatePendingStatus(
+        uri: AndroidUri,
+        contentValues: ContentValues
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             contentValues.clear()
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
@@ -147,5 +176,6 @@ actual class ImageHandlerProvider(private val context: Application) {
     }
 
     private fun AndroidUri.toKmpUri(): Uri = Uri.parse(toString())
+
     private fun Uri.toAndroidUri(): AndroidUri = AndroidUri.parse(toString())
 }

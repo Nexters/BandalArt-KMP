@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.core.common.extension
 
 import androidx.compose.foundation.LocalIndication
@@ -28,14 +44,15 @@ import androidx.compose.ui.unit.Constraints
 import com.nexters.bandalart.core.common.utils.MultipleEventsCutter
 import com.nexters.bandalart.core.common.utils.get
 
-inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
-    clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() },
-    ) {
-        onClick()
+inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier =
+    composed {
+        clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() },
+        ) {
+            onClick()
+        }
     }
-}
 
 fun Modifier.clickableSingle(
     enabled: Boolean = true,
@@ -43,13 +60,14 @@ fun Modifier.clickableSingle(
     role: Role? = null,
     onClick: () -> Unit,
 ) = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "clickable"
-        properties["enabled"] = enabled
-        properties["onClickLabel"] = onClickLabel
-        properties["role"] = role
-        properties["onClick"] = onClick
-    },
+    inspectorInfo =
+        debugInspectorInfo {
+            name = "clickable"
+            properties["enabled"] = enabled
+            properties["onClickLabel"] = onClickLabel
+            properties["role"] = role
+            properties["onClick"] = onClick
+        },
 ) {
     val multipleEventsCutter = remember { MultipleEventsCutter.get() }
     Modifier.clickable(
@@ -86,38 +104,42 @@ fun Modifier.clickableSingle(
 //     }
 // }
 
-fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
-    var isFocused by remember { mutableStateOf(false) }
-    var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
+fun Modifier.clearFocusOnKeyboardDismiss(): Modifier =
+    composed {
+        var isFocused by remember { mutableStateOf(false) }
+        var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
 
-    if (isFocused) {
-        val density = LocalDensity.current
-        val imeIsVisible = WindowInsets.ime.getBottom(density) > 0
-        val focusManager = LocalFocusManager.current
+        if (isFocused) {
+            val density = LocalDensity.current
+            val imeIsVisible = WindowInsets.ime.getBottom(density) > 0
+            val focusManager = LocalFocusManager.current
 
-        LaunchedEffect(imeIsVisible) {
-            if (imeIsVisible) {
-                keyboardAppearedSinceLastFocused = true
-            } else if (keyboardAppearedSinceLastFocused) {
-                focusManager.clearFocus()
+            LaunchedEffect(imeIsVisible) {
+                if (imeIsVisible) {
+                    keyboardAppearedSinceLastFocused = true
+                } else if (keyboardAppearedSinceLastFocused) {
+                    focusManager.clearFocus()
+                }
+            }
+        }
+
+        onFocusEvent {
+            if (isFocused != it.isFocused) {
+                isFocused = it.isFocused
+                if (isFocused) {
+                    keyboardAppearedSinceLastFocused = false
+                }
             }
         }
     }
-
-    onFocusEvent {
-        if (isFocused != it.isFocused) {
-            isFocused = it.isFocused
-            if (isFocused) {
-                keyboardAppearedSinceLastFocused = false
-            }
-        }
-    }
-}
 
 fun Modifier.aspectRatioBasedOnOrientation(aspectRatio: Float): Modifier {
     return this.then(
         object : LayoutModifier {
-            override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
+            override fun MeasureScope.measure(
+                measurable: Measurable,
+                constraints: Constraints
+            ): MeasureResult {
                 val width = constraints.maxWidth
                 val height = constraints.maxHeight
 
@@ -132,9 +154,10 @@ fun Modifier.aspectRatioBasedOnOrientation(aspectRatio: Float): Modifier {
                     targetWidth = (height * aspectRatio).toInt()
                 }
 
-                val placeable = measurable.measure(
-                    Constraints.fixed(targetWidth, targetHeight),
-                )
+                val placeable =
+                    measurable.measure(
+                        Constraints.fixed(targetWidth, targetHeight),
+                    )
 
                 return layout(placeable.width, placeable.height) {
                     placeable.placeRelative(0, 0)
@@ -144,9 +167,8 @@ fun Modifier.aspectRatioBasedOnOrientation(aspectRatio: Float): Modifier {
     )
 }
 
-fun Modifier.captureToGraphicsLayer(
-    graphicsLayer: GraphicsLayer,
-) = this.drawWithContent {
-    graphicsLayer.record { this@drawWithContent.drawContent() }
-    drawLayer(graphicsLayer)
-}
+fun Modifier.captureToGraphicsLayer(graphicsLayer: GraphicsLayer,) =
+    this.drawWithContent {
+        graphicsLayer.record { this@drawWithContent.drawContent() }
+        drawLayer(graphicsLayer)
+    }

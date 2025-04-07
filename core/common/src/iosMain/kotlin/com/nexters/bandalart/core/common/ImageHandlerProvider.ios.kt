@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.core.common
 
 import androidx.compose.ui.graphics.ImageBitmap
@@ -36,15 +52,14 @@ actual class ImageHandlerProvider {
     }
 
     @Suppress("TooGenericExceptionCaught")
-    actual fun bitmapToFileUri(bitmap: ImageBitmap): Uri? {
-        return try {
+    actual fun bitmapToFileUri(bitmap: ImageBitmap): Uri? =
+        try {
             val filePath = saveBitmapToDisk(bitmap)
             NSURL.fileURLWithPath(filePath).absoluteString?.let { Uri.parse(it) }
         } catch (e: Exception) {
             Napier.e("Failed to convert bitmap to URI: ${e.message}")
             null
         }
-    }
 
     @Suppress("TooGenericExceptionCaught")
     actual fun shareImage(imageUri: Uri) {
@@ -104,15 +119,16 @@ actual class ImageHandlerProvider {
         // https://github.com/takahirom/roborazzi/blob/main/roborazzi-compose-ios/src/iosMain/kotlin/io/github/takahirom/roborazzi/RoborazziIos.kt#L88C51-L88C68
         val colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB)
         val bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedFirst.value or kCGBitmapByteOrder32Little
-        val context = CGBitmapContextCreate(
-            data = buffer.refTo(0),
-            width = width.toULong(),
-            height = height.toULong(),
-            bitsPerComponent = 8u,
-            bytesPerRow = (4 * width).toULong(),
-            space = colorSpace,
-            bitmapInfo = bitmapInfo,
-        )
+        val context =
+            CGBitmapContextCreate(
+                data = buffer.refTo(0),
+                width = width.toULong(),
+                height = height.toULong(),
+                bitsPerComponent = 8u,
+                bytesPerRow = (4 * width).toULong(),
+                space = colorSpace,
+                bitmapInfo = bitmapInfo,
+            )
 
         val cgImage = CGBitmapContextCreateImage(context)
         return cgImage?.let { UIImage.imageWithCGImage(it) }
@@ -120,10 +136,11 @@ actual class ImageHandlerProvider {
 
     private fun shareBitmap(bitmap: UIImage?) {
         bitmap ?: return
-        val activityViewController = UIActivityViewController(
-            activityItems = listOf(bitmap),
-            applicationActivities = null,
-        )
+        val activityViewController =
+            UIActivityViewController(
+                activityItems = listOf(bitmap),
+                applicationActivities = null,
+            )
         UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
             activityViewController,
             animated = true,
@@ -132,10 +149,11 @@ actual class ImageHandlerProvider {
     }
 
     private fun shareUrl(nsUrl: NSURL) {
-        val activityViewController = UIActivityViewController(
-            activityItems = listOf(nsUrl),
-            applicationActivities = null,
-        )
+        val activityViewController =
+            UIActivityViewController(
+                activityItems = listOf(nsUrl),
+                applicationActivities = null,
+            )
         UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
             activityViewController,
             animated = true,

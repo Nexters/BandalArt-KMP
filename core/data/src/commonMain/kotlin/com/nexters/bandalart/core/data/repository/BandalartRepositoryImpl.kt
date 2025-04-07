@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.core.data.repository
 
 import com.nexters.bandalart.core.data.mapper.toDto
@@ -23,14 +39,12 @@ class BandalartRepositoryImpl(
         return bandalartDao.getBandalart(bandalartId).toEntity()
     }
 
-    override fun getBandalartList(): Flow<List<BandalartEntity>> {
-        return bandalartDao.getBandalartList()
+    override fun getBandalartList(): Flow<List<BandalartEntity>> =
+        bandalartDao
+            .getBandalartList()
             .map { list -> list.map { it.toEntity() } }
-    }
 
-    override suspend fun getBandalart(bandalartId: Long): BandalartEntity {
-        return bandalartDao.getBandalart(bandalartId).toEntity()
-    }
+    override suspend fun getBandalart(bandalartId: Long): BandalartEntity = bandalartDao.getBandalart(bandalartId).toEntity()
 
     override suspend fun deleteBandalart(bandalartId: Long) {
         val mainCell = bandalartDao.getBandalartMainCell(bandalartId).cell
@@ -39,9 +53,7 @@ class BandalartRepositoryImpl(
         }
     }
 
-    override suspend fun getBandalartMainCell(bandalartId: Long): BandalartCellEntity {
-        return bandalartDao.getBandalartMainCell(bandalartId).cell.toEntity()
-    }
+    override suspend fun getBandalartMainCell(bandalartId: Long): BandalartCellEntity = bandalartDao.getBandalartMainCell(bandalartId).cell.toEntity()
 
     override suspend fun getChildCells(parentId: Long): List<BandalartCellEntity> {
         val childCells = bandalartDao.getChildCells(parentId)
@@ -88,21 +100,18 @@ class BandalartRepositoryImpl(
         bandalartDataStore.setRecentBandalartId(recentBandalartId)
     }
 
-    override suspend fun getRecentBandalartId(): Long {
-        return bandalartDataStore.getRecentBandalartId()
-    }
+    override suspend fun getRecentBandalartId(): Long = bandalartDataStore.getRecentBandalartId()
 
-    override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> {
-        return bandalartDataStore.getPrevBandalartList()
-    }
+    override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = bandalartDataStore.getPrevBandalartList()
 
-    override suspend fun upsertBandalartId(bandalartId: Long, isCompleted: Boolean) {
+    override suspend fun upsertBandalartId(
+        bandalartId: Long,
+        isCompleted: Boolean
+    ) {
         bandalartDataStore.upsertBandalartId(bandalartId, isCompleted)
     }
 
-    override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean {
-        return bandalartDataStore.checkCompletedBandalartId(bandalartId)
-    }
+    override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean = bandalartDataStore.checkCompletedBandalartId(bandalartId)
 
     override suspend fun deleteCompletedBandalartId(bandalartId: Long) {
         bandalartDataStore.deleteBandalartId(bandalartId)
