@@ -33,6 +33,7 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":baselineprofile")
 
 include(":core:common")
 include(":core:data")

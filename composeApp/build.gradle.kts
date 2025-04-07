@@ -7,6 +7,8 @@ plugins {
     id("bandalart.kmp.ios")
     id("bandalart.android.application")
     id("bandalart.kmp.firebase")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.baselineprofile)
     // alias(libs.plugins.buildkonfig)
 }
 
@@ -110,4 +112,8 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
+dependencies {
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
 }
