@@ -38,5 +38,16 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.core)
         }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
     }
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
