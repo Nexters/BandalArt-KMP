@@ -1,5 +1,6 @@
 [versions]
 
+# App Version
 minSdk = "28"
 targetSdk = "35"
 compileSdk = "35"
@@ -8,20 +9,22 @@ minorVersion = "2"
 patchVersion = "0"
 packageName = "com.nexters.bandalart"
 
+# Gradle Plugin
 android-gradle-plugin = "8.8.2"
-
 google-service = "4.4.2"
 
+# Kotlin
 kotlin-core = "2.1.20"
 kotlin-ktlint-gradle = "12.1.2"
 kotlin-ktlint-source = "0.50.0"
-ktlint = "1.5.0"
 
+# Kotlinx
 kotlinx-coroutines = "1.10.1"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization = "1.8.0"
 kotlinx-collections-immutable = "0.3.8"
 
+# Compose & UI
 compose-multiplatform = "1.8.0-alpha02"
 androidx-core = "1.15.0"
 androidx-datastore = "1.1.4"
@@ -33,22 +36,32 @@ androidx-compose-bom = "2025.03.01"
 androidx-compose-material3 = "1.3.1"
 androidx-compose-runtime-tracing = "1.7.8"
 jetbrains-androidx-navigation = "2.8.0-alpha12"
+
+# Room Database
 androidx-room = "2.7.0-rc03"
 androidx-sqlite = "2.5.0-rc03"
-app-update = "2.1.0"
 
-detekt = "1.23.7"
-desugar-jdk-libs = "2.1.5"
-napier = "2.7.1"
-facebook-shimmer = "0.5.0"
+# DI
+koin = "4.1.0-Beta5"
+
+# Image Load
+coil3 = "3.1.0"
+landscapist = "2.4.7"
+
+# Firebase
 kotlin-firebase = "2.1.0"
 firebase-common = "21.0.0"
 firebase-crashlytics = "3.0.3"
+
+# Util
+app-update = "2.1.0"
+ktlint = "1.5.0"
+detekt = "1.23.8"
+desugar-jdk-libs = "2.1.5"
+napier = "2.7.1"
+facebook-shimmer = "0.5.0"
 ksp = "2.1.20-1.0.32"
 compose-stable-marker = "1.0.6"
-coil3 = "3.1.0"
-landscapist = "2.4.7"
-koin = "4.1.0-Beta5"
 uri-kmp = "0.0.19"
 compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
@@ -56,16 +69,21 @@ cmptoast = "1.0.4"
 spotless = "7.0.1"
 kotzilla = "1.0.1"
 
-test-kotest = "5.8.1"
-junit = "1.2.1"
+# Test
+junit5 = "5.12.1"
+mockk = "1.13.17"
+junit4 = "4.13.2"
+junit-android = "1.2.1"
+kotest = "5.8.1"
 espressoCore = "3.6.1"
-uiautomator = "2.2.0"
-benchmarkMacroJunit4 = "1.2.4"
-baselineprofile = "1.2.4"
-profileinstaller = "1.3.1"
+uiautomator = "2.3.0"
+benchmarkMacroJunit4 = "1.3.4"
+baselineprofile = "1.3.4"
+profileinstaller = "1.4.1"
 
 [libraries]
 
+# Gradle Plugin
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
 kotzilla-plugin = { group = "io.kotzilla", name = "kotzilla-plugin", version.ref = "kotzilla" }
@@ -79,13 +97,13 @@ kotlinx-serialization-gradle-plugin = { group = "org.jetbrains.kotlin", name = "
 firebase-crashlytics-gradle-plugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebase-crashlytics" }
 spotless-gradle-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
-kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
-
+# Kotlinx
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 
+# Androidx
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "androidx-datastore" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidx-datastore" }
@@ -94,6 +112,7 @@ androidx-startup = { group = "androidx.startup", name = "startup-runtime", versi
 app-update = { group = "com.google.android.play", name = "app-update", version.ref = "app-update" }
 app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "app-update" }
 
+# Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle-runtime" }
@@ -109,9 +128,15 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidx-compose-runtime-tracing" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
-
 navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "jetbrains-androidx-navigation" }
 
+# Room Database
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite" }
+
+# DI
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
@@ -119,65 +144,79 @@ koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmo
 koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
 koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "koin" }
 
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
-androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite" }
-
-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
-facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebook-shimmer" }
-compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-marker", version.ref = "compose-stable-marker" }
-
-test-kotest-framework = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "test-kotest" }
-test-kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "test-kotest" }
-
+# Image Load
 coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
 landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
 landscapist-coil3 = { group = "com.github.skydoves", name = "landscapist-coil3", version.ref = "landscapist" }
 landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder", version.ref = "landscapist" }
 
-uri-kmp = { group = "com.eygraber", name = "uri-kmp", version.ref = "uri-kmp" }
-compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
-cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
-
+# Firebase
 kmp-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", version.ref = "kotlin-firebase" }
 kmp-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "kotlin-firebase" }
 kmp-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "kotlin-firebase" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebase-common" }
+
+# Util
+kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebook-shimmer" }
+compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-marker", version.ref = "compose-stable-marker" }
+uri-kmp = { group = "com.eygraber", name = "uri-kmp", version.ref = "uri-kmp" }
+compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
+cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
 kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla"}
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+
+# Test
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api"}
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine"}
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params"}
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine"}
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher"}
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+junit = { group = "junit", name = "junit", version.ref = "junit4" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-android" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
 androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+kotest-framework = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
 
 [plugins]
 
+# Google Service
 google-service = { id = "com.google.gms.google-services", version.ref = "google-service" }
 
+# Kotlin
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-core" }
 kotlin-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-ktlint-gradle" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-core" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 
+# Compose
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-
-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-core" }
 
+# Android
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+
+# AndroidX
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 
+# Util
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla"}
+
+# Test
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 
@@ -214,4 +253,17 @@ plugins = [
     "detekt-gradle-plugin",
     "firebase-crashlytics-gradle-plugin",
     "spotless-gradle-plugin"
+]
+
+junit5-test = [
+    "junit-jupiter-api",
+    "junit-jupiter-params",
+    "mockk"
+]
+
+android-unit-test = [
+    "junit-jupiter-api",
+    "junit-jupiter-params",
+    "mockk",
+    "androidx-junit"
 ]

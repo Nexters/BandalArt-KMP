@@ -18,7 +18,7 @@ internal class KotestConventionPlugin : BuildLogicPlugin({
     useTestPlatformForTarget()
 
     dependencies {
-        testImplementation(libs.test.kotest.framework)
+        testImplementation(libs.kotest.framework)
     }
 })
 
