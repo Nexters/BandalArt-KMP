@@ -14,6 +14,10 @@ kotlin {
             implementation(libs.androidx.core)
         }
 
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+        }
+
         commonMain.dependencies {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
@@ -24,4 +28,8 @@ kotlin {
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
