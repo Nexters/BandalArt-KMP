@@ -15,11 +15,10 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
-import java.util.stream.Stream
 
 object VersionTestData {
     @JvmStatic
-    fun versionProvider(): Stream<Arguments> = Stream.of(
+    fun versionProvider() = listOf(
         Arguments.of(1, 0, 0, 10000),   // 1.0.0
         Arguments.of(2, 2, 0, 20200),   // 2.2.0
         Arguments.of(2, 2, 5, 20205),   // 2.2.5
