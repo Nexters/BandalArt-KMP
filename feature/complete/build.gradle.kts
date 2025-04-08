@@ -32,5 +32,15 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.cmptoast)
         }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

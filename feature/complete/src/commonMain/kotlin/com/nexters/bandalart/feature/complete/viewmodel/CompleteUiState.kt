@@ -6,7 +6,8 @@ package com.nexters.bandalart.feature.complete.viewmodel
  * @param id 반다라트 고유 id
  * @param title 반다라트 제목
  * @param profileEmoji 반다라트 프로필 이모지
- * @param shareUrl 공유 링크
+ * @param isShared 공유 완료 여부
+ * @param bandalartChartImageUri 반다라트 표 이미지 uri
  */
 data class CompleteUiState(
     val id: Long = 0L,
