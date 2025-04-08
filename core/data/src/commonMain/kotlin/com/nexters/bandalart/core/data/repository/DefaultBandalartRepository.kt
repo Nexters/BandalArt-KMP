@@ -30,7 +30,7 @@ import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class BandalartRepositoryImpl(
+class DefaultBandalartRepository(
     private val bandalartDataStore: BandalartDataStore,
     private val bandalartDao: BandalartDao,
 ) : BandalartRepository {

@@ -25,7 +25,7 @@ class OnboardingRepositoryImplTest {
     @BeforeEach
     fun setUp() {
         mockBandalartDataStore = mockk<BandalartDataStore>()
-        onboardingRepository = OnboardingRepositoryImpl(mockBandalartDataStore)
+        onboardingRepository = DefaultOnboardingRepository(mockBandalartDataStore)
     }
 
     @Nested

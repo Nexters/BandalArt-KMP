@@ -19,7 +19,7 @@ package com.nexters.bandalart.core.data.repository
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 
-class InAppUpdateRepositoryImpl(
+class DefaultInAppUpdateRepository(
     private val inAppUpdateDataStore: InAppUpdateDataStore,
 ) : InAppUpdateRepository {
     override suspend fun setLastRejectedUpdateVersion(rejectedVersionCode: Int) {
