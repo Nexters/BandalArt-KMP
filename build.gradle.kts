@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.ksp.gradle.plugin) apply false
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.baselineprofile) apply false
+    alias(libs.plugins.android.junit5) apply false
 }
 
 buildscript {
