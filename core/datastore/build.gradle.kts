@@ -13,10 +13,19 @@ kotlin {
         commonMain.dependencies {
             api(libs.koin.core)
 
-            api(libs.androidx.datastore)
-            api(libs.androidx.datastore.preferences)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
