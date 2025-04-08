@@ -18,5 +18,14 @@ kotlin {
 
             implementation(libs.koin.core)
         }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
