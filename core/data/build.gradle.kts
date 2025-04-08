@@ -6,7 +6,7 @@ plugins {
     id("bandalart.room")
 }
 
-android.namespace = "com.nexters.bandalart.core.common"
+android.namespace = "com.nexters.bandalart.core.data"
 
 kotlin {
     sourceSets {

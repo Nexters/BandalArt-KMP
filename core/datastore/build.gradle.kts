@@ -6,7 +6,7 @@ plugins {
     id("bandalart.kotlin.serialization")
 }
 
-android.namespace = "com.nexters.bandalart.core.ui"
+android.namespace = "com.nexters.bandalart.core.datastore"
 
 kotlin {
     sourceSets {

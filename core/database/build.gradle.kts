@@ -7,12 +7,17 @@ plugins {
     id("bandalart.kotlin.serialization")
 }
 
-android.namespace = "com.nexters.bandalart.core.ui"
+android.namespace = "com.nexters.bandalart.core.database"
 
 kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         commonMain.dependencies {
@@ -21,4 +26,8 @@ kotlin {
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
