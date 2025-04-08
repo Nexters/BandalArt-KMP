@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import android.graphics.Color as AndroidColor
 
 @DisplayName("String 확장 함수 테스트")
-class StringExtensionsTest {
+class ColorExtensionsTest {
 
     @BeforeEach
     fun setUp() {
