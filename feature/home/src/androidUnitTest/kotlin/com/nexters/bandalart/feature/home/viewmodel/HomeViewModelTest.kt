@@ -1,7 +1,7 @@
 package com.nexters.bandalart.feature.home.viewmodel
 
-import android.content.res.Resources
 import androidx.compose.ui.graphics.ImageBitmap
+import app.cash.turbine.test
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.Locale
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
@@ -20,6 +20,7 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -55,6 +56,10 @@ class HomeViewModelTest {
         Dispatchers.setMain(testDispatcher)
         mockBandalartRepository = mockk(relaxed = true)
         mockInAppUpdateRepository = mockk(relaxed = true)
+
+        // Compose 리소스 모킹
+        mockkStatic("org.jetbrains.compose.resources.StringResourcesKt")
+        coEvery { org.jetbrains.compose.resources.getString(any()) } returns "Mocked String"
 
         // 기본 모킹 설정
         setupDefaultMocks()
@@ -121,6 +126,36 @@ class HomeViewModelTest {
         @Test
         @DisplayName("초기화 시 반다라트 목록을 불러와야 한다")
         fun testInitializeLoadsData() = runTest {
+            // given
+            val bandalartListFlow = MutableStateFlow(
+                listOf(
+                    createBandalartEntity(1),
+                    createBandalartEntity(2)
+                )
+            )
+
+            coEvery { mockBandalartRepository.getBandalartList() } returns bandalartListFlow
+            coEvery { mockBandalartRepository.getRecentBandalartId() } returns 1L
+
+            // when
+            val viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
+
+            // Turbine을 사용하여 uiState의 변화 추적
+            viewModel.uiState.test {
+                // 초기 상태 무시
+                awaitItem()
+
+                // 상태가 업데이트될 때까지 대기
+                testScheduler.advanceUntilIdle()
+
+                // 최신 상태 확인
+                val currentState = awaitItem()
+                assertEquals(2, currentState.bandalartList.size)
+
+                // 테스트 종료
+                cancelAndIgnoreRemainingEvents()
+            }
+
             // then
             coVerify { mockBandalartRepository.getBandalartList() }
             coVerify { mockBandalartRepository.getRecentBandalartId() }
@@ -136,7 +171,7 @@ class HomeViewModelTest {
             coEvery { mockBandalartRepository.createBandalart() } returns createBandalartEntity(1)
 
             // when
-            val viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
+            viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
             testScheduler.advanceUntilIdle()
 
             // then
