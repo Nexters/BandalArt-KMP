@@ -5,7 +5,7 @@ plugins {
     id("bandalart.kmp.ios")
     id("bandalart.room")
     id("bandalart.kotlin.serialization")
-    alias(libs.plugins.android.junit5)
+    alias(libs.plugins.robolectric.extensions)
 }
 
 android.namespace = "com.nexters.bandalart.core.database"

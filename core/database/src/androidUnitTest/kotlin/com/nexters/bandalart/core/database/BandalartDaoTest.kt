@@ -17,13 +17,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
+import org.junit.jupiter.api.extension.ExtendWith
+import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.io.IOException
 
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [28])
+@ExtendWith(RobolectricExtension::class)
 @DisplayName("BandalartDao 테스트")
 class BandalartDaoTest {
 
@@ -88,12 +86,12 @@ class BandalartDaoTest {
             val bandalartId = bandalartDao.createEmptyBandalart()
             val mainCell = bandalartDao.getBandalartMainCell(bandalartId)
             val updateDto = UpdateBandalartMainCellDto(
-                title = "Updated Main Title",
-                description = "Updated Description",
+                title = "업데이트된 메인 셀 제목",
+                description = "업데이트된 메인 셀 설명",
                 dueDate = "2025-12-31T23:59:59",
                 profileEmoji = "😎",
-                mainColor = "#FF0000",
-                subColor = "#00FF00"
+                mainColor = "#FF3FFFBA",
+                subColor = "#FF111827"
             )
 
             // when
@@ -101,14 +99,14 @@ class BandalartDaoTest {
 
             // then
             val updatedMainCell = bandalartDao.getBandalartMainCell(bandalartId)
-            assertEquals("Updated Main Title", updatedMainCell.cell.title)
-            assertEquals("Updated Description", updatedMainCell.cell.description)
+            assertEquals("업데이트된 메인 셀 제목", updatedMainCell.cell.title)
+            assertEquals("업데이트된 메인 셀 설명", updatedMainCell.cell.description)
             assertEquals("2025-12-31T23:59:59", updatedMainCell.cell.dueDate)
 
             val updatedBandalart = bandalartDao.getBandalart(bandalartId)
             assertEquals("😎", updatedBandalart.profileEmoji)
-            assertEquals("#FF0000", updatedBandalart.mainColor)
-            assertEquals("#00FF00", updatedBandalart.subColor)
+            assertEquals("#FF3FFFBA", updatedBandalart.mainColor)
+            assertEquals("#FF111827", updatedBandalart.subColor)
         }
 
         @Test
@@ -119,8 +117,8 @@ class BandalartDaoTest {
             val mainCell = bandalartDao.getBandalartMainCell(bandalartId)
             val subCell = mainCell.children.first()
             val updateDto = UpdateBandalartSubCellDto(
-                title = "Updated Sub Cell",
-                description = "Sub Cell Description",
+                title = "업데이트된 서브 셀 제목",
+                description = "업데이트된 서브 셀 설명",
                 dueDate = "2025-10-15T12:00:00"
             )
 
@@ -129,8 +127,8 @@ class BandalartDaoTest {
 
             // then
             val updatedSubCell = bandalartDao.getCell(subCell.id)
-            assertEquals("Updated Sub Cell", updatedSubCell.title)
-            assertEquals("Sub Cell Description", updatedSubCell.description)
+            assertEquals("업데이트된 서브 셀 제목", updatedSubCell.title)
+            assertEquals("업데이트된 서브 셀 설명", updatedSubCell.description)
             assertEquals("2025-10-15T12:00:00", updatedSubCell.dueDate)
             assertFalse(updatedSubCell.isCompleted)
         }
@@ -146,8 +144,8 @@ class BandalartDaoTest {
             val taskCell = taskCells.first()
 
             val updateDto = UpdateBandalartTaskCellDto(
-                title = "Task Cell Title",
-                description = "Task Description",
+                title = "업데이트된 태스크 셀 제목",
+                description = "업데이트된 태스크 셀 설명",
                 dueDate = "2025-08-01T10:00:00",
                 isCompleted = true
             )
@@ -157,8 +155,8 @@ class BandalartDaoTest {
 
             // then
             val updatedTaskCell = bandalartDao.getCell(taskCell.id)
-            assertEquals("Task Cell Title", updatedTaskCell.title)
-            assertEquals("Task Description", updatedTaskCell.description)
+            assertEquals("업데이트된 태스크 셀 제목", updatedTaskCell.title)
+            assertEquals("업데이트된 태스크 셀 설명", updatedTaskCell.description)
             assertEquals("2025-08-01T10:00:00", updatedTaskCell.dueDate)
             assertTrue(updatedTaskCell.isCompleted)
         }
@@ -181,8 +179,8 @@ class BandalartDaoTest {
             bandalartDao.updateTaskCellWithDto(
                 taskCells[0].id!!,
                 UpdateBandalartTaskCellDto(
-                    title = "Task 1",
-                    description = "Description",
+                    title = "태스크 셀 1",
+                    description = "태스크 셀 설명",
                     dueDate = null,
                     isCompleted = true
                 )
@@ -198,8 +196,8 @@ class BandalartDaoTest {
                 bandalartDao.updateTaskCellWithDto(
                     taskCell.id!!,
                     UpdateBandalartTaskCellDto(
-                        title = "Task ${taskCell.id}",
-                        description = "Description",
+                        title = "태스크 셀 ${taskCell.id}",
+                        description = "태스크 셀 설명",
                         dueDate = null,
                         isCompleted = true
                     )
@@ -236,8 +234,8 @@ class BandalartDaoTest {
             bandalartDao.updateTaskCellWithDto(
                 taskCell.id!!,
                 UpdateBandalartTaskCellDto(
-                    title = "Task to Reset",
-                    description = "Will be reset",
+                    title = "초기화될 태스크 셀 제목",
+                    description = "초기화될 태스크 셀 설명",
                     dueDate = "2025-10-10T10:10:10",
                     isCompleted = true
                 )
@@ -266,8 +264,8 @@ class BandalartDaoTest {
             bandalartDao.updateSubCellWithDto(
                 subCell.id!!,
                 UpdateBandalartSubCellDto(
-                    title = "Sub Cell to Reset",
-                    description = "Will be reset",
+                    title = "초기화될 서브 셀 제목",
+                    description = "초기화될 서브 셀 설명",
                     dueDate = "2025-11-11T11:11:11"
                 )
             )
@@ -278,8 +276,8 @@ class BandalartDaoTest {
                 bandalartDao.updateTaskCellWithDto(
                     taskCell.id!!,
                     UpdateBandalartTaskCellDto(
-                        title = "Task to Reset",
-                        description = "Will be reset",
+                        title = "초기화될 태스크 셀 제목",
+                        description = "초기화될 태스크 셀 설명",
                         dueDate = "2025-12-12T12:12:12",
                         isCompleted = true
                     )

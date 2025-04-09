@@ -80,8 +80,8 @@ uiautomator = "2.3.0"
 benchmarkMacroJunit4 = "1.3.4"
 baselineprofile = "1.3.4"
 profileinstaller = "1.4.1"
-android-junit5 = "1.12.0.0"
 robolectric = "4.14.1"
+robolectric-extensions = "0.9.0"
 turbine = "1.2.0"
 
 [libraries]
@@ -225,7 +225,7 @@ kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla"}
 # Test
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
-android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "android-junit5"}
+robolectric-extensions = { id = "tech.apter.junit5.jupiter.robolectric-extension-gradle-plugin", version.ref = "robolectric-extensions"}
 
 [bundles]
 
