@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.core.data.repository
 
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
@@ -17,18 +33,18 @@ import org.junit.jupiter.params.provider.MethodSource
 
 object VersionTestData {
     @JvmStatic
-    fun versionProvider() = listOf(
-        Arguments.of(1, 0, 0, 10000),   // 1.0.0
-        Arguments.of(2, 2, 0, 20200),   // 2.2.0
-        Arguments.of(2, 2, 5, 20205),   // 2.2.5
-        Arguments.of(3, 1, 2, 30102),   // 3.1.2
-        Arguments.of(10, 5, 3, 100503)  // 10.5.3
-    )
+    fun versionProvider() =
+        listOf(
+            Arguments.of(1, 0, 0, 10000), // 1.0.0
+            Arguments.of(2, 2, 0, 20200), // 2.2.0
+            Arguments.of(2, 2, 5, 20205), // 2.2.5
+            Arguments.of(3, 1, 2, 30102), // 3.1.2
+            Arguments.of(10, 5, 3, 100503) // 10.5.3
+        )
 }
 
 @DisplayName("InAppUpdateRepository 테스트")
 class InAppUpdateRepositoryImplTest {
-
     // 테스트 대상
     private lateinit var inAppUpdateRepository: DefaultInAppUpdateRepository
 
@@ -44,20 +60,20 @@ class InAppUpdateRepositoryImplTest {
     @Nested
     @DisplayName("앱 내 업데이트 거절 버전 관리")
     inner class InAppUpdateRejectionTest {
-
         @Test
         @DisplayName("거절된 업데이트 버전을 설정할 수 있어야 한다")
-        fun testSetLastRejectedUpdateVersion() = runTest {
-            // given
-            val rejectedVersionCode = calculateVersionCode(2, 2, 0)
-            coEvery { mockInAppUpdateDataStore.setLastRejectedUpdateVersion(any()) } returns Unit
+        fun testSetLastRejectedUpdateVersion() =
+            runTest {
+                // given
+                val rejectedVersionCode = calculateVersionCode(2, 2, 0)
+                coEvery { mockInAppUpdateDataStore.setLastRejectedUpdateVersion(any()) } returns Unit
 
-            // when
-            inAppUpdateRepository.setLastRejectedUpdateVersion(rejectedVersionCode)
+                // when
+                inAppUpdateRepository.setLastRejectedUpdateVersion(rejectedVersionCode)
 
-            // then
-            coVerify { mockInAppUpdateDataStore.setLastRejectedUpdateVersion(rejectedVersionCode) }
-        }
+                // then
+                coVerify { mockInAppUpdateDataStore.setLastRejectedUpdateVersion(rejectedVersionCode) }
+            }
 
         @ParameterizedTest(name = "버전 {0}.{1}.{2}의 거부 코드 {3}에 대해 이미 거절된 업데이트인지 확인")
         @MethodSource("com.nexters.bandalart.core.data.repository.VersionTestData#versionProvider")
@@ -86,7 +102,9 @@ class InAppUpdateRepositoryImplTest {
     }
 
     // 버전 코드 계산 함수 (DataStore 테스트와 동일한 로직)
-    private fun calculateVersionCode(major: Int, minor: Int, patch: Int): Int {
-        return (major * 10000) + (minor * 100) + patch
-    }
+    private fun calculateVersionCode(
+        major: Int,
+        minor: Int,
+        patch: Int
+    ): Int = (major * 10000) + (minor * 100) + patch
 }
