@@ -47,7 +47,6 @@ class HomeViewModelTest {
 
     private val testScheduler = TestCoroutineScheduler()
     private val testDispatcher = StandardTestDispatcher(testScheduler)
-    private val testScope = TestScope(testDispatcher)
 
     @BeforeEach
     fun setUp() {
