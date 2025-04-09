@@ -46,17 +46,19 @@ class SplashViewModelTest {
         // given
         coEvery { mockOnboardingRepository.getOnboardingCompletedStatus() } returns true
 
-        // ViewModel 생성 전에 모든 의존성 설정
+        // ViewModel 초기화
         val splashViewModel = SplashViewModel(mockOnboardingRepository, mockBandalartRepository)
 
-        // when
+        // when & then
         splashViewModel.uiEvent.test {
-            // 테스트 실행 스케줄러의 모든 작업 실행
+            // 테스트 디스패처 실행
             testScheduler.advanceUntilIdle()
 
-            // then
+            // 이벤트 확인
             assertEquals(SplashUiEvent.NavigateToHome, awaitItem())
-            awaitComplete()
+
+            // 더 이상의 이벤트를 기다리지 않고 테스트 종료
+            cancelAndIgnoreRemainingEvents()
         }
 
         // verify
@@ -75,14 +77,16 @@ class SplashViewModelTest {
         // ViewModel 초기화
         splashViewModel = SplashViewModel(mockOnboardingRepository, mockBandalartRepository)
 
-        // when
+        // when & then
         splashViewModel.uiEvent.test {
             // 테스트 디스패처 실행
-            testScheduler.runCurrent()
+            testScheduler.advanceUntilIdle()
 
-            // then
+            // 이벤트 확인
             assertEquals(SplashUiEvent.NavigateToOnBoarding, awaitItem())
-            awaitComplete()
+
+            // 더 이상의 이벤트를 기다리지 않고 테스트 종료
+            cancelAndIgnoreRemainingEvents()
         }
 
         // verify

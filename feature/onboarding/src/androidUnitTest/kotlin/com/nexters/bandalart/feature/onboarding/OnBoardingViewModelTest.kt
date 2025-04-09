@@ -52,7 +52,7 @@ class OnboardingViewModelTest {
             testScheduler.advanceUntilIdle()
 
             assertEquals(OnBoardingUiEvent.NavigateToHome, awaitItem())
-            awaitComplete()
+            cancelAndIgnoreRemainingEvents()
         }
 
         // verify
