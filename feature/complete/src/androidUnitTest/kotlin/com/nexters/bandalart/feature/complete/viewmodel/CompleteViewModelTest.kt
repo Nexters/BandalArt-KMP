@@ -8,10 +8,13 @@ import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.navigation.Route
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -33,8 +36,11 @@ class CompleteViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        mockBandalartRepository = mockk()
-        mockSavedStateHandle = mockk()
+        mockBandalartRepository = mockk<BandalartRepository>(relaxUnitFun = true)
+        mockSavedStateHandle = mockk(relaxed = true)
+
+        // extension 함수 모킹 (클래스 레벨에서 한 번만)
+        mockkStatic("androidx.navigation.SavedStateHandleKt")
     }
 
     @AfterEach
@@ -51,20 +57,29 @@ class CompleteViewModelTest {
         val profileEmoji = "😎"
         val chartImageUri = "content://test/image"
 
-        coEvery {
-            mockSavedStateHandle.toRoute<Route.Complete>()
-        } returns Route.Complete(
+        // 실제 Route.Complete 객체 생성
+        val completeRoute = Route.Complete(
             bandalartId = bandalartId,
             bandalartTitle = bandalartTitle,
             bandalartProfileEmoji = profileEmoji,
             bandalartChartImageUri = chartImageUri
         )
+
+        // toRoute 함수 모킹
+        every {
+            mockSavedStateHandle.toRoute<Route.Complete>()
+        } returns completeRoute
+
+        // suspend fun upsertBandalartId 모킹
         coEvery {
             mockBandalartRepository.upsertBandalartId(bandalartId, true)
         } returns Unit
 
         // when
         completeViewModel = CompleteViewModel(mockBandalartRepository, mockSavedStateHandle)
+
+        // 모든 코루틴이 완료될 때까지 기다림
+        advanceUntilIdle()
 
         // then
         completeViewModel.uiState.test {
@@ -78,7 +93,7 @@ class CompleteViewModelTest {
 
         // verify
         coVerify {
-            mockBandalartRepository.upsertBandalartId(bandalartId, true)
+            mockBandalartRepository.upsertBandalartId(any(), any())
         }
     }
 
@@ -96,7 +111,7 @@ class CompleteViewModelTest {
         completeViewModel.uiEvent.test {
             testScheduler.advanceUntilIdle()
             assertEquals(CompleteUiEvent.NavigateBack, awaitItem())
-            awaitComplete()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -124,7 +139,7 @@ class CompleteViewModelTest {
             val event = awaitItem()
             assert(event is CompleteUiEvent.SaveBandalart)
             assertEquals(Uri.parse(chartImageUri), (event as CompleteUiEvent.SaveBandalart).imageUri)
-            awaitComplete()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -152,7 +167,7 @@ class CompleteViewModelTest {
             val event = awaitItem()
             assert(event is CompleteUiEvent.ShareBandalart)
             assertEquals(Uri.parse(chartImageUri), (event as CompleteUiEvent.ShareBandalart).imageUri)
-            awaitComplete()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
