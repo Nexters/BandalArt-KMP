@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.ksp.gradle.plugin) apply false
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.baselineprofile) apply false
-    alias(libs.plugins.robolectric.extensions) apply false
+    alias(libs.plugins.junit5.robolectric.extension) apply false
 }
 
 buildscript {
