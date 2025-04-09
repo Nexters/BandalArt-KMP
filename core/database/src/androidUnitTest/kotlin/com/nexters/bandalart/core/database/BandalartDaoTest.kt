@@ -3,10 +3,10 @@ package com.nexters.bandalart.core.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import app.cash.turbine.test
 import com.nexters.bandalart.core.database.entity.UpdateBandalartMainCellDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartSubCellDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartTaskCellDto
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -317,11 +317,14 @@ class BandalartDaoTest {
             bandalartDao.createEmptyBandalart()
             bandalartDao.createEmptyBandalart()
 
-            // when
-            val bandalartList = bandalartDao.getBandalartList().first()
+            // when & then
+            bandalartDao.getBandalartList().test {
+                // 첫 번째 방출된 아이템 확인
+                val bandalartList = awaitItem()
+                assertEquals(3, bandalartList.size)
 
-            // then
-            assertEquals(3, bandalartList.size)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
     }
 }
