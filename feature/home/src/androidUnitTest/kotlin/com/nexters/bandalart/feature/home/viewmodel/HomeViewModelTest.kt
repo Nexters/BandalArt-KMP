@@ -1,5 +1,6 @@
 package com.nexters.bandalart.feature.home.viewmodel
 
+import android.content.res.Resources
 import androidx.compose.ui.graphics.ImageBitmap
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.Locale
@@ -13,7 +14,9 @@ import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.feature.home.model.CellType
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +25,6 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -42,8 +44,8 @@ import org.junit.jupiter.api.Test
 class HomeViewModelTest {
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var bandalartRepository: BandalartRepository
-    private lateinit var inAppUpdateRepository: InAppUpdateRepository
+    private lateinit var mockBandalartRepository: BandalartRepository
+    private lateinit var mockInAppUpdateRepository: InAppUpdateRepository
 
     private val testScheduler = TestCoroutineScheduler()
     private val testDispatcher = StandardTestDispatcher(testScheduler)
@@ -51,13 +53,13 @@ class HomeViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        bandalartRepository = mockk(relaxed = true)
-        inAppUpdateRepository = mockk(relaxed = true)
+        mockBandalartRepository = mockk(relaxed = true)
+        mockInAppUpdateRepository = mockk(relaxed = true)
 
         // 기본 모킹 설정
         setupDefaultMocks()
 
-        viewModel = HomeViewModel(bandalartRepository, inAppUpdateRepository)
+        viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
     }
 
     @AfterEach
@@ -67,7 +69,7 @@ class HomeViewModelTest {
 
     private fun setupDefaultMocks() {
         // 반다라트 목록 모킹
-        coEvery { bandalartRepository.getBandalartList() } returns flowOf(
+        coEvery { mockBandalartRepository.getBandalartList() } returns flowOf(
             listOf(
                 createBandalartEntity(1),
                 createBandalartEntity(2),
@@ -75,16 +77,16 @@ class HomeViewModelTest {
         )
 
         // 최근 반다라트 ID 모킹
-        coEvery { bandalartRepository.getRecentBandalartId() } returns 1L
+        coEvery { mockBandalartRepository.getRecentBandalartId() } returns 1L
 
         // 특정 반다라트 조회 모킹
-        coEvery { bandalartRepository.getBandalart(any()) } returns createBandalartEntity(1)
+        coEvery { mockBandalartRepository.getBandalart(any()) } returns createBandalartEntity(1)
 
         // 메인 셀 조회 모킹
-        coEvery { bandalartRepository.getBandalartMainCell(any()) } returns createBandalartCellEntity(1)
+        coEvery { mockBandalartRepository.getBandalartMainCell(any()) } returns createBandalartCellEntity(1)
 
         // 하위 셀 조회 모킹
-        coEvery { bandalartRepository.getChildCells(any()) } returns listOf(
+        coEvery { mockBandalartRepository.getChildCells(any()) } returns listOf(
             createBandalartCellEntity(2),
             createBandalartCellEntity(3),
         )
@@ -120,25 +122,25 @@ class HomeViewModelTest {
         @DisplayName("초기화 시 반다라트 목록을 불러와야 한다")
         fun testInitializeLoadsData() = runTest {
             // then
-            coVerify { bandalartRepository.getBandalartList() }
-            coVerify { bandalartRepository.getRecentBandalartId() }
-            coVerify { bandalartRepository.getBandalart(1L) }
-            coVerify { bandalartRepository.getBandalartMainCell(1L) }
+            coVerify { mockBandalartRepository.getBandalartList() }
+            coVerify { mockBandalartRepository.getRecentBandalartId() }
+            coVerify { mockBandalartRepository.getBandalart(1L) }
+            coVerify { mockBandalartRepository.getBandalartMainCell(1L) }
         }
 
         @Test
         @DisplayName("반다라트 목록이 비어있을 때 새 반다라트를 생성해야 한다")
         fun testCreateBandalartWhenListEmpty() = runTest {
             // given
-            coEvery { bandalartRepository.getBandalartList() } returns flowOf(emptyList())
-            coEvery { bandalartRepository.createBandalart() } returns createBandalartEntity(1)
+            coEvery { mockBandalartRepository.getBandalartList() } returns flowOf(emptyList())
+            coEvery { mockBandalartRepository.createBandalart() } returns createBandalartEntity(1)
 
             // when
-            val viewModel = HomeViewModel(bandalartRepository, inAppUpdateRepository)
+            val viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
             testScheduler.advanceUntilIdle()
 
             // then
-            coVerify { bandalartRepository.createBandalart() }
+            coVerify { mockBandalartRepository.createBandalart() }
         }
     }
 
@@ -151,7 +153,7 @@ class HomeViewModelTest {
         fun testCreateBandalart() = runTest {
             // given
             val newBandalart = createBandalartEntity(3)
-            coEvery { bandalartRepository.createBandalart() } returns newBandalart
+            coEvery { mockBandalartRepository.createBandalart() } returns newBandalart
 
             // collect events
             val events = mutableListOf<HomeUiEvent>()
@@ -162,8 +164,8 @@ class HomeViewModelTest {
             testScheduler.advanceUntilIdle()
 
             // then
-            coVerify { bandalartRepository.createBandalart() }
-            coVerify { bandalartRepository.setRecentBandalartId(3L) }
+            coVerify { mockBandalartRepository.createBandalart() }
+            coVerify { mockBandalartRepository.setRecentBandalartId(3L) }
             assertTrue(events.any { it is HomeUiEvent.ShowSnackbar })
 
             job.cancel()
@@ -174,10 +176,10 @@ class HomeViewModelTest {
         fun testBandalartCreationLimit() = runTest {
             // given
             val fullList = List(5) { createBandalartEntity(it.toLong() + 1) }
-            coEvery { bandalartRepository.getBandalartList() } returns flowOf(fullList)
+            coEvery { mockBandalartRepository.getBandalartList() } returns flowOf(fullList)
 
             // recreate viewModel with updated mocks
-            viewModel = HomeViewModel(bandalartRepository, inAppUpdateRepository)
+            viewModel = HomeViewModel(mockBandalartRepository, mockInAppUpdateRepository)
             testScheduler.advanceUntilIdle()
 
             // collect events
@@ -189,7 +191,7 @@ class HomeViewModelTest {
             testScheduler.advanceUntilIdle()
 
             // then
-            coVerify(exactly = 0) { bandalartRepository.createBandalart() }
+            coVerify(exactly = 0) { mockBandalartRepository.createBandalart() }
             assertTrue(events.any { it is HomeUiEvent.ShowToast })
 
             job.cancel()
@@ -214,8 +216,8 @@ class HomeViewModelTest {
             testScheduler.advanceUntilIdle()
 
             // then
-            coVerify { bandalartRepository.deleteBandalart(bandalartId) }
-            coVerify { bandalartRepository.deleteCompletedBandalartId(bandalartId) }
+            coVerify { mockBandalartRepository.deleteBandalart(bandalartId) }
+            coVerify { mockBandalartRepository.deleteCompletedBandalartId(bandalartId) }
             assertTrue(events.any { it is HomeUiEvent.ShowSnackbar })
 
             job.cancel()
@@ -272,7 +274,7 @@ class HomeViewModelTest {
 
             // then: 업데이트 메소드가 호출되어야 함
             val mainCellModelSlot = slot<UpdateBandalartMainCellEntity>()
-            coVerify { bandalartRepository.updateBandalartMainCell(1L, 1L, capture(mainCellModelSlot)) }
+            coVerify { mockBandalartRepository.updateBandalartMainCell(1L, 1L, capture(mainCellModelSlot)) }
 
             assertEquals("새 메인 목표", mainCellModelSlot.captured.title)
         }
@@ -316,7 +318,7 @@ class HomeViewModelTest {
 
             // then: 업데이트 메소드가 호출되어야 함
             val subCellModelSlot = slot<UpdateBandalartSubCellEntity>()
-            coVerify { bandalartRepository.updateBandalartSubCell(1L, 2L, capture(subCellModelSlot)) }
+            coVerify { mockBandalartRepository.updateBandalartSubCell(1L, 2L, capture(subCellModelSlot)) }
 
             assertEquals("새 서브 목표", subCellModelSlot.captured.title)
         }
@@ -362,7 +364,7 @@ class HomeViewModelTest {
 
             // then: 업데이트 메소드가 호출되어야 함
             val taskCellModelSlot = slot<UpdateBandalartTaskCellEntity>()
-            coVerify { bandalartRepository.updateBandalartTaskCell(1L, 3L, capture(taskCellModelSlot)) }
+            coVerify { mockBandalartRepository.updateBandalartTaskCell(1L, 3L, capture(taskCellModelSlot)) }
 
             assertEquals("새 태스크 목표", taskCellModelSlot.captured.title)
             assertTrue(taskCellModelSlot.captured.isCompleted!!)
@@ -395,7 +397,13 @@ class HomeViewModelTest {
         @Test
         @DisplayName("이모지를 선택할 수 있다")
         fun testEmojiSelection() = runTest {
-            // given
+            // given: 테스트 스케줄러 준비
+            testScheduler.advanceUntilIdle() // 초기화 동작 완료 대기
+
+            // 현재 상태 확인
+            assertNotNull(viewModel.uiState.value.bandalartData, "BandalartData should be initialized")
+
+            // when: 셀 클릭으로 바텀시트 열기
             viewModel.onAction(
                 HomeUiAction.OnBandalartCellClick(
                     cellType = CellType.MAIN,
@@ -405,28 +413,41 @@ class HomeViewModelTest {
             )
             testScheduler.advanceUntilIdle()
 
+            // 바텀시트 상태 확인
+            val bottomSheet = viewModel.uiState.value.bottomSheet
+            val cellBottomSheet = bottomSheet as? BottomSheetState.Cell
+            assertNotNull(cellBottomSheet, "Expected BottomSheetState.Cell but was ${bottomSheet?.javaClass?.name}")
+
             // when: 이모지 선택기 열기
             viewModel.onAction(HomeUiAction.OnEmojiPickerClick)
+            testScheduler.advanceUntilIdle()
 
             // then: 이모지 선택기가 열려야 함
-            val bottomSheet = viewModel.uiState.value.bottomSheet as? BottomSheetState.Cell
-            assertNotNull(bottomSheet)
-            assertTrue(bottomSheet!!.isEmojiPickerOpened)
+            val updatedBottomSheet = viewModel.uiState.value.bottomSheet as? BottomSheetState.Cell
+            assertNotNull(updatedBottomSheet)
+            assertTrue(updatedBottomSheet!!.isEmojiPickerOpened)
 
             // when: 이모지 선택
             viewModel.onAction(HomeUiAction.OnEmojiSelect("🚀"))
+            testScheduler.advanceUntilIdle()
 
             // then: 이모지가 업데이트되고 선택기가 닫혀야 함
-            val updatedBottomSheet = viewModel.uiState.value.bottomSheet as? BottomSheetState.Cell
-            assertNotNull(updatedBottomSheet)
-            assertEquals("🚀", updatedBottomSheet!!.bandalartData.profileEmoji)
-            assertFalse(updatedBottomSheet.isEmojiPickerOpened)
+            val finalBottomSheet = viewModel.uiState.value.bottomSheet as? BottomSheetState.Cell
+            assertNotNull(finalBottomSheet)
+            assertEquals("🚀", finalBottomSheet!!.bandalartData.profileEmoji)
+            assertFalse(finalBottomSheet.isEmojiPickerOpened)
         }
 
         @Test
         @DisplayName("바텀시트를 닫을 수 있다")
         fun testCloseBottomSheet() = runTest {
-            // given: 바텀시트 표시
+            // given: 초기화 동작 완료 대기
+            testScheduler.advanceUntilIdle()
+
+            // 현재 상태 확인
+            assertNotNull(viewModel.uiState.value.bandalartData, "BandalartData should be initialized")
+
+            // 바텀시트 표시
             viewModel.onAction(
                 HomeUiAction.OnBandalartCellClick(
                     cellType = CellType.MAIN,
@@ -434,11 +455,14 @@ class HomeViewModelTest {
                     cellData = createBandalartCellEntity(1),
                 ),
             )
+
             testScheduler.advanceUntilIdle()
-            assertNotNull(viewModel.uiState.value.bottomSheet)
+
+            assertNotNull(viewModel.uiState.value.bottomSheet, "BottomSheet should be opened after cell click")
 
             // when: 닫기 버튼 클릭
             viewModel.onAction(HomeUiAction.OnCloseButtonClick)
+            testScheduler.advanceUntilIdle()
 
             // then: 바텀시트가 닫혀야 함
             assertNull(viewModel.uiState.value.bottomSheet)
@@ -456,21 +480,21 @@ class HomeViewModelTest {
             viewModel.setLastRejectedUpdateVersion(20200)
 
             // then
-            coVerify { inAppUpdateRepository.setLastRejectedUpdateVersion(20200) }
+            coVerify { mockInAppUpdateRepository.setLastRejectedUpdateVersion(20200) }
         }
 
         @Test
         @DisplayName("이미 거부된 업데이트인지 확인할 수 있다")
         fun testIsUpdateAlreadyRejected() = runTest {
             // given
-            coEvery { inAppUpdateRepository.isUpdateAlreadyRejected(any()) } returns true
+            coEvery { mockInAppUpdateRepository.isUpdateAlreadyRejected(any()) } returns true
 
             // when
             val result = viewModel.isUpdateAlreadyRejected(20200)
 
             // then
             assertTrue(result)
-            coVerify { inAppUpdateRepository.isUpdateAlreadyRejected(20200) }
+            coVerify { mockInAppUpdateRepository.isUpdateAlreadyRejected(20200) }
         }
     }
 
