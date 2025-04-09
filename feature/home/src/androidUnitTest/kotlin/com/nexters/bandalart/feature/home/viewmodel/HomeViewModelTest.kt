@@ -14,7 +14,6 @@ import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.feature.home.model.CellType
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
@@ -267,11 +266,13 @@ class HomeViewModelTest {
         @DisplayName("메인 셀을 업데이트할 수 있다")
         fun testUpdateMainCell() = runTest {
             // given
+            // 테스트 시작 전 ViewModel 초기화 작업이 완료되도록 대기
+            testScheduler.advanceUntilIdle()
+
             val cellData = createBandalartCellEntity(1).copy(
                 title = "메인 목표",
                 description = "메인 설명",
             )
-            val bandalartData = createBandalartEntity(1)
 
             // when: 셀 클릭
             viewModel.onAction(
@@ -281,11 +282,16 @@ class HomeViewModelTest {
                     cellData = cellData,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
             // then: 바텀시트가 표시되고 셀 데이터가 설정되어야 함
-            assertTrue(viewModel.uiState.value.bottomSheet is BottomSheetState.Cell)
-            assertEquals(cellData, (viewModel.uiState.value.bottomSheet as BottomSheetState.Cell).cellData)
+            val bottomSheet = viewModel.uiState.value.bottomSheet
+            assertNotNull(bottomSheet, "BottomSheet should not be null")
+            assertTrue(bottomSheet is BottomSheetState.Cell, "BottomSheet should be of type Cell but was ${bottomSheet?.javaClass?.simpleName}")
+
+            val cellBottomSheet = bottomSheet as BottomSheetState.Cell
+            assertEquals(cellData, cellBottomSheet.cellData)
 
             // when: 타이틀 업데이트
             viewModel.onAction(
@@ -305,6 +311,7 @@ class HomeViewModelTest {
                     cellType = CellType.MAIN,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
             // then: 업데이트 메소드가 호출되어야 함
@@ -318,6 +325,9 @@ class HomeViewModelTest {
         @DisplayName("서브 셀을 업데이트할 수 있다")
         fun testUpdateSubCell() = runTest {
             // given
+            // 테스트 시작 전 ViewModel 초기화 작업이 완료되도록 대기
+            testScheduler.advanceUntilIdle()
+
             val cellData = createBandalartCellEntity(2).copy(
                 title = "서브 목표",
                 description = "서브 설명",
@@ -331,17 +341,21 @@ class HomeViewModelTest {
                     cellData = cellData,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
-            // when: 타이틀 업데이트 및 완료 버튼 클릭
+            // when: 타이틀 업데이트
             viewModel.onAction(
                 HomeUiAction.OnCellTitleUpdate(
-                    "새 메인 목표",
+                    "새 서브 목표",
                     object : Locale {
                         override val language = Language.KOREAN
                     },
                 ),
             )
+
+            testScheduler.advanceUntilIdle()
+
             viewModel.onAction(
                 HomeUiAction.OnCompleteButtonClick(
                     bandalartId = 1L,
@@ -349,6 +363,7 @@ class HomeViewModelTest {
                     cellType = CellType.SUB,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
             // then: 업데이트 메소드가 호출되어야 함
@@ -362,6 +377,9 @@ class HomeViewModelTest {
         @DisplayName("태스크 셀을 업데이트하고 완료 상태를 변경할 수 있다")
         fun testUpdateTaskCell() = runTest {
             // given
+            // 테스트 시작 전 ViewModel 초기화 작업이 완료되도록 대기
+            testScheduler.advanceUntilIdle()
+
             val cellData = createBandalartCellEntity(3).copy(
                 title = "태스크 목표",
                 description = "태스크 설명",
@@ -376,18 +394,35 @@ class HomeViewModelTest {
                     cellData = cellData,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
-            // when: 타이틀, 완료 상태 업데이트 및 완료 버튼 클릭
+            // 바텀시트 상태 확인
+            assertNotNull(viewModel.uiState.value.bottomSheet, "BottomSheet should not be null after cell click")
+            assertTrue(viewModel.uiState.value.bottomSheet is BottomSheetState.Cell,
+                "BottomSheet should be of type Cell but was ${viewModel.uiState.value.bottomSheet?.javaClass?.simpleName}")
+
+            // when: 타이틀 업데이트
             viewModel.onAction(
                 HomeUiAction.OnCellTitleUpdate(
-                    "새 메인 목표",
+                    "새 태스크 목표",
                     object : Locale {
                         override val language = Language.KOREAN
                     },
                 ),
             )
+
+            testScheduler.advanceUntilIdle()
+
+            // 바텀시트의 타이틀이 변경되었는지 확인
+            val updatedTitle = (viewModel.uiState.value.bottomSheet as? BottomSheetState.Cell)?.cellData?.title
+            assertEquals("새 태스크 목표", updatedTitle, "Title should be updated in BottomSheet")
+
+            // 완료 상태 업데이트
             viewModel.onAction(HomeUiAction.OnCompletionUpdate(true))
+
+            testScheduler.advanceUntilIdle()
+
             viewModel.onAction(
                 HomeUiAction.OnCompleteButtonClick(
                     bandalartId = 1L,
@@ -395,6 +430,7 @@ class HomeViewModelTest {
                     cellType = CellType.TASK,
                 ),
             )
+
             testScheduler.advanceUntilIdle()
 
             // then: 업데이트 메소드가 호출되어야 함
