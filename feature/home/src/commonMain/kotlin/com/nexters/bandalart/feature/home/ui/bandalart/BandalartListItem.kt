@@ -53,13 +53,16 @@ import bandalart.core.designsystem.generated.resources.home_complete
 import bandalart.core.designsystem.generated.resources.home_complete_ratio
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import com.nexters.bandalart.core.common.extension.toColor
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BandalartListItem(
@@ -184,13 +187,14 @@ fun BandalartListItem(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartItemPreview() {
-//     BandalartTheme {
-//         BandalartListItem(
-//             bandalartItem = dummyBandalartData,
-//             currentBandalartId = 0L,
-//             onClick = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartItemPreview() {
+    BandalartTheme {
+        BandalartListItem(
+            bandalartItem = dummyBandalartData,
+            currentBandalartId = 0L,
+            onClick = {},
+        )
+    }
+}

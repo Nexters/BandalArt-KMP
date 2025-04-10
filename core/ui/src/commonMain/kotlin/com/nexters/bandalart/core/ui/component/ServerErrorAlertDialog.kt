@@ -27,10 +27,12 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_circle_cross
 import bandalart.core.designsystem.generated.resources.network_error_retry_message
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ServerErrorAlertDialog(
@@ -107,13 +109,14 @@ fun ServerErrorAlertDialog(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun ServerErrorAlertDialogPreview() {
-//     BandalartTheme {
-//         NetworkErrorAlertDialog(
-//             title = "서버 문제로 표를\n불러오지 못했어요",
-//             message = "다시 시도해주시기 바랍니다.",
-//             onConfirmClick = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun ServerErrorAlertDialogPreview() {
+    BandalartTheme {
+        NetworkErrorAlertDialog(
+            title = "서버 문제로 표를\n불러오지 못했어요",
+            message = "다시 시도해주시기 바랍니다.",
+            onConfirmClick = {},
+        )
+    }
+}

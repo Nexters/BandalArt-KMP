@@ -45,6 +45,7 @@ import bandalart.core.designsystem.generated.resources.home_main_cell
 import bandalart.core.designsystem.generated.resources.home_sub_cell
 import bandalart.core.designsystem.generated.resources.ic_cell_check
 import com.nexters.bandalart.core.common.extension.toColor
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray500
 import com.nexters.bandalart.core.designsystem.theme.Gray600
@@ -55,6 +56,7 @@ import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class CellInfo(
     val isSubCell: Boolean = false,
@@ -283,21 +285,22 @@ private fun getCellBackgroundColor(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartCellPreview() {
-//     BandalartTheme {
-//        BandalartCell(
-//            bandalartData = BandalartUiModel(
-//                id = 0L,
-//                mainColor = "#FF3FFFBA",
-//                subColor = "#FF111827",
-//            ),
-//            cellType = CellType.MAIN,
-//            cellData = BandalartCellEntity(
-//                title = "메인 목표",
-//                isCompleted = false,
-//            ),
-//            onHomeUiAction = {},
-//        )
-//    }
-// }
+@Preview
+@Composable
+private fun BandalartCellPreview() {
+    BandalartTheme {
+        BandalartCell(
+            bandalartData = BandalartUiModel(
+                id = 0L,
+                mainColor = "#FF3FFFBA",
+                subColor = "#FF111827",
+            ),
+            cellType = CellType.MAIN,
+            cellData = BandalartCellEntity(
+                title = "메인 목표",
+                isCompleted = false,
+            ),
+            onHomeUiAction = {},
+        )
+    }
+}

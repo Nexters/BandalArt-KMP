@@ -43,12 +43,14 @@ import bandalart.core.designsystem.generated.resources.hamburger_description
 import bandalart.core.designsystem.generated.resources.home_add
 import bandalart.core.designsystem.generated.resources.home_list
 import bandalart.core.designsystem.generated.resources.ic_hamburger
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.component.AppTitle
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun HomeTopBar(
@@ -121,23 +123,25 @@ internal fun HomeTopBar(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun HomeTopBarSingleBandalartPreview() {
-//     BandalartTheme {
-//         HomeTopBar(
-//             bandalartCount = 1,
-//             onHomeUiAction = {},
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun HomeTopBarSingleBandalartPreview() {
+    BandalartTheme {
+        HomeTopBar(
+            bandalartCount = 1,
+            onHomeUiAction = {},
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun HomeTopBarMultipleBandalartPreview() {
-//     BandalartTheme {
-//         HomeTopBar(
-//             bandalartCount = 2,
-//             onHomeUiAction = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun HomeTopBarMultipleBandalartPreview() {
+    BandalartTheme {
+        HomeTopBar(
+            bandalartCount = 2,
+            onHomeUiAction = {},
+        )
+    }
+}

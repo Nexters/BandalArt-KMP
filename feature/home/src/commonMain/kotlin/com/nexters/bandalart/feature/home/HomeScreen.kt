@@ -47,8 +47,12 @@ import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
 import com.nexters.bandalart.core.common.utils.ObserveAsEvents
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray50
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
 import com.nexters.bandalart.feature.home.ui.HomeHeader
 import com.nexters.bandalart.feature.home.ui.HomeShareButton
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
@@ -58,10 +62,12 @@ import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiEvent
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiState
 import com.nexters.bandalart.feature.home.viewmodel.HomeViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -310,39 +316,41 @@ internal fun HomeScreen(
 }
 
 // @DevicePreview
-// @Composable
-// private fun HomeScreenSingleBandalartPreview() {
-//     BandalartTheme {
-//         HomeScreen(
-//             uiState = HomeUiState(
-//                 bandalartList = listOf(dummyBandalartList[0]).toImmutableList(),
-//                 bandalartData = dummyBandalartData,
-//                 bandalartCellData = dummyBandalartChartData,
-//             ),
-//             onHomeUiAction = {},
-//             shareBandalart = {},
-//             captureBandalart = {},
-//             saveBandalart = {},
-//             snackbarHostState = remember { SnackbarHostState() },
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun HomeScreenSingleBandalartPreview() {
+    BandalartTheme {
+        HomeScreen(
+            uiState = HomeUiState(
+                bandalartList = listOf(dummyBandalartList[0]).toImmutableList(),
+                bandalartData = dummyBandalartData,
+                bandalartCellData = dummyBandalartChartData,
+            ),
+            onHomeUiAction = {},
+            shareBandalart = {},
+            captureBandalart = {},
+            saveBandalart = {},
+            snackbarHostState = remember { SnackbarHostState() },
+        )
+    }
+}
+
 // @DevicePreview
-// @Composable
-// private fun HomeScreenMultipleBandalartPreview() {
-//     BandalartTheme {
-//         HomeScreen(
-//             uiState = HomeUiState(
-//                 bandalartList = dummyBandalartList.toImmutableList(),
-//                 bandalartData = dummyBandalartData,
-//                 bandalartCellData = dummyBandalartChartData,
-//             ),
-//             onHomeUiAction = {},
-//             shareBandalart = {},
-//             captureBandalart = {},
-//             saveBandalart = {},
-//             snackbarHostState = remember { SnackbarHostState() },
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun HomeScreenMultipleBandalartPreview() {
+    BandalartTheme {
+        HomeScreen(
+            uiState = HomeUiState(
+                bandalartList = dummyBandalartList.toImmutableList(),
+                bandalartData = dummyBandalartData,
+                bandalartCellData = dummyBandalartChartData,
+            ),
+            onHomeUiAction = {},
+            shareBandalart = {},
+            captureBandalart = {},
+            saveBandalart = {},
+            snackbarHostState = remember { SnackbarHostState() },
+        )
+    }
+}

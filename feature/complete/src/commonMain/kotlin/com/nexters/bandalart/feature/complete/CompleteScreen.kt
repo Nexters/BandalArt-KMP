@@ -45,6 +45,7 @@ import bandalart.core.designsystem.generated.resources.complete_title
 import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.utils.ObserveAsEvents
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
@@ -60,6 +61,7 @@ import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -271,16 +273,17 @@ internal fun CompleteScreen(
 }
 
 // @DevicePreview
-// @Composable
-// private fun CompleteScreenPreview() {
-//     BandalartTheme {
-//         CompleteScreen(
-//             uiState = CompleteUiState(
-//                 id = 0L,
-//                 title = "발전하는 예진",
-//                 profileEmoji = "😎",
-//             ),
-//             onAction = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun CompleteScreenPreview() {
+    BandalartTheme {
+        CompleteScreen(
+            uiState = CompleteUiState(
+                id = 0L,
+                title = "발전하는 예진",
+                profileEmoji = "😎",
+            ),
+            onAction = {},
+        )
+    }
+}

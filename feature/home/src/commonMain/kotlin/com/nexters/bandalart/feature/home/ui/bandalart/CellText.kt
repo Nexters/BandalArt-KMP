@@ -26,7 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
+import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // val cellLineBreak = LineBreak(
 //    strategy = LineBreak.Strategy.Simple,
@@ -59,13 +62,14 @@ fun CellText(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun CellTextPreview() {
-//     BandalartTheme {
-//         CellText(
-//             cellText = "완벽한 2024년",
-//             cellTextColor = Gray900,
-//             fontWeight = FontWeight.W700,
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun CellTextPreview() {
+    BandalartTheme {
+        CellText(
+            cellText = "완벽한 2024년",
+            cellTextColor = Gray900,
+            fontWeight = FontWeight.W700,
+        )
+    }
+}

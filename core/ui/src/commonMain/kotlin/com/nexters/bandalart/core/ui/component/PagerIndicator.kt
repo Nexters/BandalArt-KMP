@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray700
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun PagerIndicator(
@@ -47,15 +50,16 @@ fun PagerIndicator(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun PagerIndicatorPreview() {
-//     val pageCount = 2
-//     val pagerState = rememberPagerState(pageCount = { pageCount })
-//
-//     BandalartTheme {
-//         PagerIndicator(
-//             pageCount = 2,
-//             pagerState = pagerState,
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun PagerIndicatorPreview() {
+    val pageCount = 2
+    val pagerState = rememberPagerState(pageCount = { pageCount })
+
+    BandalartTheme {
+        PagerIndicator(
+            pageCount = 2,
+            pagerState = pagerState,
+        )
+    }
+}

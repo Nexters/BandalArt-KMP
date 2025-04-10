@@ -34,9 +34,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BottomSheetTopBar(
@@ -68,37 +70,40 @@ fun BottomSheetTopBar(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetMainCellTopBarPreview() {
-//     BandalartTheme {
-//         BottomSheetTopBar(
-//             cellType = CellType.MAIN,
-//             isBlankCell = false,
-//             onCloseClick = {},
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetMainCellTopBarPreview() {
+    BandalartTheme {
+        BottomSheetTopBar(
+            cellType = CellType.MAIN,
+            isBlankCell = false,
+            onCloseClick = {},
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetSubCellTopBarPreview() {
-//     BandalartTheme {
-//         BottomSheetTopBar(
-//             cellType = CellType.SUB,
-//             isBlankCell = false,
-//             onCloseClick = {},
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetSubCellTopBarPreview() {
+    BandalartTheme {
+        BottomSheetTopBar(
+            cellType = CellType.SUB,
+            isBlankCell = false,
+            onCloseClick = {},
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetBlankCellTopBarPreview() {
-//     BandalartTheme {
-//         BottomSheetTopBar(
-//             cellType = CellType.TASK,
-//             isBlankCell = true,
-//             onCloseClick = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BottomSheetBlankCellTopBarPreview() {
+    BandalartTheme {
+        BottomSheetTopBar(
+            cellType = CellType.TASK,
+            isBlankCell = true,
+            onCloseClick = {},
+        )
+    }
+}

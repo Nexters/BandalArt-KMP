@@ -60,6 +60,7 @@ import bandalart.core.designsystem.generated.resources.option_description
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.common.extension.toFormatDate
 import com.nexters.bandalart.core.common.getLocale
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray600
@@ -67,10 +68,13 @@ import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDropDownMenu
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeHeader(
@@ -223,14 +227,15 @@ fun HomeHeader(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun HomeHeaderPreview() {
-//     BandalartTheme {
-//         HomeHeader(
-//             bandalartData = dummyBandalartData,
-//             isDropDownMenuOpened = false,
-//             cellData = dummyBandalartCellData,
-//             onHomeUiAction = {},
-//        )
-//     }
-// }
+@Preview
+@Composable
+private fun HomeHeaderPreview() {
+    BandalartTheme {
+        HomeHeader(
+            bandalartData = dummyBandalartData,
+            isDropDownMenuOpened = false,
+            cellData = dummyBandalartCellData,
+            onHomeUiAction = {},
+        )
+    }
+}

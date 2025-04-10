@@ -29,7 +29,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.common.extension.clearFocusOnKeyboardDismiss
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.BottomSheetContent
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun BandalartTextField(
@@ -60,14 +62,15 @@ internal fun BandalartTextField(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartTextFieldPreview() {
-//     BandalartTheme {
-//         BandalartTextField(
-//             value = "",
-//             onValueChange = {},
-//             modifier = Modifier.fillMaxWidth(),
-//             placeholder = "Placeholder",
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartTextFieldPreview() {
+    BandalartTheme {
+        BandalartTextField(
+            value = "",
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = "Placeholder",
+        )
+    }
+}

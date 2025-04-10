@@ -51,12 +51,14 @@ import bandalart.core.designsystem.generated.resources.datepicker_month
 import bandalart.core.designsystem.generated.resources.datepicker_year
 import com.nexters.bandalart.core.common.extension.LocalDateTime
 import com.nexters.bandalart.core.common.extension.toLocalDateTime
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val years = (2000..2050).map { it }
 private val monthsNumber = (1..12).map { it }
@@ -267,69 +269,74 @@ private fun isLeapYear(year: Int): Boolean {
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartDatePickerPreview() {
-//     BandalartTheme {
-//         BandalartDatePicker(
-//             onDueDateSelect = {},
-//             currentDueDate = LocalDateTime.now(),
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BandalartDatePickerPreview() {
+    BandalartTheme {
+        BandalartDatePicker(
+            onDueDateSelect = {},
+            currentDueDate = LocalDateTime.now(),
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun DateSelectionSectionPreview() {
-//     BandalartTheme {
-//         DateSelectionSection(
-//             onYearChosen = {},
-//             onMonthChosen = {},
-//             onDayChosen = {},
-//             currentYear = 2024,
-//             currentMonth = 12,
-//             currentDay = 31,
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun DateSelectionSectionPreview() {
+    BandalartTheme {
+        DateSelectionSection(
+            onYearChosen = {},
+            onMonthChosen = {},
+            onDayChosen = {},
+            currentYear = 2024,
+            currentMonth = 12,
+            currentDay = 31,
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun InfiniteYearItemsPickerPreview() {
-//     BandalartTheme {
-//         InfiniteItemsPicker(
-//             items = years.toImmutableList(),
-//             isYear = true,
-//             isMonth = false,
-//             firstIndex = Int.MAX_VALUE / 2 + (2024 - years.first()),
-//             onItemSelected = {},
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun InfiniteYearItemsPickerPreview() {
+    BandalartTheme {
+        InfiniteItemsPicker(
+            items = years.toImmutableList(),
+            isYear = true,
+            isMonth = false,
+            firstIndex = Int.MAX_VALUE / 2 + (2024 - years.first()),
+            onItemSelected = {},
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun InfiniteMonthItemsPickerPreview() {
-//     BandalartTheme {
-//         InfiniteItemsPicker(
-//             items = monthsNumber.toImmutableList(),
-//             isYear = false,
-//             isMonth = true,
-//             firstIndex = Int.MAX_VALUE / 2 + (31 - 1),
-//             onItemSelected = {},
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun InfiniteMonthItemsPickerPreview() {
+    BandalartTheme {
+        InfiniteItemsPicker(
+            items = monthsNumber.toImmutableList(),
+            isYear = false,
+            isMonth = true,
+            firstIndex = Int.MAX_VALUE / 2 + (31 - 1),
+            onItemSelected = {},
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun InfiniteDayItemsPickerPreview() {
-//     BandalartTheme {
-//         InfiniteItemsPicker(
-//             items = days.toImmutableList(),
-//             isYear = false,
-//             isMonth = false,
-//             firstIndex = Int.MAX_VALUE / 2 + (31 - 3),
-//             onItemSelected = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun InfiniteDayItemsPickerPreview() {
+    BandalartTheme {
+        InfiniteItemsPicker(
+            items = days.toImmutableList(),
+            isYear = false,
+            isMonth = false,
+            firstIndex = Int.MAX_VALUE / 2 + (31 - 3),
+            onItemSelected = {},
+        )
+    }
+}

@@ -45,11 +45,13 @@ import bandalart.core.designsystem.generated.resources.complete_chart
 import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.home_default_emoji
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CompleteBandalart(
@@ -136,13 +138,14 @@ fun CompleteBandalart(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun CompleteBandalartPreview() {
-//     BandalartTheme {
-//         CompleteBandalart(
-//             profileEmoji = "😎",
-//             title = "발전하는 예진",
-//             // bandalartChartImageUri = "",
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun CompleteBandalartPreview() {
+    BandalartTheme {
+        CompleteBandalart(
+            profileEmoji = "😎",
+            title = "발전하는 예진",
+            // bandalartChartImageUri = "",
+        )
+    }
+}

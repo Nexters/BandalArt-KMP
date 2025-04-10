@@ -33,13 +33,16 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.home_layout_id
 import bandalart.core.designsystem.generated.resources.home_main_id
 import com.nexters.bandalart.core.common.extension.toColor
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BandalartChart(
@@ -128,17 +131,18 @@ fun BandalartChart(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartChartPreview() {
-//     BandalartTheme {
-//         BandalartChart(
-//             bandalartCellData = dummyBandalartChartData,
-//             bandalartData = BandalartUiModel(
-//                 id = 0L,
-//                 mainColor = "#3FFFBA",
-//                 subColor = "#111827",
-//             ),
-//             onHomeUiAction = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartChartPreview() {
+    BandalartTheme {
+        BandalartChart(
+            bandalartCellData = dummyBandalartChartData,
+            bandalartData = BandalartUiModel(
+                id = 0L,
+                mainColor = "#3FFFBA",
+                subColor = "#111827",
+            ),
+            onHomeUiAction = {},
+        )
+    }
+}

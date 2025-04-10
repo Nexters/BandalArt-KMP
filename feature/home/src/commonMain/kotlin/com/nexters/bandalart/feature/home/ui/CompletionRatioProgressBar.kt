@@ -39,7 +39,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray200
+import com.nexters.bandalart.core.designsystem.theme.MainColor
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CompletionRatioProgressBar(
@@ -94,12 +97,13 @@ fun CompletionRatioProgressBar(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun CompletionRatioProgressBarPreview() {
-//     BandalartTheme {
-//         CompletionRatioProgressBar(
-//             completionRatio = 66,
-//             progressColor = MainColor,
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun CompletionRatioProgressBarPreview() {
+    BandalartTheme {
+        CompletionRatioProgressBar(
+            completionRatio = 66,
+            progressColor = MainColor,
+        )
+    }
+}

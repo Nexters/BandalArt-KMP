@@ -44,12 +44,14 @@ import bandalart.core.designsystem.generated.resources.dropdown_delete
 import bandalart.core.designsystem.generated.resources.dropdown_save
 import bandalart.core.designsystem.generated.resources.ic_gallery
 import bandalart.core.designsystem.generated.resources.ic_trash
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Error
 import com.nexters.bandalart.core.designsystem.theme.Gray800
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BandalartDropDownMenu(
@@ -138,12 +140,13 @@ fun BandalartDropDownMenu(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartDropDownMenuPreview() {
-//     BandalartTheme {
-//         BandalartDropDownMenu(
-//             isDropDownMenuOpened = true,
-//             onAction = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartDropDownMenuPreview() {
+    BandalartTheme {
+        BandalartDropDownMenu(
+            isDropDownMenuOpened = true,
+            onAction = {},
+        )
+    }
+}

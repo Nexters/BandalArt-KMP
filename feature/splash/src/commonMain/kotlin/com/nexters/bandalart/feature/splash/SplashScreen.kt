@@ -16,11 +16,13 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.app_icon_description
 import bandalart.core.designsystem.generated.resources.ic_app
 import com.nexters.bandalart.core.common.utils.ObserveAsEvents
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.navigation.Route
 import com.nexters.bandalart.core.ui.component.AppTitle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Suppress("TooGenericExceptionCaught")
@@ -134,9 +136,10 @@ internal fun SplashScreen(
 }
 
 // @DevicePreview
-// @Composable
-// private fun SplashScreenPreview() {
-//     BandalartTheme {
-//         SplashScreen()
-//     }
-// }
+@Preview
+@Composable
+private fun SplashScreenPreview() {
+    BandalartTheme {
+        SplashScreen()
+    }
+}

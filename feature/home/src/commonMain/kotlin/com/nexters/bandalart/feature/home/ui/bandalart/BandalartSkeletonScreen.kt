@@ -16,6 +16,12 @@
 
 package com.nexters.bandalart.feature.home.ui.bandalart
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -69,9 +76,12 @@ import bandalart.core.designsystem.generated.resources.option_description
 import bandalart.core.designsystem.generated.resources.share_description
 import bandalart.core.designsystem.generated.resources.skeleton_complete_ratio
 import bandalart.core.designsystem.generated.resources.skeleton_title
+import bandalart.core.designsystem.generated.resources.skeleton_trans_animate_label
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.Gray300
+import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.Gray900
@@ -82,6 +92,7 @@ import com.nexters.bandalart.feature.home.model.CellType
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class SkeletonSubCell(
     val rowCnt: Int,
@@ -426,58 +437,59 @@ fun SkeletonCell(
 }
 
 // @DevicePreview
-// @Composable
-// private fun BandalartSkeletonScreenPreview() {
-//     val shimmerMainColors = listOf(
-//         Gray200,
-//         Gray300,
-//         Gray400,
-//     )
-//     val shimmerSubColors = listOf(
-//         Gray100,
-//         Gray200,
-//         Gray300,
-//     )
-//     val shimmerTaskColors = listOf(
-//         White,
-//         Gray50,
-//     )
-//
-//     val transition = rememberInfiniteTransition(label = "Skeleton transition")
-//     val translateAnim = transition.animateFloat(
-//         initialValue = 0f,
-//         targetValue = 800f,
-//         animationSpec = infiniteRepeatable(
-//             animation = tween(
-//                 durationMillis = 600,
-//                 easing = FastOutLinearInEasing,
-//             ),
-//             repeatMode = RepeatMode.Reverse,
-//         ),
-//         label = stringResource(Res.string.skeleton_trans_animate_label),
-//     )
-//
-//     val mainBrush = Brush.linearGradient(
-//         colors = shimmerMainColors,
-//         start = Offset.Zero,
-//         end = Offset(x = translateAnim.value, y = translateAnim.value),
-//     )
-//     val subBrush = Brush.linearGradient(
-//         colors = shimmerSubColors,
-//         start = Offset.Zero,
-//         end = Offset(x = translateAnim.value, y = translateAnim.value),
-//     )
-//     val taskBrush = Brush.linearGradient(
-//         colors = shimmerTaskColors,
-//         start = Offset.Zero,
-//         end = Offset(x = translateAnim.value, y = translateAnim.value),
-//     )
-//
-//     BandalartTheme {
-//         BandalartSkeletonScreen(
-//             taskBrush = mainBrush,
-//             subBrush = subBrush,
-//             mainBrush = taskBrush,
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartSkeletonScreenPreview() {
+    val shimmerMainColors = listOf(
+        Gray200,
+        Gray300,
+        Gray400,
+    )
+    val shimmerSubColors = listOf(
+        Gray100,
+        Gray200,
+        Gray300,
+    )
+    val shimmerTaskColors = listOf(
+        White,
+        Gray50,
+    )
+
+    val transition = rememberInfiniteTransition(label = "Skeleton transition")
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 800f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 600,
+                easing = FastOutLinearInEasing,
+            ),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = stringResource(Res.string.skeleton_trans_animate_label),
+    )
+
+    val mainBrush = Brush.linearGradient(
+        colors = shimmerMainColors,
+        start = Offset.Zero,
+        end = Offset(x = translateAnim.value, y = translateAnim.value),
+    )
+    val subBrush = Brush.linearGradient(
+        colors = shimmerSubColors,
+        start = Offset.Zero,
+        end = Offset(x = translateAnim.value, y = translateAnim.value),
+    )
+    val taskBrush = Brush.linearGradient(
+        colors = shimmerTaskColors,
+        start = Offset.Zero,
+        end = Offset(x = translateAnim.value, y = translateAnim.value),
+    )
+
+    BandalartTheme {
+        BandalartSkeletonScreen(
+            taskBrush = mainBrush,
+            subBrush = subBrush,
+            mainBrush = taskBrush,
+        )
+    }
+}

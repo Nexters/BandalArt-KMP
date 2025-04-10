@@ -37,10 +37,12 @@ import bandalart.core.designsystem.generated.resources.home_share
 import bandalart.core.designsystem.generated.resources.ic_share
 import bandalart.core.designsystem.generated.resources.share_description
 import com.nexters.bandalart.core.common.extension.clickableSingle
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeShareButton(
@@ -76,11 +78,12 @@ fun HomeShareButton(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun HomeShareButtonPreview() {
-//     BandalartTheme {
-//         HomeShareButton(
-//             onShareButtonClick = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun HomeShareButtonPreview() {
+    BandalartTheme {
+        HomeShareButton(
+            onShareButtonClick = {},
+        )
+    }
+}

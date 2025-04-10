@@ -25,17 +25,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.bottomsheet_completed
+import bandalart.core.designsystem.generated.resources.bottomsheet_done
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_maincell_edit_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_maincell_enter_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_subcell_edit_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_subcell_enter_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_taskcell_edit_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_header_taskcell_enter_title
+import bandalart.core.designsystem.generated.resources.bottomsheet_title
+import bandalart.core.designsystem.generated.resources.bottomsheet_title_placeholder
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // TODO 텍스트들을 굳이 Composable 로 뺄 필요가 있나 생각(font 를 정의해서 넣으면 되는데)
 @Composable
@@ -139,69 +145,76 @@ fun BottomSheetButtonText(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetMainCellTitleTextPreview() {
-//     BandalartTheme {
-//         BottomSheetTitleText(
-//             cellType = CellType.MAIN,
-//             isBlankCell = false,
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetMainCellTitleTextPreview() {
+    BandalartTheme {
+        BottomSheetTitleText(
+            cellType = CellType.MAIN,
+            isBlankCell = false,
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetSubCellTitleTextPreview() {
-//     BandalartTheme {
-//         BottomSheetTitleText(
-//             cellType = CellType.SUB,
-//             isBlankCell = false,
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetSubCellTitleTextPreview() {
+    BandalartTheme {
+        BottomSheetTitleText(
+            cellType = CellType.SUB,
+            isBlankCell = false,
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetBlankCellTitleTextPreview() {
-//     BandalartTheme {
-//         BottomSheetTitleText(
-//             cellType = CellType.TASK,
-//             isBlankCell = true,
-//         )
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetBlankCellTitleTextPreview() {
+    BandalartTheme {
+        BottomSheetTitleText(
+            cellType = CellType.TASK,
+            isBlankCell = true,
+        )
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetSubTitleTextPreview() {
-//     BandalartTheme {
-//         BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_title))
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetSubTitleTextPreview() {
+    BandalartTheme {
+        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_title))
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetContentPlaceholderPreview() {
-//     BandalartTheme {
-//         BottomSheetContentPlaceholder(text = stringResource(Res.string.bottomsheet_title_placeholder))
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetContentPlaceholderPreview() {
+    BandalartTheme {
+        BottomSheetContentPlaceholder(text = stringResource(Res.string.bottomsheet_title_placeholder))
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetContentTextPreview() {
-//     BandalartTheme {
-//         BottomSheetContentText(text = stringResource(Res.string.bottomsheet_completed))
-//     }
-// }
-//
+@Preview
+@Composable
+private fun BottomSheetContentTextPreview() {
+    BandalartTheme {
+        BottomSheetContentText(text = stringResource(Res.string.bottomsheet_completed))
+    }
+}
+
 // @ComponentPreview
-// @Composable
-// private fun BottomSheetButtonTextPreview() {
-//     BandalartTheme {
-//         BottomSheetButtonText(
-//             text = stringResource(Res.string.bottomsheet_done),
-//             color = Gray400,
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BottomSheetButtonTextPreview() {
+    BandalartTheme {
+        BottomSheetButtonText(
+            text = stringResource(Res.string.bottomsheet_done),
+            color = Gray400,
+        )
+    }
+}

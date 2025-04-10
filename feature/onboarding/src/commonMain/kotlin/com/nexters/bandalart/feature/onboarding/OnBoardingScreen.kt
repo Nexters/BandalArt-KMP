@@ -52,6 +52,7 @@ import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.extension.aspectRatioBasedOnOrientation
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.common.utils.ObserveAsEvents
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
@@ -61,6 +62,7 @@ import com.nexters.bandalart.core.ui.component.LottieImage
 import com.nexters.bandalart.core.ui.component.PagerIndicator
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val ONBOARDING_KR_LOTTIE_FILE = "files/onboarding_kr.json"
@@ -257,11 +259,12 @@ internal fun OnBoardingScreen(
 }
 
 // @DevicePreview
-// @Composable
-// private fun OnBoardingScreenPreview() {
-//     BandalartTheme {
-//         OnBoardingScreen(
-//             setOnboardingCompletedStatus = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun OnBoardingScreenPreview() {
+    BandalartTheme {
+        OnBoardingScreen(
+            setOnboardingCompletedStatus = {},
+        )
+    }
+}

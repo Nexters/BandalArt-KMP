@@ -9,10 +9,12 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.bandalart
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.getLocale
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.koronaOneRegularFontFamily
 import com.nexters.bandalart.core.designsystem.theme.neurimboGothicRegularFontFamily
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AppTitle(
@@ -66,25 +68,28 @@ fun AppEnglishTitle(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun AppTitlePreview() {
-//     BandalartTheme {
-//         AppTitle()
-//     }
-// }
-//
+@Preview
+@Composable
+private fun AppTitlePreview() {
+    BandalartTheme {
+        AppTitle()
+    }
+}
+
 // @Preview(locale = "ko-rKR", showBackground = true)
-// @Composable
-// private fun AppKoreanTitlePreview() {
-//     BandalartTheme {
-//         AppKoreanTitle()
-//     }
-// }
-//
+@Preview
+@Composable
+private fun AppKoreanTitlePreview() {
+    BandalartTheme {
+        AppKoreanTitle()
+    }
+}
+
 // @Preview(locale = "en-rUS", showBackground = true)
-// @Composable
-// private fun AppEnglishTitlePreview() {
-//     BandalartTheme {
-//         AppEnglishTitle()
-//     }
-// }
+@Preview
+@Composable
+private fun AppEnglishTitlePreview() {
+    BandalartTheme {
+        AppEnglishTitle()
+    }
+}

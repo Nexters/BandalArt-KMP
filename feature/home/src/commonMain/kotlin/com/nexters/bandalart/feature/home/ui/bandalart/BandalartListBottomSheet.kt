@@ -56,6 +56,7 @@ import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.bandalart_list_add
 import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.Gray800
@@ -63,9 +64,12 @@ import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,13 +183,14 @@ fun BandalartListBottomSheet(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartListBottomSheetPreview() {
-//     BandalartTheme {
-//         BandalartListBottomSheet(
-//             bandalartList = dummyBandalartList.toImmutableList(),
-//             currentBandalartId = 0L,
-//             onHomeUiAction = {},
-//        )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartListBottomSheetPreview() {
+    BandalartTheme {
+        BandalartListBottomSheet(
+            bandalartList = dummyBandalartList.toImmutableList(),
+            currentBandalartId = 0L,
+            onHomeUiAction = {},
+        )
+    }
+}

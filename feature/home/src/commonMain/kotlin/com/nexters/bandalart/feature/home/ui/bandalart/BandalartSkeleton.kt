@@ -29,12 +29,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.White
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.skeleton_trans_animate_label
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val shimmerMainColors = listOf(
     Gray200,
@@ -95,9 +97,10 @@ fun BandalartSkeleton(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartSkeletonPreview() {
-//     BandalartTheme {
-//         BandalartSkeleton()
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartSkeletonPreview() {
+    BandalartTheme {
+        BandalartSkeleton()
+    }
+}

@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.ic_app
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
 import com.skydoves.landscapist.coil3.CoilImageState
@@ -32,6 +33,7 @@ import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NetworkImage(
@@ -70,12 +72,13 @@ fun NetworkImage(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun NetworkImagePreview() {
-//     BandalartTheme {
-//         NetworkImage(
-//             imageUri = "",
-//             contentDescription = "",
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun NetworkImagePreview() {
+    BandalartTheme {
+        NetworkImage(
+            imageUri = "",
+            contentDescription = "",
+        )
+    }
+}

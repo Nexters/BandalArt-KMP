@@ -24,9 +24,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BandalartCellGrid(
@@ -72,26 +76,27 @@ fun BandalartCellGrid(
 }
 
 // @ComponentPreview
-// @Composable
-// private fun BandalartCellGridPreview() {
-//     val subCellList = persistentListOf(
-//         SubCell(2, 3, 1, 1, dummyBandalartChartData.children[0]),
-//         SubCell(3, 2, 1, 0, dummyBandalartChartData.children[1]),
-//         SubCell(3, 2, 1, 1, dummyBandalartChartData.children[2]),
-//         SubCell(2, 3, 0, 1, dummyBandalartChartData.children[3]),
-//     )
-//
-//     BandalartTheme {
-//         BandalartCellGrid(
-//             bandalartData = BandalartUiModel(
-//                 id = 0L,
-//                 mainColor = "#3FFFBA",
-//                 subColor = "#111827",
-//             ),
-//             subCell = subCellList[1],
-//             rows = subCellList[1].rowCnt,
-//             cols = subCellList[1].colCnt,
-//             onHomeUiAction = {},
-//         )
-//     }
-// }
+@Preview
+@Composable
+private fun BandalartCellGridPreview() {
+    val subCellList = persistentListOf(
+        SubCell(2, 3, 1, 1, dummyBandalartChartData.children[0]),
+        SubCell(3, 2, 1, 0, dummyBandalartChartData.children[1]),
+        SubCell(3, 2, 1, 1, dummyBandalartChartData.children[2]),
+        SubCell(2, 3, 0, 1, dummyBandalartChartData.children[3]),
+    )
+
+    BandalartTheme {
+        BandalartCellGrid(
+            bandalartData = BandalartUiModel(
+                id = 0L,
+                mainColor = "#3FFFBA",
+                subColor = "#111827",
+            ),
+            subCell = subCellList[1],
+            rows = subCellList[1].rowCnt,
+            cols = subCellList[1].colCnt,
+            onHomeUiAction = {},
+        )
+    }
+}
