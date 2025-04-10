@@ -51,7 +51,7 @@ kotlin {
             implementation(projects.feature.onboarding)
             implementation(projects.feature.splash)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.androidx.navigation.compose)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

@@ -28,7 +28,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.ui)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
 
