@@ -83,6 +83,7 @@ profileinstaller = "1.4.1"
 robolectric = "4.14.1"
 junit5-robolectric-extension = "0.9.0"
 turbine = "1.2.0"
+compose-preview-scanner = "0.5.1"
 
 [libraries]
 
@@ -191,6 +192,8 @@ robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine"}
 kotest-framework = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
+composable-preview-scanner = { group = "com.github.sergio-sastre.ComposablePreviewScanner", name = "android", version.ref = "composable-preview-scanner" }
+composable-preview-scanner-jvm = { group = "com.github.sergio-sastre.ComposablePreviewScanner", name = "jvm", version.ref = "composable-preview-scanner" }
 
 [plugins]
 
