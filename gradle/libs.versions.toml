@@ -84,6 +84,7 @@ robolectric = "4.14.1"
 junit5-robolectric-extension = "0.9.0"
 turbine = "1.2.0"
 composable-preview-scanner = "0.5.1"
+kover = "0.7.6"
 
 [libraries]
 
@@ -100,6 +101,7 @@ firebase-gradle-plugin = { group = "com.google.gms", name = "google-services", v
 kotlinx-serialization-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-core" }
 firebase-crashlytics-gradle-plugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebase-crashlytics" }
 spotless-gradle-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+kover-plugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 
 # Kotlinx
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -230,6 +232,7 @@ kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla"}
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 junit5-robolectric-extension = { id = "tech.apter.junit5.jupiter.robolectric-extension-gradle-plugin", version.ref = "junit5-robolectric-extension" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover"}
 
 [bundles]
 
