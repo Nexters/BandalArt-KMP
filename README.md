@@ -130,7 +130,7 @@ check Circuit implementation [here](https://github.com/Nexters/BandalArt-KMP/tre
 ```
 
 ## Testing(Instrumentation, Unit)
-Beginner in testing(Studying...)
+Beginner in testing([Studying...](https://github.com/Nexters/BandalArt-KMP/issues/172))
 
 ### Room Database(DaoTest)
 ![image](https://github.com/user-attachments/assets/00cfe300-12f2-4c6d-bf5c-967ba4609985)
