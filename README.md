@@ -82,13 +82,15 @@
 - [uri-kmp](https://github.com/eygraber/uri-kmp)
 - [CMPToast](https://github.com/Chaintech-Network/CMPToast)
 
-#### Test & Code analysis
+#### Test 
 - JUnit5
 - mockK
 - robolectric
 - Kotest
-
+  
+#### Code analysis
 - Spotless
+- Ktlint
 - Detekt
 
 #### Gradle Dependency
