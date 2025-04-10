@@ -83,6 +83,9 @@
 - [CMPToast](https://github.com/Chaintech-Network/CMPToast)
 
 #### Test & Code analysis
+- JUnit5
+- mockK
+- robolectric
 - Kotest
 
 - Spotless
@@ -123,6 +126,31 @@ check Circuit implementation [here](https://github.com/Nexters/BandalArt-KMP/tre
     ├── compose-metrics
     └── compose-reports
 ```
+
+## Testing(Instrumentation, Unit)
+Beginner in testing(Studying...)
+
+### Room Database(DaoTest)
+![image](https://github.com/user-attachments/assets/00cfe300-12f2-4c6d-bf5c-967ba4609985)
+
+### DataStore
+![image](https://github.com/user-attachments/assets/b7d4d152-bb8c-46ce-a56a-4d2eff6b969d)
+![image](https://github.com/user-attachments/assets/529ad494-735b-415d-bbc2-ef955a437628)
+
+### Repository
+![image](https://github.com/user-attachments/assets/fd4b238e-76d7-449f-b108-57603180a482)
+![image](https://github.com/user-attachments/assets/27b50fd0-36b3-41e2-81c6-0ae86766ad83)
+![image](https://github.com/user-attachments/assets/367a00aa-82de-4b1d-8edd-c97aa60935c7)
+
+### ViewModel
+![image](https://github.com/user-attachments/assets/683806a3-10b4-4099-aef4-4cf5bff7fd89)
+![image](https://github.com/user-attachments/assets/329eedcb-2a51-4d9d-ab05-081fd1f0b84d)
+![image](https://github.com/user-attachments/assets/234690f7-a02e-4eb7-9cb9-01f9e84e08c4)
+![image](https://github.com/user-attachments/assets/42a63855-222d-484d-86ae-2278e19ed108)
+
+### Util
+![image](https://github.com/user-attachments/assets/c0e7cf5a-e065-40c0-a0d9-9045235fb4ce)
+![image](https://github.com/user-attachments/assets/3d591c75-048f-4548-9196-e41994833ace)
 
 
 ## Developer
