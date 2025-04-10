@@ -71,11 +71,10 @@ class HomeViewModelTest {
         mockBandalartRepository = mockk(relaxed = true)
         mockInAppUpdateRepository = mockk(relaxed = true)
 
-        // Compose 리소스 모킹
+        // Compose resource 모킹
         mockkStatic("org.jetbrains.compose.resources.StringResourcesKt")
         coEvery {
-            org.jetbrains.compose.resources
-                .getString(any())
+            org.jetbrains.compose.resources.getString(any())
         } returns "Mocked String"
 
         // 기본 모킹 설정
@@ -152,8 +151,8 @@ class HomeViewModelTest {
                     MutableStateFlow(
                         listOf(
                             createBandalartEntity(1),
-                            createBandalartEntity(2)
-                        )
+                            createBandalartEntity(2),
+                        ),
                     )
 
                 coEvery { mockBandalartRepository.getBandalartList() } returns bandalartListFlow
@@ -430,8 +429,10 @@ class HomeViewModelTest {
 
                 // 바텀시트 상태 확인
                 assertNotNull(viewModel.uiState.value.bottomSheet, "BottomSheet should not be null after cell click")
-                assertTrue(viewModel.uiState.value.bottomSheet is BottomSheetState.Cell,
-                    "BottomSheet should be of type Cell but was ${viewModel.uiState.value.bottomSheet?.javaClass?.simpleName}")
+                assertTrue(
+                    viewModel.uiState.value.bottomSheet is BottomSheetState.Cell,
+                    "BottomSheet should be of type Cell but was ${viewModel.uiState.value.bottomSheet?.javaClass?.simpleName}",
+                )
 
                 // when: 타이틀 업데이트
                 viewModel.onAction(
