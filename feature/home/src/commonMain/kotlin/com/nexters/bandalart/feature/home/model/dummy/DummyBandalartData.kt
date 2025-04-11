@@ -19,7 +19,6 @@ package com.nexters.bandalart.feature.home.model.dummy
 import androidx.compose.ui.text.input.TextFieldValue
 import com.nexters.bandalart.core.ui.allColor
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
-import kotlinx.datetime.Clock
 
 val dummyBandalartData =
     BandalartUiModel(
@@ -29,7 +28,7 @@ val dummyBandalartData =
         profileEmoji = "😎",
         title = TextFieldValue("발전하는 예진"),
         cellId = 0L,
-        dueDate = Clock.System.now().toString(),
+        dueDate = "2025-04-15T00:00:00",
         isCompleted = false,
         completionRatio = 66,
         isGeneratedTitle = false,

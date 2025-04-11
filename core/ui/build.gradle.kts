@@ -14,7 +14,6 @@ kotlin {
             implementation(projects.core.common)
             implementation(projects.core.designsystem)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.compottie)
             implementation(libs.coil3.compose)
         }

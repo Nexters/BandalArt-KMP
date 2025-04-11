@@ -27,6 +27,7 @@ internal class KmpComposePlugin : BuildLogicPlugin(
                     implementation(compose.dependencies.ui)
                     implementation(compose.dependencies.runtime)
                     implementation(compose.dependencies.components.resources)
+                    implementation(compose.dependencies.uiTooling)
                     implementation(compose.dependencies.components.uiToolingPreview)
                 }
 
