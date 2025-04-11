@@ -67,7 +67,7 @@ internal fun BandalartTextField(
 private fun BandalartTextFieldPreview() {
     BandalartTheme {
         BandalartTextField(
-            value = "",
+            value = TextFieldValue(""),
             onValueChange = {},
             modifier = Modifier.fillMaxWidth(),
             placeholder = "Placeholder",
