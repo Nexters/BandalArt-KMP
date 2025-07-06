@@ -37,7 +37,6 @@ import com.nexters.bandalart.feature.home.ui.HomeHeader
 import com.nexters.bandalart.feature.home.ui.HomeShareButton
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
-import com.nexters.bandalart.feature.home.ui.bandalart.BandalartSnackbar
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -256,12 +255,8 @@ internal fun Home(
         }
 
         SnackbarHost(
-            modifier = Modifier
-                .padding(top = 64.dp)
-                .height(36.dp)
-                .align(Alignment.TopCenter),
             hostState = snackbarHostState,
-            snackbar = { BandalartSnackbar(message = it.visuals.message) },
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
