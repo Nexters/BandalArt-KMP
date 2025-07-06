@@ -1,63 +1,64 @@
 [versions]
 
 minSdk = "28"
-targetSdk = "34"
-compileSdk = "34"
+targetSdk = "35"
+compileSdk = "35"
 majorVersion = "2"
 minorVersion = "2"
-patchVersion = "0"
+patchVersion = "1"
 packageName = "com.nexters.bandalart.android"
 
-android-gradle-plugin = "8.5.2"
+android-gradle-plugin = "8.8.2"
 gradle-dependency-handler-extensions = "1.1.0"
 
 google-secrets = "2.0.1"
 google-service = "4.4.2"
 
-kotlin-core = "2.0.21"
+kotlin-core = "2.1.21"
 kotlin-detekt = "1.23.6"
 kotlin-ktlint-gradle = "11.6.1"
 kotlin-ktlint-source = "0.50.0"
 
-kotlinx-coroutines = "1.9.0"
-kotlinx-datetime = "0.6.1"
-kotlinx-serialization = "1.7.3"
+kotlinx-coroutines = "1.10.2"
+kotlinx-datetime = "0.6.2"
+kotlinx-serialization = "1.9.0"
 kotlinx-serialization-converter = "1.0.0"
-kotlinx-collections-immutable = "0.3.8"
+kotlinx-collections-immutable = "0.4.0"
 
-hilt = "2.52"
+hilt = "2.56.2"
 
-androidx-core = "1.13.1"
-androidx-datastore = "1.1.1"
-androidx-lifecycle-runtime = "2.8.7"
+androidx-core = "1.16.0"
+androidx-datastore = "1.1.7"
+androidx-lifecycle-runtime = "2.9.1"
 androidx-splash = "1.0.1"
 androidx-startup = "1.2.0"
-androidx-activity-compose = "1.9.3"
-androidx-compose-bom = "2024.11.00"
-androidx-compose-material3 = "1.3.1"
-androidx-compose-runtime-tracing = "1.7.5"
-androidx-navigation = "2.8.4"
+androidx-activity-compose = "1.10.1"
+androidx-compose-bom = "2025.06.01"
+androidx-compose-material3 = "1.4.0-alpha17"
+androidx-compose-material-icons-extended = "1.7.8"
+androidx-compose-runtime-tracing = "1.8.3"
+androidx-navigation = "2.9.1"
 androidx-hilt-navigation-compose = "1.2.0"
-androidx-room = "2.6.1"
+androidx-room = "2.7.2"
 app-update = "2.1.0"
 
 desugar-jdk-libs = "2.1.3"
 javax-inject = "1"
-ktor-client = "2.3.12"
-retrofit = "2.11.0"
-okhttp = "5.0.0-alpha.14"
-lottie-compose = "6.1.0"
+ktor-client = "3.2.1"
+retrofit = "3.0.0"
+okhttp = "5.0.0"
+lottie-compose = "6.6.7"
 timber = "5.0.1"
 facebook-shimmer = "0.5.0"
-firebase-bom = "33.6.0"
-firebase-crashlytics = "3.0.2"
-ksp = "2.0.21-1.0.27"
-circuit = "0.25.0"
-compose-stable-marker = "1.0.4"
+firebase-bom = "33.16.0"
+firebase-crashlytics = "3.0.4"
+ksp = "2.1.21-2.0.1"
+circuit = "0.29.0"
+compose-stable-marker = "1.0.6"
 coil-compose = "2.7.0"
-landscapist = "2.3.6"
+landscapist = "2.5.1"
 
-test-kotest = "5.8.1"
+test-kotest = "5.9.1"
 
 [libraries]
 
@@ -89,6 +90,7 @@ androidx-compose-animation = { group = "androidx.compose.animation", name = "ani
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "androidx-compose-material-icons-extended" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -195,6 +197,7 @@ androidx-compose = [
     "androidx-compose-ui-tooling",
     "androidx-compose-ui-tooling-preview",
     "androidx-compose-ui-util",
+    "androidx-compose-material-icons-extended",
 ]
 
 androidx-lifecycle = [
