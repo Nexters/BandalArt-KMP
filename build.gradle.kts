@@ -19,17 +19,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(libs.gradle.kotlin)
-    }
-}
-
 allprojects {
     repositories {
         google()
