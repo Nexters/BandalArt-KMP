@@ -62,7 +62,7 @@ API 36의 공식 최소 AGP는 8.9.1이며, AGP 8.9의 최소 Gradle은 8.11.1�
 - `innerPadding`을 적용하는 컨테이너에서 inset 소비가 필요한지 검토한다.
 - 텍스트 입력을 사용하는 `MainActivity`에 `android:windowSoftInputMode="adjustResize"` 적용을 검토한다.
 - `BandalartBottomSheet`와 `BandalartListBottomSheet`의 `statusBarsPadding`, `navigationBarsPadding`, `imePadding` 조합은 실기기에서 중복 여백 또는 가림이 관측될 때만 수정한다.
-- `BandalartTheme`의 중복된 system bar 색상·아이콘 수동 제어는 제거하고 `ComponentActivity.enableEdgeToEdge()`에 위임한다.
+- `BandalartTheme`의 중복된 system bar 색상·아이콘 수동 제어는 제거한다. `ComponentActivity.enableEdgeToEdge()`의 밝은 배경용 아이콘 스타일을 사용하고, 상태 표시줄 배경은 `White`, 내비게이션 바 배경은 콘텐츠와 같은 `Gray50`으로 구성한다.
 
 ### 4.3 Predictive back
 
