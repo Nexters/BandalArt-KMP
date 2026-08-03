@@ -10,6 +10,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 ksp {
@@ -32,4 +36,10 @@ dependencies {
         libs.facebook.shimmer,
         libs.timber,
     )
+
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(libs.test.junit)
+    testImplementation(libs.test.robolectric)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

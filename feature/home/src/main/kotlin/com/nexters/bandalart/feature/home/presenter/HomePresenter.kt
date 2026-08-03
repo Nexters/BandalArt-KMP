@@ -60,7 +60,6 @@ class HomePresenter @AssistedInject constructor(
         var clickedCellType by rememberRetained { mutableStateOf(CellType.MAIN) }
         var clickedCellData by rememberRetained { mutableStateOf(BandalartCellEntity()) }
         var updateVersionCode by rememberRetained { mutableStateOf<Int?>(null) }
-        var showUpdateConfirm by rememberRetained { mutableStateOf(false) }
         var sideEffect by rememberRetained { mutableStateOf<HomeScreen.SideEffect?>(null) }
 
         val scope = rememberStableCoroutineScope()
@@ -549,21 +548,12 @@ class HomePresenter @AssistedInject constructor(
                     }
                 }
 
-                is Event.OnUpdateDownloadComplete -> {
-                    showUpdateConfirm = true
-                }
-
-                is Event.OnUpdateDownloaded -> {
-                    showUpdateConfirm = false
-                }
-
                 is Event.OnUpdateCanceled -> {
                     scope.launch {
                         updateVersionCode?.let {
                             setLastRejectedUpdateVersion(it)
                         }
                         updateVersionCode = null
-                        showUpdateConfirm = false
                     }
                 }
 
@@ -591,7 +581,6 @@ class HomePresenter @AssistedInject constructor(
             clickedCellType = clickedCellType,
             clickedCellData = clickedCellData,
             updateVersionCode = updateVersionCode,
-            showUpdateConfirm = showUpdateConfirm,
             sideEffect = sideEffect,
             eventSink = { event -> handleEvent(event) },
         )

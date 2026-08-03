@@ -59,6 +59,8 @@ coil-compose = "2.7.0"
 landscapist = "2.5.1"
 
 test-kotest = "5.9.1"
+test-junit = "4.13.2"
+test-robolectric = "4.16.1"
 
 [libraries]
 
@@ -142,6 +144,10 @@ circuitx-gesture-navigation = { group = "com.slack.circuit", name = "circuitx-ge
 
 test-kotest-framework = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "test-kotest" }
 test-kotest-assertion = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "test-kotest" }
+test-junit = { module = "junit:junit", version.ref = "test-junit" }
+test-robolectric = { module = "org.robolectric:robolectric", version.ref = "test-robolectric" }
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-compose" }
 landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
