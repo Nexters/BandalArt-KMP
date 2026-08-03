@@ -55,6 +55,7 @@ keystore.properties
 
 # Secrets
 secrets.properties
+/playstore/service-account-key.json
 
 # report module
 /report/*

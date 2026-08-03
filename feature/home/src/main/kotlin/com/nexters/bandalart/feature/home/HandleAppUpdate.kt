@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallStateUpdatedListener
@@ -21,6 +23,7 @@ import com.nexters.bandalart.core.common.extension.await
 import com.nexters.bandalart.core.ui.R
 import com.nexters.bandalart.feature.home.HomeScreen.Event
 import com.nexters.bandalart.feature.home.HomeScreen.State
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Suppress("TooGenericExceptionCaught")
@@ -29,23 +32,37 @@ internal fun HandleAppUpdate(
     state: State,
     snackbarHostState: SnackbarHostState,
     eventSink: (Event) -> Unit,
+    appUpdateManager: AppUpdateManager? = null,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    val appUpdateManager = remember { AppUpdateManagerFactory.create(context) }
+    val updateManager = remember(context, appUpdateManager) {
+        appUpdateManager ?: AppUpdateManagerFactory.create(context)
+    }
 
-    val installStateUpdatedListener = remember {
+    val installStateUpdatedListener = remember(updateManager, snackbarHostState, context, scope) {
         InstallStateUpdatedListener { installState ->
             if (installState.installStatus() == InstallStatus.DOWNLOADED) {
-                eventSink(Event.OnUpdateDownloadComplete)
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.update_ready_to_install),
+                        actionLabel = context.getString(R.string.update_action_restart),
+                        duration = Indefinite,
+                    )
+
+                    if (result == SnackbarResult.ActionPerformed) {
+                        updateManager.completeUpdate()
+                    }
+                }
             }
         }
     }
 
-    DisposableEffect(Unit) {
-        appUpdateManager.registerListener(installStateUpdatedListener)
+    DisposableEffect(updateManager, installStateUpdatedListener) {
+        updateManager.registerListener(installStateUpdatedListener)
         onDispose {
-            appUpdateManager.unregisterListener(installStateUpdatedListener)
+            updateManager.unregisterListener(installStateUpdatedListener)
         }
     }
 
@@ -60,7 +77,7 @@ internal fun HandleAppUpdate(
     // 업데이트 체크
     LaunchedEffect(Unit) {
         try {
-            val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
+            val appUpdateInfo = updateManager.appUpdateInfo.await()
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                 appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
             ) {
@@ -76,25 +93,12 @@ internal fun HandleAppUpdate(
         state.updateVersionCode?.let {
             try {
                 // 업데이트 Flow 시작
-                val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
-                appUpdateManager.startUpdateFlowForResult(
+                val appUpdateInfo = updateManager.appUpdateInfo.await()
+                updateManager.startUpdateFlowForResult(
                     appUpdateInfo,
                     appUpdateResultLauncher,
                     AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
                 )
-
-                // 업데이트 준비되면 스낵바 표시
-                val result = snackbarHostState.showSnackbar(
-                    message = context.getString(R.string.update_ready_to_install),
-                    actionLabel = context.getString(R.string.update_action_restart),
-                    duration = Indefinite,
-                )
-
-                if (result == SnackbarResult.ActionPerformed) {
-                    eventSink(Event.OnUpdateDownloaded(true))
-                } else {
-                    eventSink(Event.OnUpdateCanceled)
-                }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to start update flow")
             }

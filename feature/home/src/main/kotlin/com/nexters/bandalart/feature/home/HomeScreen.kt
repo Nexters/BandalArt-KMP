@@ -64,7 +64,6 @@ data object HomeScreen : Screen {
         val clickedCellType: CellType = CellType.MAIN,
         val clickedCellData: BandalartCellEntity? = null,
         val updateVersionCode: Int? = null,
-        val showUpdateConfirm: Boolean = false,
         val sideEffect: SideEffect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -113,8 +112,6 @@ data object HomeScreen : Screen {
         data class OnSaveRequested(val bitmap: ImageBitmap) : Event
         data class OnCaptureRequested(val bitmap: ImageBitmap) : Event
         data class OnUpdateCheck(val versionCode: Int) : Event
-        data object OnUpdateDownloadComplete : Event
-        data class OnUpdateDownloaded(val doUpdate: Boolean) : Event
         data object OnUpdateCanceled : Event
         data class CaptureFinished(val bandalartChartUrl: String) : Event
         data object InitSideEffect : Event
@@ -256,7 +253,7 @@ internal fun Home(
 
         SnackbarHost(
             hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
