@@ -1,14 +1,14 @@
 [versions]
 
 minSdk = "28"
-targetSdk = "35"
-compileSdk = "35"
+targetSdk = "36"
+compileSdk = "36"
 majorVersion = "2"
 minorVersion = "2"
-patchVersion = "1"
+patchVersion = "2"
 packageName = "com.nexters.bandalart.android"
 
-android-gradle-plugin = "8.8.2"
+android-gradle-plugin = "8.9.1"
 gradle-dependency-handler-extensions = "1.1.0"
 
 google-secrets = "2.0.1"
