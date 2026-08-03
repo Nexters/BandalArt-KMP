@@ -1,0 +1,24 @@
+{
+  "name": "yb",
+  "version": "0.1.0",
+  "description": "YeoBee Android project workflows migrated from the Claude yb plugin.",
+  "author": {
+    "name": "YeoBee"
+  },
+  "keywords": ["yeobee", "android", "workflow"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "YeoBee",
+    "shortDescription": "YeoBee Android workflow skills.",
+    "longDescription": "Project-local Codex plugin for YeoBee Android commit, push, PR, review, Firebase deploy, Play Store deploy, GitHub release, Gemini review, and worktree setup workflows.",
+    "developerName": "YeoBee",
+    "category": "Productivity",
+    "capabilities": ["Write"],
+    "defaultPrompt": [
+      "yb:commit",
+      "yb:review",
+      "yb:create-pr",
+      "yb:github-release"
+    ]
+  }
+}
