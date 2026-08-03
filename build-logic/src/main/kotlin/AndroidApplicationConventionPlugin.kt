@@ -13,6 +13,7 @@ internal class AndroidApplicationConventionPlugin : BuildLogicConventionPlugin(
             configureAndroid(this)
 
             defaultConfig {
+                applicationId = libs.versions.packageName.get()
                 targetSdk = libs.versions.targetSdk.get().toInt()
 
                 val major = libs.versions.majorVersion.get().toInt()

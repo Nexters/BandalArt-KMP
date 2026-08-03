@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage", "INLINE_FROM_HIGHER_PLATFORM")
 
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
 import java.util.Properties
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.bandalart.android.firebase)
     alias(libs.plugins.bandalart.android.hilt)
     alias(libs.plugins.google.secrets)
+    alias(libs.plugins.play.publisher)
 }
 
 android {
@@ -52,6 +54,16 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
+
+play {
+    val serviceAccountFile = rootProject.file("playstore/service-account-key.json")
+    if (serviceAccountFile.exists()) {
+        serviceAccountCredentials.set(serviceAccountFile)
+    }
+    track.set("internal")
+    releaseStatus.set(ReleaseStatus.COMPLETED)
+    defaultToAppBundles.set(true)
 }
 
 dependencies {

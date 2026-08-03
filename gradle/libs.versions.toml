@@ -6,7 +6,7 @@ compileSdk = "36"
 majorVersion = "2"
 minorVersion = "2"
 patchVersion = "2"
-packageName = "com.nexters.bandalart.android"
+packageName = "com.nexters.bandalart"
 
 android-gradle-plugin = "8.9.1"
 gradle-dependency-handler-extensions = "1.1.0"
@@ -52,6 +52,7 @@ timber = "5.0.1"
 facebook-shimmer = "0.5.0"
 firebase-bom = "33.16.0"
 firebase-crashlytics = "3.0.4"
+play-publisher = "3.13.0"
 ksp = "2.1.21-2.0.1"
 circuit = "0.29.0"
 compose-stable-marker = "1.0.6"
@@ -176,6 +177,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+play-publisher = { id = "com.github.triplet.play", version.ref = "play-publisher" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Plugins defined by this project
