@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart
+package com.nexters.bandalart.di.metro
 
-import androidx.compose.ui.window.ComposeUIViewController
-import com.nexters.bandalart.di.initKoin
-import com.nexters.bandalart.di.metro.createIosAppGraph
-import platform.UIKit.UIViewController
+private object AndroidPlatformBindings : PlatformBindings
 
-fun MainViewController(): UIViewController {
-    val appGraph = createIosAppGraph()
-
-    return ComposeUIViewController(
-        configure = {
-            initKoin()
-        },
-    ) {
-        BandalartApp(appGraph = appGraph)
-    }
-}
+fun createAndroidAppGraph(): AppGraph = createAppGraph(AndroidPlatformBindings)

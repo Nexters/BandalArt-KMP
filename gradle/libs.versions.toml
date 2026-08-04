@@ -44,6 +44,7 @@ androidx-sqlite = "2.5.0"
 
 # DI
 koin = "4.1.0-Beta5"
+metro = "1.1.1"
 
 # Image Load
 coil3 = "3.1.0"
@@ -230,6 +231,7 @@ androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 # Util
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }

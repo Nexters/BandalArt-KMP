@@ -30,7 +30,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BandalartTheme {
-                BandalartApp()
+                BandalartApp(
+                    appGraph = (application as BandalartApplication).appGraph,
+                )
             }
         }
     }

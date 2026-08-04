@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.google.service) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.ksp.gradle.plugin) apply false
+    alias(libs.plugins.metro) apply false
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.baselineprofile) apply false
 }
