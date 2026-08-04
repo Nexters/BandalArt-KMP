@@ -5,7 +5,7 @@ targetSdk = "36"
 compileSdk = "36"
 majorVersion = "2"
 minorVersion = "2"
-patchVersion = "2"
+patchVersion = "5"
 packageName = "com.nexters.bandalart"
 
 android-gradle-plugin = "8.9.1"
@@ -142,11 +142,13 @@ circuit-codegen-ksp = { group = "com.slack.circuit", name = "circuit-codegen", v
 circuitx-android = { group = "com.slack.circuit", name = "circuitx-android", version.ref = "circuit" }
 circuitx-overlays = { group = "com.slack.circuit", name = "circuitx-overlays", version.ref = "circuit" }
 circuitx-gesture-navigation = { group = "com.slack.circuit", name = "circuitx-gesture-navigation", version.ref = "circuit" }
+circuit-test = { group = "com.slack.circuit", name = "circuit-test", version.ref = "circuit" }
 
 test-kotest-framework = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "test-kotest" }
 test-kotest-assertion = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "test-kotest" }
 test-junit = { module = "junit:junit", version.ref = "test-junit" }
 test-robolectric = { module = "org.robolectric:robolectric", version.ref = "test-robolectric" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 

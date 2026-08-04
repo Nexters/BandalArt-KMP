@@ -14,7 +14,7 @@
 - 서비스 계정 키: 로컬 `playstore/service-account-key.json`
 - 서명 설정: 로컬 `keystore.properties`가 가리키는 release keystore
 - 버전 규칙: `major * 10000 + minor * 100 + patch`
-- 현재 배포 후보: `2.2.2 (20202)`
+- 현재 배포 후보: `2.2.5 (20205)`
 
 ## 3. 구현 범위
 

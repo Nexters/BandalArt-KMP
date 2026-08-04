@@ -10,6 +10,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 ksp {
@@ -27,4 +31,8 @@ dependencies {
         libs.lottie.compose,
         libs.timber,
     )
+
+    testImplementation(libs.circuit.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.test.junit)
 }
