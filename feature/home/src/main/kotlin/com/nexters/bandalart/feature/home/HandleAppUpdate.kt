@@ -115,6 +115,7 @@ internal fun HandleAppUpdate(
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 private suspend fun promptForCompleteUpdate(
     context: Context,
     snackbarHostState: SnackbarHostState,
