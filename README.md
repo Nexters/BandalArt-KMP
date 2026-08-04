@@ -43,7 +43,7 @@
 ### Required
 
 - IDE : Android Studio Ladybug
-- JDK : Java 17을 실행할 수 있는 JDK
+- JDK : Java 21을 실행할 수 있는 JDK
 - Kotlin Language : 2.1.10
 
 ### Language
@@ -162,4 +162,3 @@ Beginner in testing([Studying...](https://github.com/Nexters/BandalArt-KMP/issue
 |<img src="https://github.com/Nexters/BandalArt-Android/assets/51016231/e7b05305-b831-4c81-8635-84b478726c55" width=200>|<img src="https://github.com/Nexters/BandalArt-Android/assets/51016231/bbcf9941-5fbb-4f8a-8e8d-8f78db396808" width=200>|
 |[@easyhooon](https://github.com/easyhooon)|[@likppi10](https://github.com/likppi10)|
 <br/>
-

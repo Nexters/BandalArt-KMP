@@ -207,7 +207,7 @@ interface PlatformBindings {
 }
 ```
 
-실제 annotation/import 문법은 Metro 1.3.2 compile spike에서 확정한다. 이 코드는 책임 경계를 설명하기 위한 설계안이다.
+실제 annotation/import 문법은 Metro 1.1.1 compile spike에서 확정한다. 이 코드는 책임 경계를 설명하기 위한 설계안이다.
 
 ### 7.2 플랫폼 생성 지점
 
@@ -243,7 +243,7 @@ Metro는 KMP를 지원하지만 Native target에서 `@Contributes*`를 사용한
 
 ## 8. Circuit factory 설계
 
-Metro 1.3.2는 `metro { enableCircuitCodegen.set(true) }`로 Circuit factory를 생성하고 `Presenter.Factory`/`Ui.Factory` set에 기여할 수 있다. 이 기능은 Kotlin 2.3.20 이상이 필요하다.
+Metro 1.1.1은 `metro { enableCircuitCodegen.set(true) }`로 Circuit factory를 생성하고 `Presenter.Factory`/`Ui.Factory` set에 기여할 수 있다. 실제 활성화는 첫 Circuit vertical slice 전에 Android/iOS compile spike로 검증한다.
 
 - `@CircuitInject`는 Hilt component를 인자로 받는 기존 형태로 복사하지 않는다.
 - Presenter의 nested `@AssistedFactory`에 Metro/Circuit이 요구하는 annotation을 적용한다.
@@ -281,7 +281,7 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 
 ### 3-B. Metro bootstrap
 
-- Metro 1.3.2 plugin/runtime 추가
+- Metro 1.1.1 plugin/runtime 추가
 - `AppScope`, 최소 `AppGraph`, `PlatformBindings` 추가
 - 기존 Koin graph는 그대로 두고 신규 bootstrap probe만 Metro가 소유
 - Android/iOS에서 graph 생성 및 앱 기동 확인
@@ -355,7 +355,7 @@ toolchain/DI 전환 PR은 기능 변경을 포함하지 않고, 기능 전환 PR
 
 | 항목 | 현재 판단 | 확정 시점 |
 | --- | --- | --- |
-| Metro 정확한 버전 | 1.3.2 우선 | 3-B dependency resolution/build 결과 |
+| Metro 정확한 버전 | 1.1.1 | 3-B에서 Android test와 iOS framework link로 확정 |
 | Circuit 정확한 버전 | develop의 0.35.1 이상 호환 버전 | 3-A toolchain 및 3-B codegen spike |
 | Android/iOS 앱 버전 | 배포 이력이 갈라져 별도 확인 필요 | 3-A에서 Play/App Store 기준 확인 후 결정 |
 | `@Parcelize` 대체 | 공통 Screen compile/상태 복원 spike 필요 | 5단계 시작 전 |

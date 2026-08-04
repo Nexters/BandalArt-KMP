@@ -75,7 +75,7 @@
 
 1. `main`의 KMP 코드 위에 `develop`의 Circuit 계약과 Presenter 동작을 선택적으로 재작성한다.
 2. `develop`의 Android UI, Hilt annotation, network/guest-login 계층은 이식하지 않는다.
-3. Metro 1.3.2의 Circuit codegen을 사용하려면 Kotlin 2.3.20 이상이 필요하므로 현재 `main`의 Kotlin 2.1.20을 먼저 올린다.
+3. Metro 1.1.1을 Kotlin 2.3.21과 함께 사용한다. Metro 1.2.0 이상은 iOS runtime KLIB가 Kotlin 2.4 ABI라 현재 Kotlin/Native에서 사용할 수 없다.
 4. AGP 9 이상에서는 KMP와 `com.android.application`을 한 모듈에 둘 수 없으므로 `composeApp`의 Android entry point를 별도 `androidApp` 모듈로 분리한다.
 5. Koin과 Metro의 공존 방향은 `Koin → Metro accessor`만 허용한다. Metro graph가 Koin service locator를 조회하지 않는다.
 6. 최초에는 `AppScope` 하나만 사용한다. Presenter는 assisted factory가 화면마다 생성하고 DI graph에 Activity/Screen scope를 추가하지 않는다.
@@ -84,9 +84,9 @@
 
 - [KMP 프로젝트의 AGP 9 마이그레이션](https://kotlinlang.org/docs/multiplatform/multiplatform-project-agp-9-migration.html)
 - [KMP 권장 모듈 구조](https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html)
-- [Metro 1.3.2 설치](https://zacsweers.github.io/metro/1.3.2/installation/)
-- [Metro Kotlin 호환성](https://zacsweers.github.io/metro/1.3.2/compatibility/)
-- [Metro dependency graph](https://zacsweers.github.io/metro/1.3.2/dependency-graphs/)
-- [Metro Circuit integration](https://zacsweers.github.io/metro/1.3.2/circuit/)
-- [Metro adoption strategy](https://zacsweers.github.io/metro/1.3.2/adoption/)
-- [Metro KMP 제약](https://zacsweers.github.io/metro/1.3.2/features/)
+- [Metro 1.1.1 설치](https://zacsweers.github.io/metro/1.1.1/installation/)
+- [Metro Kotlin 호환성](https://zacsweers.github.io/metro/1.1.1/compatibility/)
+- [Metro dependency graph](https://zacsweers.github.io/metro/1.1.1/dependency-graphs/)
+- [Metro Circuit integration](https://zacsweers.github.io/metro/1.1.1/circuit/)
+- [Metro adoption strategy](https://zacsweers.github.io/metro/1.1.1/adoption/)
+- [Metro KMP 제약](https://zacsweers.github.io/metro/1.1.1/features/)

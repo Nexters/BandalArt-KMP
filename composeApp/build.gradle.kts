@@ -5,6 +5,7 @@ plugins {
     id("bandalart.kmp.compose")
     id("bandalart.kmp.ios")
     id("bandalart.kmp.firebase")
+    alias(libs.plugins.metro)
 }
 
 kotlin {
@@ -24,6 +25,10 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
+        }
+
+        androidHostTest.dependencies {
+            implementation(libs.junit.jupiter.api)
         }
 
         commonMain.dependencies {
@@ -52,4 +57,8 @@ kotlin {
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
