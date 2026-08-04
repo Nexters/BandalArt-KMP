@@ -5,9 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.nexters.bandalart.core.common.utils.UiText
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
-import com.nexters.bandalart.core.ui.R
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen.Event
 import com.nexters.bandalart.feature.complete.CompleteScreen.State
@@ -37,26 +35,22 @@ class CompletePresenter @AssistedInject constructor(
             )
         }
 
-        fun showToast(message: UiText) {
-            sideEffect = CompleteScreen.SideEffect.ShowToast(message)
-        }
-
         fun clearSideEffect() {
             sideEffect = null
         }
 
         return State(
-            id = 0L,
-            title = "",
-            profileEmoji = "",
+            id = screen.bandalartId,
+            title = screen.bandalartTitle,
+            profileEmoji = screen.bandalartProfileEmoji,
             isShared = false,
-            bandalartChartImageUri = "",
+            bandalartChartImageUri = screen.bandalartChartImageUri,
+            sideEffect = sideEffect,
         ) { event ->
             when (event) {
                 is Event.NavigateBack -> navigator.pop()
                 is Event.SaveBandalart -> {
                     sideEffect = CompleteScreen.SideEffect.SaveImage(event.imageUri)
-                    showToast(UiText.StringResource(R.string.save_bandalart_image))
                 }
 
                 is Event.ShareBandalart -> {

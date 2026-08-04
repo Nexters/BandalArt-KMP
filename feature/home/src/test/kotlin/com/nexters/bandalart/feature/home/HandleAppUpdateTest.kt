@@ -32,14 +32,14 @@ class HandleAppUpdateTest {
         val snackbarHostState = SnackbarHostState()
         val restartLabel = composeRule.activity.getString(R.string.update_action_restart)
 
-        appUpdateManager.setUpdateAvailable(20202, AppUpdateType.FLEXIBLE)
+        appUpdateManager.setUpdateAvailable(20206, AppUpdateType.FLEXIBLE)
 
         composeRule.setContent {
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) },
             ) {
                 HandleAppUpdate(
-                    state = State(updateVersionCode = 20202, eventSink = {}),
+                    state = State(updateVersionCode = 20206, eventSink = {}),
                     snackbarHostState = snackbarHostState,
                     eventSink = {},
                     appUpdateManager = appUpdateManager,

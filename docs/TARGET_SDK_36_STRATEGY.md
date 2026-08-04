@@ -3,7 +3,7 @@
 - 작성일: 2026-08-03
 - 작업 브랜치: `chore/target-sdk-36`
 - 기준 브랜치: `develop`
-- 대상 앱: Android (`com.nexters.bandalart.android`)
+- 대상 앱: Android (`com.nexters.bandalart`)
 
 ## 1. 목표
 
@@ -11,7 +11,7 @@ Google Play의 Android 16(API 36) 타깃 요구사항을 만족하는 업데이�
 
 - `compileSdk`와 `targetSdk`를 36으로 올린다.
 - API 36을 공식 지원하는 최소 빌드 도구 조합으로 갱신한다.
-- 앱 버전을 `2.2.2 (20202)` 후보로 올린다.
+- 앱 버전을 우선 `2.2.2 (20202)` 후보로 올리고, Play 검증 후 `2.2.5 (20205)`로 확정한다.
 - Android 16에서 바뀌는 edge-to-edge, predictive back, 대화면 동작을 검증한다.
 - Target SDK 대응이 끝난 최종 코드에서 인앱 업데이트를 Play 경유로 검증한다.
 
@@ -38,10 +38,10 @@ Google Play의 Android 16(API 36) 타깃 요구사항을 만족하는 업데이�
 | Gradle | 8.10.2 | 8.11.1 |
 | JDK | 17 | 17 유지 |
 | Kotlin | 2.1.21 | 우선 유지 |
-| versionName | 2.2.1 | 2.2.2 |
-| versionCode | 20201 | 20202 후보 |
+| versionName | 2.2.1 | 2.2.5 |
+| versionCode | 20201 | 20205 확정 |
 
-API 36의 공식 최소 AGP는 8.9.1이며, AGP 8.9의 최소 Gradle은 8.11.1이다. Play 전체 트랙의 최대 versionCode가 20201 이하인지 확인한 뒤 20202를 최종 확정한다.
+API 36의 공식 최소 AGP는 8.9.1이며, AGP 8.9의 최소 Gradle은 8.11.1이다. Play 전체 트랙 조회 결과 최대 versionCode가 Internal 트랙의 20204였으므로 20205를 최종 확정한다.
 
 ## 4. 구현 전략
 
@@ -51,7 +51,7 @@ API 36의 공식 최소 AGP는 8.9.1이며, AGP 8.9의 최소 Gradle은 8.11.1�
 2. Version Catalog에서 `compileSdk`와 `targetSdk`를 36으로 변경한다.
 3. AGP를 8.9.1로 변경한다.
 4. Gradle Wrapper를 8.11.1로 변경한다.
-5. 앱 patch version을 2로 변경해 `2.2.2 (20202)`를 생성한다.
+5. Target SDK 작업에서 patch version을 2로 변경하고, Play 검증 후 5로 변경해 `2.2.5 (20205)`를 생성한다.
 6. 빌드 오류가 실제 발생한 경우에만 관련 플러그인 또는 의존성을 추가 조정한다.
 
 ### 4.2 Edge-to-edge와 IME
@@ -122,7 +122,8 @@ API 36 타깃 앱에서는 predictive back이 기본 활성화되고 기존 `onB
 - `./gradlew help`: 성공
 - `./gradlew ktlintCheck detekt :feature:home:testDebugUnitTest :app:lintDebug`: 성공
 - 생성된 Debug manifest의 `targetSdkVersion=36`, `windowSoftInputMode=adjustResize` 확인
-- 생성된 BuildConfig의 `VERSION_NAME=2.2.2`, `VERSION_CODE=20202` 확인
+- Target SDK PR에서 생성된 BuildConfig의 `VERSION_NAME=2.2.2`, `VERSION_CODE=20202` 확인
+- 첫 Internal 배포 후보는 별도 출하 준비 브랜치에서 `VERSION_NAME=2.2.5`, `VERSION_CODE=20205`로 갱신
 - 기존 Kotlin DSL 및 Gradle deprecated API 경고는 남아 있으나 이번 변경으로 발생한 실패는 없음
 
 ## 6. Play 검증 및 출시
@@ -141,7 +142,7 @@ Internal App Sharing 빌드의 versionCode override 방식은 배포 자동화 �
 
 - [x] `compileSdk`와 `targetSdk`가 36이다.
 - [x] AGP 8.9.1과 Gradle 8.11.1 조합으로 동기화 및 자동 검증이 통과한다.
-- [ ] 앱 버전이 최종 승인된 versionName/versionCode로 변경된다.
+- [x] 앱 버전이 최종 승인된 `2.2.5 (20205)`로 변경된다.
 - [ ] Android 16 휴대전화에서 edge-to-edge, IME, predictive back 검증이 통과한다.
 - [ ] Android 16 `sw600dp` 화면에서 핵심 기능을 사용할 수 있다.
 - [ ] 공유 및 이미지 저장 회귀 검증이 통과한다.

@@ -77,7 +77,7 @@ versionCode = major * 10000 + minor * 100 + patch
 예:
 
 ```text
-2.2.2 -> 20202
+2.2.5 -> 20205
 ```
 
 - 계산한 versionCode가 `CURRENT_MAX`보다 클 때만 진행한다.

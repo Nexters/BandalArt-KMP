@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import com.nexters.bandalart.core.common.utils.UiText
@@ -27,7 +27,6 @@ import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -52,8 +51,8 @@ class HomePresenter @AssistedInject constructor(
         var bandalartCellData by rememberRetained { mutableStateOf<BandalartCellEntity?>(null) }
         var bandalartChartUrl by rememberRetained { mutableStateOf("") }
         var isBandalartCompleted by rememberRetained { mutableStateOf(false) }
-        var bottomSheet by rememberSaveable { mutableStateOf<HomeScreen.BottomSheetState?>(null) }
-        var dialog by rememberSaveable { mutableStateOf<HomeScreen.DialogState?>(null) }
+        var bottomSheet by rememberRetained { mutableStateOf<HomeScreen.BottomSheetState?>(null) }
+        var dialog by rememberRetained { mutableStateOf<HomeScreen.DialogState?>(null) }
         var isDropDownMenuOpened by rememberRetained { mutableStateOf(false) }
         var isSharing by rememberRetained { mutableStateOf(false) }
         var isCapturing by rememberRetained { mutableStateOf(false) }
@@ -62,7 +61,7 @@ class HomePresenter @AssistedInject constructor(
         var updateVersionCode by rememberRetained { mutableStateOf<Int?>(null) }
         var sideEffect by rememberRetained { mutableStateOf<HomeScreen.SideEffect?>(null) }
 
-        val scope = rememberStableCoroutineScope()
+        val scope = rememberCoroutineScope()
 
         fun requestCapture() {
             isCapturing = true

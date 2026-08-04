@@ -1,6 +1,7 @@
 package com.nexters.bandalart.feature.onboarding.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
@@ -8,7 +9,6 @@ import com.nexters.bandalart.feature.onboarding.OnboardingScreen.Event
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen.State
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -23,7 +23,7 @@ class OnboardingPresenter @AssistedInject constructor(
 
     @Composable
     override fun present(): State {
-        val scope = rememberStableCoroutineScope()
+        val scope = rememberCoroutineScope()
 
         return State { event ->
             when (event) {
