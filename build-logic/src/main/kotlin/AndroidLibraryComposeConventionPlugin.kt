@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.netxters.bandalart.android.convention.Plugins
 import com.netxters.bandalart.android.convention.applyPlugins
 import com.netxters.bandalart.android.convention.configureCompose
@@ -13,5 +13,4 @@ internal class AndroidLibraryComposeConventionPlugin : BuildLogicConventionPlugi
         }
     },
 )
-
 

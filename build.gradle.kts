@@ -1,5 +1,3 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
@@ -8,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.detekt)
     alias(libs.plugins.kotlin.ktlint)
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.hilt) apply false
@@ -49,11 +46,11 @@ allprojects {
 }
 
 tasks.register("cleanAll", type = Delete::class) {
-    allprojects.map(Project::getBuildDir).forEach(::delete)
+    delete(allprojects.map { it.layout.buildDirectory })
 }
 
 tasks.register("clean", type = Delete::class) {
-    rootProject.buildDir.delete()
+    delete(rootProject.layout.buildDirectory)
 }
 
 tasks.register("bundleRelease", type = Exec::class) {

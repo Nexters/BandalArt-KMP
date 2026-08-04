@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "INLINE_FROM_HIGHER_PLATFORM")
+@file:Suppress("UnstableApiUsage")
 
 import com.github.triplet.gradle.androidpublisher.ReleaseStatus
 import java.util.Properties

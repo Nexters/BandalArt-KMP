@@ -2,19 +2,19 @@
 
 minSdk = "28"
 targetSdk = "36"
-compileSdk = "36"
+compileSdk = "37"
 majorVersion = "2"
 minorVersion = "2"
 patchVersion = "6"
 packageName = "com.nexters.bandalart"
 
-android-gradle-plugin = "8.9.1"
+android-gradle-plugin = "9.3.0"
 gradle-dependency-handler-extensions = "1.1.0"
 
 google-secrets = "2.0.1"
 google-service = "4.4.2"
 
-kotlin-core = "2.1.21"
+kotlin-core = "2.3.21"
 kotlin-detekt = "1.23.6"
 kotlin-ktlint-gradle = "11.6.1"
 kotlin-ktlint-source = "0.50.0"
@@ -25,11 +25,11 @@ kotlinx-serialization = "1.9.0"
 kotlinx-serialization-converter = "1.0.0"
 kotlinx-collections-immutable = "0.4.0"
 
-hilt = "2.56.2"
+hilt = "2.60.1"
 
 androidx-core = "1.16.0"
 androidx-datastore = "1.1.7"
-androidx-lifecycle-runtime = "2.9.1"
+androidx-lifecycle-runtime = "2.11.0"
 androidx-splash = "1.0.1"
 androidx-startup = "1.2.0"
 androidx-activity-compose = "1.10.1"
@@ -52,9 +52,9 @@ timber = "5.0.1"
 facebook-shimmer = "0.5.0"
 firebase-bom = "33.16.0"
 firebase-crashlytics = "3.0.4"
-play-publisher = "3.13.0"
-ksp = "2.1.21-2.0.1"
-circuit = "0.29.0"
+play-publisher = "4.0.0"
+ksp = "2.3.10"
+circuit = "0.35.1"
 compose-stable-marker = "1.0.6"
 coil-compose = "2.7.0"
 landscapist = "2.5.1"
@@ -164,7 +164,6 @@ gradle-dependency-handler-extensions = { id = "land.sungbin.dependency.handler.e
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "google-secrets" }
 google-service = { id = "com.google.gms.google-services", version.ref = "google-service" }
 
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
 kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "kotlin-detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-core" }
 kotlin-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-ktlint-gradle" }

@@ -1,8 +1,8 @@
 package com.netxters.bandalart.android.convention
 
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Action
 import org.gradle.api.GradleException
@@ -23,10 +23,10 @@ internal val Project.isAndroidProject: Boolean
     get() = pluginManager.hasPlugin(Plugins.ANDROID_APPLICATION) ||
         pluginManager.hasPlugin(Plugins.ANDROID_LIBRARY)
 
-internal val Project.androidExtensions: CommonExtension<*, *, *, *, *, *>
+internal val Project.androidExtensions: CommonExtension
     get() {
         return if (pluginManager.hasPlugin(Plugins.ANDROID_APPLICATION)) {
-            extensions.getByType<BaseAppModuleExtension>()
+            extensions.getByType<ApplicationExtension>()
         } else if (pluginManager.hasPlugin(Plugins.ANDROID_LIBRARY)) {
             extensions.getByType<LibraryExtension>()
         } else {
@@ -40,4 +40,3 @@ internal inline operator fun <T : Any, C : NamedDomainObjectContainer<T>> C.invo
     apply {
         configuration.execute(NamedDomainObjectContainerScope.of(this))
     }
-
