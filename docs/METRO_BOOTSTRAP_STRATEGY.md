@@ -11,6 +11,8 @@
 - 작업 브랜치: `refactor/metro-bootstrap`
 - Kotlin: 2.3.21
 - AGP / Gradle: 9.3.0 / 9.5.0
+- Gradle 실행 JDK: 21
+- 앱 Java/Kotlin target: 17
 - Compose Multiplatform: 1.10.3
 - Android SDK: compileSdk 37 / targetSdk 36
 - 기존 DI: Koin 4.1.0-Beta5
@@ -22,6 +24,7 @@ Metro 1.1.1을 사용한다.
 - 1.2.0부터 최신 1.4.0까지는 compiler 호환성 표에 Kotlin 2.3.21을 포함하지만, 실제 iOS runtime KLIB가 Kotlin 2.4 ABI로 배포돼 Kotlin/Native 2.3.21에서 읽을 수 없었다.
 - 1.1.1은 Kotlin 2.3 계열로 빌드된 runtime과 현재 toolchain을 함께 유지할 수 있는 최신 안정 릴리스다.
 - Gradle 플러그인을 적용하면 runtime과 Kotlin compiler plugin 연결이 함께 구성된다.
+- Metro Gradle 플러그인은 JVM 21 이상에서 실행해야 한다. Gradle 실행 JDK만 21로 올리고 앱의 Java/Kotlin target과 toolchain은 17을 유지한다.
 - 이번 단계에서는 Circuit codegen과 contribution aggregation을 활성화하지 않는다.
 
 공식 참고 자료:
@@ -142,6 +145,7 @@ Koin composition root ── 기존 경로 그대로 유지
 - R8이 적용된 서명 release AAB 생성 통과
 - 기존 Koin module과 `initKoin` 변경 없음
 - Metro graph에 기존 DB, DataStore, repository binding 없음
+- CI의 Gradle 실행 JDK를 21로 정렬
 
 Gradle 10에서 제거될 deprecated API 경고와 기존 Android Manifest의 불필요한 `tools:replace` 경고는 남아 있지만, 이번 Metro 변경에서 추가된 빌드 오류는 없다.
 

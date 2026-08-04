@@ -36,6 +36,8 @@ AGP 9.3의 공식 호환 조합은 다음과 같다:
 
 Android-KMP DSL은 AGP 9.3 기준 `kotlin { android { ... } }`를 사용한다. 초기 문서의 `androidLibrary {}` 표기는 최신 DSL에서 사용하지 않는다.
 
+이 표는 AGP 9 전환 시점의 최소 요구사항이다. 후속 Metro 부트스트랩부터는 Metro Gradle 플러그인 실행 요구사항에 맞춰 Gradle runtime을 JDK 21로 사용하되, 앱의 Java/Kotlin target과 toolchain은 17로 유지한다.
+
 ## 3. 현재 구조와 문제
 
 현재 `composeApp`은 다음 책임을 한 모듈에 가진다:
