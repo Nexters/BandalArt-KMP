@@ -15,6 +15,7 @@
 - 사용자가 `재시작`을 누르면 완료 요청의 성공과 실패를 관측할 수 있게 한다.
 - 완료 요청 실패 시 UI가 사라지거나 무반응 상태로 남지 않게 한다.
 - `HandleAppUpdate`의 완료 요청과 lifecycle 복구 흐름은 단위 테스트로 고정한다.
+- PR CI에서 debug unit test 전체를 실행해 회귀 테스트 누락을 방지한다.
 
 ## 조사 순서
 
@@ -26,6 +27,7 @@
 ## 검증
 
 - 관련 `HandleAppUpdate` 테스트를 실행한다.
+- Android CI에서 `testDebugUnitTest`가 실행되는지 확인한다.
 - 코드 스타일 검사를 실행한다.
 - 다음 versionCode 또는 Internal App Sharing 환경에서 실제 설치 UI 전환을 확인한다.
 
@@ -35,3 +37,4 @@
 - 완료 이벤트를 놓친 뒤 Home이 다시 구성되어도 `재시작` Snackbar를 복구한다.
 - `재시작` 선택 후 설치 진행 상태를 표시한다.
 - `completeUpdate()` 실패를 기록하고 재시도 안내를 제공한다.
+- Android CI에 unit test 단계를 추가한다.

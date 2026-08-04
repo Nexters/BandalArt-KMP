@@ -52,5 +52,8 @@ jobs:
             -   name: Code style checks
                 run: ./gradlew ktlintCheck detekt
 
+            -   name: Run unit tests
+                run: ./gradlew testDebugUnitTest --stacktrace
+
             -   name: Run build
                 run: ./gradlew buildDebug --stacktrace
