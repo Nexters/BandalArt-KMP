@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -31,6 +32,7 @@ class HandleAppUpdateTest {
         val appUpdateManager = FakeAppUpdateManager(composeRule.activity)
         val snackbarHostState = SnackbarHostState()
         val restartLabel = composeRule.activity.getString(R.string.update_action_restart)
+        val installingMessage = composeRule.activity.getString(R.string.update_installing)
 
         appUpdateManager.setUpdateAvailable(20206, AppUpdateType.FLEXIBLE)
 
@@ -57,6 +59,48 @@ class HandleAppUpdateTest {
         }
 
         composeRule.onNodeWithText(restartLabel).assertIsDisplayed().performClick()
+        composeRule.onNodeWithText(installingMessage).assertIsDisplayed()
         composeRule.waitUntil { appUpdateManager.isInstallSplashScreenVisible }
+    }
+
+    @Test
+    fun restartPromptIsRestoredWhenDownloadCompletesOutsideComposition() {
+        val appUpdateManager = FakeAppUpdateManager(composeRule.activity)
+        val isHandlerVisible = mutableStateOf(true)
+        val snackbarHostState = mutableStateOf(SnackbarHostState())
+        val restartLabel = composeRule.activity.getString(R.string.update_action_restart)
+
+        appUpdateManager.setUpdateAvailable(20206, AppUpdateType.FLEXIBLE)
+
+        composeRule.setContent {
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState.value) },
+            ) {
+                if (isHandlerVisible.value) {
+                    HandleAppUpdate(
+                        state = State(updateVersionCode = 20206, eventSink = {}),
+                        snackbarHostState = snackbarHostState.value,
+                        eventSink = {},
+                        appUpdateManager = appUpdateManager,
+                    )
+                }
+            }
+        }
+
+        composeRule.waitUntil { appUpdateManager.isConfirmationDialogVisible }
+        composeRule.runOnIdle {
+            appUpdateManager.userAcceptsUpdate()
+            appUpdateManager.downloadStarts()
+            isHandlerVisible.value = false
+        }
+        composeRule.waitForIdle()
+
+        composeRule.runOnIdle {
+            appUpdateManager.downloadCompletes()
+            snackbarHostState.value = SnackbarHostState()
+            isHandlerVisible.value = true
+        }
+
+        composeRule.onNodeWithText(restartLabel).assertIsDisplayed()
     }
 }
