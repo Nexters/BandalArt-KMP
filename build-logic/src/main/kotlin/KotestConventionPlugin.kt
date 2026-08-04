@@ -46,13 +46,11 @@ private fun Project.useTestPlatformForTarget() {
     }
 
     if (isAndroidProject) {
-        androidExtensions.testOptions {
-            unitTests.all { test ->
-                test.useJUnitPlatform()
+        androidExtensions.testOptions.unitTests.all { test ->
+            test.useJUnitPlatform()
 
-                if (!test.name.contains("debug", ignoreCase = true)) {
-                    test.enabled = false
-                }
+            if (!test.name.contains("debug", ignoreCase = true)) {
+                test.enabled = false
             }
         }
         tasks.withType<Test>().configureEach {
@@ -65,4 +63,3 @@ private fun Project.useTestPlatformForTarget() {
         }
     }
 }
-

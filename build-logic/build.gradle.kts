@@ -1,8 +1,5 @@
-@file:Suppress("DSL_SCOPE_VIOLATION", "INLINE_FROM_HIGHER_PLATFORM")
-
 plugins {
     `kotlin-dsl`
-    kotlin("jvm") version libs.versions.kotlin.core.get()
     alias(libs.plugins.gradle.dependency.handler.extensions)
 }
 

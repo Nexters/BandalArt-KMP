@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "INLINE_FROM_HIGHER_PLATFORM")
+@file:Suppress("UnstableApiUsage")
 
 plugins {
     alias(libs.plugins.bandalart.android.feature)

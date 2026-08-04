@@ -14,12 +14,6 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
-buildCache {
-    local {
-        removeUnusedEntriesAfterDays = 7
-    }
-}
-
 include(
     ":app",
 
