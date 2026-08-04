@@ -31,6 +31,16 @@
 - 코드 스타일 검사를 실행한다.
 - 다음 versionCode 또는 Internal App Sharing 환경에서 실제 설치 UI 전환을 확인한다.
 
+## 2.2.6 Internal 검증 배포
+
+1. 인앱 업데이트 완료 흐름이 반영된 `develop`에서 앱 버전을 `2.2.6 (20206)`으로 올린다.
+2. PR CI의 코드 스타일, debug unit test, build가 모두 통과한 뒤 `develop`에 일반 머지한다.
+3. 배포 직전에 Play Console 전체 트랙의 최대 versionCode를 다시 조회해 `20206`의 사용 가능 여부를 확인한다.
+4. 최신 `develop`을 Play Store Internal Testing에 배포한다.
+5. Play에서 설치한 `2.2.5` 앱으로 Home 진입부터 선택 업데이트, 다운로드 완료, 재시작까지 실제 흐름을 검증한다.
+
+이번 브랜치에서는 검증용 버전 변경과 전략 문서 외의 앱 코드를 수정하지 않는다.
+
 ## 적용 결과
 
 - `RESUMED`마다 Play Core의 `InstallStatus.DOWNLOADED`를 재확인한다.
