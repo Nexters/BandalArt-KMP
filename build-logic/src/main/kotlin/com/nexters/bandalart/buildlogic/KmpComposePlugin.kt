@@ -1,9 +1,11 @@
 package com.nexters.bandalart.buildlogic
 
-import com.nexters.bandalart.buildlogic.configure.android
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.compose
 import com.nexters.bandalart.buildlogic.configure.kotlin
+import com.nexters.bandalart.buildlogic.configure.libs
+import org.gradle.kotlin.dsl.withType
 
 internal class KmpComposePlugin : BuildLogicPlugin(
     {
@@ -12,28 +14,26 @@ internal class KmpComposePlugin : BuildLogicPlugin(
             "org.jetbrains.kotlin.plugin.compose",
         )
 
-        if (plugins.hasPlugin("com.android.library")) {
-            android {
-                buildFeatures.compose = true
-            }
-        }
-
         kotlin {
+            targets.withType<KotlinMultiplatformAndroidLibraryTarget>().configureEach {
+                androidResources.enable = true
+            }
+
             with(sourceSets) {
                 commonMain.dependencies {
                     implementation(compose.dependencies.runtime)
                     implementation(compose.dependencies.foundation)
                     implementation(compose.dependencies.material3)
+                    implementation(libs.compose.material.iconsCore)
+                    implementation(libs.compose.ui.toolingPreview)
                     implementation(compose.dependencies.ui)
-                    implementation(compose.dependencies.runtime)
                     implementation(compose.dependencies.components.resources)
-                    implementation(compose.dependencies.uiTooling)
-                    implementation(compose.dependencies.components.uiToolingPreview)
                 }
 
                 find { it.name == "androidMain" }?.apply {
                     dependencies {
                         implementation(compose.dependencies.preview)
+                        implementation(compose.dependencies.uiTooling)
                     }
                 }
             }

@@ -3,8 +3,6 @@ plugins {
     id("bandalart.kotlin.serialization")
 }
 
-android.namespace = "com.nexters.bandalart.feature.complete"
-
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -33,7 +31,7 @@ kotlin {
             implementation(libs.cmptoast)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.test)

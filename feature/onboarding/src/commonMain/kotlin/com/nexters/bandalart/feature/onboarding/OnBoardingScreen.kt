@@ -62,7 +62,7 @@ import com.nexters.bandalart.core.ui.component.LottieImage
 import com.nexters.bandalart.core.ui.component.PagerIndicator
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val ONBOARDING_KR_LOTTIE_FILE = "files/onboarding_kr.json"

@@ -103,7 +103,7 @@ import com.nexters.bandalart.feature.home.viewmodel.BottomSheetState
 import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

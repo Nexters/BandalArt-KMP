@@ -41,7 +41,7 @@ import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 // TODO 텍스트들을 굳이 Composable 로 뺄 필요가 있나 생각(font 를 정의해서 넣으면 되는데)
 @Composable

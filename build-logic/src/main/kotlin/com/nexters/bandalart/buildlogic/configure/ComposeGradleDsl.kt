@@ -22,26 +22,29 @@ internal fun ComposeExtension.resources(block: ResourcesExtension.() -> Unit) {
     extensions.configure<ResourcesExtension>(block)
 }
 
-internal fun Project.configureCompose(extension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureCompose(extension: CommonExtension) {
     extension.apply {
         dependencies {
+            implementation(platform(libs.androidx.compose.bom))
             implementation(libs.bundles.androidx.compose)
             debugImplementation(libs.androidx.compose.ui.tooling)
         }
+    }
 
-        configure<ComposeCompilerGradlePluginExtension> {
-            includeSourceInformation.set(true)
+    extensions.configure<ComposeCompilerGradlePluginExtension> {
+        includeSourceInformation.set(true)
 
-            metricsDestination.file("build/composeMetrics")
-            reportsDestination.file("build/composeReports")
+        metricsDestination.file("build/composeMetrics")
+        reportsDestination.file("build/composeReports")
 
-            stabilityConfigurationFiles.set(listOf(objects.fileProperty().fileValue(project.rootDir.resolve("stability.config.conf")).get()))
-        }
+        stabilityConfigurationFiles.add(
+            rootProject.layout.projectDirectory.file("stability.config.conf"),
+        )
+    }
 
-        tasks.withType<KotlinCompile>().configureEach {
-            compilerOptions {
-                freeCompilerArgs.addAll(buildComposeMetricsParameters())
-            }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            freeCompilerArgs.addAll(buildComposeMetricsParameters())
         }
     }
 }

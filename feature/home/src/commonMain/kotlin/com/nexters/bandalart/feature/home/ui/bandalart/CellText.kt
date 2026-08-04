@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 // val cellLineBreak = LineBreak(
 //    strategy = LineBreak.Strategy.Simple,

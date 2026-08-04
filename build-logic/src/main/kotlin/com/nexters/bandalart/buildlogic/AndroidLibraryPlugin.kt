@@ -1,22 +1,15 @@
 package com.nexters.bandalart.buildlogic
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.nexters.bandalart.buildlogic.configure.Plugins
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.configureAndroid
-import com.nexters.bandalart.buildlogic.configure.configureKmp
-import com.nexters.bandalart.buildlogic.configure.libs
 import org.gradle.kotlin.dsl.configure
 
 internal class AndroidLibraryPlugin : BuildLogicPlugin({
-    applyPlugins(Plugins.ANDROID_LIBRARY, Plugins.KOTLIN_ANDROID)
+    applyPlugins(Plugins.ANDROID_LIBRARY)
 
     extensions.configure<LibraryExtension> {
-        configureAndroid()
-        configureKmp()
-
-        defaultConfig.apply {
-            targetSdk = libs.versions.targetSdk.get().toInt()
-        }
+        configureAndroid(this)
     }
 })

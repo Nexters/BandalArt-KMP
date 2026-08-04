@@ -6,8 +6,6 @@ plugins {
     id("bandalart.room")
 }
 
-android.namespace = "com.nexters.bandalart.core.data"
-
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -19,7 +17,7 @@ kotlin {
             implementation(libs.koin.core)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.test)
         }

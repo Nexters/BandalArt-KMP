@@ -1,7 +1,5 @@
 package com.nexters.bandalart.buildlogic
 
-import com.nexters.bandalart.buildlogic.configure.androidExtensions
-import com.nexters.bandalart.buildlogic.configure.isAndroidProject
 import com.nexters.bandalart.buildlogic.configure.libs
 import com.nexters.bandalart.buildlogic.configure.testImplementation
 import org.gradle.api.Project
@@ -48,24 +46,8 @@ private fun Project.useTestPlatformForTarget() {
         )
     }
 
-    if (isAndroidProject) {
-        androidExtensions.testOptions {
-            unitTests.all { test ->
-                test.useJUnitPlatform()
-
-                if (!test.name.contains("debug", ignoreCase = true)) {
-                    test.enabled = false
-                }
-            }
-        }
-        tasks.withType<Test>().configureEach {
-            setTestConfiguration()
-        }
-    } else {
-        tasks.withType<Test>().configureEach {
-            useJUnitPlatform()
-            setTestConfiguration()
-        }
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+        setTestConfiguration()
     }
 }
-

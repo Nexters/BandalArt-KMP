@@ -58,7 +58,7 @@ import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 private val years = (2000..2050).map { it }
 private val monthsNumber = (1..12).map { it }

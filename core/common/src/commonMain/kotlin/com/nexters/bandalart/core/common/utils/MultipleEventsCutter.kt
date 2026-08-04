@@ -16,7 +16,7 @@
 
 package com.nexters.bandalart.core.common.utils
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 internal interface MultipleEventsCutter {
     fun processEvent(event: () -> Unit)

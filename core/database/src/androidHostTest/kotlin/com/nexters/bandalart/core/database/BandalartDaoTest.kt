@@ -34,10 +34,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.robolectric.annotation.Config
 import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.io.IOException
 
 @ExtendWith(RobolectricExtension::class)
+@Config(sdk = [35])
 @DisplayName("BandalartDao 테스트")
 class BandalartDaoTest {
     private lateinit var bandalartDao: BandalartDao
