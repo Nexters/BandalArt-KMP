@@ -5,19 +5,6 @@ plugins {
     id("bandalart.kmp.ios")
     id("bandalart.room")
     id("bandalart.kotlin.serialization")
-    alias(libs.plugins.junit5.robolectric.extension)
-}
-
-android.namespace = "com.nexters.bandalart.core.database"
-
-android {
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
 }
 
 kotlin {
@@ -26,10 +13,11 @@ kotlin {
             implementation(libs.koin.android)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.robolectric)
+            implementation(libs.robolectric.junit5.extension)
             implementation(libs.turbine)
         }
 
@@ -43,4 +31,5 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Djunit.platform.launcher.interceptors.enabled=true")
 }

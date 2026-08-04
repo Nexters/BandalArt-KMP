@@ -5,5 +5,3 @@ plugins {
     id("bandalart.kmp.ios")
     id("bandalart.kotlin.serialization")
 }
-
-android.namespace = "com.nexters.bandalart.core.navigation"

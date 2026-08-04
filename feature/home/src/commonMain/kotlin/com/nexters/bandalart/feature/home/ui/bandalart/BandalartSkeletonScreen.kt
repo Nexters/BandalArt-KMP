@@ -92,7 +92,7 @@ import com.nexters.bandalart.feature.home.model.CellType
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 data class SkeletonSubCell(
     val rowCnt: Int,

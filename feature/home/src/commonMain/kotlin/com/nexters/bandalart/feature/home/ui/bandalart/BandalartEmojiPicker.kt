@@ -47,7 +47,7 @@ import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import kotlinx.collections.immutable.persistentListOf
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 private val emojiList = persistentListOf(
     "🔥", "😀", "😃", "😄", "😆", "🥹",

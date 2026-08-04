@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.common.extension.noRippleClickable
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 private const val LOADING_ANIMATION_LOTTIE_FILE = "files/loading_animation.json"
 

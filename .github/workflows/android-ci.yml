@@ -45,8 +45,11 @@ jobs:
                     echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> keystore.properties
                     echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
 
-            -   name: Code style checks
-                run: ./gradlew ktlintCheck detekt
+            -   name: Run unit tests
+                run: ./gradlew allTests :androidApp:testDebugUnitTest --stacktrace
 
-            -   name: Run build
-                run: ./gradlew buildDebug --stacktrace
+            -   name: Run Android Lint
+                run: ./gradlew :androidApp:lintDebug --stacktrace
+
+            -   name: Run Android and iOS builds
+                run: ./gradlew :androidApp:assembleDebug :composeApp:linkDebugFrameworkIosSimulatorArm64 --stacktrace

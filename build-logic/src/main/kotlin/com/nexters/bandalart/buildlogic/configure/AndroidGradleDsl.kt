@@ -2,55 +2,24 @@ package com.nexters.bandalart.buildlogic.configure
 
 import androidx.room.gradle.RoomExtension
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.TestedExtension
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-
-internal fun Project.androidApplication(action: BaseAppModuleExtension.() -> Unit) {
-    extensions.configure(action)
-}
-
-internal fun Project.androidLibrary(action: LibraryExtension.() -> Unit) {
-    extensions.configure(action)
-}
-
-internal fun Project.android(action: TestedExtension.() -> Unit) {
-    extensions.configure(action)
-}
-
-internal fun Project.kotlinAndroidOptions(configure: KotlinAndroidProjectExtension.() -> Unit) {
-    extensions.configure(configure)
-}
-
-internal fun Project.libraryAndroidOptions(configure: LibraryAndroidComponentsExtension.() -> Unit) {
-    extensions.configure(configure)
-}
 
 internal fun Project.room(action: RoomExtension.() -> Unit) {
     extensions.configure(action)
 }
 
-internal fun Project.configureAndroid() {
-    android {
-        namespace?.let {
-            this.namespace = it
-        }
+internal fun Project.configureAndroid(extension: CommonExtension) {
+    extension.apply {
+        compileSdk = libs.versions.compileSdk.get().toInt()
 
-        compileSdkVersion(libs.versions.compileSdk.get().toInt())
-
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = libs.versions.minSdk.get().toInt()
-            targetSdk = libs.versions.targetSdk.get().toInt()
         }
 
-        compileOptions {
+        compileOptions.apply {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = true
@@ -60,26 +29,7 @@ internal fun Project.configureAndroid() {
             coreLibraryDesugaring(libs.desugar.jdk.libs)
         }
 
-        extensions.configure<KotlinProjectExtension> {
-            jvmToolchain(17)
-        }
+        testOptions.unitTests.isIncludeAndroidResources = true
 
-        testOptions {
-            unitTests {
-                isIncludeAndroidResources = true
-            }
-        }
-
-        (this as CommonExtension<*, *, *, *, *, *>).lint {
-            // shell friendly
-            val filename = displayName.replace(":", "_").replace("[\\s']".toRegex(), "")
-
-            xmlReport = true
-            xmlOutput = rootProject.layout.buildDirectory.file("lint-reports/lint-results-$filename.xml").get().asFile
-            htmlReport = true
-            htmlOutput = rootProject.layout.buildDirectory.file("lint-reports/lint-results-$filename.html").get().asFile
-            // for now
-            sarifReport = false
-        }
     }
 }

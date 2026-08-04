@@ -19,7 +19,7 @@ package com.nexters.bandalart.feature.home.model.dummy
 import androidx.compose.ui.text.input.TextFieldValue
 import com.nexters.bandalart.core.ui.allColor
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 val dummyBandalartList =
     listOf(

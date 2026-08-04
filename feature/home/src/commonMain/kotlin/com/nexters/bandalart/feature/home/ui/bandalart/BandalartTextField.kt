@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.common.extension.clearFocusOnKeyboardDismiss
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.BottomSheetContent
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun BandalartTextField(

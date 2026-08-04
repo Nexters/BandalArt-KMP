@@ -1,36 +1,28 @@
-import com.android.build.api.dsl.ManagedVirtualDevice
-import org.gradle.kotlin.dsl.create
-
 plugins {
     alias(libs.plugins.android.test)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.baselineprofile)
 }
 
 android {
     namespace = "com.nexters.bandalart.baselineprofile"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     defaultConfig {
-        minSdk = 28
-        targetSdk = 35
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR"
     }
 
-    targetProjectPath = ":composeApp"
-    testOptions.managedDevices.devices {
-        create<ManagedVirtualDevice>("pixel6Api35") {
+    targetProjectPath = ":androidApp"
+    testOptions.managedDevices.localDevices {
+        create("pixel6Api35") {
             device = "Pixel 6"
             apiLevel = 35
             systemImageSource = "aosp"
@@ -58,7 +50,7 @@ androidComponents {
         val artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
         v.instrumentationRunnerArguments.put(
             "targetAppId",
-            v.testedApks.map { artifactsLoader.load(it)?.applicationId }
+            v.testedApks.map { artifactsLoader.load(it)?.applicationId },
         )
     }
 }

@@ -6,8 +6,6 @@ plugins {
     id("bandalart.kmp.compose")
 }
 
-android.namespace = "com.nexters.bandalart.core.ui"
-
 kotlin {
     sourceSets {
         commonMain.dependencies {

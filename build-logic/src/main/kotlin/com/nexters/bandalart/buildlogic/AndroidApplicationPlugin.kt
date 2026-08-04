@@ -4,7 +4,6 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.nexters.bandalart.buildlogic.configure.Plugins
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.configureAndroid
-import com.nexters.bandalart.buildlogic.configure.configureKmp
 import com.nexters.bandalart.buildlogic.configure.libs
 import org.gradle.kotlin.dsl.configure
 
@@ -13,8 +12,7 @@ internal class AndroidApplicationPlugin : BuildLogicPlugin(
         applyPlugins(Plugins.ANDROID_APPLICATION)
 
         extensions.configure<ApplicationExtension> {
-            configureAndroid()
-            configureKmp()
+            configureAndroid(this)
 
             defaultConfig {
                 applicationId = libs.versions.packageName.get()

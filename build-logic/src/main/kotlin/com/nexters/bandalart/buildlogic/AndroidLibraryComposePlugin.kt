@@ -1,6 +1,6 @@
 package com.nexters.bandalart.buildlogic
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.nexters.bandalart.buildlogic.configure.Plugins
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.configureCompose
@@ -15,5 +15,4 @@ internal class AndroidLibraryComposePlugin : BuildLogicPlugin(
         }
     },
 )
-
 

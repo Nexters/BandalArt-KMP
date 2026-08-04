@@ -6,8 +6,6 @@ plugins {
     id("bandalart.kmp.compose")
 }
 
-android.namespace = "com.nexters.bandalart.core.designsystem"
-
 kotlin {
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 }

@@ -6,15 +6,13 @@ plugins {
     id("bandalart.kmp.compose")
 }
 
-android.namespace = "com.nexters.bandalart.core.common"
-
 kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.core)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
         }
 

@@ -6,8 +6,6 @@ plugins {
     id("bandalart.kotlin.serialization")
 }
 
-android.namespace = "com.nexters.bandalart.feature.splash"
-
 kotlin {
     listOf(
         iosX64(),
@@ -39,7 +37,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
@@ -50,4 +48,3 @@ kotlin {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
