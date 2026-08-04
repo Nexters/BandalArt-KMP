@@ -5,7 +5,7 @@ targetSdk = "36"
 compileSdk = "36"
 majorVersion = "2"
 minorVersion = "2"
-patchVersion = "5"
+patchVersion = "6"
 packageName = "com.nexters.bandalart"
 
 android-gradle-plugin = "8.9.1"
