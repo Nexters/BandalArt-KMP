@@ -139,6 +139,8 @@
     <!-- in-app update -->
     <string name="update_ready_to_install">アプリのアップデートのインストール準備が完了しました。</string>
     <string name="update_action_restart">再起動</string>
+    <string name="update_installing">アプリのアップデートをインストールしています。</string>
+    <string name="update_install_failed">アプリのアップデートのインストールを開始できませんでした。</string>
     <string name="app_version_info">バージョン: v%s</string>
 
 </resources>
