@@ -38,10 +38,6 @@ jobs:
                 run: |
                     echo "sdk.dir=$ANDROID_SDK_ROOT" >> local.properties
 
-            -   name: Generate secrets.properties
-                run: |
-                    echo "SERVER_BASE_URL=${{ secrets.SERVER_BASE_URL }}" >> secrets.properties
-
             -   name: Generate keystore.properties
                 run: |
                     echo "STORE_FILE=${{ secrets.STORE_FILE }}" >> keystore.properties
