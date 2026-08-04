@@ -9,10 +9,6 @@ plugins {
 
 kotlin {
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
-
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.test)
@@ -21,9 +17,6 @@ kotlin {
             implementation(libs.turbine)
         }
 
-        commonMain.dependencies {
-            api(libs.koin.core)
-        }
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")

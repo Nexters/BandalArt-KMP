@@ -39,7 +39,7 @@ import org.koin.compose.KoinContext
 
 @Composable
 fun BandalartApp(appGraph: AppGraph) {
-    key(appGraph.bootstrapProbe) {
+    key(appGraph) {
         BandalartTheme {
             KoinContext {
                 val snackbarHostState = remember { SnackbarHostState() }
