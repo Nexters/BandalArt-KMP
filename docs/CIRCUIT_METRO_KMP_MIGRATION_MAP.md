@@ -125,6 +125,8 @@ ViewModel 테스트는 즉시 삭제하지 않고 동일 동작의 Presenter 테
 - `develop`의 Android resource 기반 UI 구현
 - `NavStack` 전환과 신규 설정 화면/다크 모드
 
+`NavStack`은 현재 스택 전체를 상태로 다룰 수 있어 향후 Wasm에서 브라우저의 앞/뒤 이동, 딥링크, 히스토리 복원과 연결하기에 유리하다. 다만 `NavStack` 자체가 브라우저 History API를 자동으로 연동하는 것은 아니므로, Wasm 도입 단계에서 `history.pushState`와 `popstate`를 양방향으로 동기화하는 플랫폼 어댑터를 별도로 설계한다.
+
 ## 5. Repository 및 데이터 대응표
 
 | 계약 | `main` 구현 | `main` Koin 소유권 | `develop` 참조 | 최종 Metro 소유권 |
