@@ -239,6 +239,8 @@ KMP source set에 task는 생성되지만 현재 저장소의 기존 코드와 S
 ### 대응
 
 - 새 provider/test 파일에서 발생한 formatting과 test naming 위반만 수정
+- Spotless가 root `.editorconfig`를 명시적으로 읽게 하고 Compose annotation이 붙은 함수는 ktlint naming 검사에서 제외
+- Detekt formatting의 indentation/trailing-comma rule은 비활성화해 Spotless와 상충하는 이중 포맷 판정을 제거
 - 기존 파일 전체 포맷이나 naming 변경은 DI 마이그레이션 PR에 포함하지 않음
 - 필수 CI인 unit test, Android Lint, Android/iOS build를 별도로 유지
 
@@ -278,6 +280,107 @@ KMP source set에 task는 생성되지만 현재 저장소의 기존 코드와 S
 - Koin 제거 전에 남은 bridge consumer가 없는가
 - Android Application과 iOS entry point가 각각 하나의 AppGraph만 소유하는가
 - DB/DataStore close 또는 재생성 책임이 Koin lifecycle에 남아 있지 않은가
+
+## 14. Circuit Native artifact와 Kotlin ABI 불일치
+
+### 증상
+
+Kotlin 2.3.21에서 Circuit 0.35.1을 추가한 뒤 Android는 컴파일되지만 iOS compile이 아래 오류로 실패했다.
+
+```text
+circuit-runtime-iosSimulatorArm64 ... incompatible ABI 2.4.0
+library produced by 2.4.10 compiler
+```
+
+### 원인
+
+JVM artifact는 이전 Kotlin compiler에서도 사용할 수 있는 반면 Kotlin/Native KLIB은 compiler ABI 호환 범위가 더 엄격하다. Circuit 0.35.1의 iOS artifact는 Kotlin 2.4.10으로 만들어져 Kotlin 2.3.21 compiler가 읽을 수 없다.
+
+### 해결
+
+- Circuit을 낮추지 않고 Kotlin Gradle plugin과 Kotlin/Native를 2.4.10으로 정렬
+- Metro 1.1.1 공식 호환표에서 Kotlin 2.4 계열 지원 확인
+- KSP 2.3.10 유지: Kotlin 2.4 default module name과 AGP 9 built-in Kotlin 관련 수정이 포함된 버전
+- Android compile 후 iOS Simulator Arm64 framework link까지 순서대로 검증
+
+참고:
+
+- [Metro 1.1.1 Kotlin compatibility](https://zacsweers.github.io/metro/1.1.1/compatibility/)
+- [Kotlin releases](https://kotlinlang.org/docs/releases.html)
+- [KSP 2.3.10 release](https://github.com/google/ksp/releases/tag/2.3.10)
+
+## 15. Circuit 0.35.1의 `iosX64` artifact 부재
+
+### 증상
+
+KMP dependency resolution에서 `circuit-*`의 `iosX64` variant를 찾지 못했다.
+
+### 원인
+
+프로젝트 convention plugin은 Intel simulator target인 `iosX64`까지 모든 KMP module에 만들고 있었지만 Circuit 0.35.1은 해당 target artifact를 배포하지 않는다.
+
+### 해결
+
+- 공통 iOS target을 `iosArm64`, `iosSimulatorArm64`로 제한
+- app/feature framework target과 KSP `kspIosX64` configuration을 함께 제거
+- Apple Silicon simulator와 실제 iOS device target은 유지
+
+Intel Mac simulator 지원이 다시 필요해지면 Circuit이 해당 artifact를 제공하는지 먼저 확인하고 target을 복원한다.
+
+## 16. Kotlin 2.x에서 공통 Parcelize annotation typealias가 동작하지 않음
+
+### 증상
+
+common screen에 `@CommonParcelize`를 선언했지만 Android actual에서 `Parcelable` 구현이 생성되지 않았다.
+
+### 원인
+
+Parcelize plugin을 활성화하는 annotation을 `expect`/`actual typealias`로 우회하는 방식은 Kotlin 2.x에서 지원되지 않는다.
+
+### 해결
+
+- `commonMain`에 일반 `CommonParcelize` annotation을 선언
+- Screen을 소유하는 각 module에 Parcelize plugin 적용
+- `plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.nexters.bandalart.core.navigation.CommonParcelize` compiler option 설정
+
+참고: [Parcelize setup for Kotlin Multiplatform](https://developer.android.com/kotlin/parcelize#setup_parcelize_for_kotlin_multiplatform)
+
+## 17. `rememberCircuitNavigator`의 Android 전용 기본 root pop
+
+### 증상
+
+`rememberCircuitNavigator(backStack)`은 Android compile에서는 통과했지만 iOS compile에서 `onRootPop` 인자가 없다는 오류가 발생했다.
+
+### 원인
+
+Circuit 0.35.1은 Android source set에 `LocalOnBackPressedDispatcherOwner`로 root pop을 처리하는 단일 인자 overload를 제공한다. 공통/iOS API는 `onRootPop` callback을 필수로 받는다.
+
+### 해결
+
+플랫폼별 `rememberBandalartNavigator` 래퍼를 두었다.
+
+- Android: 단일 인자 overload를 호출해 기존 앱 종료/back dispatcher 동작 유지
+- iOS: `onRootPop`을 no-op으로 명시
+
+공통 코드에서 빈 callback을 직접 넘기면 Android root back 동작까지 소비하므로 사용하지 않는다.
+
+참고: [Circuit navigation](https://slackhq.github.io/circuit/navigation/)
+
+## 18. Circuit Presenter Android host test의 Android stub 호출
+
+### 증상
+
+`Presenter.test` 실행 중 Molecule/Compose 내부의 `android.util.Log` 또는 `android.os.Trace` 호출이 `Method ... not mocked` 오류로 실패했다.
+
+### 원인
+
+Presenter 자체는 Android API를 사용하지 않지만 Android host test runtime에서 Compose/Molecule이 Android stub method를 호출한다. Robolectric JUnit 5 extension만 추가해도 Molecule이 실행되는 coroutine context 전체가 sandbox 처리되지는 않았다.
+
+### 해결
+
+KMP Android convention의 host unit test option에 `isReturnDefaultValues = true`를 설정했다. feature test에 불필요한 Robolectric annotation과 dependency는 추가하지 않았다.
+
+이 옵션은 Android stub method의 기본 반환만 허용하며 Presenter의 navigation/repository assertion은 Circuit test와 fake repository로 계속 검증한다.
 
 ## 참고 문서
 
