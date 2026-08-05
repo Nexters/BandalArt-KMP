@@ -214,3 +214,6 @@ Spotless/Detekt 전체 실행에는 이 작업과 무관한 기존 Compose/Swift
 - [Metro Binding Container](https://zacsweers.github.io/metro/1.1.1/dependency-graphs/#binding-containers)
 - [Metro Scope](https://zacsweers.github.io/metro/1.1.1/scopes/)
 - [Metro Adoption Strategies](https://zacsweers.github.io/metro/1.1.1/adoption/)
+- [JetBrains kotlinconf-app](https://github.com/JetBrains/kotlinconf-app/tree/0b1616cba68e)
+
+KotlinConf의 공통 `AppGraph`, 플랫폼별 root graph와 app lifetime graph 소유 방식은 참고한다. KotlinConf는 단일 shared 모듈의 `@ContributesTo` aggregation을 주로 사용하지만, BandalArt는 멀티모듈 iOS Native 제약을 우선해 4-A의 명시적 `PlatformBindings` + `@Includes` 경계를 유지한다.
