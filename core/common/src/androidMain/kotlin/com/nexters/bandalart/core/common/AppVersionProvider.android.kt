@@ -17,6 +17,8 @@
 package com.nexters.bandalart.core.common
 
 import android.content.Context
+import android.content.pm.PackageManager
+import io.github.aakira.napier.Napier
 
 actual class AppVersionProvider(
     private val context: Context
@@ -24,7 +26,8 @@ actual class AppVersionProvider(
     actual fun getAppVersion(): String =
         try {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "Unknown"
-        } catch (e: Exception) {
+        } catch (e: PackageManager.NameNotFoundException) {
+            Napier.e("Failed to get app version", e, tag = "AppVersion")
             "Unknown"
         }
 }

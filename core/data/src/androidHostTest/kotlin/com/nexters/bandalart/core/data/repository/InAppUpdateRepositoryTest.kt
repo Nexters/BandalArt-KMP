@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -84,6 +85,8 @@ class InAppUpdateRepositoryImplTest {
             patch: Int,
             currentVersionCode: Int
         ) = runTest {
+            assertEquals(currentVersionCode, calculateVersionCode(major, minor, patch))
+
             // scenario 1: 현재 버전이 거절된 버전과 동일한 경우
             val sameVersionCode = currentVersionCode
             coEvery { mockInAppUpdateDataStore.getLastRejectedUpdateVersion() } returns sameVersionCode

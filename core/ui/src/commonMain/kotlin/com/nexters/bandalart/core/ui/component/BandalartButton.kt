@@ -10,13 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nexters.bandalart.core.common.extension.clickableSingle
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
-import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BandalartButton(
@@ -25,9 +24,10 @@ fun BandalartButton(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .height(56.dp)
-            .clickableSingle(onClick = onClick),
+        modifier =
+            modifier
+                .height(56.dp)
+                .clickableSingle(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
