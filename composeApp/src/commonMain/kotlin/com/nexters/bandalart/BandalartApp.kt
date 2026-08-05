@@ -26,6 +26,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,8 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.di.metro.AppGraph
-import com.nexters.bandalart.navigation.BandalartNavHost
+import com.nexters.bandalart.feature.splash.SplashScreen
+import com.nexters.bandalart.navigation.LocalShowSnackbar
 import com.nexters.bandalart.ui.BandalartSnackbar
+import com.slack.circuit.backstack.rememberSaveableBackStack
+import com.slack.circuit.foundation.CircuitCompositionLocals
+import com.slack.circuit.foundation.NavigableCircuitContent
 import org.koin.compose.KoinContext
 
 @Composable
@@ -43,34 +48,43 @@ fun BandalartApp(appGraph: AppGraph) {
         BandalartTheme {
             KoinContext {
                 val snackbarHostState = remember { SnackbarHostState() }
+                val backStack = rememberSaveableBackStack(root = SplashScreen)
+                val navigator = rememberBandalartNavigator(backStack)
+                val showSnackbar: suspend (String) -> Boolean = { message ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        duration = SnackbarDuration.Short,
+                    ) == SnackbarResult.ActionPerformed
+                }
 
-                Scaffold(
-                    snackbarHost = {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.TopCenter,
-                        ) {
-                            SnackbarHost(
-                                modifier = Modifier
-                                    .padding(top = 96.dp)
-                                    .height(36.dp),
-                                hostState = snackbarHostState,
-                                snackbar = {
-                                    BandalartSnackbar(message = it.visuals.message)
-                                },
+                CircuitCompositionLocals(appGraph.circuit) {
+                    CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
+                        Scaffold(
+                            snackbarHost = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter,
+                                ) {
+                                    SnackbarHost(
+                                        modifier =
+                                            Modifier
+                                                .padding(top = 96.dp)
+                                                .height(36.dp),
+                                        hostState = snackbarHostState,
+                                        snackbar = {
+                                            BandalartSnackbar(message = it.visuals.message)
+                                        },
+                                    )
+                                }
+                            },
+                        ) { innerPadding ->
+                            NavigableCircuitContent(
+                                navigator = navigator,
+                                backStack = backStack,
+                                modifier = Modifier.padding(innerPadding),
                             )
                         }
-                    },
-                ) { innerPadding ->
-                    BandalartNavHost(
-                        modifier = Modifier.padding(innerPadding),
-                        onShowSnackbar = { message ->
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                duration = SnackbarDuration.Short,
-                            ) == SnackbarResult.ActionPerformed
-                        },
-                    )
+                    }
                 }
             }
         }

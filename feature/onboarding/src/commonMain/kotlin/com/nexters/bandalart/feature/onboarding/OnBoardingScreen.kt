@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavOptions
+import androidx.compose.ui.tooling.preview.Preview
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_onboarding_en
@@ -51,49 +51,42 @@ import bandalart.core.designsystem.generated.resources.onboarding_start
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.extension.aspectRatioBasedOnOrientation
 import com.nexters.bandalart.core.common.getLocale
-import com.nexters.bandalart.core.common.utils.ObserveAsEvents
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
-import com.nexters.bandalart.core.navigation.Route
+import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.BandalartButton
 import com.nexters.bandalart.core.ui.component.LottieImage
 import com.nexters.bandalart.core.ui.component.PagerIndicator
+import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.CircuitUiEvent
+import com.slack.circuit.runtime.CircuitUiState
+import com.slack.circuit.runtime.screen.ParcelableScreen
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 private const val ONBOARDING_KR_LOTTIE_FILE = "files/onboarding_kr.json"
 private const val ONBOARDING_EN_LOTTIE_FILE = "files/onboarding_en.json"
 
-@Composable
-internal fun OnBoardingRoute(
-    navigateToHome: (NavOptions) -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: OnboardingViewModel = koinViewModel(),
-) {
-    ObserveAsEvents(flow = viewModel.uiEvent) { event ->
-        when (event) {
-            is OnBoardingUiEvent.NavigateToHome -> {
-                val options = NavOptions.Builder()
-                    .setPopUpTo(Route.Onboarding, inclusive = true)
-                    .build()
-                navigateToHome(options)
-            }
-        }
-    }
+@CommonParcelize
+data object OnboardingScreen : ParcelableScreen {
+    data class State(
+        val eventSink: (Event) -> Unit,
+    ) : CircuitUiState
 
-    OnBoardingScreen(
-        setOnboardingCompletedStatus = viewModel::setOnboardingCompletedStatus,
-        modifier = modifier,
-    )
+    sealed interface Event : CircuitUiEvent {
+        data object NavigateToHome : Event
+    }
 }
 
+@CircuitInject(OnboardingScreen::class, AppScope::class)
+@Inject
 @Composable
-internal fun OnBoardingScreen(
-    setOnboardingCompletedStatus: (Boolean) -> Unit,
+internal fun Onboarding(
+    state: OnboardingScreen.State,
     modifier: Modifier = Modifier,
 ) {
     // val configuration = LocalConfiguration.current
@@ -142,9 +135,10 @@ internal fun OnBoardingScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             ) {
                                 Box(
-                                    modifier = Modifier
-                                        .aspectRatioBasedOnOrientation(1f)
-                                        .background(Gray50),
+                                    modifier =
+                                        Modifier
+                                            .aspectRatioBasedOnOrientation(1f)
+                                            .background(Gray50),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     when (getLocale().language) {
@@ -200,17 +194,19 @@ internal fun OnBoardingScreen(
                                     modifier = Modifier.padding(16.dp),
                                 ) {
                                     Box(
-                                        modifier = Modifier
-                                            .aspectRatioBasedOnOrientation(1f)
-                                            .background(Gray50),
+                                        modifier =
+                                            Modifier
+                                                .aspectRatioBasedOnOrientation(1f)
+                                                .background(Gray50),
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         LottieImage(
-                                            jsonString = when (getLocale().language) {
-                                                Language.KOREAN -> ONBOARDING_KR_LOTTIE_FILE
-                                                Language.ENGLISH -> ONBOARDING_EN_LOTTIE_FILE
-                                                else -> ONBOARDING_EN_LOTTIE_FILE
-                                            },
+                                            jsonString =
+                                                when (getLocale().language) {
+                                                    Language.KOREAN -> ONBOARDING_KR_LOTTIE_FILE
+                                                    Language.ENGLISH -> ONBOARDING_EN_LOTTIE_FILE
+                                                    else -> ONBOARDING_EN_LOTTIE_FILE
+                                                },
                                             iterations = Int.MAX_VALUE,
                                             modifier = Modifier.fillMaxSize(),
                                         )
@@ -218,14 +214,15 @@ internal fun OnBoardingScreen(
                                 }
                             }
                             BandalartButton(
-                                onClick = { setOnboardingCompletedStatus(true) },
+                                onClick = { state.eventSink(OnboardingScreen.Event.NavigateToHome) },
                                 text = stringResource(Res.string.onboarding_start),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.BottomCenter)
-                                    .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
-                                    .clip(shape = RoundedCornerShape(50.dp))
-                                    .background(Gray900),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
+                                        .clip(shape = RoundedCornerShape(50.dp))
+                                        .background(Gray900),
                             )
 //                            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                                BandalartButton(
@@ -263,8 +260,8 @@ internal fun OnBoardingScreen(
 @Composable
 private fun OnBoardingScreenPreview() {
     BandalartTheme {
-        OnBoardingScreen(
-            setOnboardingCompletedStatus = {},
+        Onboarding(
+            state = OnboardingScreen.State(eventSink = {}),
         )
     }
 }

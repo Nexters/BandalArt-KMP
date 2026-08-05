@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 easyhooon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexters.bandalart.feature.splash
 
 import androidx.compose.foundation.Image
@@ -11,110 +27,50 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavOptions
+import androidx.compose.ui.tooling.preview.Preview
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.app_icon_description
 import bandalart.core.designsystem.generated.resources.ic_app
-import com.nexters.bandalart.core.common.utils.ObserveAsEvents
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
-import com.nexters.bandalart.core.navigation.Route
+import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.AppTitle
+import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.CircuitUiEvent
+import com.slack.circuit.runtime.CircuitUiState
+import com.slack.circuit.runtime.screen.ParcelableScreen
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
-@Suppress("TooGenericExceptionCaught")
+@CommonParcelize
+data object SplashScreen : ParcelableScreen {
+    data class State(
+        val eventSink: (Event) -> Unit,
+    ) : CircuitUiState
+
+    sealed interface Event : CircuitUiEvent {
+        data object CheckOnboardingStatus : Event
+    }
+}
+
+@CircuitInject(SplashScreen::class, AppScope::class)
+@Inject
 @Composable
-internal fun SplashRoute(
-    navigateToOnBoarding: (NavOptions) -> Unit,
-    navigateToHome: (NavOptions) -> Unit,
-    viewModel: SplashViewModel = koinViewModel(),
+internal fun Splash(
+    state: SplashScreen.State,
+    modifier: Modifier = Modifier,
 ) {
-//    val context = LocalContext.current
-//    val appUpdateManager: AppUpdateManager = remember { AppUpdateManagerFactory.create(context) }
-//    val lifecycle = LocalLifecycleOwner.current.lifecycle
-//    val lifecycleState by lifecycle.currentStateFlow.collectAsStateWithLifecycle()
-
-//    val appUpdateResultLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.StartIntentSenderForResult(),
-//    ) { result ->
-//        if (result.resultCode == Activity.RESULT_CANCELED) {
-//            activity.finish()
-//        }
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        try {
-//            val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
-//
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-//                val availableVersionCode = appUpdateInfo.availableVersionCode()
-//
-//                if (isValidImmediateAppUpdate(availableVersionCode) &&
-//                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-//                ) {
-//                    appUpdateManager.startUpdateFlowForResult(
-//                        appUpdateInfo,
-//                        appUpdateResultLauncher,
-//                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
-//                    )
-//                } else {
-//                    viewModel.checkOnboardingStatus()
-//                }
-//            } else {
-//                viewModel.checkOnboardingStatus()
-//            }
-//        } catch (e: Exception) {
-//            Napier.e( "Failed to check for immediate update", e)
-//            viewModel.checkOnboardingStatus()
-//        }
-//    }
-//
-//    // LifecycleResumeEffect 는 내부에 suspend 함수를 사용할 수 없다.
-//    LaunchedEffect(lifecycleState) {
-//        if (lifecycleState == Lifecycle.State.RESUMED) {
-//            try {
-//                val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
-//                if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-//                    appUpdateManager.startUpdateFlowForResult(
-//                        appUpdateInfo,
-//                        appUpdateResultLauncher,
-//                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
-//                    )
-//                }
-//            } catch (e: Exception) {
-//                Napier.e("Failed to check update status on resume", e)
-//            }
-//        }
-//    }
-
-    ObserveAsEvents(flow = viewModel.uiEvent) { event ->
-        when (event) {
-            is SplashUiEvent.NavigateToOnBoarding -> {
-                val options = NavOptions.Builder()
-                    .setPopUpTo(Route.Splash, inclusive = true)
-                    .build()
-                navigateToOnBoarding(options)
-            }
-
-            is SplashUiEvent.NavigateToHome -> {
-                val options = NavOptions.Builder()
-                    .setPopUpTo(Route.Splash, inclusive = true)
-                    .build()
-                navigateToHome(options)
-            }
-        }
+    ImmediateUpdateEffect {
+        state.eventSink(SplashScreen.Event.CheckOnboardingStatus)
     }
 
-    SplashScreen()
+    SplashContent(modifier = modifier)
 }
 
 @Composable
-internal fun SplashScreen(
-    modifier: Modifier = Modifier,
-) {
+internal fun SplashContent(modifier: Modifier = Modifier,) {
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Gray50,
@@ -135,11 +91,10 @@ internal fun SplashScreen(
     }
 }
 
-// @DevicePreview
 @Preview
 @Composable
 private fun SplashScreenPreview() {
     BandalartTheme {
-        SplashScreen()
+        SplashContent()
     }
 }

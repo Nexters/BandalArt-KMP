@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.di
+package com.nexters.bandalart.feature.onboarding.presenter
 
-import com.nexters.bandalart.feature.complete.di.completeModule
-import com.nexters.bandalart.feature.home.di.homeModule
-import org.koin.dsl.module
+import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 
-val featureModule =
-    module {
-        includes(
-            completeModule,
-            homeModule,
-        )
+internal class FakeOnboardingRepository : OnboardingRepository {
+    var isCompleted = false
+        private set
+
+    var setCallCount = 0
+        private set
+
+    override suspend fun setOnboardingCompletedStatus(flag: Boolean) {
+        setCallCount += 1
+        isCompleted = flag
     }
 
-val appModule =
-    module {
-        includes(
-            featureModule,
-        )
-    }
+    override suspend fun getOnboardingCompletedStatus(): Boolean = isCompleted
+}

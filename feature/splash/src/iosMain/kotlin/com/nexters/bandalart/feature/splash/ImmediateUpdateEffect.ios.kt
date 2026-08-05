@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.di
+package com.nexters.bandalart.feature.splash
 
-import com.nexters.bandalart.feature.complete.di.completeModule
-import com.nexters.bandalart.feature.home.di.homeModule
-import org.koin.dsl.module
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 
-val featureModule =
-    module {
-        includes(
-            completeModule,
-            homeModule,
-        )
+@Composable
+internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
+    val currentOnComplete = rememberUpdatedState(onComplete)
+
+    LaunchedEffect(Unit) {
+        currentOnComplete.value()
     }
-
-val appModule =
-    module {
-        includes(
-            featureModule,
-        )
-    }
+}

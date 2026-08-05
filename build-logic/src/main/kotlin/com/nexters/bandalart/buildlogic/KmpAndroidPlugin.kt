@@ -30,6 +30,7 @@ internal class KmpAndroidPlugin : BuildLogicPlugin(
                 if (file("src/androidHostTest").exists()) {
                     withHostTest {
                         isIncludeAndroidResources = true
+                        isReturnDefaultValues = true
                     }
                 }
             }

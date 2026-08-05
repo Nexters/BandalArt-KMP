@@ -17,37 +17,36 @@
 package com.nexters.bandalart.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.nexters.bandalart.core.navigation.Route
+import com.nexters.bandalart.core.navigation.LegacyHomeScreen
 import com.nexters.bandalart.feature.complete.navigation.completeScreen
 import com.nexters.bandalart.feature.complete.navigation.navigateToComplete
 import com.nexters.bandalart.feature.home.navigation.homeScreen
-import com.nexters.bandalart.feature.home.navigation.navigateToHome
-import com.nexters.bandalart.feature.onboarding.navigation.navigateToOnBoarding
-import com.nexters.bandalart.feature.onboarding.navigation.onBoardingScreen
-import com.nexters.bandalart.feature.splash.navigation.splashScreen
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 
+internal val LocalShowSnackbar =
+    staticCompositionLocalOf<suspend (String) -> Boolean> {
+        error("LocalShowSnackbar is not provided")
+    }
+
+@CircuitInject(LegacyHomeScreen::class, AppScope::class)
+@Inject
 @Composable
-fun BandalartNavHost(
-    modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String) -> Boolean,
-) {
+internal fun LegacyHome(modifier: Modifier = Modifier,) {
+    val onShowSnackbar = LocalShowSnackbar.current
     val navController = rememberNavController()
 
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Route.Splash,
+        startDestination = Route.Home,
     ) {
-        splashScreen(
-            navigateToOnBoarding = navController::navigateToOnBoarding,
-            navigateToHome = navController::navigateToHome,
-        )
-        onBoardingScreen(
-            navigateToHome = navController::navigateToHome,
-        )
         homeScreen(
             navigateToComplete = { id, title, emoji, imageUri ->
                 navController.navigateToComplete(

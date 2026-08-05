@@ -15,7 +15,6 @@ internal fun DependencyHandlerScope.kspKmp(
     artifact: Provider<MinimalExternalModuleDependency>,
 ) {
     add("kspAndroid", artifact)
-    add("kspIosX64", artifact)
     add("kspIosArm64", artifact)
     add("kspIosSimulatorArm64", artifact)
 }

@@ -8,11 +8,14 @@ plugins {
     alias(libs.plugins.metro)
 }
 
+metro {
+    enableCircuitCodegen.set(true)
+}
+
 kotlin {
     val xcfName = "ComposeApp"
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach {
@@ -29,6 +32,7 @@ kotlin {
 
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
+            implementation(libs.circuit.test)
             implementation(libs.robolectric)
             implementation(libs.robolectric.junit5.extension)
         }
@@ -53,6 +57,10 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            implementation(libs.circuit.foundation)
+            implementation(libs.circuit.runtime.presenter)
+            implementation(libs.circuit.runtime.ui)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

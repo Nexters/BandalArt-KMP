@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.di
+package com.nexters.bandalart.core.navigation
 
-import com.nexters.bandalart.feature.complete.di.completeModule
-import com.nexters.bandalart.feature.home.di.homeModule
-import org.koin.dsl.module
+import com.slack.circuit.runtime.screen.ParcelableScreen
+import com.slack.circuit.runtime.screen.StaticScreen
 
-val featureModule =
-    module {
-        includes(
-            completeModule,
-            homeModule,
-        )
-    }
-
-val appModule =
-    module {
-        includes(
-            featureModule,
-        )
-    }
+@CommonParcelize
+data object LegacyHomeScreen : ParcelableScreen, StaticScreen
