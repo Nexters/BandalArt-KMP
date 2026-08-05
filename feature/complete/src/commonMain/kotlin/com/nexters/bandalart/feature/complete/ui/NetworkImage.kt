@@ -53,15 +53,17 @@ fun NetworkImage(
         CoilImage(
             imageModel = { imageUri },
             modifier = modifier,
-            component = rememberImageComponent {
-                +PlaceholderPlugin.Loading(placeholder)
-                +PlaceholderPlugin.Failure(placeholder)
-            },
-            imageOptions = ImageOptions(
-                contentScale = contentScale,
-                alignment = Alignment.Center,
-                contentDescription = contentDescription,
-            ),
+            component =
+                rememberImageComponent {
+                    +PlaceholderPlugin.Loading(placeholder)
+                    +PlaceholderPlugin.Failure(placeholder)
+                },
+            imageOptions =
+                ImageOptions(
+                    contentScale = contentScale,
+                    alignment = Alignment.Center,
+                    contentDescription = contentDescription,
+                ),
             onImageStateChanged = { state ->
                 if (state is CoilImageState.Failure) {
                     Napier.e("CoilImageState.Failure", state.reason)

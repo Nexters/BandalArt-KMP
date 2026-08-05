@@ -73,15 +73,16 @@ fun CompleteBandalart(
         )
         Spacer(modifier = Modifier.height(10.dp))
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 33.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .border(
-                    width = 2.dp,
-                    color = Gray300,
-                    shape = RoundedCornerShape(12.dp),
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 33.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Gray300,
+                        shape = RoundedCornerShape(12.dp),
+                    ),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -94,10 +95,11 @@ fun CompleteBandalart(
                 ) {
                     Column {
                         Box(
-                            modifier = Modifier
-                                .width(52.dp)
-                                .aspectRatio(1f)
-                                .background(Gray100),
+                            modifier =
+                                Modifier
+                                    .width(52.dp)
+                                    .aspectRatio(1f)
+                                    .background(Gray100),
                             contentAlignment = Alignment.Center,
                         ) {
                             if (profileEmoji == stringResource(Res.string.home_default_emoji)) {

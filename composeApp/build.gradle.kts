@@ -33,6 +33,7 @@ kotlin {
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.circuit.test)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.robolectric)
             implementation(libs.robolectric.junit5.extension)
         }

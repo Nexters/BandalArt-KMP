@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,88 +28,105 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.complete_save
 import bandalart.core.designsystem.generated.resources.complete_share
 import bandalart.core.designsystem.generated.resources.complete_title
-import bandalart.core.designsystem.generated.resources.save_bandalart_image
+import com.eygraber.uri.Uri
 import com.nexters.bandalart.core.common.ImageHandlerProvider
-import com.nexters.bandalart.core.common.utils.ObserveAsEvents
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
+import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.BandalartButton
 import com.nexters.bandalart.core.ui.component.LottieImage
 import com.nexters.bandalart.feature.complete.ui.CompleteBandalart
 import com.nexters.bandalart.feature.complete.ui.CompleteTopBar
-import com.nexters.bandalart.feature.complete.viewmodel.CompleteUiAction
-import com.nexters.bandalart.feature.complete.viewmodel.CompleteUiEvent
-import com.nexters.bandalart.feature.complete.viewmodel.CompleteUiState
-import com.nexters.bandalart.feature.complete.viewmodel.CompleteViewModel
-import kotlinx.coroutines.launch
-import multiplatform.network.cmptoast.showToast
-import org.jetbrains.compose.resources.getString
+import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.CircuitUiEvent
+import com.slack.circuit.runtime.CircuitUiState
+import com.slack.circuit.runtime.screen.ParcelableScreen
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 private const val FINISH_LOTTIE_FILE = "files/finish.json"
 
-@Composable
-internal fun CompleteRoute(
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: CompleteViewModel = koinViewModel(),
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
-    val imageHandlerProvider = koinInject<ImageHandlerProvider>()
+@CommonParcelize
+data class CompleteScreen(
+    val bandalartId: Long,
+    val bandalartTitle: String,
+    val bandalartProfileEmoji: String,
+    val bandalartChartImageUri: String,
+) : ParcelableScreen {
+    data class State(
+        val id: Long,
+        val title: String,
+        val profileEmoji: String,
+        val bandalartChartImageUri: String,
+        val sideEffect: SideEffect?,
+        val eventSink: (Event) -> Unit,
+    ) : CircuitUiState
 
-    ObserveAsEvents(flow = viewModel.uiEvent) { event ->
-        when (event) {
-            is CompleteUiEvent.NavigateBack -> {
-                onNavigateBack()
-            }
+    sealed interface SideEffect {
+        data class SaveImage(
+            val imageUri: Uri
+        ) : SideEffect
 
-            is CompleteUiEvent.SaveBandalart -> {
-                imageHandlerProvider.saveUriToGallery(event.imageUri)
-                scope.launch {
-                    showToast(getString(Res.string.save_bandalart_image))
-                }
-            }
-
-            is CompleteUiEvent.ShareBandalart -> {
-                imageHandlerProvider.shareImage(event.imageUri)
-            }
-        }
+        data class ShareImage(
+            val imageUri: Uri
+        ) : SideEffect
     }
 
-    CompleteScreen(
-        uiState = uiState,
-        onAction = viewModel::onAction,
+    sealed interface Event : CircuitUiEvent {
+        data object NavigateBack : Event
+
+        data class SaveBandalart(
+            val imageUri: Uri
+        ) : Event
+
+        data class ShareBandalart(
+            val imageUri: Uri
+        ) : Event
+
+        data object ClearSideEffect : Event
+    }
+}
+
+@CircuitInject(CompleteScreen::class, AppScope::class)
+@Inject
+@Composable
+internal fun Complete(
+    state: CompleteScreen.State,
+    modifier: Modifier,
+    imageHandlerProvider: ImageHandlerProvider,
+) {
+    HandleCompleteEffects(
+        state = state,
+        imageHandlerProvider = imageHandlerProvider,
+    )
+
+    CompleteContent(
+        state = state,
         modifier = modifier,
     )
 }
 
 @Composable
-internal fun CompleteScreen(
-    uiState: CompleteUiState,
-    onAction: (CompleteUiAction) -> Unit,
+internal fun CompleteContent(
+    state: CompleteScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    // val configuration = LocalConfiguration.current
+    val eventSink = state.eventSink
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -119,20 +136,24 @@ internal fun CompleteScreen(
             LottieImage(
                 jsonString = FINISH_LOTTIE_FILE,
                 iterations = Int.MAX_VALUE,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.TopCenter),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .align(Alignment.TopCenter),
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                CompleteTopBar(onNavigateBack = { onAction(CompleteUiAction.OnBackButtonClick) })
+                CompleteTopBar(
+                    onNavigateBack = {
+                        eventSink(CompleteScreen.Event.NavigateBack)
+                    },
+                )
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(Res.string.complete_title),
-                    modifier = modifier,
                     color = Gray900,
                     fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W700,
@@ -142,148 +163,70 @@ internal fun CompleteScreen(
                 )
                 Box(modifier = Modifier.fillMaxSize()) {
                     CompleteBandalart(
-                        profileEmoji = uiState.profileEmoji,
-                        title = uiState.title,
-                        // bandalartChartImageUri = uiState.bandalartChartImageUri,
+                        profileEmoji = state.profileEmoji,
+                        title = state.title,
                         modifier = Modifier.align(Alignment.Center),
                     )
                     Column(
                         modifier = Modifier.align(Alignment.BottomCenter),
                     ) {
                         BandalartButton(
-                            onClick = { onAction(CompleteUiAction.OnSaveButtonClick) },
+                            onClick = {
+                                eventSink(
+                                    CompleteScreen.Event.SaveBandalart(
+                                        Uri.parse(state.bandalartChartImageUri),
+                                    ),
+                                )
+                            },
                             text = stringResource(Res.string.complete_save),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp, vertical = 8.dp)
-                                .clip(shape = RoundedCornerShape(50.dp))
-                                .background(Gray900),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                                    .clip(shape = RoundedCornerShape(50.dp))
+                                    .background(Gray900),
                         )
                         BandalartButton(
-                            onClick = { onAction(CompleteUiAction.OnShareButtonClick) },
+                            onClick = {
+                                eventSink(
+                                    CompleteScreen.Event.ShareBandalart(
+                                        Uri.parse(state.bandalartChartImageUri),
+                                    ),
+                                )
+                            },
                             text = stringResource(Res.string.complete_share),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
-                                .clip(shape = RoundedCornerShape(50.dp))
-                                .background(Gray900),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        top = 8.dp,
+                                        bottom = 32.dp,
+                                        start = 24.dp,
+                                        end = 24.dp,
+                                    ).clip(shape = RoundedCornerShape(50.dp))
+                                    .background(Gray900),
                         )
                     }
                 }
             }
         }
-//        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Box {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .verticalScroll(rememberScrollState()),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                ) {
-//                    Spacer(modifier = Modifier.height(16.dp))
-//                    CompleteTopBar(onNavigateBack = { onAction(CompleteUiAction.OnBackButtonClick) })
-//                    Text(
-//                        text = stringResource(Res.string.complete_title),
-//                        modifier = modifier,
-//                        color = Gray900,
-//                        fontFamily = pretendard,
-//                        fontWeight = FontWeight.W700,
-//                        fontSize = 22.sp,
-//                        lineHeight = 30.8.sp,
-//                        textAlign = TextAlign.Center,
-//                    )
-//                    Spacer(modifier = Modifier.height(32.dp))
-//                    Text(text = "🥳", fontSize = 100.sp)
-//                    Spacer(modifier = Modifier.height(32.dp))
-//                    CompleteBandalart(
-//                        profileEmoji = uiState.profileEmoji,
-//                        title = uiState.title,
-//                        // bandalartChartImageUri = uiState.bandalartChartImageUri,
-//                        modifier = Modifier.width(328.dp),
-//                    )
-//                    Spacer(modifier = Modifier.height(32.dp))
-//                    // MVP 제외
-//                    // SaveImageButton(modifier = Modifier.align(Alignment.BottomCenter))
-//                    BandalartButton(
-//                        onClick = { onAction(CompleteUiAction.OnShareButtonClick) },
-//                        text = stringResource(Res.string.complete_share),
-//                        modifier = Modifier
-//                            .width(328.dp)
-//                            .padding(bottom = 32.dp),
-//                    )
-//                }
-//            }
-//        } else {
-//            Box {
-//                LottieImage(
-//                    jsonString = FINISH_LOTTIE_FILE,
-//                    iterations = Int.MAX_VALUE,
-//                    modifier = Modifier.align(Alignment.TopCenter),
-//                )
-//                Column(
-//                    modifier = Modifier.fillMaxSize(),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                ) {
-//                    Spacer(modifier = Modifier.height(16.dp))
-//                    CompleteTopBar(onNavigateBack = { onAction(CompleteUiAction.OnBackButtonClick) })
-//                    Spacer(modifier = Modifier.height(40.dp))
-//                    Text(
-//                        text = stringResource(Res.string.complete_title),
-//                        modifier = modifier,
-//                        color = Gray900,
-//                        fontFamily = pretendard,
-//                        fontWeight = FontWeight.W700,
-//                        fontSize = 22.sp,
-//                        lineHeight = 30.8.sp,
-//                        textAlign = TextAlign.Center,
-//                    )
-//                    Box(modifier = Modifier.fillMaxSize()) {
-//                        CompleteBandalart(
-//                            profileEmoji = uiState.profileEmoji,
-//                            title = uiState.title,
-//                            // bandalartChartImageUri = uiState.bandalartChartImageUri,
-//                            modifier = Modifier.align(Alignment.Center),
-//                        )
-//                        Column(
-//                            modifier = Modifier.align(Alignment.BottomCenter),
-//                        ) {
-//                            BandalartButton(
-//                                onClick = { onAction(CompleteUiAction.OnSaveButtonClick) },
-//                                text = stringResource(Res.string.complete_save),
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(horizontal = 24.dp, vertical = 8.dp)
-//                                    .clip(shape = RoundedCornerShape(50.dp))
-//                                    .background(Gray900),
-//                            )
-//                            BandalartButton(
-//                                onClick = { onAction(CompleteUiAction.OnShareButtonClick) },
-//                                text = stringResource(Res.string.complete_share),
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(top = 8.dp, bottom = 32.dp, start = 24.dp, end = 24.dp)
-//                                    .clip(shape = RoundedCornerShape(50.dp))
-//                                    .background(Gray900),
-//                            )
-//                        }
-//                    }
-//                }
-//            }
     }
 }
 
-// @DevicePreview
 @Preview
 @Composable
 private fun CompleteScreenPreview() {
     BandalartTheme {
-        CompleteScreen(
-            uiState = CompleteUiState(
-                id = 0L,
-                title = "발전하는 예진",
-                profileEmoji = "😎",
-            ),
-            onAction = {},
+        CompleteContent(
+            state =
+                CompleteScreen.State(
+                    id = 0L,
+                    title = "발전하는 예진",
+                    profileEmoji = "😎",
+                    bandalartChartImageUri = "",
+                    sideEffect = null,
+                    eventSink = {},
+                ),
         )
     }
 }

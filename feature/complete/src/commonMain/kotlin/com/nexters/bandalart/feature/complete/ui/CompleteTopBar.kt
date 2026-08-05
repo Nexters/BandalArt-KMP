@@ -41,15 +41,17 @@ fun CompleteTopBar(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
     ) {
         IconButton(
             onClick = onNavigateBack,
-            modifier = Modifier
-                .width(32.dp)
-                .aspectRatio(1f),
+            modifier =
+                Modifier
+                    .width(32.dp)
+                    .aspectRatio(1f),
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,

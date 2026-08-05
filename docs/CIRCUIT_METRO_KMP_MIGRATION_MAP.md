@@ -329,8 +329,14 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 
 ### 6-A. Complete
 
-- Screen parameter, Presenter, side effect, test 이식
-- KMP image save/share 연결
+- [x] Screen parameter와 Presenter를 KMP Circuit 계약으로 이식
+- [x] Home → Complete 이동을 root Circuit BackStack에 연결
+- [x] ViewModel, Compose Navigation destination, Koin feature module 제거
+- [x] Metro가 주입한 KMP `ImageHandlerProvider`로 save/share side effect 연결
+- [x] Complete/LegacyHome Presenter와 Metro factory Android host test 통과
+- [x] 변경 모듈 Spotless/Detekt 통과
+- [ ] iOS Simulator Arm64 framework link 검증
+- [ ] 양 플랫폼 이동·뒤로가기·저장·공유 수동 검증
 
 ### 6-B. Home 읽기
 

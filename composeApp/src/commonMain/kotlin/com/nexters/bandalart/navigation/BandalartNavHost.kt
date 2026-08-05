@@ -21,10 +21,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.nexters.bandalart.core.navigation.Route
 import com.nexters.bandalart.core.navigation.LegacyHomeScreen
-import com.nexters.bandalart.feature.complete.navigation.completeScreen
-import com.nexters.bandalart.feature.complete.navigation.navigateToComplete
+import com.nexters.bandalart.core.navigation.Route
 import com.nexters.bandalart.feature.home.navigation.homeScreen
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
@@ -38,7 +36,10 @@ internal val LocalShowSnackbar =
 @CircuitInject(LegacyHomeScreen::class, AppScope::class)
 @Inject
 @Composable
-internal fun LegacyHome(modifier: Modifier = Modifier,) {
+internal fun LegacyHome(
+    state: LegacyHomeScreen.State,
+    modifier: Modifier = Modifier,
+) {
     val onShowSnackbar = LocalShowSnackbar.current
     val navController = rememberNavController()
 
@@ -49,17 +50,16 @@ internal fun LegacyHome(modifier: Modifier = Modifier,) {
     ) {
         homeScreen(
             navigateToComplete = { id, title, emoji, imageUri ->
-                navController.navigateToComplete(
-                    bandalartId = id,
-                    bandalartTitle = title,
-                    bandalartProfileEmoji = emoji,
-                    bandalartChartImageUri = imageUri,
+                state.eventSink(
+                    LegacyHomeScreen.Event.NavigateToComplete(
+                        bandalartId = id,
+                        bandalartTitle = title,
+                        bandalartProfileEmoji = emoji,
+                        bandalartChartImageUri = imageUri,
+                    ),
                 )
             },
             onShowSnackbar = onShowSnackbar,
-        )
-        completeScreen(
-            onNavigateBack = navController::popBackStack,
         )
     }
 }
