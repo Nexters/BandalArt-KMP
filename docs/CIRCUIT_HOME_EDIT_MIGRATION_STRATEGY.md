@@ -210,4 +210,5 @@ PR #196의 읽기 State에 다음을 추가한다.
 - 기존 read test 5개와 legacy HomeViewModel test를 유지하고 edit/modal Presenter test 7개를 별도 파일로 추가했다.
 - `:feature:home:testAndroidHostTest`, `:composeApp:testAndroidHostTest`가 통과했다.
 - 변경 Kotlin 파일 Spotless IDE hook과 `:feature:home:detekt`, `:composeApp:detekt`가 통과했다.
-- 전체 unit test, Android Lint, Android/iOS build는 PR CI에서 확인한다.
+- PR #197에서 전체 unit test, Android Lint, Android assemble, iOS Simulator Arm64 framework link가 통과했다.
+- PR #197은 일반 merge로 `main`에 반영됐다.

@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.navigation)
             implementation(projects.core.ui)
+            implementation(projects.feature.home)
 
             implementation(libs.circuit.runtime)
             implementation(libs.circuit.runtime.presenter)

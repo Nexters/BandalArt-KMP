@@ -18,23 +18,24 @@ kotlin {
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.app.update)
+            implementation(libs.app.update.ktx)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.common)
             implementation(projects.core.designsystem)
             implementation(projects.core.domain)
             implementation(projects.core.navigation)
             implementation(projects.core.ui)
-
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.lifecycle.viewmodel)
-
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.viewmodel.navigation)
+            implementation(projects.feature.complete)
 
             implementation(libs.circuit.runtime)
             implementation(libs.circuit.runtime.presenter)
+            implementation(libs.circuit.runtime.ui)
             implementation(libs.circuit.retained)
 
             implementation(libs.kotlinx.collections.immutable)
@@ -43,6 +44,7 @@ kotlin {
 
             implementation(libs.uri.kmp)
             implementation(libs.cmptoast)
+            implementation(libs.napier)
         }
 
         androidHostTest.dependencies {

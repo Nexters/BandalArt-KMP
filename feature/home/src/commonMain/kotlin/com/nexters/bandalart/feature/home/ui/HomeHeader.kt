@@ -71,7 +71,7 @@ import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDropDownMenu
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +81,7 @@ fun HomeHeader(
     bandalartData: BandalartUiModel,
     isDropDownMenuOpened: Boolean,
     cellData: BandalartCellEntity,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.padding(horizontal = 16.dp)) {
@@ -93,13 +93,14 @@ fun HomeHeader(
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 ) {
                     Box(
-                        modifier = Modifier
-                            .width(52.dp)
-                            .aspectRatio(1f)
-                            .background(Gray100)
-                            .clickable {
-                                onHomeUiAction(HomeUiAction.OnEmojiClick)
-                            },
+                        modifier =
+                            Modifier
+                                .width(52.dp)
+                                .aspectRatio(1f)
+                                .background(Gray100)
+                                .clickable {
+                                    onHomeUiAction(HomeScreen.Event.OpenEmoji)
+                                },
                         contentAlignment = Alignment.Center,
                     ) {
                         if (bandalartData.profileEmoji.isNullOrEmpty()) {
@@ -120,37 +121,41 @@ fun HomeHeader(
                     Icon(
                         imageVector = vectorResource(Res.drawable.ic_edit),
                         contentDescription = stringResource(Res.string.edit_description),
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = 4.dp, y = 4.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .offset(x = 4.dp, y = 4.dp),
                         tint = Color.Unspecified,
                     )
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
             ) {
                 Text(
                     text = bandalartData.titleText.ifEmpty { stringResource(Res.string.home_empty_title) },
                     color = if (bandalartData.titleText.isEmpty()) Gray300 else Gray900,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.W700,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .clickable {
-                            onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
-                        },
+                    modifier =
+                        Modifier
+                            .align(Alignment.Center)
+                            .clickable {
+                                onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
+                            },
                     letterSpacing = (-0.4).sp,
                 )
                 Icon(
                     imageVector = vectorResource(Res.drawable.ic_option),
                     contentDescription = stringResource(Res.string.option_description),
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .clickable { onHomeUiAction(HomeUiAction.OnMenuClick) },
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .clickable { onHomeUiAction(HomeScreen.Event.OpenDropDownMenu) },
                     tint = Color.Unspecified,
                 )
                 BandalartDropDownMenu(
@@ -173,9 +178,10 @@ fun HomeHeader(
             )
             if (!bandalartData.dueDate.isNullOrEmpty()) {
                 VerticalDivider(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .padding(start = 6.dp),
+                    modifier =
+                        Modifier
+                            .height(8.dp)
+                            .padding(start = 6.dp),
                     thickness = 1.dp,
                     color = Gray300,
                 )

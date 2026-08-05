@@ -139,6 +139,8 @@
     <!-- in-app update -->
     <string name="update_ready_to_install">앱의 업데이트 설치 준비가 완료되었습니다.</string>
     <string name="update_action_restart">재시작</string>
+    <string name="update_installing">업데이트를 설치하고 있습니다.</string>
+    <string name="update_install_failed">업데이트 설치를 시작하지 못했습니다.</string>
     <string name="app_version_info">버전 정보: v%s</string>
 
 </resources>

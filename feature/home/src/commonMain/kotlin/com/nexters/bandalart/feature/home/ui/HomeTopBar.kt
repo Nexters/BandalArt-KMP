@@ -47,7 +47,7 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.component.AppTitle
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,38 +55,41 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 internal fun HomeTopBar(
     bandalartCount: Int,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(62.dp)
-            .background(White),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(62.dp)
+                .background(White),
         contentAlignment = Alignment.CenterStart,
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             AppTitle(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 20.dp, top = 2.dp)
-                    .clickable {
-                        onHomeUiAction(HomeUiAction.OnAppTitleClick)
-                    },
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 20.dp, top = 2.dp)
+                        .clickable {
+                            onHomeUiAction(HomeScreen.Event.ShowAppVersion)
+                        },
             )
             Spacer(modifier = Modifier.weight(1f))
             Box(
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .clickable(
-                        onClick = {
-                            if (bandalartCount > 1) {
-                                onHomeUiAction(HomeUiAction.OnListClick)
-                            } else {
-                                onHomeUiAction(HomeUiAction.OnAddClick)
-                            }
-                        },
-                    ),
+                modifier =
+                    Modifier
+                        .padding(end = 20.dp)
+                        .clickable(
+                            onClick = {
+                                if (bandalartCount > 1) {
+                                    onHomeUiAction(HomeScreen.Event.OpenBandalartList)
+                                } else {
+                                    onHomeUiAction(HomeScreen.Event.AddBandalart)
+                                }
+                            },
+                        ),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (bandalartCount > 1) {

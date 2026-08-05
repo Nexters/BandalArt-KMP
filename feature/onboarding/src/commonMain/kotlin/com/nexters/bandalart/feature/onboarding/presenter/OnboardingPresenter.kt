@@ -23,7 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
+import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
@@ -51,7 +51,7 @@ class OnboardingPresenter(
                         isCompleting = true
                         scope.launch {
                             repository.setOnboardingCompletedStatus(true)
-                            navigator.resetRoot(LegacyHomeScreen)
+                            navigator.resetRoot(HomeScreen)
                         }
                     }
                 }

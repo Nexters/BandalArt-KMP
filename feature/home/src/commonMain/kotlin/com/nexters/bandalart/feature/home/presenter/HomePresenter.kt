@@ -30,6 +30,8 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
+import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.mapper.toUiModel
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
@@ -48,9 +50,9 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class HomePresenter(
-    @Suppress("UnusedPrivateProperty")
-    @Assisted navigator: Navigator,
+    @Assisted private val navigator: Navigator,
     private val bandalartRepository: BandalartRepository,
+    private val inAppUpdateRepository: InAppUpdateRepository,
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
@@ -63,7 +65,10 @@ class HomePresenter(
         var bottomSheet by rememberRetained { mutableStateOf<HomeScreen.BottomSheetState?>(null) }
         var dialog by rememberRetained { mutableStateOf<HomeScreen.DialogState?>(null) }
         var isDropDownMenuOpened by remember { mutableStateOf(false) }
+        var imageRequest by remember { mutableStateOf<HomeScreen.ImageRequest?>(null) }
+        var updateVersionCode by remember { mutableStateOf<Int?>(null) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
+        var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
         val scope = rememberCoroutineScope()
 
         suspend fun loadBandalart(
@@ -370,6 +375,24 @@ class HomePresenter(
             }
         }
 
+        LaunchedEffect(isBandalartCompleted, bandalartData?.id) {
+            val completedBandalart = bandalartData
+            if (
+                isBandalartCompleted &&
+                completedBandalart != null &&
+                completedBandalart.titleText.isNotEmpty() &&
+                requestedCompletionId != completedBandalart.id
+            ) {
+                requestedCompletionId = completedBandalart.id
+                imageRequest =
+                    HomeScreen.ImageRequest.Complete(
+                        bandalartId = completedBandalart.id,
+                        bandalartTitle = completedBandalart.titleText,
+                        bandalartProfileEmoji = completedBandalart.profileEmoji.orEmpty(),
+                    )
+            }
+        }
+
         return HomeScreen.State(
             bandalartList = bandalartList,
             bandalartData = bandalartData,
@@ -379,6 +402,8 @@ class HomePresenter(
             bottomSheet = bottomSheet,
             dialog = dialog,
             isDropDownMenuOpened = isDropDownMenuOpened,
+            imageRequest = imageRequest,
+            updateVersionCode = updateVersionCode,
             effect = effect,
         ) { event ->
             when (event) {
@@ -463,6 +488,46 @@ class HomePresenter(
 
                 is HomeScreen.Event.DeleteCell -> scope.launch { deleteCell(event.cellId) }
                 HomeScreen.Event.ConsumeEffect -> effect = null
+                HomeScreen.Event.ShowAppVersion -> effect = HomeScreen.Effect.ShowAppVersion
+                HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
+                HomeScreen.Event.RequestSave -> {
+                    isDropDownMenuOpened = false
+                    imageRequest = HomeScreen.ImageRequest.Save
+                }
+
+                HomeScreen.Event.ImageRequestHandled -> imageRequest = null
+                is HomeScreen.Event.CaptureFinished -> {
+                    val request = imageRequest as? HomeScreen.ImageRequest.Complete
+                    if (request != null) {
+                        imageRequest = null
+                        isBandalartCompleted = false
+                        navigator.goTo(
+                            CompleteScreen(
+                                bandalartId = request.bandalartId,
+                                bandalartTitle = request.bandalartTitle,
+                                bandalartProfileEmoji = request.bandalartProfileEmoji,
+                                bandalartChartImageUri = event.imageUri,
+                            ),
+                        )
+                    }
+                }
+
+                is HomeScreen.Event.CheckForUpdate -> {
+                    scope.launch {
+                        if (!inAppUpdateRepository.isUpdateAlreadyRejected(event.versionCode)) {
+                            updateVersionCode = event.versionCode
+                        }
+                    }
+                }
+
+                HomeScreen.Event.CancelUpdate -> {
+                    scope.launch {
+                        updateVersionCode?.let { versionCode ->
+                            inAppUpdateRepository.setLastRejectedUpdateVersion(versionCode)
+                        }
+                        updateVersionCode = null
+                    }
+                }
             }
         }
     }

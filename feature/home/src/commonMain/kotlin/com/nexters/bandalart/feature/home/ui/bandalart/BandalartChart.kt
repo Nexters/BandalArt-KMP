@@ -39,7 +39,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,30 +48,33 @@ import androidx.compose.ui.tooling.preview.Preview
 fun BandalartChart(
     bandalartData: BandalartUiModel,
     bandalartCellData: BandalartCellEntity,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints {
         val paddedMaxWidth = remember(maxWidth) { maxWidth - (15.dp * 2) }
 
-        val subCellList = persistentListOf(
-            SubCell(2, 3, 1, 1, bandalartCellData.children[0]),
-            SubCell(3, 2, 1, 0, bandalartCellData.children[1]),
-            SubCell(3, 2, 1, 1, bandalartCellData.children[2]),
-            SubCell(2, 3, 0, 1, bandalartCellData.children[3]),
-        )
+        val subCellList =
+            persistentListOf(
+                SubCell(2, 3, 1, 1, bandalartCellData.children[0]),
+                SubCell(3, 2, 1, 0, bandalartCellData.children[1]),
+                SubCell(3, 2, 1, 1, bandalartCellData.children[2]),
+                SubCell(2, 3, 0, 1, bandalartCellData.children[3]),
+            )
 
         Layout(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp)),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp)),
             content = {
                 for (index in subCellList.indices) {
                     Box(
-                        modifier = Modifier
-                            .layoutId(stringResource(Res.string.home_layout_id, index + 1))
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(color = Gray300),
+                        modifier =
+                            Modifier
+                                .layoutId(stringResource(Res.string.home_layout_id, index + 1))
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(color = Gray300),
                     ) {
                         BandalartCellGrid(
                             bandalartData = bandalartData,
@@ -83,10 +86,11 @@ fun BandalartChart(
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .layoutId(stringResource(Res.string.home_main_id))
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(color = bandalartData.mainColor.toColor()),
+                    modifier =
+                        Modifier
+                            .layoutId(stringResource(Res.string.home_main_id))
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(color = bandalartData.mainColor.toColor()),
                 ) {
                     BandalartCell(
                         cellType = CellType.MAIN,
@@ -137,11 +141,12 @@ private fun BandalartChartPreview() {
     BandalartTheme {
         BandalartChart(
             bandalartCellData = dummyBandalartChartData,
-            bandalartData = BandalartUiModel(
-                id = 0L,
-                mainColor = "#3FFFBA",
-                subColor = "#111827",
-            ),
+            bandalartData =
+                BandalartUiModel(
+                    id = 0L,
+                    mainColor = "#3FFFBA",
+                    subColor = "#111827",
+                ),
             onHomeUiAction = {},
         )
     }

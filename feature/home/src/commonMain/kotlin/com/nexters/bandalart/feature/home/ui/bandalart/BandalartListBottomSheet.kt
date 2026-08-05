@@ -65,7 +65,7 @@ import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
@@ -76,31 +76,34 @@ import androidx.compose.ui.tooling.preview.Preview
 fun BandalartListBottomSheet(
     bandalartList: ImmutableList<BandalartUiModel>,
     currentBandalartId: Long,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = {
-            onHomeUiAction(HomeUiAction.OnDismiss)
+            onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
-        modifier = Modifier
-            .wrapContentSize()
-            .statusBarsPadding(),
+        modifier =
+            Modifier
+                .wrapContentSize()
+                .statusBarsPadding(),
         sheetState = bottomSheetState,
         dragHandle = null,
     ) {
         Column(
-            modifier = Modifier
-                .background(White)
-                .navigationBarsPadding(),
+            modifier =
+                Modifier
+                    .background(White)
+                    .navigationBarsPadding(),
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
             ) {
                 Text(
                     text = stringResource(Res.string.bandalart_list_title),
@@ -111,12 +114,13 @@ fun BandalartListBottomSheet(
                     textAlign = TextAlign.Center,
                 )
                 IconButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .height(21.dp)
-                        .aspectRatio(1f),
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .height(21.dp)
+                            .aspectRatio(1f),
                     onClick = {
-                        onHomeUiAction(HomeUiAction.OnDismiss)
+                        onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
                     },
                 ) {
                     Icon(
@@ -142,7 +146,7 @@ fun BandalartListBottomSheet(
                         currentBandalartId = currentBandalartId,
                         onClick = { key ->
                             // 앱에 진입할때 가장 최근에 확인한 표가 화면에 보여지도록
-                            onHomeUiAction(HomeUiAction.OnBandalartListItemClick(key))
+                            onHomeUiAction(HomeScreen.Event.SelectBandalart(key))
                         },
                     )
                 }
@@ -150,12 +154,13 @@ fun BandalartListBottomSheet(
                     Spacer(modifier = Modifier.height(20.dp))
                     Row {
                         Button(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp)
-                                .padding(horizontal = 24.dp),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .height(56.dp)
+                                    .padding(horizontal = 24.dp),
                             onClick = {
-                                onHomeUiAction(HomeUiAction.OnAddClick)
+                                onHomeUiAction(HomeScreen.Event.AddBandalart)
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Gray200),
                         ) {

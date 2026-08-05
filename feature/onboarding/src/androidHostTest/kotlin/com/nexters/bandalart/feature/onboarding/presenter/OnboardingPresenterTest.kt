@@ -16,7 +16,7 @@
 
 package com.nexters.bandalart.feature.onboarding.presenter
 
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
+import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -36,7 +36,7 @@ class OnboardingPresenterTest {
             presenter.test {
                 awaitItem().eventSink(OnboardingScreen.Event.NavigateToHome)
 
-                assertEquals(LegacyHomeScreen, navigator.awaitResetRoot().newRoot)
+                assertEquals(HomeScreen, navigator.awaitResetRoot().newRoot)
                 assertTrue(repository.isCompleted)
                 assertEquals(1, repository.setCallCount)
             }
@@ -55,7 +55,7 @@ class OnboardingPresenterTest {
                 state.eventSink(OnboardingScreen.Event.NavigateToHome)
                 state.eventSink(OnboardingScreen.Event.NavigateToHome)
 
-                assertEquals(LegacyHomeScreen, navigator.awaitResetRoot().newRoot)
+                assertEquals(HomeScreen, navigator.awaitResetRoot().newRoot)
                 assertEquals(1, repository.setCallCount)
                 navigator.expectNoResetRootEvents()
             }

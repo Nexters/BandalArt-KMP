@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,25 +31,28 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import bandalart.core.designsystem.generated.resources.app_version_info
-import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.app_version_info
+import bandalart.core.designsystem.generated.resources.create_bandalart
+import bandalart.core.designsystem.generated.resources.delete_bandalart
+import bandalart.core.designsystem.generated.resources.limit_create_bandalart
+import bandalart.core.designsystem.generated.resources.please_input_main_goal
+import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
-import com.nexters.bandalart.core.common.utils.ObserveAsEvents
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray50
+import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
@@ -58,299 +61,238 @@ import com.nexters.bandalart.feature.home.ui.HomeShareButton
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartSkeleton
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiEvent
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiState
-import com.nexters.bandalart.feature.home.viewmodel.HomeViewModel
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.getString
-import androidx.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
-private const val SnackbarDuration = 1500L
+private const val SNACKBAR_DURATION_MILLIS = 1500L
 
-// TODO 서브 셀을 먼저 채워야 태스크 셀을 채울 수 있도록 validation 추가
-// TODO 텍스트를 컴포저블로 각각 분리하지 말고, 폰트를 적용하는 방식으로 변경
-@Suppress("TooGenericExceptionCaught")
+@CircuitInject(HomeScreen::class, AppScope::class)
+@Inject
 @Composable
-internal fun HomeRoute(
-    navigateToComplete: (Long, String, String, String) -> Unit,
-    onShowSnackbar: suspend (String) -> Boolean,
-    modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
+internal fun Home(
+    state: HomeScreen.State,
+    modifier: Modifier,
+    appVersionProvider: AppVersionProvider,
+    imageHandlerProvider: ImageHandlerProvider,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val appVersionProvider = koinInject<AppVersionProvider>()
-    val imageHandlerProvider = koinInject<ImageHandlerProvider>()
-    val appVersion = remember {
-        appVersionProvider.getAppVersion()
-    }
+    val homeGraphicsLayer = rememberGraphicsLayer()
+    val completeGraphicsLayer = rememberGraphicsLayer()
+    val updateSnackbarHostState = remember { SnackbarHostState() }
 
-//    val appUpdateManager = remember { AppUpdateManagerFactory.create(context) }
-//
-//    val installStateUpdatedListener = remember {
-//        InstallStateUpdatedListener { state ->
-//            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-//                scope.launch {
-//                    val snackbarResult = snackbarHostState.showSnackbar(
-//                        message = context.getString(R.string.update_ready_to_install),
-//                        actionLabel = context.getString(R.string.update_action_restart),
-//                        duration = Indefinite,
-//                    )
-//
-//                    // 재시작 버튼 클릭시
-//                    if (snackbarResult == SnackbarResult.ActionPerformed) {
-//                        appUpdateManager.completeUpdate()
-//                    }
-//                }
-//            }
-//        }
-//    }
+    FlexibleUpdateEffect(
+        updateVersionCode = state.updateVersionCode,
+        snackbarHostState = updateSnackbarHostState,
+        onUpdateAvailable = { versionCode ->
+            state.eventSink(HomeScreen.Event.CheckForUpdate(versionCode))
+        },
+        onUpdateCanceled = {
+            state.eventSink(HomeScreen.Event.CancelUpdate)
+        },
+    )
 
-//    DisposableEffect(Unit) {
-//        appUpdateManager.registerListener(installStateUpdatedListener)
-//        onDispose {
-//            appUpdateManager.unregisterListener(installStateUpdatedListener)
-//        }
-//    }
-//
-//    val appUpdateResultLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.StartIntentSenderForResult(),
-//    ) { result ->
-//        if (result.resultCode == Activity.RESULT_CANCELED && result.data != null) {
-//            scope.launch {
-//                appUpdateManager.appUpdateInfo.await().availableVersionCode().let { versionCode ->
-//                    viewModel.setLastRejectedUpdateVersion(versionCode)
-//                }
-//            }
-//        }
-//    }
+    HandleHomeEffects(
+        state = state,
+        homeGraphicsLayer = homeGraphicsLayer,
+        completeGraphicsLayer = completeGraphicsLayer,
+        appVersionProvider = appVersionProvider,
+        imageHandlerProvider = imageHandlerProvider,
+    )
 
-//    LaunchedEffect(Unit) {
-//        try {
-//            val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
-//
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-//                val availableVersionCode = appUpdateInfo.availableVersionCode()
-//                if (!isValidImmediateAppUpdate(availableVersionCode) &&
-//                    !viewModel.isUpdateAlreadyRejected(availableVersionCode) &&
-//                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-//                ) {
-//                    appUpdateManager.startUpdateFlowForResult(
-//                        appUpdateInfo,
-//                        appUpdateResultLauncher,
-//                        AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
-//                    )
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Napier.e("Failed to check for flexible update", e)
-//        }
-//    }
-
-    ObserveAsEvents(flow = viewModel.uiEvent) { event ->
-        when (event) {
-            is HomeUiEvent.NavigateToComplete -> {
-                navigateToComplete(
-                    event.id,
-                    event.title,
-                    event.profileEmoji.ifEmpty { "default emoji" },
-                    event.bandalartChart,
-                )
-            }
-
-            is HomeUiEvent.ShowSnackbar -> {
-                scope.launch {
-                    val job = launch {
-                        onShowSnackbar(event.message)
-                    }
-                    delay(SnackbarDuration)
-                    job.cancel()
-                }
-            }
-
-            is HomeUiEvent.ShowToast -> {
-                scope.launch {
-                    showToast(event.message)
-                }
-            }
-
-            is HomeUiEvent.SaveBandalart -> {
-                imageHandlerProvider.saveImageToGallery(event.bitmap)
-                scope.launch {
-                    showToast(getString(Res.string.save_bandalart_image))
-                }
-            }
-
-            is HomeUiEvent.ShareBandalart -> {
-                imageHandlerProvider.externalShareForBitmap(event.bitmap)
-            }
-
-            is HomeUiEvent.CaptureBandalart -> {
-                viewModel.updateBandalartChartUrl(imageHandlerProvider.bitmapToFileUri(event.bitmap).toString())
-            }
-
-            is HomeUiEvent.ShowAppVersion -> {
-                scope.launch {
-                    showToast(getString(Res.string.app_version_info, appVersion))
-                }
-            }
-        }
-    }
+    HomeBottomSheets(
+        state = state,
+        eventSink = state.eventSink,
+    )
+    HomeDialogs(
+        state = state,
+        eventSink = state.eventSink,
+    )
 
     HomeContent(
-        uiState = uiState,
-        onHomeUiAction = viewModel::onAction,
-        shareBandalart = viewModel::shareBandalart,
-        captureBandalart = viewModel::captureBandalart,
-        saveBandalart = viewModel::saveBandalartImage,
-        snackbarHostState = snackbarHostState,
+        state = state,
+        homeGraphicsLayer = homeGraphicsLayer,
+        completeGraphicsLayer = completeGraphicsLayer,
+        updateSnackbarHostState = updateSnackbarHostState,
         modifier = modifier,
     )
 }
 
 @Composable
-internal fun HomeContent(
-    uiState: HomeUiState,
-    onHomeUiAction: (HomeUiAction) -> Unit,
-    shareBandalart: (ImageBitmap) -> Unit,
-    captureBandalart: (ImageBitmap) -> Unit,
-    saveBandalart: (ImageBitmap) -> Unit,
-    snackbarHostState: SnackbarHostState,
-    modifier: Modifier = Modifier,
+private fun HandleHomeEffects(
+    state: HomeScreen.State,
+    homeGraphicsLayer: GraphicsLayer,
+    completeGraphicsLayer: GraphicsLayer,
+    appVersionProvider: AppVersionProvider,
+    imageHandlerProvider: ImageHandlerProvider,
 ) {
-    val homeGraphicsLayer = rememberGraphicsLayer()
-    val completeGraphicsLayer = rememberGraphicsLayer()
+    val showSnackbar = LocalShowSnackbar.current
+    val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
 
-    LaunchedEffect(key1 = uiState.isSharing) {
-        if (uiState.isSharing) {
-            shareBandalart(homeGraphicsLayer.toImageBitmap())
+    LaunchedEffect(state.effect) {
+        when (state.effect) {
+            HomeScreen.Effect.ShowCreateSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.create_bandalart), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowDeleteSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.delete_bandalart), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowLimitToast -> {
+                showToast(getString(Res.string.limit_create_bandalart))
+            }
+
+            HomeScreen.Effect.ShowMainGoalToast -> {
+                showToast(getString(Res.string.please_input_main_goal))
+            }
+
+            HomeScreen.Effect.ShowAppVersion -> {
+                showToast(getString(Res.string.app_version_info, appVersion))
+            }
+
+            null -> Unit
+        }
+
+        if (state.effect != null) {
+            state.eventSink(HomeScreen.Event.ConsumeEffect)
         }
     }
 
-    LaunchedEffect(key1 = uiState.isCapturing) {
-        if (uiState.isCapturing) {
-            if (uiState.isBandalartCompleted) {
-                captureBandalart(completeGraphicsLayer.toImageBitmap())
-            } else {
-                saveBandalart(completeGraphicsLayer.toImageBitmap())
+    LaunchedEffect(state.imageRequest) {
+        val request = state.imageRequest ?: return@LaunchedEffect
+        withFrameNanos { }
+
+        when (request) {
+            HomeScreen.ImageRequest.Share -> {
+                imageHandlerProvider.externalShareForBitmap(homeGraphicsLayer.toImageBitmap())
+                state.eventSink(HomeScreen.Event.ImageRequestHandled)
+            }
+
+            HomeScreen.ImageRequest.Save -> {
+                imageHandlerProvider.saveImageToGallery(completeGraphicsLayer.toImageBitmap())
+                showToast(getString(Res.string.save_bandalart_image))
+                state.eventSink(HomeScreen.Event.ImageRequestHandled)
+            }
+
+            is HomeScreen.ImageRequest.Complete -> {
+                val imageUri = imageHandlerProvider.bitmapToFileUri(completeGraphicsLayer.toImageBitmap())
+                if (imageUri != null) {
+                    state.eventSink(HomeScreen.Event.CaptureFinished(imageUri.toString()))
+                } else {
+                    state.eventSink(HomeScreen.Event.ImageRequestHandled)
+                }
             }
         }
     }
+}
 
-    HomeBottomSheets(
-        uiState = uiState,
-        onHomeUiAction = onHomeUiAction,
-    )
+private suspend fun showSnackbarForDuration(
+    message: String,
+    showSnackbar: suspend (String) -> Boolean,
+) {
+    coroutineScope {
+        val snackbarJob = launch { showSnackbar(message) }
+        delay(SNACKBAR_DURATION_MILLIS)
+        snackbarJob.cancel()
+    }
+}
 
-    HomeDialogs(
-        uiState = uiState,
-        onHomeUiAction = onHomeUiAction,
-    )
-
+@Composable
+internal fun HomeContent(
+    state: HomeScreen.State,
+    homeGraphicsLayer: GraphicsLayer,
+    completeGraphicsLayer: GraphicsLayer,
+    updateSnackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Gray50,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(bottom = 32.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(bottom = 32.dp),
             ) {
                 HomeTopBar(
-                    bandalartCount = uiState.bandalartList.size,
-                    onHomeUiAction = onHomeUiAction,
+                    bandalartCount = state.bandalartList.size,
+                    onHomeUiAction = state.eventSink,
                 )
                 HorizontalDivider(
                     thickness = 1.dp,
                     color = Gray100,
                 )
                 Column(
-                    modifier = Modifier
-                        .captureToGraphicsLayer(homeGraphicsLayer)
-                        .background(Gray50),
+                    modifier =
+                        Modifier
+                            .captureToGraphicsLayer(homeGraphicsLayer)
+                            .background(Gray50),
                 ) {
-                    if (uiState.bandalartCellData != null && uiState.bandalartData != null) {
+                    if (state.bandalartCellData != null && state.bandalartData != null) {
                         HomeHeader(
-                            bandalartData = uiState.bandalartData,
-                            cellData = uiState.bandalartCellData,
-                            isDropDownMenuOpened = uiState.isDropDownMenuOpened,
-                            onHomeUiAction = onHomeUiAction,
+                            bandalartData = state.bandalartData,
+                            cellData = state.bandalartCellData,
+                            isDropDownMenuOpened = state.isDropDownMenuOpened,
+                            onHomeUiAction = state.eventSink,
                         )
                         BandalartChart(
-                            bandalartData = uiState.bandalartData,
-                            bandalartCellData = uiState.bandalartCellData,
-                            onHomeUiAction = onHomeUiAction,
-                            modifier = Modifier
-                                .captureToGraphicsLayer(completeGraphicsLayer)
-                                .background(Gray50),
+                            bandalartData = state.bandalartData,
+                            bandalartCellData = state.bandalartCellData,
+                            onHomeUiAction = state.eventSink,
+                            modifier =
+                                Modifier
+                                    .captureToGraphicsLayer(completeGraphicsLayer)
+                                    .background(Gray50),
                         )
                     }
                     Spacer(modifier = Modifier.height(64.dp))
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 HomeShareButton(
-                    onShareButtonClick = { onHomeUiAction(HomeUiAction.OnShareButtonClick) },
+                    onShareButtonClick = {
+                        state.eventSink(HomeScreen.Event.RequestShare)
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
 
             SnackbarHost(
-                hostState = snackbarHostState,
+                hostState = updateSnackbarHostState,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
 
-            if (uiState.isShowSkeleton) {
+            if (state.isLoading) {
                 BandalartSkeleton()
             }
         }
     }
 }
 
-// @DevicePreview
 @Preview
 @Composable
-private fun HomeScreenSingleBandalartPreview() {
+private fun HomeScreenPreview() {
     BandalartTheme {
         HomeContent(
-            uiState = HomeUiState(
-                bandalartList = listOf(dummyBandalartList[0]).toImmutableList(),
-                bandalartData = dummyBandalartData,
-                bandalartCellData = dummyBandalartChartData,
-            ),
-            onHomeUiAction = {},
-            shareBandalart = {},
-            captureBandalart = {},
-            saveBandalart = {},
-            snackbarHostState = remember { SnackbarHostState() },
-        )
-    }
-}
-
-// @DevicePreview
-@Preview
-@Composable
-private fun HomeScreenMultipleBandalartPreview() {
-    BandalartTheme {
-        HomeContent(
-            uiState = HomeUiState(
-                bandalartList = dummyBandalartList.toImmutableList(),
-                bandalartData = dummyBandalartData,
-                bandalartCellData = dummyBandalartChartData,
-            ),
-            onHomeUiAction = {},
-            shareBandalart = {},
-            captureBandalart = {},
-            saveBandalart = {},
-            snackbarHostState = remember { SnackbarHostState() },
+            state =
+                HomeScreen.State(
+                    bandalartList = dummyBandalartList.toImmutableList(),
+                    bandalartData = dummyBandalartData,
+                    bandalartCellData = dummyBandalartChartData,
+                    isLoading = false,
+                    eventSink = {},
+                ),
+            homeGraphicsLayer = rememberGraphicsLayer(),
+            completeGraphicsLayer = rememberGraphicsLayer(),
+            updateSnackbarHostState = remember { SnackbarHostState() },
         )
     }
 }

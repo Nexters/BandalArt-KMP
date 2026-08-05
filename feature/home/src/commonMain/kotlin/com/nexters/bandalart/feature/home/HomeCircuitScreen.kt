@@ -39,6 +39,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val bottomSheet: BottomSheetState? = null,
         val dialog: DialogState? = null,
         val isDropDownMenuOpened: Boolean = false,
+        val imageRequest: ImageRequest? = null,
+        val updateVersionCode: Int? = null,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -83,6 +85,20 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ShowLimitToast : Effect
 
         data object ShowMainGoalToast : Effect
+
+        data object ShowAppVersion : Effect
+    }
+
+    sealed interface ImageRequest {
+        data object Share : ImageRequest
+
+        data object Save : ImageRequest
+
+        data class Complete(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+            val bandalartProfileEmoji: String,
+        ) : ImageRequest
     }
 
     sealed interface Event : CircuitUiEvent {
@@ -161,5 +177,23 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object ConsumeEffect : Event
+
+        data object ShowAppVersion : Event
+
+        data object RequestShare : Event
+
+        data object RequestSave : Event
+
+        data object ImageRequestHandled : Event
+
+        data class CaptureFinished(
+            val imageUri: String,
+        ) : Event
+
+        data class CheckForUpdate(
+            val versionCode: Int,
+        ) : Event
+
+        data object CancelUpdate : Event
     }
 }

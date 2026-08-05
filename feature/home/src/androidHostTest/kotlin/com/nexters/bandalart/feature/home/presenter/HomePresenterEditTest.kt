@@ -43,7 +43,7 @@ class HomePresenterEditTest {
                     recentBandalartId = 1L,
                     createdBandalart = created,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -74,7 +74,7 @@ class HomePresenterEditTest {
                     initialBandalarts = List(5) { index -> bandalart(index + 1L) },
                     recentBandalartId = 1L,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -97,7 +97,7 @@ class HomePresenterEditTest {
         runTest {
             val mainCell = cell(id = 10L, title = "기존 목표")
             val repository = repositoryWithCells(mainCell = mainCell)
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -153,7 +153,7 @@ class HomePresenterEditTest {
                             subCell.id to listOf(taskCell),
                         ),
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -195,7 +195,7 @@ class HomePresenterEditTest {
             val mainCell = cell(id = 10L, title = "메인")
             val taskCell = cell(id = 12L, title = "삭제 대상", parentId = mainCell.id)
             val repository = repositoryWithCells(mainCell = mainCell)
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -228,7 +228,7 @@ class HomePresenterEditTest {
                     initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
                     recentBandalartId = 1L,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -261,7 +261,7 @@ class HomePresenterEditTest {
             val mainCell = cell(id = 10L, title = null)
             val subCell = cell(id = 11L, title = "서브", parentId = mainCell.id)
             val repository = repositoryWithCells(mainCell = mainCell)
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)

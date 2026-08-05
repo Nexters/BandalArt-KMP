@@ -45,7 +45,7 @@ class HomePresenterTest {
                             subCell.id to listOf(taskCell),
                         ),
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitItem()
@@ -83,7 +83,7 @@ class HomePresenterTest {
                     initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
                     recentBandalartId = 99L,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitItem()
@@ -104,7 +104,7 @@ class HomePresenterTest {
                     initialBandalarts = emptyList(),
                     createdBandalart = created,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitItem()
@@ -131,7 +131,7 @@ class HomePresenterTest {
                     recentBandalartId = 1L,
                     previousBandalartList = listOf(1L to false, 2L to false),
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitItem()
@@ -152,7 +152,7 @@ class HomePresenterTest {
                     initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
                     recentBandalartId = 1L,
                 )
-            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository)
+            val presenter = HomePresenter(FakeNavigator(HomeScreen), repository, FakeInAppUpdateRepository())
 
             presenter.test {
                 var state = awaitItem()

@@ -418,6 +418,63 @@ validation은 초과 입력을 버리고 기존 draft를 그대로 유지한다.
 
 Circuit Presenter test에서 모든 Event가 새 item을 만든다고 가정하지 않는다. no-op과 validation 거절은 이벤트 없음 자체가 계약이다.
 
+## 21. 완료 화면 이동이 이미지 캡처보다 먼저 실행됨
+
+### 증상
+
+기존 Home ViewModel은 완료 감지 후 고정 지연으로 캡처와 화면 이동 순서를 맞췄다. 기기 성능이나 프레임 타이밍에 따라 URI가 만들어지기 전에 빈 URI로 `CompleteScreen` 이동이 시작될 수 있었다.
+
+### 원인
+
+이미지 캡처는 Compose `GraphicsLayer`와 파일 저장을 거치는 UI side effect인데, ViewModel이 실제 완료 신호 없이 시간만 기다렸다. 상태 소유자가 플랫폼 캡처 결과를 알 수 없는 구조였다.
+
+### 해결
+
+- Presenter는 `ImageRequest.Complete`와 이동 metadata만 State에 노출한다.
+- 공통 UI는 다음 프레임에서 layer를 캡처하고 `bitmapToFileUri` 완료를 기다린다.
+- UI가 `CaptureFinished(uri)` Event를 보낸 뒤에만 Presenter가 `CompleteScreen`으로 이동한다.
+- Presenter test에서 capture 완료 전에는 navigation이 없고 URI 수신 후 한 번만 이동하는지 검증한다.
+
+비동기 UI 작업과 navigation 순서를 고정 지연으로 맞추지 않고 실제 결과 Event를 경계로 삼는다.
+
+## 22. flexible update를 공통 Presenter에 직접 넣으면 iOS 계약이 오염됨
+
+### 증상
+
+Android의 `AppUpdateManager`, install status listener와 lifecycle 처리를 Home Presenter에 옮기면 commonMain이 Play Core 타입이나 Android Context에 의존하게 된다.
+
+### 원인
+
+업데이트 제안 여부와 거절 versionCode는 제품 상태이지만, Play Core flow 실행·listener·`completeUpdate()`는 Android UI lifecycle에 묶인 플랫폼 effect다.
+
+### 해결
+
+- Presenter는 후보 versionCode와 거절 기록만 `InAppUpdateRepository`로 관리한다.
+- Android 구현은 `androidMain`의 `FlexibleUpdateEffect`에서 listener 등록/해제, 재진입 복구와 update flow를 처리한다.
+- major/minor 강제 업데이트 후보는 Home의 flexible flow에서 제외하고 순수 정책 함수로 테스트한다.
+- iOS actual은 같은 공통 계약을 유지하는 no-op으로 둔다.
+
+플랫폼 SDK 호출은 source set effect에 두고, 공통 Presenter에는 직렬화 가능한 상태와 Event만 남긴다.
+
+## 23. Spotless module apply가 기존 Home UI까지 대량 변경함
+
+### 증상
+
+Home migration 파일을 포맷하려고 모듈 단위 `spotlessApply`를 실행하자 이번 작업과 무관한 기존 UI 파일 15개에도 포맷 diff가 생겼다.
+
+### 원인
+
+Home 모듈에는 현재 formatter 규칙과 맞지 않는 기존 파일이 남아 있다. 모듈 전체 apply는 변경 파일 범위와 관계없이 이 baseline까지 수정한다.
+
+### 해결
+
+- 무관한 formatter diff는 즉시 되돌렸다.
+- 이번에 변경한 Kotlin 파일만 formatter 결과를 유지하고 Detekt 및 대상 compile/test로 검증했다.
+- KTS/XML Spotless check는 별도로 통과시켰다.
+- 기존 Home UI 포맷 부채는 기능 migration PR에 섞지 않고 별도 정리 대상으로 남긴다.
+
+대규모 migration 중 formatter baseline이 깨져 있으면 module-wide apply 전에 변경 대상 목록을 고정한다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)
