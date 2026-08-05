@@ -14,7 +14,7 @@ android-gradle-plugin = "9.3.0"
 google-service = "4.4.2"
 
 # Kotlin
-kotlin-core = "2.3.21"
+kotlin-core = "2.4.10"
 kotlin-ktlint-gradle = "12.1.2"
 kotlin-ktlint-source = "0.50.0"
 
@@ -45,6 +45,7 @@ androidx-sqlite = "2.5.0"
 # DI
 koin = "4.1.0-Beta5"
 metro = "1.1.1"
+circuit = "0.35.1"
 
 # Image Load
 coil3 = "3.1.0"
@@ -156,6 +157,13 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = 
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
 koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "koin" }
+
+# Circuit
+circuit-foundation = { group = "com.slack.circuit", name = "circuit-foundation", version.ref = "circuit" }
+circuit-runtime = { group = "com.slack.circuit", name = "circuit-runtime", version.ref = "circuit" }
+circuit-runtime-presenter = { group = "com.slack.circuit", name = "circuit-runtime-presenter", version.ref = "circuit" }
+circuit-runtime-ui = { group = "com.slack.circuit", name = "circuit-runtime-ui", version.ref = "circuit" }
+circuit-test = { group = "com.slack.circuit", name = "circuit-test", version.ref = "circuit" }
 
 # Image Load
 coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }

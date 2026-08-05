@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart
+package com.nexters.bandalart.feature.splash
 
-import androidx.compose.ui.window.ComposeUIViewController
-import com.nexters.bandalart.di.initKoin
-import com.nexters.bandalart.di.metro.createIosAppGraph
-import platform.UIKit.UIViewController
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 
-@Suppress("FunctionName")
-fun MainViewController(): UIViewController {
-    val appGraph = createIosAppGraph()
+@Composable
+internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
+    val currentOnComplete = rememberUpdatedState(onComplete)
 
-    return ComposeUIViewController(
-        configure = {
-            initKoin(appGraph)
-        },
-    ) {
-        BandalartApp(appGraph = appGraph)
+    LaunchedEffect(Unit) {
+        currentOnComplete.value()
     }
 }

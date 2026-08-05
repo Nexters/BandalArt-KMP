@@ -18,8 +18,6 @@ package com.nexters.bandalart.di
 
 import com.nexters.bandalart.feature.complete.di.completeModule
 import com.nexters.bandalart.feature.home.di.homeModule
-import com.nexters.bandalart.feature.onboarding.di.onboardingModule
-import com.nexters.bandalart.feature.splash.di.splashModule
 import org.koin.dsl.module
 
 val featureModule =
@@ -27,8 +25,6 @@ val featureModule =
         includes(
             completeModule,
             homeModule,
-            onboardingModule,
-            splashModule,
         )
     }
 

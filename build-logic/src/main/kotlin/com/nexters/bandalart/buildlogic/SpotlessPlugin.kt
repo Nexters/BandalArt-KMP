@@ -8,13 +8,14 @@ import org.gradle.kotlin.dsl.configure
 class SpotlessPlugin : BuildLogicPlugin(
     {
         applyPlugins("com.diffplug.spotless")
+        val editorConfigFile = rootProject.file(".editorconfig")
 
         extensions.configure<SpotlessExtension> {
             kotlin {
                 target("**/*.kt")
                 targetExclude("**/build/**/*.kt")
                 licenseHeader(licenseHeaderKotlin)
-                ktlint(libs.versions.ktlint.get())
+                ktlint(libs.versions.ktlint.get()).setEditorConfigPath(editorConfigFile)
             }
             format("kts") {
                 target("**/*.kts")

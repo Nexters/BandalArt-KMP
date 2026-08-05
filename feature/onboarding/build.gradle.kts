@@ -1,9 +1,22 @@
 plugins {
     id("bandalart.kmp.feature")
     id("bandalart.kotlin.serialization")
+    id("org.jetbrains.kotlin.plugin.parcelize")
+    alias(libs.plugins.metro)
+}
+
+metro {
+    enableCircuitCodegen.set(true)
 }
 
 kotlin {
+    targets.withType<com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget>().configureEach {
+        compilerOptions.freeCompilerArgs.addAll(
+            "-P",
+            "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.nexters.bandalart.core.navigation.CommonParcelize",
+        )
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.common)
@@ -12,21 +25,17 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.ui)
 
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.lifecycle.viewmodel)
-
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.viewmodel.navigation)
+            implementation(libs.circuit.runtime)
+            implementation(libs.circuit.runtime.presenter)
+            implementation(libs.circuit.runtime.ui)
 
             implementation(libs.kotlinx.coroutines.core)
         }
 
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
+            implementation(libs.circuit.test)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.turbine)
         }
     }
 }

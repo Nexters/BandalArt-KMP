@@ -39,9 +39,10 @@ internal fun BandalartSnackbar(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 40.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp),
         shape = RoundedCornerShape(50.dp),
         colors = CardDefaults.cardColors(containerColor = White),
         elevation = CardDefaults.cardElevation(4.dp),

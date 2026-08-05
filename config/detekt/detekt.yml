@@ -18,9 +18,9 @@ performance:
 
 formatting:
     TrailingCommaOnCallSite:
-        active: true
+        active: false
     TrailingCommaOnDeclarationSite:
-        active: true
+        active: false
     ImportOrdering:
         active: false
     MaximumLineLength:
@@ -28,7 +28,7 @@ formatting:
     MultiLineIfElse:
         active: false
     Indentation:
-        indentSize: 4
+        active: false
     ParameterListWrapping:
         active: false
     ArgumentListWrapping:

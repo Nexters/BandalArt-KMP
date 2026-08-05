@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,10 @@
 
 package com.nexters.bandalart
 
-import androidx.compose.ui.window.ComposeUIViewController
-import com.nexters.bandalart.di.initKoin
-import com.nexters.bandalart.di.metro.createIosAppGraph
-import platform.UIKit.UIViewController
+import androidx.compose.runtime.Composable
+import com.slack.circuit.backstack.BackStack
+import com.slack.circuit.foundation.rememberCircuitNavigator
+import com.slack.circuit.runtime.Navigator
 
-@Suppress("FunctionName")
-fun MainViewController(): UIViewController {
-    val appGraph = createIosAppGraph()
-
-    return ComposeUIViewController(
-        configure = {
-            initKoin(appGraph)
-        },
-    ) {
-        BandalartApp(appGraph = appGraph)
-    }
-}
+@Composable
+internal actual fun rememberBandalartNavigator(backStack: BackStack<out BackStack.Record>,): Navigator = rememberCircuitNavigator(backStack)

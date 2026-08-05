@@ -320,10 +320,12 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 
 ### 5. Splash + Onboarding vertical slice
 
-- 공통 Circuit Screen/Presenter/UI factory 이식
-- ViewModel/Compose Navigation/Koin feature module 제거
-- Android 강제 업데이트 UI는 플랫폼 경계에 유지
-- 양 플랫폼 기동/분기/상태 저장 검증
+- [x] 공통 Circuit Screen/Presenter/UI factory 이식
+- [x] ViewModel/Compose Navigation/Koin feature module 제거
+- [x] Android 강제 업데이트 UI를 플랫폼 경계에 유지
+- [x] Android Presenter/graph test와 Android compile 검증
+- [x] iOS Simulator Arm64 framework link 검증
+- [ ] 양 플랫폼 기동/분기/상태 저장 수동 검증
 
 ### 6-A. Complete
 
@@ -374,12 +376,12 @@ toolchain/DI 전환 PR은 기능 변경을 포함하지 않고, 기능 전환 PR
 
 | 항목 | 현재 판단 | 확정 시점 |
 | --- | --- | --- |
-| Metro 정확한 버전 | 1.1.1 | 3-B에서 Android test와 iOS framework link로 확정 |
-| Circuit 정확한 버전 | develop의 0.35.1 이상 호환 버전 | 3-A toolchain 및 3-B codegen spike |
+| Metro 정확한 버전 | 1.1.1, Android/iOS factory aggregation 확인 | 5단계 완료 |
+| Circuit 정확한 버전 | 0.35.1, Native ABI에 맞춰 Kotlin 2.4.10 사용 | 5단계 완료 |
 | Android/iOS 앱 버전 | 배포 이력이 갈라져 별도 확인 필요 | 3-A에서 Play/App Store 기준 확인 후 결정 |
-| `@Parcelize` 대체 | 공통 Screen compile/상태 복원 spike 필요 | 5단계 시작 전 |
-| Contribution 사용 범위 | explicit binding/container 우선 | 3-B의 Native compile 결과 |
-| Splash의 빈 Bandalart 생성 제거 | Home이 불변식을 보장할 때 제거 | 5단계 회귀 테스트 |
+| `@Parcelize` 대체 | 공통 annotation + Parcelize `additionalAnnotation` 적용 | 5단계 완료 |
+| Contribution 사용 범위 | Circuit Presenter/UI factory의 multi-module aggregation 사용 | 5단계 Android/iOS compile 완료 |
+| Splash의 빈 Bandalart 생성 제거 | 제거, 빈 목록 생성 책임은 Home에 유지 | 5단계 완료 |
 
 ## 13. 2단계 완료 체크
 

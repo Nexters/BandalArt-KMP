@@ -27,7 +27,12 @@ import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
+import com.nexters.bandalart.core.navigation.LegacyHomeScreen
+import com.nexters.bandalart.feature.onboarding.OnboardingScreen
+import com.nexters.bandalart.feature.splash.SplashScreen
+import com.slack.circuit.test.FakeNavigator
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -65,6 +70,16 @@ class AppGraphTest {
         assertSame(appGraph.bandalartRepository, appGraph.bandalartRepository)
         assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)
         assertSame(appGraph.onboardingRepository, appGraph.onboardingRepository)
+        assertSame(appGraph.circuit, appGraph.circuit)
+    }
+
+    @Test
+    fun circuitContainsMigratedScreenFactories() {
+        assertNotNull(appGraph.circuit.presenter(SplashScreen, FakeNavigator(SplashScreen)))
+        assertNotNull(appGraph.circuit.ui(SplashScreen))
+        assertNotNull(appGraph.circuit.presenter(OnboardingScreen, FakeNavigator(OnboardingScreen)))
+        assertNotNull(appGraph.circuit.ui(OnboardingScreen))
+        assertNotNull(appGraph.circuit.ui(LegacyHomeScreen))
     }
 
     @Test
