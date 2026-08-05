@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ object RepositoryBindings {
     fun provideBandalartRepository(
         bandalartDataStore: BandalartDataStore,
         bandalartDao: BandalartDao,
-    ): BandalartRepository =
-        DefaultBandalartRepository(bandalartDataStore, bandalartDao)
+    ): BandalartRepository = DefaultBandalartRepository(bandalartDataStore, bandalartDao)
 
     @Provides
     @SingleIn(AppScope::class)
@@ -47,6 +46,5 @@ object RepositoryBindings {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideOnboardingRepository(bandalartDataStore: BandalartDataStore): OnboardingRepository =
-        DefaultOnboardingRepository(bandalartDataStore)
+    fun provideOnboardingRepository(bandalartDataStore: BandalartDataStore): OnboardingRepository = DefaultOnboardingRepository(bandalartDataStore)
 }
