@@ -494,6 +494,25 @@ Home 모듈에는 현재 formatter 규칙과 맞지 않는 기존 파일이 남�
 
 DI runtime 제거는 소스 import 0건뿐 아니라 최종 앱 runtime classpath까지 확인한다.
 
+## 25. Spotless ratchet이 linked worktree에서 저장소를 찾지 못함
+
+### 증상
+
+`ratchetFrom("origin/main")`을 convention에 항상 적용한 뒤 linked worktree에서 Spotless task를 생성하면 `Cannot find git repository in any parent directory`로 실패했다.
+
+### 원인
+
+일반 clone의 `.git`은 디렉터리지만 `git worktree`로 만든 작업 디렉터리의 `.git`은 공통 git directory를 가리키는 파일이다. Spotless의 JGit ratchet 탐색이 이 구조를 repository directory로 인식하지 못했다.
+
+### 해결
+
+- convention은 `spotlessRatchetFrom` Gradle property가 있을 때만 ratchet을 활성화한다.
+- GitHub Actions quality job은 full fetch 후 `-PspotlessRatchetFrom=origin/main`을 전달한다.
+- linked worktree의 로컬 변경 파일은 absolute path를 전달하는 `spotlessIdeHook`으로 포맷한다.
+- 기존 baseline 전체에 `spotlessApply`를 실행하지 않는다.
+
+CI clone과 로컬 linked worktree의 Git metadata 형태가 다르므로 ratchet 활성화를 명시적인 실행 입력으로 둔다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)

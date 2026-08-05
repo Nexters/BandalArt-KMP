@@ -56,7 +56,9 @@ fun Project.configureDetekt(extension: DetektExtension) {
 
             jvmTarget = JavaVersion.VERSION_17.toString()
 
-            source = project.files("./").asFileTree
+            if (name == "detekt") {
+                source = project.files("./").asFileTree
+            }
 
             include("**/*.kt")
             include("**/*.kts")
@@ -65,8 +67,6 @@ fun Project.configureDetekt(extension: DetektExtension) {
 
             reportMerge.configure {
                 input.from(this@detekt.xmlReportFile)
-                input.from(this@detekt.htmlReportFile)
-                input.from(this@detekt.sarifReportFile)
             }
         }
     }

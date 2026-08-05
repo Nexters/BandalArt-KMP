@@ -1,6 +1,7 @@
 import java.util.Properties
 
 plugins {
+    id("bandalart.lint")
     id("bandalart.android.application")
     id("bandalart.android.application.compose")
     alias(libs.plugins.google.service)
@@ -27,9 +28,10 @@ android {
         getByName("debug") {
             isDebuggable = true
             applicationIdSuffix = ".dev"
-            manifestPlaceholders += mapOf(
-                "appName" to "@string/app_name_dev",
-            )
+            manifestPlaceholders +=
+                mapOf(
+                    "appName" to "@string/app_name_dev",
+                )
         }
 
         getByName("release") {
@@ -37,9 +39,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
-            manifestPlaceholders += mapOf(
-                "appName" to "@string/app_name",
-            )
+            manifestPlaceholders +=
+                mapOf(
+                    "appName" to "@string/app_name",
+                )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

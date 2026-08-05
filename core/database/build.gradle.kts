@@ -16,7 +16,6 @@ kotlin {
             implementation(libs.robolectric.junit5.extension)
             implementation(libs.turbine)
         }
-
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
