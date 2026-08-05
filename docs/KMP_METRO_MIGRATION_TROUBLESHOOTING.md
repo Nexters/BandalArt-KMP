@@ -382,6 +382,24 @@ KMP Android convention의 host unit test option에 `isReturnDefaultValues = true
 
 이 옵션은 Android stub method의 기본 반환만 허용하며 Presenter의 navigation/repository assertion은 Circuit test와 fake repository로 계속 검증한다.
 
+## 19. composeApp에서 Circuit Presenter test 확장 함수를 찾지 못함
+
+### 증상
+
+`composeApp`에 처음 Presenter test를 추가한 뒤 `com.slack.circuit.test.test`와 `kotlinx.coroutines.test.runTest`를 찾지 못해 Android host test compile이 실패했다.
+
+### 원인
+
+기존 `composeApp` 테스트는 `FakeNavigator`만 사용해 `circuit-test` 의존성만으로 동작했다. Presenter의 composition을 실행하는 `Presenter.test`는 coroutine test runtime도 필요하지만 `composeApp`의 `androidHostTest`에는 `kotlinx-coroutines-test`가 직접 선언돼 있지 않았다.
+
+### 해결
+
+- `composeApp`의 `androidHostTest`에 `libs.kotlinx.coroutines.test`를 직접 추가
+- `LegacyHomePresenterTest`를 다시 실행해 Home → Complete `goTo` 이벤트 검증
+- Complete feature의 Presenter test와 composeApp Metro graph test를 함께 실행해 factory aggregation 회귀 확인
+
+KMP test source set에서는 다른 module의 transitive test dependency를 가정하지 않고, 사용하는 test runtime을 해당 source set에 직접 선언한다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)

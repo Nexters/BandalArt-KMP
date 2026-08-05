@@ -16,14 +16,12 @@
 
 package com.nexters.bandalart.di
 
-import com.nexters.bandalart.feature.complete.di.completeModule
 import com.nexters.bandalart.feature.home.di.homeModule
 import org.koin.dsl.module
 
 val featureModule =
     module {
         includes(
-            completeModule,
             homeModule,
         )
     }
