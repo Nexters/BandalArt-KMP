@@ -21,6 +21,7 @@ import com.nexters.bandalart.di.initKoin
 import com.nexters.bandalart.di.metro.createIosAppGraph
 import platform.UIKit.UIViewController
 
+@Suppress("FunctionName")
 fun MainViewController(): UIViewController {
     val appGraph = createIosAppGraph()
 
