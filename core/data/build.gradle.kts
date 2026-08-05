@@ -13,8 +13,6 @@ kotlin {
             implementation(projects.core.database)
             implementation(projects.core.datastore)
             implementation(projects.core.domain)
-
-            implementation(libs.koin.core)
         }
 
         androidHostTest.dependencies {

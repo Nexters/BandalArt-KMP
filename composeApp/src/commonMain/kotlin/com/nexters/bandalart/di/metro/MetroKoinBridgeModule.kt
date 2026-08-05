@@ -26,4 +26,7 @@ fun metroKoinBridgeModule(appGraph: AppGraph) =
         single { appGraph.inAppUpdateDataStore }
         single { appGraph.appVersionProvider }
         single { appGraph.imageHandlerProvider }
+        single { appGraph.bandalartRepository }
+        single { appGraph.inAppUpdateRepository }
+        single { appGraph.onboardingRepository }
     }

@@ -24,6 +24,9 @@ import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
+import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
+import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Includes
@@ -38,7 +41,10 @@ interface PlatformBindings {
 
 @DependencyGraph(
     scope = AppScope::class,
-    bindingContainers = [PlatformDataBindings::class],
+    bindingContainers = [
+        PlatformDataBindings::class,
+        RepositoryBindings::class,
+    ],
 )
 interface AppGraph {
     val database: BandalartDatabase
@@ -47,6 +53,9 @@ interface AppGraph {
     val inAppUpdateDataStore: InAppUpdateDataStore
     val appVersionProvider: AppVersionProvider
     val imageHandlerProvider: ImageHandlerProvider
+    val bandalartRepository: BandalartRepository
+    val inAppUpdateRepository: InAppUpdateRepository
+    val onboardingRepository: OnboardingRepository
 
     @DependencyGraph.Factory
     fun interface Factory {
