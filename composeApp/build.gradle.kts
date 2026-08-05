@@ -26,10 +26,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
-
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.circuit.test)
@@ -61,9 +57,6 @@ kotlin {
             implementation(libs.circuit.foundation)
             implementation(libs.circuit.runtime.presenter)
             implementation(libs.circuit.runtime.ui)
-
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
 
             implementation(libs.cmptoast)
             implementation(libs.napier)

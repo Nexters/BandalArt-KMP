@@ -43,7 +43,6 @@ androidx-room = "2.7.2"
 androidx-sqlite = "2.5.0"
 
 # DI
-koin = "4.1.0-Beta5"
 metro = "1.1.1"
 circuit = "0.35.1"
 
@@ -71,7 +70,6 @@ compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
 cmptoast = "1.0.4"
 spotless = "7.0.1"
-kotzilla = "1.0.1"
 
 # Test
 junit5 = "5.12.1"
@@ -96,7 +94,6 @@ uiTooling = "1.7.8"
 # Gradle Plugin
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-core" }
-kotzilla-plugin = { group = "io.kotzilla", name = "kotzilla-plugin", version.ref = "kotzilla" }
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
 compose-compiler-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-core" }
 compose-gradle-plugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
@@ -150,14 +147,6 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlite" }
 
-# DI
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
-koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
-koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
-koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
-koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "koin" }
-
 # Circuit
 circuit-foundation = { group = "com.slack.circuit", name = "circuit-foundation", version.ref = "circuit" }
 circuit-retained = { group = "com.slack.circuit", name = "circuit-retained", version.ref = "circuit" }
@@ -189,7 +178,6 @@ compose-stable-marker = { group = "com.github.skydoves", name = "compose-stable-
 uri-kmp = { group = "com.eygraber", name = "uri-kmp", version.ref = "uri-kmp" }
 compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
-kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla"}
 
 # Test
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
@@ -244,7 +232,6 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
-kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla"}
 
 # Test
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }

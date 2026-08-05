@@ -18,15 +18,6 @@ package com.nexters.bandalart.di.metro
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
-import com.nexters.bandalart.core.common.AppVersionProvider
-import com.nexters.bandalart.core.common.ImageHandlerProvider
-import com.nexters.bandalart.core.database.BandalartDao
-import com.nexters.bandalart.core.database.BandalartDatabase
-import com.nexters.bandalart.core.datastore.BandalartDataStore
-import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
-import com.nexters.bandalart.core.domain.repository.BandalartRepository
-import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
-import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
@@ -39,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.koin.dsl.koinApplication
 import org.robolectric.annotation.Config
 import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 
@@ -91,27 +81,5 @@ class AppGraphTest {
         assertNotNull(appGraph.circuit.ui(completeScreen))
         assertNotNull(appGraph.circuit.presenter(HomeScreen, FakeNavigator(HomeScreen)))
         assertNotNull(appGraph.circuit.ui(HomeScreen))
-    }
-
-    @Test
-    fun koinBridgeExposesMetroGraphInstances() {
-        val koinApplication =
-            koinApplication {
-                modules(metroKoinBridgeModule(appGraph))
-            }
-
-        with(koinApplication.koin) {
-            assertSame(appGraph.database, get<BandalartDatabase>())
-            assertSame(appGraph.bandalartDao, get<BandalartDao>())
-            assertSame(appGraph.bandalartDataStore, get<BandalartDataStore>())
-            assertSame(appGraph.inAppUpdateDataStore, get<InAppUpdateDataStore>())
-            assertSame(appGraph.appVersionProvider, get<AppVersionProvider>())
-            assertSame(appGraph.imageHandlerProvider, get<ImageHandlerProvider>())
-            assertSame(appGraph.bandalartRepository, get<BandalartRepository>())
-            assertSame(appGraph.inAppUpdateRepository, get<InAppUpdateRepository>())
-            assertSame(appGraph.onboardingRepository, get<OnboardingRepository>())
-        }
-
-        koinApplication.close()
     }
 }

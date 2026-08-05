@@ -40,50 +40,47 @@ import com.nexters.bandalart.ui.BandalartSnackbar
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
-import org.koin.compose.KoinContext
 
 @Composable
 fun BandalartApp(appGraph: AppGraph) {
     key(appGraph) {
         BandalartTheme {
-            KoinContext {
-                val snackbarHostState = remember { SnackbarHostState() }
-                val backStack = rememberSaveableBackStack(root = SplashScreen)
-                val navigator = rememberBandalartNavigator(backStack)
-                val showSnackbar: suspend (String) -> Boolean = { message ->
-                    snackbarHostState.showSnackbar(
-                        message = message,
-                        duration = SnackbarDuration.Short,
-                    ) == SnackbarResult.ActionPerformed
-                }
+            val snackbarHostState = remember { SnackbarHostState() }
+            val backStack = rememberSaveableBackStack(root = SplashScreen)
+            val navigator = rememberBandalartNavigator(backStack)
+            val showSnackbar: suspend (String) -> Boolean = { message ->
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short,
+                ) == SnackbarResult.ActionPerformed
+            }
 
-                CircuitCompositionLocals(appGraph.circuit) {
-                    CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
-                        Scaffold(
-                            snackbarHost = {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.TopCenter,
-                                ) {
-                                    SnackbarHost(
-                                        modifier =
-                                            Modifier
-                                                .padding(top = 96.dp)
-                                                .height(36.dp),
-                                        hostState = snackbarHostState,
-                                        snackbar = {
-                                            BandalartSnackbar(message = it.visuals.message)
-                                        },
-                                    )
-                                }
-                            },
-                        ) { innerPadding ->
-                            NavigableCircuitContent(
-                                navigator = navigator,
-                                backStack = backStack,
-                                modifier = Modifier.padding(innerPadding),
-                            )
-                        }
+            CircuitCompositionLocals(appGraph.circuit) {
+                CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
+                    Scaffold(
+                        snackbarHost = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.TopCenter,
+                            ) {
+                                SnackbarHost(
+                                    modifier =
+                                        Modifier
+                                            .padding(top = 96.dp)
+                                            .height(36.dp),
+                                    hostState = snackbarHostState,
+                                    snackbar = {
+                                        BandalartSnackbar(message = it.visuals.message)
+                                    },
+                                )
+                            }
+                        },
+                    ) { innerPadding ->
+                        NavigableCircuitContent(
+                            navigator = navigator,
+                            backStack = backStack,
+                            modifier = Modifier.padding(innerPadding),
+                        )
                     }
                 }
             }

@@ -475,6 +475,25 @@ Home 모듈에는 현재 formatter 규칙과 맞지 않는 기존 파일이 남�
 
 대규모 migration 중 formatter baseline이 깨져 있으면 module-wide apply 전에 변경 대상 목록을 고정한다.
 
+## 24. 직접 Koin 의존성을 지워도 APK runtime에 Koin이 남음
+
+### 증상
+
+소스, version catalog의 Koin alias와 `KoinContext`를 모두 제거한 뒤에도 Android `debugRuntimeClasspath`에서 Koin 3.5.6이 조회됐다.
+
+### 원인
+
+사용처 없이 남아 있던 Kotzilla SDK가 내부 graph 관측을 위해 Koin core를 전이 의존성으로 포함했다. 직접 의존성 검색만으로는 이 runtime 잔재를 발견할 수 없었다.
+
+### 해결
+
+- `dependencyInsight --dependency io.insert-koin --configuration debugRuntimeClasspath`로 유입 경로를 확인했다.
+- 코드 사용처가 없는 Kotzilla SDK dependency와 root buildscript plugin을 제거했다.
+- 더 이상 사용되지 않는 Kotzilla version/catalog alias와 Android config 파일도 함께 제거했다.
+- dependency insight를 다시 실행해 Koin artifact 0건을 확인했다.
+
+DI runtime 제거는 소스 import 0건뿐 아니라 최종 앱 runtime classpath까지 확인한다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)

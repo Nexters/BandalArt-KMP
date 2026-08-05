@@ -366,14 +366,19 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 - [x] 실제 Home UI factory와 root Circuit BackStack을 `HomeScreen`으로 전환
 - [x] 전환 검증 후 Home ViewModel, Compose Navigation, Koin feature module과 legacy Home adapter 제거
 - [x] 대상 Android host test, iOS compile과 변경 모듈 Detekt 통과
-- [ ] PR CI의 전체 unit test, Android Lint/build와 iOS framework link 통과
+- [x] PR #198 CI의 전체 unit test, Android Lint/build와 iOS framework link 통과
 - [ ] 양 플랫폼 Home 읽기·편집·공유·저장·완료 이동 수동 검증
 
 ### 7. Composition root 정리
 
-- Circuit과 모든 runtime object를 Metro가 소유
-- Koin bridge/start/context/module/plugin/runtime 제거
-- Android/iOS entry point에서 동일 AppGraph 사용
+- [x] Circuit과 모든 runtime object를 Metro가 소유
+- [x] Koin bridge/start/context/module/catalog 제거
+- [x] Koin을 전이로 포함하던 미사용 Kotzilla SDK/plugin/config 제거
+- [x] Android/iOS entry point에서 플랫폼별 단일 AppGraph를 명시적으로 전달
+- [x] graph test, Android/iOS compile, Detekt와 변경 모듈 Spotless 통과
+- [x] Android debug runtime dependency graph의 Koin artifact 0건
+- [ ] PR CI의 전체 unit test, Android Lint/build와 iOS framework link 통과
+- [ ] 양 플랫폼 기동과 기존 로컬 데이터 수동 검증
 
 ### 8. 통합 검증 및 main 일원화
 

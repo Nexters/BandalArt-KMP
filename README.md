@@ -70,7 +70,7 @@
   - Material3
   - Navigation
 
-- ~Dagger Hilt~ -> Koin
+- ~Dagger Hilt~ → ~Koin~ → [Metro](https://zacsweers.github.io/metro/)
 - ~Ktor~
 - ~Retrofit~
 - ~Timber~ -> [Napier](https://github.com/AAkira/Napier)
