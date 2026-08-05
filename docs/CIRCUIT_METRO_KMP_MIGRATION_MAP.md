@@ -335,12 +335,18 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 - [x] Metro가 주입한 KMP `ImageHandlerProvider`로 save/share side effect 연결
 - [x] Complete/LegacyHome Presenter와 Metro factory Android host test 통과
 - [x] 변경 모듈 Spotless/Detekt 통과
-- [ ] iOS Simulator Arm64 framework link 검증
+- [x] CI에서 iOS Simulator Arm64 framework link 검증
 - [ ] 양 플랫폼 이동·뒤로가기·저장·공유 수동 검증
 
 ### 6-B. Home 읽기
 
-- 목록, 최근 항목, 빈 목록 생성, 완료 감지
+- [x] runtime 미연결 `HomeScreen`/Metro assisted Presenter 계약 추가
+- [x] 목록, 최근 항목, 빈 목록 생성, 상세·셀 트리와 완료 감지 이식
+- [x] Circuit 공식 Presenter test로 대표 읽기 상태 전이 검증
+- [x] Metro graph에서 Home Presenter factory 생성 검증
+- [x] 변경 Kotlin 파일 Spotless 포맷과 Home/composeApp Detekt 통과
+- [ ] CI에서 전체 unit test, Android Lint, Android/iOS build 검증
+- runtime 교체는 편집/modal과 플랫폼 effect까지 이식한 뒤 한 번에 수행한다.
 
 ### 6-C. Home 편집/modal
 

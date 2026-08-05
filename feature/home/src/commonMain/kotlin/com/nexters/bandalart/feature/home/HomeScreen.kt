@@ -204,7 +204,7 @@ internal fun HomeRoute(
         }
     }
 
-    HomeScreen(
+    HomeContent(
         uiState = uiState,
         onHomeUiAction = viewModel::onAction,
         shareBandalart = viewModel::shareBandalart,
@@ -216,7 +216,7 @@ internal fun HomeRoute(
 }
 
 @Composable
-internal fun HomeScreen(
+internal fun HomeContent(
     uiState: HomeUiState,
     onHomeUiAction: (HomeUiAction) -> Unit,
     shareBandalart: (ImageBitmap) -> Unit,
@@ -320,7 +320,7 @@ internal fun HomeScreen(
 @Composable
 private fun HomeScreenSingleBandalartPreview() {
     BandalartTheme {
-        HomeScreen(
+        HomeContent(
             uiState = HomeUiState(
                 bandalartList = listOf(dummyBandalartList[0]).toImmutableList(),
                 bandalartData = dummyBandalartData,
@@ -340,7 +340,7 @@ private fun HomeScreenSingleBandalartPreview() {
 @Composable
 private fun HomeScreenMultipleBandalartPreview() {
     BandalartTheme {
-        HomeScreen(
+        HomeContent(
             uiState = HomeUiState(
                 bandalartList = dummyBandalartList.toImmutableList(),
                 bandalartData = dummyBandalartData,
