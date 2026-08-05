@@ -33,13 +33,13 @@ class BandalartApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appGraph = createAndroidAppGraph()
+        appGraph = createAndroidAppGraph(this)
 
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())
         }
 
-        initKoin {
+        initKoin(appGraph) {
             androidContext(this@BandalartApplication)
         }
 

@@ -16,6 +16,19 @@
 
 package com.nexters.bandalart.di.metro
 
-private object AndroidPlatformBindings : PlatformBindings
+import android.app.Application
+import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.database.BandalartDatabaseFactory
+import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 
-fun createAndroidAppGraph(): AppGraph = createAppGraph(AndroidPlatformBindings)
+private class AndroidPlatformBindings(
+    application: Application,
+) : PlatformBindings {
+    override val databaseFactory = BandalartDatabaseFactory(application)
+    override val dataStoreFactory = BandalartDataStoreFactory(application)
+    override val appVersionProvider = AppVersionProvider(application)
+    override val imageHandlerProvider = ImageHandlerProvider(application)
+}
+
+fun createAndroidAppGraph(application: Application): AppGraph = createAppGraph(AndroidPlatformBindings(application))

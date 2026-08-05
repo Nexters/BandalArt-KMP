@@ -16,6 +16,16 @@
 
 package com.nexters.bandalart.di.metro
 
-private object IosPlatformBindings : PlatformBindings
+import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.database.BandalartDatabaseFactory
+import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+
+private object IosPlatformBindings : PlatformBindings {
+    override val databaseFactory = BandalartDatabaseFactory()
+    override val dataStoreFactory = BandalartDataStoreFactory()
+    override val appVersionProvider = AppVersionProvider()
+    override val imageHandlerProvider = ImageHandlerProvider()
+}
 
 internal fun createIosAppGraph(): AppGraph = createAppGraph(IosPlatformBindings)

@@ -16,32 +16,44 @@
 
 package com.nexters.bandalart.di.metro
 
+import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.database.BandalartDao
+import com.nexters.bandalart.core.database.BandalartDatabase
+import com.nexters.bandalart.core.database.BandalartDatabaseFactory
+import com.nexters.bandalart.core.datastore.BandalartDataStore
+import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Provides
-import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.Includes
 import dev.zacsweers.metro.createGraphFactory
 
-interface PlatformBindings
+interface PlatformBindings {
+    val databaseFactory: BandalartDatabaseFactory
+    val dataStoreFactory: BandalartDataStoreFactory
+    val appVersionProvider: AppVersionProvider
+    val imageHandlerProvider: ImageHandlerProvider
+}
 
-@Inject
-@SingleIn(AppScope::class)
-class MetroBootstrapProbe(
-    val platformBindings: PlatformBindings,
+@DependencyGraph(
+    scope = AppScope::class,
+    bindingContainers = [PlatformDataBindings::class],
 )
-
-@DependencyGraph(AppScope::class)
 interface AppGraph {
-    val bootstrapProbe: MetroBootstrapProbe
+    val database: BandalartDatabase
+    val bandalartDao: BandalartDao
+    val bandalartDataStore: BandalartDataStore
+    val inAppUpdateDataStore: InAppUpdateDataStore
+    val appVersionProvider: AppVersionProvider
+    val imageHandlerProvider: ImageHandlerProvider
 
     @DependencyGraph.Factory
     fun interface Factory {
         fun create(
-            @Provides platformBindings: PlatformBindings,
+            @Includes platformBindings: PlatformBindings,
         ): AppGraph
     }
 }
 
-fun createAppGraph(platformBindings: PlatformBindings): AppGraph =
-    createGraphFactory<AppGraph.Factory>().create(platformBindings)
+fun createAppGraph(platformBindings: PlatformBindings): AppGraph = createGraphFactory<AppGraph.Factory>().create(platformBindings)

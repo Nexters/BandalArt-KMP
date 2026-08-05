@@ -241,6 +241,25 @@ Metro는 KMP를 지원하지만 Native target에서 `@Contributes*`를 사용한
 - 플랫폼 객체는 `PlatformBindings` factory input으로 명시한다.
 - Circuit factory contribution은 Android와 iOS KMP 컴파일을 모두 통과한 뒤 사용 범위를 확정한다.
 
+### 7.5 KotlinConf KMP 참고 기준
+
+JetBrains의 [kotlinconf-app](https://github.com/JetBrains/kotlinconf-app) `main@0b1616cba68e`는 Metro 1.1.1을 Android, iOS, JVM, Web KMP graph에 적용한 실제 사례다. 이후 Metro 작업에서는 다음 구조를 참고한다.
+
+- 공통 `AppGraph` 계약을 두고 플랫폼별 `@DependencyGraph`가 이를 확장한다.
+- Android는 `Application`이 app graph를 lazy singleton으로 소유하고, iOS는 앱 수명의 top-level graph를 생성한다.
+- 공통 구현은 constructor injection과 `@ContributesBinding(AppScope::class)`을 사용한다.
+- source set별 플랫폼 provider는 `@BindingContainer`와 `@ContributesTo(AppScope::class)`로 구성한다.
+- 더 짧은 수명이 실제로 필요한 경우에만 `@GraphExtension`으로 child graph를 만든다.
+
+다만 KotlinConf의 binding 대부분은 단일 `app/shared` 모듈 안에서 합성된다. BandalArt는 `core:data`, `composeApp`, feature 모듈이 분리돼 있고 iOS Native compilation도 유지해야 하므로 다음 항목은 그대로 복사하지 않는다.
+
+- `core:data`의 repository contribution이 `composeApp` graph에 자동 집계된다고 가정하지 않는다.
+- 4-B에서는 명시적인 repository binding container를 우선하고 Android/iOS compile 결과를 확인한 뒤 contribution 범위를 넓힌다.
+- KotlinConf의 MetroX ViewModel map과 `MetroApplication`/Activity constructor injection은 ViewModel + Navigation 3용이다. Circuit Presenter/UI factory 설계의 대체로 사용하지 않는다.
+- 계정·세션·서버별 수명이 없는 현재 BandalArt에는 KotlinConf의 year child graph와 같은 `GraphExtension`을 도입하지 않는다.
+
+KotlinConf는 구현 문법과 graph 수명 참고 자료이며, BandalArt의 최종 UI runtime은 Circuit 공식 Metro codegen을 기준으로 한다.
+
 ## 8. Circuit factory 설계
 
 Metro 1.1.1은 `metro { enableCircuitCodegen.set(true) }`로 Circuit factory를 생성하고 `Presenter.Factory`/`Ui.Factory` set에 기여할 수 있다. 실제 활성화는 첫 Circuit vertical slice 전에 Android/iOS compile spike로 검증한다.

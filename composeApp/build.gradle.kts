@@ -28,7 +28,9 @@ kotlin {
         }
 
         androidHostTest.dependencies {
-            implementation(libs.junit.jupiter.api)
+            implementation(libs.bundles.android.unit.test)
+            implementation(libs.robolectric)
+            implementation(libs.robolectric.junit5.extension)
         }
 
         commonMain.dependencies {
@@ -46,7 +48,11 @@ kotlin {
             implementation(projects.feature.onboarding)
             implementation(projects.feature.splash)
 
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -61,4 +67,5 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Djunit.platform.launcher.interceptors.enabled=true")
 }

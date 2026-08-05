@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.core.database.di
+package com.nexters.bandalart.di.metro
 
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.nexters.bandalart.core.database.BandalartDatabase
-import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import org.koin.dsl.module
 
-val databaseModule =
+fun metroKoinBridgeModule(appGraph: AppGraph) =
     module {
-        single {
-            get<BandalartDatabaseFactory>()
-                .create()
-                .setDriver(BundledSQLiteDriver())
-                .build()
-        }
-        single { get<BandalartDatabase>().bandalartDao }
+        single { appGraph.database }
+        single { appGraph.bandalartDao }
+        single { appGraph.bandalartDataStore }
+        single { appGraph.inAppUpdateDataStore }
+        single { appGraph.appVersionProvider }
+        single { appGraph.imageHandlerProvider }
     }

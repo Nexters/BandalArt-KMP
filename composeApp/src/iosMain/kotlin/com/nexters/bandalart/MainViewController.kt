@@ -26,7 +26,7 @@ fun MainViewController(): UIViewController {
 
     return ComposeUIViewController(
         configure = {
-            initKoin()
+            initKoin(appGraph)
         },
     ) {
         BandalartApp(appGraph = appGraph)

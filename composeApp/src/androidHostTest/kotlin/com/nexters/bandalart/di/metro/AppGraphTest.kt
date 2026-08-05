@@ -16,20 +16,67 @@
 
 package com.nexters.bandalart.di.metro
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
+import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.database.BandalartDao
+import com.nexters.bandalart.core.database.BandalartDatabase
+import com.nexters.bandalart.core.datastore.BandalartDataStore
+import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.koin.dsl.koinApplication
+import org.robolectric.annotation.Config
+import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 
+@ExtendWith(RobolectricExtension::class)
+@Config(sdk = [35])
 @DisplayName("Metro AppGraph")
 class AppGraphTest {
-    @Test
-    fun `platform binding을 사용하는 app scoped probe를 생성한다`() {
-        val platformBindings = TestPlatformBindings
-        val appGraph = createAppGraph(platformBindings)
+    private lateinit var appGraph: AppGraph
 
-        assertSame(platformBindings, appGraph.bootstrapProbe.platformBindings)
-        assertSame(appGraph.bootstrapProbe, appGraph.bootstrapProbe)
+    @BeforeEach
+    fun setUp() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        appGraph = createAndroidAppGraph(application)
     }
 
-    private object TestPlatformBindings : PlatformBindings
+    @AfterEach
+    fun tearDown() {
+        appGraph.database.close()
+    }
+
+    @Test
+    fun appScopedPlatformDataObjectsAreSingletons() {
+        assertSame(appGraph.database, appGraph.database)
+        assertSame(appGraph.bandalartDao, appGraph.bandalartDao)
+        assertSame(appGraph.bandalartDataStore, appGraph.bandalartDataStore)
+        assertSame(appGraph.inAppUpdateDataStore, appGraph.inAppUpdateDataStore)
+        assertSame(appGraph.appVersionProvider, appGraph.appVersionProvider)
+        assertSame(appGraph.imageHandlerProvider, appGraph.imageHandlerProvider)
+    }
+
+    @Test
+    fun koinBridgeExposesMetroGraphInstances() {
+        val koinApplication =
+            koinApplication {
+                modules(metroKoinBridgeModule(appGraph))
+            }
+
+        with(koinApplication.koin) {
+            assertSame(appGraph.database, get<BandalartDatabase>())
+            assertSame(appGraph.bandalartDao, get<BandalartDao>())
+            assertSame(appGraph.bandalartDataStore, get<BandalartDataStore>())
+            assertSame(appGraph.inAppUpdateDataStore, get<InAppUpdateDataStore>())
+            assertSame(appGraph.appVersionProvider, get<AppVersionProvider>())
+            assertSame(appGraph.imageHandlerProvider, get<ImageHandlerProvider>())
+        }
+
+        koinApplication.close()
+    }
 }
