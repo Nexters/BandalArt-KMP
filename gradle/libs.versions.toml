@@ -160,6 +160,7 @@ koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startu
 
 # Circuit
 circuit-foundation = { group = "com.slack.circuit", name = "circuit-foundation", version.ref = "circuit" }
+circuit-retained = { group = "com.slack.circuit", name = "circuit-retained", version.ref = "circuit" }
 circuit-runtime = { group = "com.slack.circuit", name = "circuit-runtime", version.ref = "circuit" }
 circuit-runtime-presenter = { group = "com.slack.circuit", name = "circuit-runtime-presenter", version.ref = "circuit" }
 circuit-runtime-ui = { group = "com.slack.circuit", name = "circuit-runtime-ui", version.ref = "circuit" }

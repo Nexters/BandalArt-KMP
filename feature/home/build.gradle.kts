@@ -35,6 +35,7 @@ kotlin {
 
             implementation(libs.circuit.runtime)
             implementation(libs.circuit.runtime.presenter)
+            implementation(libs.circuit.retained)
 
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.kotlinx.datetime)

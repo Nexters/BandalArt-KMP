@@ -114,7 +114,7 @@
 - 기존 `LegacyHomeScreen` UI/Presenter와 Home ViewModel test가 계속 통과한다.
 - Home feature 및 composeApp Android host test가 통과한다.
 - 이번 변경 Kotlin 파일의 Spotless 포맷과 Home/composeApp Detekt가 통과한다.
-- CI의 Android/iOS build가 통과한다.
+- PR #196 CI의 전체 unit test, Android Lint, Android assemble와 iOS simulator framework link가 통과했다.
 
 ### 수동 검증
 
@@ -143,4 +143,4 @@
 - `:feature:home:testAndroidHostTest`, `:composeApp:testAndroidHostTest`가 통과했다.
 - 이번 변경 Kotlin 파일의 Spotless IDE hook과 `:feature:home:detekt`, `:composeApp:detekt`가 통과했다.
 - 전체 Home Spotless check는 기존 파일들의 상수 naming/format baseline 위반도 함께 검사하므로 이번 PR에서 일괄 수정하지 않았다. 필수 CI에는 Spotless가 포함돼 있지 않으며, 새 파일과 변경 라인은 별도로 포맷했다.
-- Android/iOS build와 전체 회귀 테스트는 PR CI에서 확인한다.
+- PR #196 CI의 전체 unit test, Android Lint, Android assemble와 iOS simulator framework link가 20분 46초에 통과했다.

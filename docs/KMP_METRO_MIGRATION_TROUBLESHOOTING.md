@@ -400,6 +400,24 @@ KMP Android convention의 host unit test option에 `isReturnDefaultValues = true
 
 KMP test source set에서는 다른 module의 transitive test dependency를 가정하지 않고, 사용하는 test runtime을 해당 source set에 직접 선언한다.
 
+## 20. Presenter test에서 동일한 State를 기다리면 timeout 발생
+
+### 증상
+
+Home 편집 Presenter test에서 최대 길이를 초과한 title을 입력한 뒤 `awaitItem()`을 호출하자 `No value produced in 3s`로 실패했다.
+
+### 원인
+
+validation은 초과 입력을 버리고 기존 draft를 그대로 유지한다. `mutableStateOf`의 새 값이 기존 State와 구조적으로 같으므로 recomposition과 새 Turbine item이 발생하지 않는다. timeout은 Presenter 실패가 아니라 테스트가 존재하지 않는 State 변경을 기다린 결과다.
+
+### 해결
+
+- 거절된 입력은 `expectNoEvents()`로 검증한다.
+- 기존에 받은 State의 draft 값이 유지되는지도 함께 확인한다.
+- 실제 State가 바뀌는 유효 입력과 repository mutation은 계속 `awaitItem()`으로 검증한다.
+
+Circuit Presenter test에서 모든 Event가 새 item을 만든다고 가정하지 않는다. no-op과 validation 거절은 이벤트 없음 자체가 계약이다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)

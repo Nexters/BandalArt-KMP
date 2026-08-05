@@ -16,9 +16,11 @@
 
 package com.nexters.bandalart.feature.home
 
+import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
+import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.ParcelableScreen
@@ -34,12 +36,130 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val bandalartCellData: BandalartCellEntity? = null,
         val isLoading: Boolean = true,
         val isBandalartCompleted: Boolean = false,
+        val bottomSheet: BottomSheetState? = null,
+        val dialog: DialogState? = null,
+        val isDropDownMenuOpened: Boolean = false,
+        val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
+
+    sealed interface BottomSheetState {
+        data class Cell(
+            val cellType: CellType,
+            val initialCellData: BandalartCellEntity,
+            val cellData: BandalartCellEntity,
+            val initialBandalartData: BandalartUiModel,
+            val bandalartData: BandalartUiModel,
+            val isDatePickerOpened: Boolean = false,
+            val isEmojiPickerOpened: Boolean = false,
+        ) : BottomSheetState
+
+        data class BandalartList(
+            val currentBandalartId: Long,
+        ) : BottomSheetState
+
+        data class Emoji(
+            val bandalartId: Long,
+            val cellId: Long,
+            val currentEmoji: String?,
+        ) : BottomSheetState
+    }
+
+    sealed interface DialogState {
+        data object BandalartDelete : DialogState
+
+        data class CellDelete(
+            val cellId: Long,
+            val cellType: CellType,
+            val cellTitle: String?,
+        ) : DialogState
+    }
+
+    sealed interface Effect {
+        data object ShowCreateSnackbar : Effect
+
+        data object ShowDeleteSnackbar : Effect
+
+        data object ShowLimitToast : Effect
+
+        data object ShowMainGoalToast : Effect
+    }
 
     sealed interface Event : CircuitUiEvent {
         data class SelectBandalart(
             val bandalartId: Long,
         ) : Event
+
+        data object AddBandalart : Event
+
+        data object OpenBandalartList : Event
+
+        data object OpenEmoji : Event
+
+        data class OpenCell(
+            val cellType: CellType,
+            val isMainCellTitleEmpty: Boolean,
+            val cellData: BandalartCellEntity,
+        ) : Event
+
+        data object OpenBandalartDeleteDialog : Event
+
+        data object OpenCellDeleteDialog : Event
+
+        data object OpenDropDownMenu : Event
+
+        data object DismissDropDownMenu : Event
+
+        data object DismissBottomSheet : Event
+
+        data object DismissDialog : Event
+
+        data class UpdateCellTitle(
+            val title: String,
+            val language: Language,
+        ) : Event
+
+        data class UpdateDescription(
+            val description: String,
+        ) : Event
+
+        data class UpdateDueDate(
+            val dueDate: String,
+        ) : Event
+
+        data class UpdateCompletion(
+            val isCompleted: Boolean,
+        ) : Event
+
+        data class UpdateEmojiDraft(
+            val emoji: String,
+        ) : Event
+
+        data class UpdateThemeColor(
+            val mainColor: String,
+            val subColor: String,
+        ) : Event
+
+        data object OpenDatePicker : Event
+
+        data object OpenEmojiPicker : Event
+
+        data object SaveCell : Event
+
+        data class UpdateBandalartEmoji(
+            val bandalartId: Long,
+            val cellId: Long,
+            val emoji: String?,
+        ) : Event
+
+        data class DeleteBandalart(
+            val bandalartId: Long,
+        ) : Event
+
+        data class DeleteCell(
+            val cellId: Long,
+        ) : Event
+
+        data object ConsumeEffect : Event
     }
 }

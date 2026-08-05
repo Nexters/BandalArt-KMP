@@ -345,12 +345,18 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 - [x] Circuit 공식 Presenter test로 대표 읽기 상태 전이 검증
 - [x] Metro graph에서 Home Presenter factory 생성 검증
 - [x] 변경 Kotlin 파일 Spotless 포맷과 Home/composeApp Detekt 통과
-- [ ] CI에서 전체 unit test, Android Lint, Android/iOS build 검증
+- [x] PR #196 CI에서 전체 unit test, Android Lint, Android/iOS build 검증
 - runtime 교체는 편집/modal과 플랫폼 effect까지 이식한 뒤 한 번에 수행한다.
 
 ### 6-C. Home 편집/modal
 
-- 생성/편집/삭제, bottom sheet/dialog retained state
+- [x] 최대 5개 제한을 포함한 사용자 생성 Event
+- [x] main/sub/task 편집 draft와 repository update
+- [x] 반다라트/cell 삭제와 완료 snapshot 정리
+- [x] bottom sheet/dialog 사용자 draft만 `rememberRetained` 적용
+- [x] 생성·삭제·validation UI effect와 Presenter test
+- [x] Home/composeApp Android host test와 Detekt 통과
+- [ ] CI에서 전체 unit test, Android Lint, Android/iOS build 검증
 
 ### 6-D. Home 플랫폼 effect
 
