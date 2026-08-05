@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship Next"
+  short_description: "Ship a PR and start the next planned task"
+  default_prompt: "Use $ship-next to validate and ship the current BandalArt work, then start the next planned task."
