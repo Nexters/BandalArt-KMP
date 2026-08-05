@@ -19,12 +19,10 @@ package com.nexters.bandalart
 import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
-import com.nexters.bandalart.di.initKoin
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import org.koin.android.ext.koin.androidContext
 
 class BandalartApplication : Application() {
     lateinit var appGraph: AppGraph
@@ -37,10 +35,6 @@ class BandalartApplication : Application() {
 
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())
-        }
-
-        initKoin(appGraph) {
-            androidContext(this@BandalartApplication)
         }
 
         Firebase.initialize(this)

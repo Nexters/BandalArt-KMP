@@ -17,7 +17,6 @@
 package com.nexters.bandalart
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.nexters.bandalart.di.initKoin
 import com.nexters.bandalart.di.metro.createIosAppGraph
 import platform.UIKit.UIViewController
 
@@ -25,11 +24,7 @@ import platform.UIKit.UIViewController
 fun MainViewController(): UIViewController {
     val appGraph = createIosAppGraph()
 
-    return ComposeUIViewController(
-        configure = {
-            initKoin(appGraph)
-        },
-    ) {
+    return ComposeUIViewController {
         BandalartApp(appGraph = appGraph)
     }
 }

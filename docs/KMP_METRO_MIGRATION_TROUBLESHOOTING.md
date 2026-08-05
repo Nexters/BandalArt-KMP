@@ -475,6 +475,44 @@ Home 모듈에는 현재 formatter 규칙과 맞지 않는 기존 파일이 남�
 
 대규모 migration 중 formatter baseline이 깨져 있으면 module-wide apply 전에 변경 대상 목록을 고정한다.
 
+## 24. 직접 Koin 의존성을 지워도 APK runtime에 Koin이 남음
+
+### 증상
+
+소스, version catalog의 Koin alias와 `KoinContext`를 모두 제거한 뒤에도 Android `debugRuntimeClasspath`에서 Koin 3.5.6이 조회됐다.
+
+### 원인
+
+사용처 없이 남아 있던 Kotzilla SDK가 내부 graph 관측을 위해 Koin core를 전이 의존성으로 포함했다. 직접 의존성 검색만으로는 이 runtime 잔재를 발견할 수 없었다.
+
+### 해결
+
+- `dependencyInsight --dependency io.insert-koin --configuration debugRuntimeClasspath`로 유입 경로를 확인했다.
+- 코드 사용처가 없는 Kotzilla SDK dependency와 root buildscript plugin을 제거했다.
+- 더 이상 사용되지 않는 Kotzilla version/catalog alias와 Android config 파일도 함께 제거했다.
+- dependency insight를 다시 실행해 Koin artifact 0건을 확인했다.
+
+DI runtime 제거는 소스 import 0건뿐 아니라 최종 앱 runtime classpath까지 확인한다.
+
+## 25. 여러 migration worktree의 build 출력으로 iOS compile이 ENOSPC 실패
+
+### 증상
+
+composition root 변경 자체는 compile됐지만 iOS KLIB 기록과 Android host test 결과 저장 중 `No space left on device`로 Gradle이 연쇄 실패했다.
+
+### 원인
+
+여러 완료 worktree의 모듈별 `build/` 출력이 남아 데이터 볼륨 여유 공간이 약 105MB까지 줄어 있었다. Kotlin/Native KLIB와 Gradle artifact transform은 이보다 큰 임시 공간이 필요하다.
+
+### 해결
+
+- `df`와 worktree별 `du`로 소스와 생성물 크기를 분리해 확인했다.
+- 가장 큰 완료 worktree에서 Gradle `clean`만 실행해 재생성 가능한 build 출력을 제거했다.
+- 브랜치, 소스, ignored local 설정과 전역 Gradle cache는 삭제하지 않았다.
+- 현재 worktree의 실패 중간 산출물을 clean한 뒤 동일 검증을 재실행해 통과했다.
+
+여러 worktree에서 KMP/iOS compile을 반복할 때는 소스 문제가 아닌 디스크 여유 공간도 먼저 확인한다.
+
 ## 참고 문서
 
 - [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)

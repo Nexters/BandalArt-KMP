@@ -16,9 +16,3 @@ plugins {
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.baselineprofile) apply false
 }
-
-buildscript {
-    dependencies {
-        classpath(libs.kotzilla.plugin)
-    }
-}

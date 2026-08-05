@@ -60,12 +60,9 @@ dependencies {
     implementation(libs.androidx.splash)
     implementation(libs.androidx.profileinstaller)
 
-    implementation(libs.koin.android)
     implementation(libs.firebase.common)
 
     implementation(libs.cmptoast)
     implementation(libs.napier)
-    implementation(libs.kotzilla.sdk)
-
     "baselineProfile"(project(":baselineprofile"))
 }
