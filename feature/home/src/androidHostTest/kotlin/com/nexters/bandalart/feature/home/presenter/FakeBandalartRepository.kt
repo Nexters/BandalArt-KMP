@@ -46,6 +46,16 @@ internal class FakeBandalartRepository(
         private set
 
     val completionUpdates = mutableListOf<Pair<Long, Boolean>>()
+    val deletedBandalartIds = mutableListOf<Long>()
+    val deletedCellIds = mutableListOf<Long>()
+    val deletedCompletionIds = mutableListOf<Long>()
+    val emojiUpdates = mutableListOf<EmojiUpdate>()
+    var mainCellUpdate: MainCellUpdate? = null
+        private set
+    var subCellUpdate: SubCellUpdate? = null
+        private set
+    var taskCellUpdate: TaskCellUpdate? = null
+        private set
 
     override suspend fun createBandalart(): BandalartEntity? {
         createCalls += 1
@@ -78,35 +88,95 @@ internal class FakeBandalartRepository(
         completionUpdates += bandalartId to isCompleted
     }
 
-    override suspend fun deleteBandalart(bandalartId: Long) = error("Not used")
+    override suspend fun deleteBandalart(bandalartId: Long) {
+        deletedBandalartIds += bandalartId
+        details.remove(bandalartId)
+        bandalartFlow.value = bandalartFlow.value.filterNot { it.id == bandalartId }
+    }
 
     override suspend fun updateBandalartMainCell(
         bandalartId: Long,
         cellId: Long,
         updateBandalartMainCellEntity: UpdateBandalartMainCellEntity,
-    ) = error("Not used")
+    ) {
+        mainCellUpdate =
+            MainCellUpdate(
+                bandalartId = bandalartId,
+                cellId = cellId,
+                entity = updateBandalartMainCellEntity,
+            )
+    }
 
     override suspend fun updateBandalartSubCell(
         bandalartId: Long,
         cellId: Long,
         updateBandalartSubCellEntity: UpdateBandalartSubCellEntity,
-    ) = error("Not used")
+    ) {
+        subCellUpdate =
+            SubCellUpdate(
+                bandalartId = bandalartId,
+                cellId = cellId,
+                entity = updateBandalartSubCellEntity,
+            )
+    }
 
     override suspend fun updateBandalartTaskCell(
         bandalartId: Long,
         cellId: Long,
         updateBandalartTaskCellEntity: UpdateBandalartTaskCellEntity,
-    ) = error("Not used")
+    ) {
+        taskCellUpdate =
+            TaskCellUpdate(
+                bandalartId = bandalartId,
+                cellId = cellId,
+                entity = updateBandalartTaskCellEntity,
+            )
+    }
 
     override suspend fun updateBandalartEmoji(
         bandalartId: Long,
         cellId: Long,
         updateBandalartEmojiEntity: UpdateBandalartEmojiEntity,
-    ) = error("Not used")
+    ) {
+        emojiUpdates +=
+            EmojiUpdate(
+                bandalartId = bandalartId,
+                cellId = cellId,
+                entity = updateBandalartEmojiEntity,
+            )
+    }
 
-    override suspend fun deleteBandalartCell(cellId: Long) = error("Not used")
+    override suspend fun deleteBandalartCell(cellId: Long) {
+        deletedCellIds += cellId
+    }
 
     override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean = error("Not used")
 
-    override suspend fun deleteCompletedBandalartId(bandalartId: Long) = error("Not used")
+    override suspend fun deleteCompletedBandalartId(bandalartId: Long) {
+        deletedCompletionIds += bandalartId
+    }
+
+    data class MainCellUpdate(
+        val bandalartId: Long,
+        val cellId: Long,
+        val entity: UpdateBandalartMainCellEntity,
+    )
+
+    data class SubCellUpdate(
+        val bandalartId: Long,
+        val cellId: Long,
+        val entity: UpdateBandalartSubCellEntity,
+    )
+
+    data class TaskCellUpdate(
+        val bandalartId: Long,
+        val cellId: Long,
+        val entity: UpdateBandalartTaskCellEntity,
+    )
+
+    data class EmojiUpdate(
+        val bandalartId: Long,
+        val cellId: Long,
+        val entity: UpdateBandalartEmojiEntity,
+    )
 }
