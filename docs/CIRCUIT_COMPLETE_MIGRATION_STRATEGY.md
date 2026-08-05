@@ -118,7 +118,8 @@ BandalartApp
 - Metro graph에서 Complete와 LegacyHome의 UI/Presenter factory 생성 확인
 - `feature:complete`, `core:navigation`, `composeApp` Spotless/Detekt 통과
 - Android common/host test compile에서 Metro Circuit codegen 확인
-- iOS Simulator Arm64 framework link와 실제 기기 동작은 아직 검증하지 않음
+- CI에서 iOS Simulator Arm64 framework link 통과
+- Android/iOS 실제 기기의 이동·뒤로가기·저장·공유는 수동 검증 필요
 
 ## 8. 참고 자료
 
