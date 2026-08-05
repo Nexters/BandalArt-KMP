@@ -24,6 +24,9 @@ import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
+import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
+import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.BeforeEach
@@ -59,6 +62,9 @@ class AppGraphTest {
         assertSame(appGraph.inAppUpdateDataStore, appGraph.inAppUpdateDataStore)
         assertSame(appGraph.appVersionProvider, appGraph.appVersionProvider)
         assertSame(appGraph.imageHandlerProvider, appGraph.imageHandlerProvider)
+        assertSame(appGraph.bandalartRepository, appGraph.bandalartRepository)
+        assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)
+        assertSame(appGraph.onboardingRepository, appGraph.onboardingRepository)
     }
 
     @Test
@@ -75,6 +81,9 @@ class AppGraphTest {
             assertSame(appGraph.inAppUpdateDataStore, get<InAppUpdateDataStore>())
             assertSame(appGraph.appVersionProvider, get<AppVersionProvider>())
             assertSame(appGraph.imageHandlerProvider, get<ImageHandlerProvider>())
+            assertSame(appGraph.bandalartRepository, get<BandalartRepository>())
+            assertSame(appGraph.inAppUpdateRepository, get<InAppUpdateRepository>())
+            assertSame(appGraph.onboardingRepository, get<OnboardingRepository>())
         }
 
         koinApplication.close()
