@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.feature.home.di
+package com.nexters.bandalart.core.ui
 
-import com.nexters.bandalart.feature.home.viewmodel.HomeViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
+import androidx.compose.runtime.staticCompositionLocalOf
 
-val homeModule =
-    module {
-        viewModelOf(::HomeViewModel)
+val LocalShowSnackbar =
+    staticCompositionLocalOf<suspend (String) -> Boolean> {
+        error("LocalShowSnackbar is not provided")
     }

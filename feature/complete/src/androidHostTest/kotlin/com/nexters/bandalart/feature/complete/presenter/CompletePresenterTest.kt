@@ -17,7 +17,6 @@
 package com.nexters.bandalart.feature.complete.presenter
 
 import com.eygraber.uri.Uri
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -85,7 +84,8 @@ class CompletePresenterTest {
     @Test
     fun navigateBackPopsCurrentScreen() =
         runTest {
-            val navigator = FakeNavigator(LegacyHomeScreen, screen)
+            val rootScreen = screen.copy(bandalartId = 0L)
+            val navigator = FakeNavigator(rootScreen, screen)
             val presenter = CompletePresenter(navigator, screen, RecordingBandalartRepository())
 
             presenter.test {

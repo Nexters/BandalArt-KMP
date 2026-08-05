@@ -48,7 +48,7 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Error
 import com.nexters.bandalart.core.designsystem.theme.Gray800
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,35 +56,39 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun BandalartDropDownMenu(
     isDropDownMenuOpened: Boolean,
-    onAction: (HomeUiAction) -> Unit,
+    onAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     DropdownMenu(
-        modifier = modifier
-            .wrapContentSize()
-            .background(White),
+        modifier =
+            modifier
+                .wrapContentSize()
+                .background(White),
         expanded = isDropDownMenuOpened,
         onDismissRequest = {
-            onAction(HomeUiAction.OnDropDownMenuDismiss)
+            onAction(HomeScreen.Event.DismissDropDownMenu)
         },
-        offset = DpOffset(
-            x = (-18).dp,
-            y = 0.dp,
-        ),
+        offset =
+            DpOffset(
+                x = (-18).dp,
+                y = 0.dp,
+            ),
         shape = RoundedCornerShape(12.dp),
     ) {
         DropdownMenuItem(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(horizontal = 7.dp),
+            modifier =
+                Modifier
+                    .wrapContentSize()
+                    .padding(horizontal = 7.dp),
             text = {
                 Row {
                     Icon(
                         imageVector = vectorResource(Res.drawable.ic_gallery),
                         contentDescription = "Gallery Icon",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .align(CenterVertically),
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .align(CenterVertically),
                         tint = Color.Unspecified,
                     )
                     Text(
@@ -92,31 +96,34 @@ fun BandalartDropDownMenu(
                         color = Gray800,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(start = 13.dp)
-                            .align(CenterVertically),
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .padding(start = 13.dp)
+                                .align(CenterVertically),
                         fontFamily = pretendardFontFamily(),
                     )
                 }
             },
             onClick = {
-                onAction(HomeUiAction.OnSaveClick)
+                onAction(HomeScreen.Event.RequestSave)
             },
         )
         Spacer(modifier = Modifier.height(2.dp))
         DropdownMenuItem(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(horizontal = 7.dp),
+            modifier =
+                Modifier
+                    .wrapContentSize()
+                    .padding(horizontal = 7.dp),
             text = {
                 Row {
                     Icon(
                         imageVector = vectorResource(Res.drawable.ic_trash),
                         contentDescription = stringResource(Res.string.delete_description),
-                        modifier = Modifier
-                            .size(24.dp)
-                            .align(CenterVertically),
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .align(CenterVertically),
                         tint = Color.Unspecified,
                     )
                     Text(
@@ -124,16 +131,17 @@ fun BandalartDropDownMenu(
                         color = Error,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(start = 13.dp)
-                            .align(CenterVertically),
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .padding(start = 13.dp)
+                                .align(CenterVertically),
                         fontFamily = pretendardFontFamily(),
                     )
                 }
             },
             onClick = {
-                onAction(HomeUiAction.OnDeleteClick)
+                onAction(HomeScreen.Event.OpenBandalartDeleteDialog)
             },
         )
     }

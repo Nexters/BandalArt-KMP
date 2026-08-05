@@ -53,7 +53,7 @@ import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +81,7 @@ fun BandalartCell(
     bandalartData: BandalartUiModel,
     cellType: CellType,
     cellData: BandalartCellEntity,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
     cellInfo: CellInfo = CellInfo(),
     outerPadding: Dp = 3.dp,
@@ -89,23 +89,47 @@ fun BandalartCell(
     mainCellPadding: Dp = 1.dp,
 ) {
     Box(
-        modifier = modifier
-            .padding(
-                start = if (cellType == CellType.MAIN) mainCellPadding else if (cellInfo.colIndex == 0) outerPadding else innerPadding,
-                end = if (cellType == CellType.MAIN) mainCellPadding else if (cellInfo.colIndex == cellInfo.colCnt - 1) outerPadding else innerPadding,
-                top = if (cellType == CellType.MAIN) mainCellPadding else if (cellInfo.rowIndex == 0) outerPadding else innerPadding,
-                bottom = if (cellType == CellType.MAIN) mainCellPadding else if (cellInfo.rowIndex == cellInfo.rowCnt - 1) outerPadding else innerPadding,
-            )
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(getCellBackgroundColor(bandalartData, cellType, cellData))
-            .clickable {
-                when (cellType) {
-                    CellType.MAIN -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
-                    CellType.SUB -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.SUB, bandalartData.titleText.isEmpty(), cellData))
-                    else -> onHomeUiAction(HomeUiAction.OnBandalartCellClick(CellType.TASK, bandalartData.titleText.isEmpty(), cellData))
-                }
-            },
+        modifier =
+            modifier
+                .padding(
+                    start =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (cellInfo.colIndex == 0)
+                            outerPadding
+                        else
+                            innerPadding,
+                    end =
+                        if (cellType ==
+                            CellType.MAIN)
+                            mainCellPadding else if (cellInfo.colIndex == cellInfo.colCnt - 1)
+                            outerPadding
+                        else
+                            innerPadding,
+                    top =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (cellInfo.rowIndex == 0)
+                            outerPadding
+                        else
+                            innerPadding,
+                    bottom =
+                        if (cellType ==
+                            CellType.MAIN)
+                            mainCellPadding else if (cellInfo.rowIndex == cellInfo.rowCnt - 1)
+                            outerPadding
+                        else
+                            innerPadding,
+                ).aspectRatio(1f)
+                .clip(RoundedCornerShape(10.dp))
+                .background(getCellBackgroundColor(bandalartData, cellType, cellData))
+                .clickable {
+                    when (cellType) {
+                        CellType.MAIN -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
+                        CellType.SUB -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.SUB, bandalartData.titleText.isEmpty(), cellData))
+                        else -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.TASK, bandalartData.titleText.isEmpty(), cellData))
+                    }
+                },
         contentAlignment = Alignment.Center,
     ) {
         CellContent(
@@ -196,9 +220,10 @@ private fun EmptyMainCellContent(textColor: Color) {
                 imageVector = Icons.Default.Add,
                 contentDescription = stringResource(Res.string.add_description),
                 tint = textColor,
-                modifier = Modifier
-                    .size(20.dp)
-                    .offset(y = (-4).dp),
+                modifier =
+                    Modifier
+                        .size(20.dp)
+                        .offset(y = (-4).dp),
             )
         }
     }
@@ -217,9 +242,10 @@ private fun EmptySubCellContent(textColor: Color) {
                 imageVector = Icons.Default.Add,
                 contentDescription = stringResource(Res.string.add_description),
                 tint = textColor,
-                modifier = Modifier
-                    .size(20.dp)
-                    .offset(y = (-4).dp),
+                modifier =
+                    Modifier
+                        .size(20.dp)
+                        .offset(y = (-4).dp),
             )
         }
     }
@@ -257,9 +283,10 @@ private fun FilledCellContent(
             Icon(
                 imageVector = vectorResource(Res.drawable.ic_cell_check),
                 contentDescription = stringResource(Res.string.complete_description),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-4).dp, y = (-4).dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = (-4).dp, y = (-4).dp),
                 tint = Color.Unspecified,
             )
         }
@@ -270,19 +297,20 @@ private fun getCellBackgroundColor(
     bandalartData: BandalartUiModel,
     cellType: CellType,
     cellData: BandalartCellEntity,
-): Color = when {
-    // 메인 목표 달성
-    cellType == CellType.MAIN && cellData.isCompleted -> bandalartData.mainColor.toColor().copy(alpha = 0.6f)
-    // 메인 목표 미달성
-    cellType == CellType.MAIN -> bandalartData.mainColor.toColor()
-    // 서브 목표 달성
-    cellType == CellType.SUB && cellData.isCompleted -> bandalartData.subColor.toColor().copy(alpha = 0.6f)
-    // 서브 목표 미달성
-    cellType == CellType.SUB -> bandalartData.subColor.toColor()
-    // 태스크 목표 달성
-    cellData.isCompleted -> Gray400
-    else -> White
-}
+): Color =
+    when {
+        // 메인 목표 달성
+        cellType == CellType.MAIN && cellData.isCompleted -> bandalartData.mainColor.toColor().copy(alpha = 0.6f)
+        // 메인 목표 미달성
+        cellType == CellType.MAIN -> bandalartData.mainColor.toColor()
+        // 서브 목표 달성
+        cellType == CellType.SUB && cellData.isCompleted -> bandalartData.subColor.toColor().copy(alpha = 0.6f)
+        // 서브 목표 미달성
+        cellType == CellType.SUB -> bandalartData.subColor.toColor()
+        // 태스크 목표 달성
+        cellData.isCompleted -> Gray400
+        else -> White
+    }
 
 // @ComponentPreview
 @Preview
@@ -290,16 +318,18 @@ private fun getCellBackgroundColor(
 private fun BandalartCellPreview() {
     BandalartTheme {
         BandalartCell(
-            bandalartData = BandalartUiModel(
-                id = 0L,
-                mainColor = "#FF3FFFBA",
-                subColor = "#FF111827",
-            ),
+            bandalartData =
+                BandalartUiModel(
+                    id = 0L,
+                    mainColor = "#FF3FFFBA",
+                    subColor = "#FF111827",
+                ),
             cellType = CellType.MAIN,
-            cellData = BandalartCellEntity(
-                title = "메인 목표",
-                isCompleted = false,
-            ),
+            cellData =
+                BandalartCellEntity(
+                    title = "메인 목표",
+                    isCompleted = false,
+                ),
             onHomeUiAction = {},
         )
     }

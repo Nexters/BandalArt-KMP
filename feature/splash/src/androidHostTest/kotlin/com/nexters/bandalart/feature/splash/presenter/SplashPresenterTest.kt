@@ -16,7 +16,7 @@
 
 package com.nexters.bandalart.feature.splash.presenter
 
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
+import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.slack.circuit.runtime.screen.Screen
@@ -30,7 +30,7 @@ class SplashPresenterTest {
     @Test
     fun completedOnboardingOpensHome() =
         runTest {
-            assertDestination(isCompleted = true, expected = LegacyHomeScreen)
+            assertDestination(isCompleted = true, expected = HomeScreen)
         }
 
     @Test
@@ -52,7 +52,7 @@ class SplashPresenterTest {
                 state.eventSink(SplashScreen.Event.CheckOnboardingStatus)
                 state.eventSink(SplashScreen.Event.CheckOnboardingStatus)
 
-                assertEquals(LegacyHomeScreen, navigator.awaitResetRoot().newRoot)
+                assertEquals(HomeScreen, navigator.awaitResetRoot().newRoot)
                 assertEquals(1, repository.getCallCount)
                 navigator.expectNoResetRootEvents()
             }

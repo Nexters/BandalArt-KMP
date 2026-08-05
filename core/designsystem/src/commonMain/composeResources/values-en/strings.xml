@@ -137,6 +137,8 @@
     <!-- in-app update -->
     <string name="update_ready_to_install">App update is ready to install.</string>
     <string name="update_action_restart">Restart</string>
+    <string name="update_installing">Installing the app update.</string>
+    <string name="update_install_failed">Could not start installing the app update.</string>
     <string name="app_version_info">Version: v%s</string>
 
 </resources>

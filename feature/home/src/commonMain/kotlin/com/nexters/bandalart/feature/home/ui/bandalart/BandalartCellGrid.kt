@@ -28,7 +28,7 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
-import com.nexters.bandalart.feature.home.viewmodel.HomeUiAction
+import com.nexters.bandalart.feature.home.HomeScreen
 import kotlinx.collections.immutable.persistentListOf
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -38,7 +38,7 @@ fun BandalartCellGrid(
     subCell: SubCell,
     rows: Int,
     cols: Int,
-    onHomeUiAction: (HomeUiAction) -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -59,13 +59,14 @@ fun BandalartCellGrid(
                         modifier = Modifier.weight(1f),
                         bandalartData = bandalartData,
                         cellType = if (isSubCell) CellType.SUB else CellType.TASK,
-                        cellInfo = CellInfo(
-                            isSubCell = isSubCell,
-                            colIndex = colIndex,
-                            rowIndex = rowIndex,
-                            colCnt = cols,
-                            rowCnt = rows,
-                        ),
+                        cellInfo =
+                            CellInfo(
+                                isSubCell = isSubCell,
+                                colIndex = colIndex,
+                                rowIndex = rowIndex,
+                                colCnt = cols,
+                                rowCnt = rows,
+                            ),
                         cellData = if (isSubCell) subCell.subCellData!! else subCell.subCellData!!.children[taskIndex++],
                         onHomeUiAction = onHomeUiAction,
                     )
@@ -79,20 +80,22 @@ fun BandalartCellGrid(
 @Preview
 @Composable
 private fun BandalartCellGridPreview() {
-    val subCellList = persistentListOf(
-        SubCell(2, 3, 1, 1, dummyBandalartChartData.children[0]),
-        SubCell(3, 2, 1, 0, dummyBandalartChartData.children[1]),
-        SubCell(3, 2, 1, 1, dummyBandalartChartData.children[2]),
-        SubCell(2, 3, 0, 1, dummyBandalartChartData.children[3]),
-    )
+    val subCellList =
+        persistentListOf(
+            SubCell(2, 3, 1, 1, dummyBandalartChartData.children[0]),
+            SubCell(3, 2, 1, 0, dummyBandalartChartData.children[1]),
+            SubCell(3, 2, 1, 1, dummyBandalartChartData.children[2]),
+            SubCell(2, 3, 0, 1, dummyBandalartChartData.children[3]),
+        )
 
     BandalartTheme {
         BandalartCellGrid(
-            bandalartData = BandalartUiModel(
-                id = 0L,
-                mainColor = "#3FFFBA",
-                subColor = "#111827",
-            ),
+            bandalartData =
+                BandalartUiModel(
+                    id = 0L,
+                    mainColor = "#3FFFBA",
+                    subColor = "#111827",
+                ),
             subCell = subCellList[1],
             rows = subCellList[1].rowCnt,
             cols = subCellList[1].colCnt,

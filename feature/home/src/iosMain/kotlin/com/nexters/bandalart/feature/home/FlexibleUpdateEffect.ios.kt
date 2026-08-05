@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.core.navigation
+package com.nexters.bandalart.feature.home
 
-import kotlinx.serialization.Serializable
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 
-sealed interface Route {
-    @Serializable
-    data object Home : Route
-}
+@Composable
+internal actual fun FlexibleUpdateEffect(
+    updateVersionCode: Int?,
+    snackbarHostState: SnackbarHostState,
+    onUpdateAvailable: (Int) -> Unit,
+    onUpdateCanceled: () -> Unit,
+) = Unit

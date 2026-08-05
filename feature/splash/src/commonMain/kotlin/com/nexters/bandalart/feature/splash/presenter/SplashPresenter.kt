@@ -23,7 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
+import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -53,7 +53,7 @@ class SplashPresenter(
                         scope.launch {
                             val destination =
                                 if (repository.getOnboardingCompletedStatus()) {
-                                    LegacyHomeScreen
+                                    HomeScreen
                                 } else {
                                     OnboardingScreen
                                 }

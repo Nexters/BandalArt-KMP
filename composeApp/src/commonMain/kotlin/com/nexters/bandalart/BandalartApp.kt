@@ -33,9 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
+import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.feature.splash.SplashScreen
-import com.nexters.bandalart.navigation.LocalShowSnackbar
 import com.nexters.bandalart.ui.BandalartSnackbar
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.CircuitCompositionLocals

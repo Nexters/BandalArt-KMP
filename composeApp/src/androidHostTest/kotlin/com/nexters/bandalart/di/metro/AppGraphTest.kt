@@ -27,7 +27,6 @@ import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
-import com.nexters.bandalart.core.navigation.LegacyHomeScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
@@ -81,9 +80,6 @@ class AppGraphTest {
         assertNotNull(appGraph.circuit.ui(SplashScreen))
         assertNotNull(appGraph.circuit.presenter(OnboardingScreen, FakeNavigator(OnboardingScreen)))
         assertNotNull(appGraph.circuit.ui(OnboardingScreen))
-        assertNotNull(appGraph.circuit.presenter(LegacyHomeScreen, FakeNavigator(LegacyHomeScreen)))
-        assertNotNull(appGraph.circuit.ui(LegacyHomeScreen))
-
         val completeScreen =
             CompleteScreen(
                 bandalartId = 42L,
@@ -94,6 +90,7 @@ class AppGraphTest {
         assertNotNull(appGraph.circuit.presenter(completeScreen, FakeNavigator(completeScreen)))
         assertNotNull(appGraph.circuit.ui(completeScreen))
         assertNotNull(appGraph.circuit.presenter(HomeScreen, FakeNavigator(HomeScreen)))
+        assertNotNull(appGraph.circuit.ui(HomeScreen))
     }
 
     @Test

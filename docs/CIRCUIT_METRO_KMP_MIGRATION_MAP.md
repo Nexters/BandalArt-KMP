@@ -356,12 +356,18 @@ Presenter 테스트는 Circuit 공식 `Presenter.test`/Turbine 패턴을 유지�
 - [x] bottom sheet/dialog 사용자 draft만 `rememberRetained` 적용
 - [x] 생성·삭제·validation UI effect와 Presenter test
 - [x] Home/composeApp Android host test와 Detekt 통과
-- [ ] CI에서 전체 unit test, Android Lint, Android/iOS build 검증
+- [x] PR #197 CI에서 전체 unit test, Android Lint, Android/iOS build 검증
 
 ### 6-D. Home 플랫폼 effect
 
-- Android 선택 업데이트
-- Android/iOS 공유, 저장, capture
+- [x] Android 선택 업데이트를 `androidMain` effect로 격리하고 iOS는 no-op 처리
+- [x] Android/iOS 공유, 저장, capture를 Metro `ImageHandlerProvider`로 연결
+- [x] capture 완료 URI를 받은 뒤 `CompleteScreen`으로 이동
+- [x] 실제 Home UI factory와 root Circuit BackStack을 `HomeScreen`으로 전환
+- [x] 전환 검증 후 Home ViewModel, Compose Navigation, Koin feature module과 legacy Home adapter 제거
+- [x] 대상 Android host test, iOS compile과 변경 모듈 Detekt 통과
+- [ ] PR CI의 전체 unit test, Android Lint/build와 iOS framework link 통과
+- [ ] 양 플랫폼 Home 읽기·편집·공유·저장·완료 이동 수동 검증
 
 ### 7. Composition root 정리
 

@@ -27,6 +27,6 @@ fun initKoin(
 ) {
     startKoin {
         config?.invoke(this)
-        modules(appModule, metroKoinBridgeModule(appGraph))
+        modules(metroKoinBridgeModule(appGraph))
     }
 }
