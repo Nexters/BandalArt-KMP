@@ -56,6 +56,7 @@ import bandalart.core.designsystem.generated.resources.settings_theme_system
 import bandalart.core.designsystem.generated.resources.settings_title
 import bandalart.core.designsystem.generated.resources.settings_version
 import bandalart.core.designsystem.generated.resources.settings_version_value
+import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
@@ -115,6 +116,7 @@ internal fun SettingsBottomSheet(
                     text = stringResource(Res.string.settings_version),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
+                    fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W600,
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -122,6 +124,7 @@ internal fun SettingsBottomSheet(
                     text = stringResource(Res.string.settings_version_value, appVersion),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 15.sp,
+                    fontFamily = pretendardFontFamily(),
                 )
             }
         }
@@ -142,6 +145,7 @@ private fun SettingsHeader(onCloseClick: () -> Unit) {
             text = stringResource(Res.string.settings_title),
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 20.sp,
+            fontFamily = pretendardFontFamily(),
             fontWeight = FontWeight.W700,
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -161,6 +165,7 @@ private fun SettingsSectionTitle(text: String) {
         text = text,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         fontSize = 13.sp,
+        fontFamily = pretendardFontFamily(),
         fontWeight = FontWeight.W600,
         modifier = Modifier.padding(start = 24.dp, top = 12.dp, bottom = 10.dp),
     )
@@ -194,6 +199,7 @@ private fun ThemeModeRow(
             text = label,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
+            fontFamily = pretendardFontFamily(),
             fontWeight = if (selected) FontWeight.W600 else FontWeight.W400,
         )
         Spacer(modifier = Modifier.weight(1f))

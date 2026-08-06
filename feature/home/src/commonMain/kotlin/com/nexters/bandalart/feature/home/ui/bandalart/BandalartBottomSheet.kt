@@ -379,7 +379,7 @@ fun BandalartBottomSheet(
                                 },
                                 colors =
                                     SwitchDefaults.colors(
-                                        uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
                                         uncheckedBorderColor = MaterialTheme.colorScheme.outline,
                                         checkedThumbColor = MaterialTheme.colorScheme.onPrimary,

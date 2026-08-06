@@ -88,7 +88,7 @@ fun BandalartDropDownMenu(
                             Modifier
                                 .size(24.dp)
                                 .align(CenterVertically),
-                        tint = Color.Unspecified,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = stringResource(Res.string.dropdown_save),
