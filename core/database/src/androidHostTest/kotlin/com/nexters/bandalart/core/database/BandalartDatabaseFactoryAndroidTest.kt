@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,14 @@
 
 package com.nexters.bandalart.core.database
 
-import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-actual class BandalartDatabaseFactory(
-    private val context: Context
-) {
-    actual fun create(): RoomDatabase.Builder<BandalartDatabase> {
-        val appContext = context.applicationContext
-        val dbFile = appContext.getDatabasePath(ANDROID_BANDALART_DATABASE_NAME)
-
-        return Room.databaseBuilder(
-            context = appContext,
-            name = dbFile.absolutePath
-        )
+@DisplayName("Android Room 파일명 호환성")
+class BandalartDatabaseFactoryAndroidTest {
+    @Test
+    fun databaseUsesLegacyName() {
+        assertEquals("bandalart_database", ANDROID_BANDALART_DATABASE_NAME)
     }
 }
-
-internal const val ANDROID_BANDALART_DATABASE_NAME = "bandalart_database"

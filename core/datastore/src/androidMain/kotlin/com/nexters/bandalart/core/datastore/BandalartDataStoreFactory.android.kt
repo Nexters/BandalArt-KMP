@@ -29,7 +29,7 @@ actual class BandalartDataStoreFactory(
         PreferenceDataStoreFactory.createWithPath(
             produceFile = {
                 context.filesDir
-                    .resolve(BANDALART_DATA_STORE_FILE_NAME)
+                    .resolve(ANDROID_BANDALART_DATA_STORE_RELATIVE_PATH)
                     .absolutePath
                     .toPath()
             }
@@ -39,9 +39,12 @@ actual class BandalartDataStoreFactory(
         PreferenceDataStoreFactory.createWithPath(
             produceFile = {
                 context.filesDir
-                    .resolve(IN_APP_UPDATE_DATA_STORE_FILE_NAME)
+                    .resolve(ANDROID_IN_APP_UPDATE_DATA_STORE_RELATIVE_PATH)
                     .absolutePath
                     .toPath()
             }
         )
 }
+
+internal const val ANDROID_BANDALART_DATA_STORE_RELATIVE_PATH = "datastore/bandalart_datastore.preferences_pb"
+internal const val ANDROID_IN_APP_UPDATE_DATA_STORE_RELATIVE_PATH = "datastore/in_app_update_datastore.preferences_pb"
