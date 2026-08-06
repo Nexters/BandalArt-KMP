@@ -127,6 +127,8 @@ internal fun SettingsBottomSheet(
                     fontSize = 15.sp,
                     fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W600,
+                    letterSpacing = (-0.3).sp,
+                    lineHeight = 21.sp,
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -134,6 +136,8 @@ internal fun SettingsBottomSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 15.sp,
                     fontFamily = pretendardFontFamily(),
+                    letterSpacing = (-0.3).sp,
+                    lineHeight = 21.sp,
                 )
             }
         }
@@ -164,6 +168,8 @@ private fun SettingsContactRow(onClick: () -> Unit) {
             fontSize = 15.sp,
             fontFamily = pretendardFontFamily(),
             fontWeight = FontWeight.W600,
+            letterSpacing = (-0.3).sp,
+            lineHeight = 21.sp,
         )
         Spacer(modifier = Modifier.weight(1f))
         Icon(
@@ -191,6 +197,8 @@ private fun SettingsHeader(onCloseClick: () -> Unit) {
             fontSize = 20.sp,
             fontFamily = pretendardFontFamily(),
             fontWeight = FontWeight.W700,
+            letterSpacing = (-0.4).sp,
+            lineHeight = 28.sp,
         )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = onCloseClick) {
@@ -211,6 +219,8 @@ private fun SettingsSectionTitle(text: String) {
         fontSize = 13.sp,
         fontFamily = pretendardFontFamily(),
         fontWeight = FontWeight.W600,
+        letterSpacing = (-0.26).sp,
+        lineHeight = 18.2.sp,
         modifier = Modifier.padding(start = 24.dp, top = 12.dp, bottom = 10.dp),
     )
 }
@@ -245,6 +255,8 @@ private fun ThemeModeRow(
             fontSize = 16.sp,
             fontFamily = pretendardFontFamily(),
             fontWeight = if (selected) FontWeight.W600 else FontWeight.W400,
+            letterSpacing = (-0.32).sp,
+            lineHeight = 22.4.sp,
         )
         Spacer(modifier = Modifier.weight(1f))
         RadioButton(
