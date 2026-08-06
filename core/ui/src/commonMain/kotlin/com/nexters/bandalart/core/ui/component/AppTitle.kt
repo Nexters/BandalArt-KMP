@@ -1,6 +1,7 @@
 package com.nexters.bandalart.core.ui.component
 
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -10,16 +11,13 @@ import bandalart.core.designsystem.generated.resources.bandalart
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.koronaOneRegularFontFamily
 import com.nexters.bandalart.core.designsystem.theme.neurimboGothicRegularFontFamily
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AppTitle(
-    modifier: Modifier = Modifier,
-) {
+fun AppTitle(modifier: Modifier = Modifier,) {
     when (getLocale().language) {
         Language.KOREAN -> {
             AppKoreanTitle(modifier = modifier)
@@ -36,12 +34,10 @@ fun AppTitle(
 }
 
 @Composable
-fun AppKoreanTitle(
-    modifier: Modifier = Modifier,
-) {
+fun AppKoreanTitle(modifier: Modifier = Modifier,) {
     Text(
         text = stringResource(Res.string.bandalart),
-        color = Gray900,
+        color = MaterialTheme.colorScheme.onSurface,
         fontSize = 28.sp,
         fontWeight = FontWeight.W400,
         modifier = modifier,
@@ -52,12 +48,10 @@ fun AppKoreanTitle(
 }
 
 @Composable
-fun AppEnglishTitle(
-    modifier: Modifier = Modifier,
-) {
+fun AppEnglishTitle(modifier: Modifier = Modifier,) {
     Text(
         text = stringResource(Res.string.bandalart),
-        color = Gray900,
+        color = MaterialTheme.colorScheme.onSurface,
         fontSize = 18.sp,
         fontWeight = FontWeight.W400,
         modifier = modifier,

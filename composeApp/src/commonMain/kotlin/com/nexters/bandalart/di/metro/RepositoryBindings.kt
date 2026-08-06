@@ -19,12 +19,14 @@ package com.nexters.bandalart.di.metro
 import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
 import com.nexters.bandalart.core.data.repository.DefaultInAppUpdateRepository
 import com.nexters.bandalart.core.data.repository.DefaultOnboardingRepository
+import com.nexters.bandalart.core.data.repository.DefaultSettingsRepository
 import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
+import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Provides
@@ -47,4 +49,8 @@ object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideOnboardingRepository(bandalartDataStore: BandalartDataStore): OnboardingRepository = DefaultOnboardingRepository(bandalartDataStore)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideSettingsRepository(bandalartDataStore: BandalartDataStore): SettingsRepository = DefaultSettingsRepository(bandalartDataStore)
 }

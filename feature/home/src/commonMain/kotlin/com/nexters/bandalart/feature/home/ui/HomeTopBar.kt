@@ -28,12 +28,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,8 +43,9 @@ import bandalart.core.designsystem.generated.resources.hamburger_description
 import bandalart.core.designsystem.generated.resources.home_add
 import bandalart.core.designsystem.generated.resources.home_list
 import bandalart.core.designsystem.generated.resources.ic_hamburger
+import bandalart.core.designsystem.generated.resources.ic_settings
+import bandalart.core.designsystem.generated.resources.settings_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.component.AppTitle
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -63,7 +64,7 @@ internal fun HomeTopBar(
             modifier
                 .fillMaxWidth()
                 .height(62.dp)
-                .background(White),
+                .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.CenterStart,
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -71,12 +72,20 @@ internal fun HomeTopBar(
                 modifier =
                     Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 20.dp, top = 2.dp)
-                        .clickable {
-                            onHomeUiAction(HomeScreen.Event.ShowAppVersion)
-                        },
+                        .padding(start = 20.dp, top = 2.dp),
             )
             Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = { onHomeUiAction(HomeScreen.Event.OpenSettings) },
+                modifier = Modifier.size(48.dp),
+            ) {
+                Icon(
+                    imageVector = vectorResource(Res.drawable.ic_settings),
+                    contentDescription = stringResource(Res.string.settings_description),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
             Box(
                 modifier =
                     Modifier
@@ -96,11 +105,11 @@ internal fun HomeTopBar(
                         Icon(
                             imageVector = vectorResource(Res.drawable.ic_hamburger),
                             contentDescription = stringResource(Res.string.hamburger_description),
-                            tint = Color.Unspecified,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = stringResource(Res.string.home_list),
-                            color = Gray600,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W700,
                             fontFamily = pretendardFontFamily(),
@@ -109,12 +118,12 @@ internal fun HomeTopBar(
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = stringResource(Res.string.add_description),
-                            tint = Gray600,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp),
                         )
                         Text(
                             text = stringResource(Res.string.home_add),
-                            color = Gray600,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W700,
                         )

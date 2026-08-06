@@ -26,6 +26,10 @@ kotlin {
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
+
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.circuit.test)

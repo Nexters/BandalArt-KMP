@@ -61,6 +61,7 @@ class AppGraphTest {
         assertSame(appGraph.bandalartRepository, appGraph.bandalartRepository)
         assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)
         assertSame(appGraph.onboardingRepository, appGraph.onboardingRepository)
+        assertSame(appGraph.settingsRepository, appGraph.settingsRepository)
         assertSame(appGraph.circuit, appGraph.circuit)
     }
 

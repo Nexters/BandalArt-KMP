@@ -20,6 +20,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.flow.first
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -177,6 +178,21 @@ class BandalartDataStoreTest {
 
                 // then: 업데이트된 상태는 true여야 함
                 assertTrue(updatedStatus)
+            }
+    }
+
+    @Nested
+    @DisplayName("테마 설정 관련 테스트")
+    inner class ThemeModeTest {
+        @Test
+        @DisplayName("설정값이 없으면 null을 방출하고 저장 후 최신 값을 방출해야 한다")
+        fun themeModeIsPersisted() =
+            runTest {
+                assertEquals(null, bandalartDataStore.themeMode.first())
+
+                bandalartDataStore.setThemeMode("dark")
+
+                assertEquals("dark", bandalartDataStore.themeMode.first())
             }
     }
 }

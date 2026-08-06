@@ -21,7 +21,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,11 +28,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BandalartTheme {
-                BandalartApp(
-                    appGraph = (application as BandalartApplication).appGraph,
-                )
-            }
+            BandalartApp(
+                appGraph = (application as BandalartApplication).appGraph,
+            )
         }
     }
 }
