@@ -338,6 +338,7 @@ fun BandalartBottomSheet(
                                 onHomeUiAction(HomeScreen.Event.UpdateDueDate(dueDateResult.toString()))
                             },
                             currentDueDate = bottomSheetData.cellData.dueDate?.toLocalDateTime() ?: LocalDateTime.now(),
+                            draftKey = "${bottomSheetData.cellData.id}:${bottomSheetData.cellData.dueDate.orEmpty()}",
                         )
                     }
                     Spacer(modifier = Modifier.height(28.dp))

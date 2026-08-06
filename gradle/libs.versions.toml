@@ -33,6 +33,7 @@ androidx-lifecycle-runtime = "2.9.0-beta01"
 androidx-splash = "1.0.1"
 androidx-startup = "1.2.0"
 androidx-activity-compose = "1.10.1"
+androidx-fragment = "1.8.9"
 androidx-compose-bom = "2025.04.00"
 androidx-compose-material3 = "1.3.2"
 androidx-compose-runtime-tracing = "1.7.8"
@@ -126,6 +127,7 @@ app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", v
 compose-material-iconsCore = { group = "org.jetbrains.compose.material", name = "material-icons-core", version.ref = "compose-material-icons" }
 compose-ui-toolingPreview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose-multiplatform" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidx-fragment" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle-runtime" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }

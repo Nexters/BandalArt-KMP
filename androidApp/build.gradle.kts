@@ -73,6 +73,7 @@ dependencies {
     implementation(projects.core.designsystem)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.app.update)

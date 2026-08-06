@@ -29,6 +29,8 @@
 
 `remember`, `rememberRetained`, `rememberSaveable`의 책임을 감사하고, 날짜 피커의 미확정 draft가 구성 변경에서 사라지는 문제를 수정한다. 신규 기능이 사용할 one-shot effect 기준도 함께 확인한다.
 
+Compose UI restoration을 실제 UI tree에서 자동 검증하는 runner·CI 도입은 #217로 분리한다. #210의 blocker로 삼지 않고, gesture와 platform interaction 테스트가 누적될 때 별도 인프라 작업으로 진행한다.
+
 ### 3. #207 설정 화면 이메일 문의 — S
 
 설정 화면에서 `mraz3068@gmail.com`으로 문의 메일 작성기를 여는 Android/iOS launcher를 추가한다. 메일 앱 부재 fallback과 URI encoding을 포함한다.
