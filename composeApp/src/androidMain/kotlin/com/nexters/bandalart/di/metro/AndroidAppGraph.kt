@@ -18,6 +18,7 @@ package com.nexters.bandalart.di.metro
 
 import android.app.Application
 import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
@@ -29,6 +30,7 @@ private class AndroidPlatformBindings(
     override val dataStoreFactory = BandalartDataStoreFactory(application)
     override val appVersionProvider = AppVersionProvider(application)
     override val imageHandlerProvider = ImageHandlerProvider(application)
+    override val supportMailLauncher = AndroidSupportMailLauncher(application)
 }
 
 fun createAndroidAppGraph(application: Application): AppGraph = createAppGraph(AndroidPlatformBindings(application))

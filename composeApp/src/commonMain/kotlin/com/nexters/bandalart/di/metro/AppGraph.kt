@@ -18,6 +18,7 @@ package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.common.SupportMailLauncher
 import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -39,6 +40,7 @@ interface PlatformBindings {
     val dataStoreFactory: BandalartDataStoreFactory
     val appVersionProvider: AppVersionProvider
     val imageHandlerProvider: ImageHandlerProvider
+    val supportMailLauncher: SupportMailLauncher
 }
 
 @DependencyGraph(
@@ -56,6 +58,7 @@ interface AppGraph {
     val inAppUpdateDataStore: InAppUpdateDataStore
     val appVersionProvider: AppVersionProvider
     val imageHandlerProvider: ImageHandlerProvider
+    val supportMailLauncher: SupportMailLauncher
     val bandalartRepository: BandalartRepository
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository

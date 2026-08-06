@@ -58,6 +58,7 @@ class AppGraphTest {
         assertSame(appGraph.inAppUpdateDataStore, appGraph.inAppUpdateDataStore)
         assertSame(appGraph.appVersionProvider, appGraph.appVersionProvider)
         assertSame(appGraph.imageHandlerProvider, appGraph.imageHandlerProvider)
+        assertSame(appGraph.supportMailLauncher, appGraph.supportMailLauncher)
         assertSame(appGraph.bandalartRepository, appGraph.bandalartRepository)
         assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)
         assertSame(appGraph.onboardingRepository, appGraph.onboardingRepository)

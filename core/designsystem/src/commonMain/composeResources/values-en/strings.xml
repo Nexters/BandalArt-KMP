@@ -49,6 +49,10 @@
     <string name="settings_theme_light">Light mode</string>
     <string name="settings_theme_dark">Dark mode</string>
     <string name="settings_app_info">App info</string>
+    <string name="settings_contact">Contact us</string>
+    <string name="settings_contact_subject">[BandalArt Support]</string>
+    <string name="settings_contact_body">Please describe your inquiry.\n\n---\nApp version: %1$s\nOperating system: %2$s</string>
+    <string name="settings_contact_fallback">The email app is unavailable, so we copied the support email address.</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_value">v%1$s</string>
 

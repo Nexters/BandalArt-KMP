@@ -92,6 +92,28 @@ class HomePresenterRuntimeTest {
         }
 
     @Test
+    fun contactSupportIsExposedAsOneShotEffect() =
+        runTest {
+            val presenter = presenter()
+
+            presenter.test {
+                var state = awaitLoadedBandalart()
+
+                state.eventSink(HomeScreen.Event.ContactSupport)
+                do {
+                    state = awaitItem()
+                } while (state.effect != HomeScreen.Effect.OpenSupportMail)
+
+                state.eventSink(HomeScreen.Event.ContactSupport)
+                expectNoEvents()
+
+                state.eventSink(HomeScreen.Event.ConsumeEffect)
+                state = awaitItem()
+                assertNull(state.effect)
+            }
+        }
+
+    @Test
     fun completionNavigatesOnlyAfterCaptureFinishes() =
         runTest {
             val navigator = FakeNavigator(HomeScreen)

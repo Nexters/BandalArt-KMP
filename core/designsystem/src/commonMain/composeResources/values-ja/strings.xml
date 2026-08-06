@@ -49,6 +49,10 @@
     <string name="settings_theme_light">ライトモード</string>
     <string name="settings_theme_dark">ダークモード</string>
     <string name="settings_app_info">アプリ情報</string>
+    <string name="settings_contact">お問い合わせ</string>
+    <string name="settings_contact_subject">[BandalArt お問い合わせ]</string>
+    <string name="settings_contact_body">お問い合わせ内容をご記入ください。\n\n---\nアプリバージョン: %1$s\nオペレーティングシステム: %2$s</string>
+    <string name="settings_contact_fallback">メールアプリを開けないため、メールアドレスをコピーしました。</string>
     <string name="settings_version">バージョン</string>
     <string name="settings_version_value">v%1$s</string>
 

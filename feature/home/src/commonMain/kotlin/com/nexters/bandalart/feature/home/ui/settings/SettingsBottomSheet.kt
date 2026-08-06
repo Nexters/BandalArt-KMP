@@ -24,12 +24,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -50,6 +55,7 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
+import bandalart.core.designsystem.generated.resources.settings_contact
 import bandalart.core.designsystem.generated.resources.settings_theme_dark
 import bandalart.core.designsystem.generated.resources.settings_theme_light
 import bandalart.core.designsystem.generated.resources.settings_theme_system
@@ -105,6 +111,9 @@ internal fun SettingsBottomSheet(
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
+            SettingsContactRow(
+                onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
+            )
             Row(
                 modifier =
                     Modifier
@@ -128,6 +137,41 @@ internal fun SettingsBottomSheet(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsContactRow(onClick: () -> Unit) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Email,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(22.dp),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = stringResource(Res.string.settings_contact),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 15.sp,
+            fontFamily = pretendardFontFamily(),
+            fontWeight = FontWeight.W600,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
     }
 }
 
