@@ -114,3 +114,7 @@ Circuit 공식 문서는 `rememberRetained`가 Android의 hidden ViewModel을 �
 현재 `androidHostTest`에는 Compose state restoration harness가 없다. 이 한 건을 위해 JUnit runner와 UI test dependency를 추가하지 않고, 순수 날짜 validation은 host test로 고정하며 실제 configuration restoration은 위 수동 항목과 CI compile로 검증한다.
 
 Compose UI restoration과 interaction test가 반복해서 필요해질 때의 host/device/KMP harness 선택은 #217에서 별도로 진행한다.
+
+## CI 후속 수정
+
+직전 #215에서 `MainActivity.registerForActivityResult`를 사용하기 시작하면서, Play Core와 Firebase 경유로 들어오던 `androidx.fragment:fragment:1.1.0`이 Android lint의 최소 요구 버전 1.3.0보다 낮다는 문제가 드러났다. 이번 상태 복원 변경과 직접 관련된 오류는 아니지만 현재 브랜치 CI를 막으므로, 앱 모듈이 Fragment 1.8.9를 직접 선언해 런타임 의존성을 정렬한다. 기존 전이 의존성을 제외하거나 lint를 억제하지 않는다.
