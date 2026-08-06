@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,22 +48,24 @@ fun BottomSheetTopBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
     ) {
         BottomSheetTitleText(cellType = cellType, isBlankCell = isBlankCell)
         IconButton(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .height(21.dp)
-                .aspectRatio(1f),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .height(21.dp)
+                    .aspectRatio(1f),
             onClick = onCloseClick,
         ) {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = stringResource(Res.string.clear_description),
-                tint = Gray900,
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

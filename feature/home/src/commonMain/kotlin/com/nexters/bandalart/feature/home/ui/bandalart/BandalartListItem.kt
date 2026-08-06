@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -54,9 +55,6 @@ import bandalart.core.designsystem.generated.resources.home_complete_ratio
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray100
-import com.nexters.bandalart.core.designsystem.theme.Gray300
-import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
@@ -72,28 +70,33 @@ fun BandalartListItem(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .border(
-                width = 1.5.dp,
-                color = if (currentBandalartId != bandalartItem.id) Gray100 else Gray300,
-                shape = RoundedCornerShape(12.dp),
-            )
-            .clickable {
-                if (currentBandalartId != bandalartItem.id) {
-                    onClick(bandalartItem.id)
-                }
-            }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .border(
+                    width = 1.5.dp,
+                    color =
+                        if (currentBandalartId != bandalartItem.id) {
+                            MaterialTheme.colorScheme.outlineVariant
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                    shape = RoundedCornerShape(12.dp),
+                ).clickable {
+                    if (currentBandalartId != bandalartItem.id) {
+                        onClick(bandalartItem.id)
+                    }
+                }.padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Box(modifier = Modifier.align(Alignment.CenterVertically)) {
             Card(shape = RoundedCornerShape(16.dp)) {
                 Box(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .aspectRatio(1f)
-                        .background(Gray100),
+                    modifier =
+                        Modifier
+                            .width(48.dp)
+                            .aspectRatio(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
                     if (bandalartItem.profileEmoji.isNullOrEmpty()) {
@@ -112,15 +115,17 @@ fun BandalartListItem(
             }
         }
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp),
         ) {
             if (bandalartItem.isCompleted) {
                 Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(color = bandalartItem.mainColor.toColor()),
+                    modifier =
+                        Modifier
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(color = bandalartItem.mainColor.toColor()),
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 9.dp),
@@ -144,19 +149,21 @@ fun BandalartListItem(
                 }
             } else {
                 Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(color = bandalartItem.mainColor.toColor()),
+                    modifier =
+                        Modifier
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(color = bandalartItem.mainColor.toColor()),
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = stringResource(
-                                Res.string.home_complete_ratio,
-                                bandalartItem.completionRatio,
-                            ),
+                            text =
+                                stringResource(
+                                    Res.string.home_complete_ratio,
+                                    bandalartItem.completionRatio,
+                                ),
                             color = Gray900,
                             fontSize = 9.sp,
                             fontWeight = FontWeight.W600,
@@ -167,7 +174,12 @@ fun BandalartListItem(
             }
             Text(
                 text = bandalartItem.titleText,
-                color = if (bandalartItem.isGeneratedTitle) Gray300 else Gray900,
+                color =
+                    if (bandalartItem.isGeneratedTitle) {
+                        MaterialTheme.colorScheme.outline
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W700,
                 letterSpacing = (-0.32).sp,
@@ -178,7 +190,7 @@ fun BandalartListItem(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(Res.string.arrow_forward_description),
-                    tint = Gray400,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(16.dp),
                 )
             }

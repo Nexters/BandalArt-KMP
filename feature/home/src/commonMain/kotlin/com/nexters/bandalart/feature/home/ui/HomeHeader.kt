@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -61,9 +62,6 @@ import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.common.extension.toFormatDate
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray100
-import com.nexters.bandalart.core.designsystem.theme.Gray300
-import com.nexters.bandalart.core.designsystem.theme.Gray600
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
@@ -97,7 +95,7 @@ fun HomeHeader(
                             Modifier
                                 .width(52.dp)
                                 .aspectRatio(1f)
-                                .background(Gray100)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .clickable {
                                     onHomeUiAction(HomeScreen.Event.OpenEmoji)
                                 },
@@ -138,7 +136,12 @@ fun HomeHeader(
             ) {
                 Text(
                     text = bandalartData.titleText.ifEmpty { stringResource(Res.string.home_empty_title) },
-                    color = if (bandalartData.titleText.isEmpty()) Gray300 else Gray900,
+                    color =
+                        if (bandalartData.titleText.isEmpty()) {
+                            MaterialTheme.colorScheme.outline
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        },
                     fontSize = 20.sp,
                     fontWeight = FontWeight.W700,
                     modifier =
@@ -156,7 +159,7 @@ fun HomeHeader(
                         Modifier
                             .align(Alignment.CenterEnd)
                             .clickable { onHomeUiAction(HomeScreen.Event.OpenDropDownMenu) },
-                    tint = Color.Unspecified,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 BandalartDropDownMenu(
                     isDropDownMenuOpened = isDropDownMenuOpened,
@@ -171,7 +174,7 @@ fun HomeHeader(
         ) {
             Text(
                 text = stringResource(Res.string.home_complete_ratio, bandalartData.completionRatio),
-                color = Gray600,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.W500,
                 letterSpacing = (-0.24).sp,
@@ -183,11 +186,11 @@ fun HomeHeader(
                             .height(8.dp)
                             .padding(start = 6.dp),
                     thickness = 1.dp,
-                    color = Gray300,
+                    color = MaterialTheme.colorScheme.outlineVariant,
                 )
                 Text(
                     text = bandalartData.dueDate.toFormatDate(getLocale()),
-                    color = Gray600,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.W500,
                     modifier = Modifier.padding(start = 6.dp),

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,12 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.common.extension.noRippleClickable
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.ui.ThemeColor
 import com.nexters.bandalart.core.ui.allColor
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,9 +49,10 @@ fun BandalartColorPicker(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(45.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(45.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -65,22 +65,24 @@ fun BandalartColorPicker(
             ) {
                 if (it.mainColor == initSelected.mainColor) {
                     Card(
-                        border = BorderStroke(width = 1.5.dp, color = Gray900),
-                        modifier = Modifier
-                            .height(45.dp)
-                            .aspectRatio(1f),
+                        border = BorderStroke(width = 1.5.dp, color = MaterialTheme.colorScheme.onSurface),
+                        modifier =
+                            Modifier
+                                .height(45.dp)
+                                .aspectRatio(1f),
                         shape = RoundedCornerShape(90.dp),
-                        colors = CardDefaults.cardColors(White),
+                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
                     ) { }
                 }
                 Card(
-                    modifier = Modifier
-                        .height(36.dp)
-                        .aspectRatio(1f)
-                        .noRippleClickable {
-                            initSelected = it
-                            onColorSelect(initSelected)
-                        },
+                    modifier =
+                        Modifier
+                            .height(36.dp)
+                            .aspectRatio(1f)
+                            .noRippleClickable {
+                                initSelected = it
+                                onColorSelect(initSelected)
+                            },
                     shape = RoundedCornerShape(90.dp),
                     colors = CardDefaults.cardColors(containerColor = it.mainColor.toColor()),
                 ) { }

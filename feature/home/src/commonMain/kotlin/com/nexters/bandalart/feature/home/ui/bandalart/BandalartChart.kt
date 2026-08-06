@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,7 +35,6 @@ import bandalart.core.designsystem.generated.resources.home_layout_id
 import bandalart.core.designsystem.generated.resources.home_main_id
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -74,7 +74,7 @@ fun BandalartChart(
                             Modifier
                                 .layoutId(stringResource(Res.string.home_layout_id, index + 1))
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(color = Gray300),
+                                .background(color = MaterialTheme.colorScheme.outline),
                     ) {
                         BandalartCellGrid(
                             bandalartData = bandalartData,

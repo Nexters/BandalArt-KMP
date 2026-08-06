@@ -40,13 +40,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,10 +57,6 @@ import bandalart.core.designsystem.generated.resources.bandalart_list_add
 import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray200
-import com.nexters.bandalart.core.designsystem.theme.Gray600
-import com.nexters.bandalart.core.designsystem.theme.Gray800
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
@@ -95,7 +91,7 @@ fun BandalartListBottomSheet(
         Column(
             modifier =
                 Modifier
-                    .background(White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .navigationBarsPadding(),
         ) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -107,7 +103,7 @@ fun BandalartListBottomSheet(
             ) {
                 Text(
                     text = stringResource(Res.string.bandalart_list_title),
-                    color = Gray900,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.W700,
                     modifier = modifier.fillMaxWidth(),
@@ -126,7 +122,7 @@ fun BandalartListBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = stringResource(Res.string.clear_description),
-                        tint = Gray900,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -162,19 +158,23 @@ fun BandalartListBottomSheet(
                             onClick = {
                                 onHomeUiAction(HomeScreen.Event.AddBandalart)
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Gray200),
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
                         ) {
                             Row {
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = stringResource(Res.string.add_description),
-                                    tint = Gray600,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(20.dp),
                                 )
                                 Spacer(modifier = Modifier.padding(start = 4.dp))
                                 Text(
                                     text = stringResource(Res.string.bandalart_list_add),
-                                    color = Gray800,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.W600,
                                 )

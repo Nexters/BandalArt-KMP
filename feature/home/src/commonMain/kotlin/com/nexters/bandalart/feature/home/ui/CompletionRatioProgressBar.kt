@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray200
 import com.nexters.bandalart.core.designsystem.theme.MainColor
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -66,31 +66,35 @@ fun CompletionRatioProgressBar(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentSize(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .wrapContentSize(),
     ) {
         // Progress Bar
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(8.dp),
         ) {
             // for the background of the ProgressBar
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(Gray200),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
             )
             // for the progress of the ProgressBar
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(size)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(progressColor)
-                    .animateContentSize(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(size)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(progressColor)
+                        .animateContentSize(),
             )
         }
     }

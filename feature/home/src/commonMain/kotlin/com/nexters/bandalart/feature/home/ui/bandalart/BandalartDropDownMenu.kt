@@ -28,12 +28,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -46,7 +46,6 @@ import bandalart.core.designsystem.generated.resources.ic_gallery
 import bandalart.core.designsystem.generated.resources.ic_trash
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Error
-import com.nexters.bandalart.core.designsystem.theme.Gray800
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
@@ -63,7 +62,7 @@ fun BandalartDropDownMenu(
         modifier =
             modifier
                 .wrapContentSize()
-                .background(White),
+                .background(MaterialTheme.colorScheme.surface),
         expanded = isDropDownMenuOpened,
         onDismissRequest = {
             onAction(HomeScreen.Event.DismissDropDownMenu)
@@ -93,7 +92,7 @@ fun BandalartDropDownMenu(
                     )
                     Text(
                         text = stringResource(Res.string.dropdown_save),
-                        color = Gray800,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
                         modifier =

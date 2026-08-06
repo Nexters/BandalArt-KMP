@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -52,8 +53,6 @@ import bandalart.core.designsystem.generated.resources.datepicker_year
 import com.nexters.bandalart.core.common.extension.LocalDateTime
 import com.nexters.bandalart.core.common.extension.toLocalDateTime
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray200
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -79,35 +78,38 @@ fun BandalartDatePicker(
         val chosenDay = remember { mutableStateOf(currentDueDate.dayOfMonth.toString()) }
 
         Row(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(
-                    top = 14.dp,
-                    end = 20.dp,
-                    bottom = 14.dp,
-                ),
+            modifier =
+                Modifier
+                    .align(Alignment.End)
+                    .padding(
+                        top = 14.dp,
+                        end = 20.dp,
+                        bottom = 14.dp,
+                    ),
         ) {
             Text(
                 text = stringResource(Res.string.bottomsheet_reset),
-                color = Gray900,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W700,
-                modifier = Modifier
-                    .clickable {
-                        onDueDateSelect(LocalDateTime.now())
-                    },
+                modifier =
+                    Modifier
+                        .clickable {
+                            onDueDateSelect(LocalDateTime.now())
+                        },
                 fontFamily = pretendardFontFamily(),
             )
             Text(
                 text = stringResource(Res.string.bottomsheet_done),
-                color = Gray900,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W700,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .clickable {
-                        onDueDateSelect(selectedDateWithValidate(chosenYear.value, chosenMonth.value, chosenDay.value))
-                    },
+                modifier =
+                    Modifier
+                        .padding(start = 16.dp)
+                        .clickable {
+                            onDueDateSelect(selectedDateWithValidate(chosenYear.value, chosenMonth.value, chosenDay.value))
+                        },
                 fontFamily = pretendardFontFamily(),
             )
         }
@@ -133,9 +135,10 @@ fun DateSelectionSection(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(180.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(180.dp),
         contentAlignment = Alignment.Center,
     ) {
         val yearOffset = Int.MAX_VALUE / 2 - ((Int.MAX_VALUE / 2) % years.size) + years.indexOf(currentYear)
@@ -143,18 +146,20 @@ fun DateSelectionSection(
         val dayOffset = Int.MAX_VALUE / 2 - ((Int.MAX_VALUE / 2) % days.size) + (currentDay - 1)
 
         Box(
-            modifier = Modifier
-                .height(40.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .background(Gray200)
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .height(40.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .align(Alignment.Center),
         )
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(180.dp),
         ) {
             InfiniteItemsPicker(
                 modifier = Modifier.weight(1f),
@@ -225,15 +230,17 @@ fun InfiniteItemsPicker(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = when {
-                            isYear -> stringResource(Res.string.datepicker_year, items[itemIndex].toString())
-                            isMonth -> stringResource(Res.string.datepicker_month, items[itemIndex].toString())
-                            else -> stringResource(Res.string.datepicker_day, items[itemIndex].toString())
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .alpha(if (isMiddleItem) 1f else 0.6f),
-                        color = Gray900,
+                        text =
+                            when {
+                                isYear -> stringResource(Res.string.datepicker_year, items[itemIndex].toString())
+                                isMonth -> stringResource(Res.string.datepicker_month, items[itemIndex].toString())
+                                else -> stringResource(Res.string.datepicker_day, items[itemIndex].toString())
+                            },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .alpha(if (isMiddleItem) 1f else 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = if (isMiddleItem) 20.sp else 17.sp,
                         fontWeight = if (isMiddleItem) FontWeight.W500 else FontWeight.W400,
                         textAlign = TextAlign.Center,
@@ -245,17 +252,22 @@ fun InfiniteItemsPicker(
     }
 }
 
-fun selectedDateWithValidate(year: String, month: String, day: String): LocalDateTime {
+fun selectedDateWithValidate(
+    year: String,
+    month: String,
+    day: String
+): LocalDateTime {
     val yearNum = year.filter { it.isDigit() }.toInt()
     val monthNum = month.filter { it.isDigit() }.toInt()
     val dayNum = day.filter { it.isDigit() }.toInt()
 
     // 각 월의 최대 일수 계산
-    val maxDaysInMonth = when (monthNum) {
-        2 -> if (isLeapYear(yearNum)) 29 else 28 // 2월: 윤년 고려
-        4, 6, 9, 11 -> 30 // 30일까지 있는 달
-        else -> 31 // 그 외 달은 31일
-    }
+    val maxDaysInMonth =
+        when (monthNum) {
+            2 -> if (isLeapYear(yearNum)) 29 else 28 // 2월: 윤년 고려
+            4, 6, 9, 11 -> 30 // 30일까지 있는 달
+            else -> 31 // 그 외 달은 31일
+        }
 
     // 일자 유효성 검사 및 보정
     val validatedDay = dayNum.coerceAtMost(maxDaysInMonth)
@@ -264,9 +276,7 @@ fun selectedDateWithValidate(year: String, month: String, day: String): LocalDat
 }
 
 // 윤년 계산 함수
-private fun isLeapYear(year: Int): Boolean {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
-}
+private fun isLeapYear(year: Int): Boolean = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 
 // @ComponentPreview
 @Preview

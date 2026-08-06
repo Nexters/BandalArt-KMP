@@ -49,6 +49,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -61,7 +62,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -88,10 +88,6 @@ import com.nexters.bandalart.core.common.extension.toLocalDateTime
 import com.nexters.bandalart.core.common.extension.toStringLocalDateTime
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray100
-import com.nexters.bandalart.core.designsystem.theme.Gray300
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray700
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.ThemeColor
 import com.nexters.bandalart.core.ui.getNavigationBarPadding
@@ -165,7 +161,7 @@ fun BandalartBottomSheet(
         Column(
             modifier =
                 Modifier
-                    .background(White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .navigationBarsPadding()
                     .noRippleClickable { focusManager.clearFocus() },
         ) {
@@ -205,7 +201,7 @@ fun BandalartBottomSheet(
                                             Modifier
                                                 .width(52.dp)
                                                 .aspectRatio(1f)
-                                                .background(Gray100)
+                                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                                 .clickable {
                                                     onHomeUiAction(HomeScreen.Event.OpenEmojiPicker)
                                                 },
@@ -254,7 +250,7 @@ fun BandalartBottomSheet(
                             HorizontalDivider(
                                 modifier = Modifier.fillMaxWidth(),
                                 thickness = 1.dp,
-                                color = Gray300,
+                                color = MaterialTheme.colorScheme.outline,
                             )
                         }
                     }
@@ -326,14 +322,14 @@ fun BandalartBottomSheet(
                                     Modifier
                                         .align(Alignment.CenterEnd)
                                         .size(24.dp),
-                                tint = Gray400,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                         HorizontalDivider(
                             modifier = Modifier.fillMaxWidth(),
                             thickness = 1.dp,
-                            color = Gray300,
+                            color = MaterialTheme.colorScheme.outline,
                         )
                     }
                     AnimatedVisibility(visible = bottomSheetData.isDatePickerOpened) {
@@ -360,7 +356,7 @@ fun BandalartBottomSheet(
                         HorizontalDivider(
                             modifier = Modifier.fillMaxWidth(),
                             thickness = 1.dp,
-                            color = Gray300,
+                            color = MaterialTheme.colorScheme.outline,
                         )
                     }
                     if (cellType == CellType.TASK) {
@@ -383,12 +379,12 @@ fun BandalartBottomSheet(
                                 },
                                 colors =
                                     SwitchDefaults.colors(
-                                        uncheckedThumbColor = White,
-                                        uncheckedTrackColor = Gray300,
-                                        uncheckedBorderColor = Gray300,
-                                        checkedThumbColor = White,
-                                        checkedTrackColor = Gray700,
-                                        checkedBorderColor = Gray700,
+                                        uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+                                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                        checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                        checkedBorderColor = MaterialTheme.colorScheme.primary,
                                     ),
                                 modifier =
                                     Modifier

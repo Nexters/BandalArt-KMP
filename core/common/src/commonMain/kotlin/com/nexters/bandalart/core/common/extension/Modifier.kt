@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutModifier
@@ -172,3 +173,14 @@ fun Modifier.captureToGraphicsLayer(graphicsLayer: GraphicsLayer,) =
         graphicsLayer.record { this@drawWithContent.drawContent() }
         drawLayer(graphicsLayer)
     }
+
+fun Modifier.captureToGraphicsLayer(
+    graphicsLayer: GraphicsLayer,
+    captureBackgroundColor: Color,
+) = this.drawWithContent {
+    graphicsLayer.record {
+        drawRect(captureBackgroundColor)
+        this@drawWithContent.drawContent()
+    }
+    this@drawWithContent.drawContent()
+}
