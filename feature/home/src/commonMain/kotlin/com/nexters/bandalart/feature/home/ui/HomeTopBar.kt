@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -67,7 +68,10 @@ internal fun HomeTopBar(
                 .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.CenterStart,
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().height(62.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             AppTitle(
                 modifier =
                     Modifier
@@ -90,6 +94,8 @@ internal fun HomeTopBar(
                 modifier =
                     Modifier
                         .padding(end = 20.dp)
+                        .height(48.dp)
+                        .widthIn(min = 48.dp)
                         .clickable(
                             onClick = {
                                 if (bandalartCount > 1) {
@@ -99,6 +105,7 @@ internal fun HomeTopBar(
                                 }
                             },
                         ),
+                contentAlignment = Alignment.Center,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (bandalartCount > 1) {

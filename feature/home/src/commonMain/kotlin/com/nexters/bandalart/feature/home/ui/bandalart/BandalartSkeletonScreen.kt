@@ -16,12 +16,6 @@
 
 package com.nexters.bandalart.feature.home.ui.bandalart
 
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +37,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,10 +45,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
@@ -76,15 +69,7 @@ import bandalart.core.designsystem.generated.resources.option_description
 import bandalart.core.designsystem.generated.resources.share_description
 import bandalart.core.designsystem.generated.resources.skeleton_complete_ratio
 import bandalart.core.designsystem.generated.resources.skeleton_title
-import bandalart.core.designsystem.generated.resources.skeleton_trans_animate_label
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray100
-import com.nexters.bandalart.core.designsystem.theme.Gray200
-import com.nexters.bandalart.core.designsystem.theme.Gray300
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray50
-import com.nexters.bandalart.core.designsystem.theme.Gray600
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.neurimboGothicRegularFontFamily
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.ui.CompletionRatioProgressBar
@@ -112,30 +97,33 @@ fun BandalartSkeletonScreen(
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Gray50,
+        color = MaterialTheme.colorScheme.background,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 32.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 32.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(62.dp)
-                        .background(White),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(62.dp)
+                            .background(MaterialTheme.colorScheme.surface),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = stringResource(Res.string.bandalart),
-                            color = Gray900,
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.W400,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(start = 20.dp, top = 2.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(start = 20.dp, top = 2.dp),
                             fontFamily = neurimboGothicRegularFontFamily(),
                             lineHeight = 20.sp,
                             letterSpacing = (-0.56).sp,
@@ -144,7 +132,7 @@ fun BandalartSkeletonScreen(
                 }
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = Gray100,
+                    color = MaterialTheme.colorScheme.outlineVariant,
                 )
                 Column(modifier.padding(horizontal = 16.dp)) {
                     Spacer(modifier = Modifier.height(24.dp))
@@ -156,10 +144,11 @@ fun BandalartSkeletonScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                                 ) {
                                     Box(
-                                        modifier = Modifier
-                                            .width(52.dp)
-                                            .aspectRatio(1f)
-                                            .background(Gray100),
+                                        modifier =
+                                            Modifier
+                                                .width(52.dp)
+                                                .aspectRatio(1f)
+                                                .background(MaterialTheme.colorScheme.surfaceVariant),
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Icon(
@@ -172,26 +161,29 @@ fun BandalartSkeletonScreen(
                                 Icon(
                                     imageVector = vectorResource(Res.drawable.ic_edit),
                                     contentDescription = stringResource(Res.string.edit_description),
-                                    modifier = Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .offset(x = 4.dp, y = 4.dp),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.BottomEnd)
+                                            .offset(x = 4.dp, y = 4.dp),
                                     tint = Color.Unspecified,
                                 )
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight(),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
                             ) {
                                 Text(
                                     text = stringResource(Res.string.skeleton_title),
-                                    color = Gray900,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.W700,
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .background(subBrush),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.Center)
+                                            .background(subBrush),
                                     letterSpacing = (-0.4).sp,
                                 )
                                 Icon(
@@ -210,7 +202,7 @@ fun BandalartSkeletonScreen(
                     ) {
                         Text(
                             text = stringResource(Res.string.skeleton_complete_ratio),
-                            color = Gray600,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.W500,
                             letterSpacing = (-0.24).sp,
@@ -222,7 +214,7 @@ fun BandalartSkeletonScreen(
                 Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                     CompletionRatioProgressBar(
                         completionRatio = 0,
-                        progressColor = Gray300,
+                        progressColor = MaterialTheme.colorScheme.outline,
                     )
                 }
                 Spacer(modifier = Modifier.height(18.dp))
@@ -233,11 +225,12 @@ fun BandalartSkeletonScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(Gray100)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .wrapContentSize()
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .align(Alignment.CenterHorizontally),
                     contentAlignment = Alignment.Center,
                 ) {
                     Row(
@@ -251,7 +244,7 @@ fun BandalartSkeletonScreen(
                         )
                         Text(
                             text = stringResource(Res.string.home_share),
-                            color = Gray900,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.W700,
                             modifier = Modifier.padding(start = 4.dp),
@@ -273,24 +266,26 @@ fun BandalartSkeletonChart(
     BoxWithConstraints {
         val paddedMaxWidth = remember(maxWidth) { maxWidth - (15.dp * 2) }
 
-        val subCellList = persistentListOf(
-            SkeletonSubCell(2, 3, 1, 1, null),
-            SkeletonSubCell(3, 2, 1, 0, null),
-            SkeletonSubCell(3, 2, 1, 1, null),
-            SkeletonSubCell(2, 3, 0, 1, null),
-        )
+        val subCellList =
+            persistentListOf(
+                SkeletonSubCell(2, 3, 1, 1, null),
+                SkeletonSubCell(3, 2, 1, 0, null),
+                SkeletonSubCell(3, 2, 1, 1, null),
+                SkeletonSubCell(2, 3, 0, 1, null),
+            )
 
         Layout(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp)),
             content = {
                 for (index in subCellList.indices) {
                     Box(
                         modifier
                             .layoutId(stringResource(Res.string.home_layout_id, index + 1))
                             .clip(RoundedCornerShape(12.dp))
-                            .background(color = Gray200),
+                            .background(color = MaterialTheme.colorScheme.surfaceVariant),
                     ) {
                         SkeletonCellGrid(
                             rows = subCellList[index].rowCnt,
@@ -375,13 +370,14 @@ fun SkeletonCellGrid(
                     val isSubCell = rowIndex == subCell.subCellRowIndex && colIndex == subCell.subCellColIndex
                     SkeletonCell(
                         cellType = if (isSubCell) CellType.SUB else CellType.TASK,
-                        skeletonCellInfo = SkeletonCellInfo(
-                            isSubCell = isSubCell,
-                            colIndex = colIndex,
-                            rowIndex = rowIndex,
-                            colCnt = cols,
-                            rowCnt = rows,
-                        ),
+                        skeletonCellInfo =
+                            SkeletonCellInfo(
+                                isSubCell = isSubCell,
+                                colIndex = colIndex,
+                                rowIndex = rowIndex,
+                                colCnt = cols,
+                                rowCnt = rows,
+                            ),
                         modifier = Modifier.weight(1f),
                         taskBrush = taskBrush,
                         subBrush = subBrush,
@@ -414,24 +410,47 @@ fun SkeletonCell(
     mainCellPadding: Dp = 1.dp,
 ) {
     Box(
-        modifier = modifier
-            .padding(
-                start = if (cellType == CellType.MAIN) mainCellPadding
-                else if (skeletonCellInfo.colIndex == 0) outerPadding
-                else innerPadding,
-                end = if (cellType == CellType.MAIN) mainCellPadding
-                else if (skeletonCellInfo.colIndex == skeletonCellInfo.colCnt - 1) outerPadding
-                else innerPadding,
-                top = if (cellType == CellType.MAIN) mainCellPadding
-                else if (skeletonCellInfo.rowIndex == 0) outerPadding
-                else innerPadding,
-                bottom = if (cellType == CellType.MAIN) mainCellPadding
-                else if (skeletonCellInfo.rowIndex == skeletonCellInfo.rowCnt - 1) outerPadding
-                else innerPadding,
-            )
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (cellType == CellType.MAIN) mainBrush else if (skeletonCellInfo.isSubCell) subBrush else taskBrush),
+        modifier =
+            modifier
+                .padding(
+                    start =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (skeletonCellInfo.colIndex == 0)
+                            outerPadding
+                        else
+                            innerPadding,
+                    end =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (skeletonCellInfo.colIndex == skeletonCellInfo.colCnt - 1)
+                            outerPadding
+                        else
+                            innerPadding,
+                    top =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (skeletonCellInfo.rowIndex == 0)
+                            outerPadding
+                        else
+                            innerPadding,
+                    bottom =
+                        if (cellType == CellType.MAIN)
+                            mainCellPadding
+                        else if (skeletonCellInfo.rowIndex == skeletonCellInfo.rowCnt - 1)
+                            outerPadding
+                        else
+                            innerPadding,
+                ).aspectRatio(1f)
+                .clip(RoundedCornerShape(10.dp))
+                .background(
+                    if (cellType == CellType.MAIN)
+                        mainBrush
+                    else if (skeletonCellInfo.isSubCell)
+                        subBrush
+                    else
+                        taskBrush
+                ),
         contentAlignment = Alignment.Center,
     ) { }
 }
@@ -440,56 +459,7 @@ fun SkeletonCell(
 @Preview
 @Composable
 private fun BandalartSkeletonScreenPreview() {
-    val shimmerMainColors = listOf(
-        Gray200,
-        Gray300,
-        Gray400,
-    )
-    val shimmerSubColors = listOf(
-        Gray100,
-        Gray200,
-        Gray300,
-    )
-    val shimmerTaskColors = listOf(
-        White,
-        Gray50,
-    )
-
-    val transition = rememberInfiniteTransition(label = "Skeleton transition")
-    val translateAnim = transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 800f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 600,
-                easing = FastOutLinearInEasing,
-            ),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = stringResource(Res.string.skeleton_trans_animate_label),
-    )
-
-    val mainBrush = Brush.linearGradient(
-        colors = shimmerMainColors,
-        start = Offset.Zero,
-        end = Offset(x = translateAnim.value, y = translateAnim.value),
-    )
-    val subBrush = Brush.linearGradient(
-        colors = shimmerSubColors,
-        start = Offset.Zero,
-        end = Offset(x = translateAnim.value, y = translateAnim.value),
-    )
-    val taskBrush = Brush.linearGradient(
-        colors = shimmerTaskColors,
-        start = Offset.Zero,
-        end = Offset(x = translateAnim.value, y = translateAnim.value),
-    )
-
     BandalartTheme {
-        BandalartSkeletonScreen(
-            taskBrush = mainBrush,
-            subBrush = subBrush,
-            mainBrush = taskBrush,
-        )
+        BandalartSkeleton()
     }
 }

@@ -29,12 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -46,10 +46,6 @@ import bandalart.core.designsystem.generated.resources.home_sub_cell
 import bandalart.core.designsystem.generated.resources.ic_cell_check
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray500
-import com.nexters.bandalart.core.designsystem.theme.Gray600
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -193,7 +189,12 @@ private fun SubCellContent(
 
 @Composable
 private fun TaskCellContent(cellData: BandalartCellEntity) {
-    val cellTextColor = if (cellData.isCompleted) Gray600 else Gray900
+    val cellTextColor =
+        if (cellData.isCompleted) {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
 
     if (cellData.title.isNullOrEmpty()) {
         EmptyTaskContent()
@@ -256,7 +257,7 @@ private fun EmptyTaskContent() {
     Icon(
         imageVector = Icons.Default.Add,
         contentDescription = stringResource(Res.string.add_description),
-        tint = Gray500,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.size(20.dp),
     )
 }
@@ -293,6 +294,7 @@ private fun FilledCellContent(
     }
 }
 
+@Composable
 private fun getCellBackgroundColor(
     bandalartData: BandalartUiModel,
     cellType: CellType,
@@ -308,8 +310,8 @@ private fun getCellBackgroundColor(
         // 서브 목표 미달성
         cellType == CellType.SUB -> bandalartData.subColor.toColor()
         // 태스크 목표 달성
-        cellData.isCompleted -> Gray400
-        else -> White
+        cellData.isCompleted -> MaterialTheme.colorScheme.outline
+        else -> MaterialTheme.colorScheme.surface
     }
 
 // @ComponentPreview

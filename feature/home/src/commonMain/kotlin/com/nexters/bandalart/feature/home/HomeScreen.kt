@@ -228,8 +228,10 @@ internal fun HomeContent(
                 Column(
                     modifier =
                         Modifier
-                            .captureToGraphicsLayer(homeGraphicsLayer)
-                            .background(Gray50),
+                            .captureToGraphicsLayer(
+                                graphicsLayer = homeGraphicsLayer,
+                                captureBackgroundColor = Gray50,
+                            ),
                 ) {
                     if (state.bandalartCellData != null && state.bandalartData != null) {
                         HomeHeader(
@@ -244,8 +246,10 @@ internal fun HomeContent(
                             onHomeUiAction = state.eventSink,
                             modifier =
                                 Modifier
-                                    .captureToGraphicsLayer(completeGraphicsLayer)
-                                    .background(Gray50),
+                                    .captureToGraphicsLayer(
+                                        graphicsLayer = completeGraphicsLayer,
+                                        captureBackgroundColor = Gray50,
+                                    ),
                         )
                     }
                     Spacer(modifier = Modifier.height(64.dp))

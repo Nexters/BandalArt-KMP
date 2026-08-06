@@ -21,17 +21,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.bottomsheet_delete
 import bandalart.core.designsystem.generated.resources.bottomsheet_done
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray200
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -43,11 +40,17 @@ fun BottomSheetDeleteButton(
     FilledIconButton(
         onClick = onClick,
         modifier = modifier.height(56.dp),
-        colors = IconButtonColors(Gray200, Gray900, Gray200, Gray900),
+        colors =
+            IconButtonColors(
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.onSurface,
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
     ) {
         BottomSheetButtonText(
             text = stringResource(Res.string.bottomsheet_delete),
-            color = Gray900,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -61,12 +64,23 @@ fun BottomSheetCompleteButton(
     FilledIconButton(
         onClick = onClick,
         modifier = modifier.height(56.dp),
-        colors = IconButtonColors(Gray900, White, Gray200, Gray400),
+        colors =
+            IconButtonColors(
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.onPrimary,
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
         enabled = isEnabled,
     ) {
         BottomSheetButtonText(
             text = stringResource(Res.string.bottomsheet_done),
-            color = if (isEnabled) White else Gray400,
+            color =
+                if (isEnabled) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
         )
     }
 }
@@ -78,9 +92,10 @@ private fun BottomSheetDeleteButtonPreview() {
     BandalartTheme {
         BottomSheetDeleteButton(
             onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
         )
     }
 }
@@ -93,9 +108,10 @@ private fun BottomSheetCompleteButtonPreview() {
         BottomSheetCompleteButton(
             isEnabled = false,
             onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
         )
     }
 }

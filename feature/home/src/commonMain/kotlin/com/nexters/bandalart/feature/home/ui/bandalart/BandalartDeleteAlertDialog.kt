@@ -28,13 +28,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,9 +46,6 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart_delete
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_delete
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray200
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,25 +61,27 @@ fun BandalartDeleteAlertDialog(
     Dialog(onDismissRequest = { onCancelClick() }) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            color = White,
+            color = MaterialTheme.colorScheme.surface,
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
             ) {
                 Icon(
                     imageVector = vectorResource(Res.drawable.ic_delete),
                     contentDescription = stringResource(Res.string.delete_description),
-                    modifier = Modifier
-                        .height(28.dp)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .height(28.dp)
+                            .align(Alignment.CenterHorizontally),
                     tint = Color.Unspecified,
                 )
                 Spacer(modifier = Modifier.height(18.dp))
                 Text(
                     text = title,
-                    color = Gray900,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.W700,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -94,7 +93,7 @@ fun BandalartDeleteAlertDialog(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = message,
-                        color = Gray400,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
                         modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -104,48 +103,53 @@ fun BandalartDeleteAlertDialog(
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
                         onClick = onCancelClick,
-                        colors = ButtonColors(
-                            containerColor = Gray200,
-                            contentColor = Gray900,
-                            disabledContainerColor = Gray200,
-                            disabledContentColor = Gray900,
-                        ),
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
                     ) {
                         Text(
                             text = stringResource(Res.string.delete_bandalart_cancel),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,
-                            color = Gray900,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
                     Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
                         onClick = onDeleteClick,
-                        colors = ButtonColors(
-                            containerColor = Gray900,
-                            contentColor = White,
-                            disabledContainerColor = Gray900,
-                            disabledContentColor = White,
-                        ),
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
                     ) {
                         Text(
                             text = stringResource(Res.string.delete_bandalart_delete),
-                            color = White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,
                         )

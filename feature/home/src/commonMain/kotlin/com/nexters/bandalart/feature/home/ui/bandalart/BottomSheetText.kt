@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.home.ui.bandalart
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,9 +37,6 @@ import bandalart.core.designsystem.generated.resources.bottomsheet_header_taskce
 import bandalart.core.designsystem.generated.resources.bottomsheet_title
 import bandalart.core.designsystem.generated.resources.bottomsheet_title_placeholder
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray400
-import com.nexters.bandalart.core.designsystem.theme.Gray600
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,22 +48,25 @@ fun BottomSheetTitleText(
     isBlankCell: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val titleResId = when {
-        isBlankCell -> when (cellType) {
-            CellType.MAIN -> Res.string.bottomsheet_header_maincell_enter_title
-            CellType.SUB -> Res.string.bottomsheet_header_subcell_enter_title
-            CellType.TASK -> Res.string.bottomsheet_header_taskcell_enter_title
+    val titleResId =
+        when {
+            isBlankCell ->
+                when (cellType) {
+                    CellType.MAIN -> Res.string.bottomsheet_header_maincell_enter_title
+                    CellType.SUB -> Res.string.bottomsheet_header_subcell_enter_title
+                    CellType.TASK -> Res.string.bottomsheet_header_taskcell_enter_title
+                }
+            else ->
+                when (cellType) {
+                    CellType.MAIN -> Res.string.bottomsheet_header_maincell_edit_title
+                    CellType.SUB -> Res.string.bottomsheet_header_subcell_edit_title
+                    CellType.TASK -> Res.string.bottomsheet_header_taskcell_edit_title
+                }
         }
-        else -> when (cellType) {
-            CellType.MAIN -> Res.string.bottomsheet_header_maincell_edit_title
-            CellType.SUB -> Res.string.bottomsheet_header_subcell_edit_title
-            CellType.TASK -> Res.string.bottomsheet_header_taskcell_edit_title
-        }
-    }
 
     Text(
         text = stringResource(titleResId),
-        color = Gray900,
+        color = MaterialTheme.colorScheme.onSurface,
         fontSize = 16.sp,
         fontWeight = FontWeight.W700,
         modifier = modifier.fillMaxWidth(),
@@ -82,7 +83,7 @@ fun BottomSheetSubTitleText(
 ) {
     Text(
         text = text,
-        color = Gray600,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         fontSize = 12.sp,
         fontWeight = FontWeight.W700,
         modifier = modifier,
@@ -99,7 +100,7 @@ fun BottomSheetContentPlaceholder(
 ) {
     Text(
         text = text,
-        color = Gray400,
+        color = MaterialTheme.colorScheme.outline,
         fontSize = 16.sp,
         fontWeight = FontWeight.W400,
         modifier = modifier,
@@ -117,7 +118,7 @@ fun BottomSheetContentText(
     Text(
         text = text,
         textAlign = TextAlign.Start,
-        color = Gray600,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         fontSize = 16.sp,
         fontWeight = FontWeight.W600,
         modifier = modifier,
@@ -214,7 +215,7 @@ private fun BottomSheetButtonTextPreview() {
     BandalartTheme {
         BottomSheetButtonText(
             text = stringResource(Res.string.bottomsheet_done),
-            color = Gray400,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
