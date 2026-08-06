@@ -69,11 +69,13 @@ play {
 
 dependencies {
     implementation(projects.composeApp)
+    implementation(projects.core.common)
     implementation(projects.core.designsystem)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.profileinstaller)
+    implementation(libs.app.update)
 
     implementation(libs.firebase.common)
 

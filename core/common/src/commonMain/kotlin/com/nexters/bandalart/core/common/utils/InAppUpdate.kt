@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 easyhooon
+ * Copyright 2026 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 package com.nexters.bandalart.core.common.utils
 
-// fun isValidImmediateAppUpdate(updateVersion: Int): Boolean {
-//     val updateMajor = updateVersion / 10000
-//     val updateMinor = (updateVersion % 10000) / 100
-//
-//     val currentMajor = BuildConfig.VERSION_CODE / 10000
-//     val currentMinor = (BuildConfig.VERSION_CODE % 10000) / 100
-//
-//     return updateMajor > currentMajor || updateMinor > currentMinor
-// }
+fun isImmediateUpdate(
+    currentVersionCode: Int,
+    availableVersionCode: Int,
+): Boolean {
+    val availableMajor = availableVersionCode / 10_000
+    val availableMinor = (availableVersionCode % 10_000) / 100
+    val currentMajor = currentVersionCode / 10_000
+    val currentMinor = (currentVersionCode % 10_000) / 100
+
+    return availableMajor > currentMajor || availableMinor > currentMinor
+}

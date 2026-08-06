@@ -16,16 +16,44 @@
 
 package com.nexters.bandalart
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.nexters.bandalart.core.common.utils.isImmediateUpdate
+import io.github.aakira.napier.Napier
 
 class MainActivity : ComponentActivity() {
+    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var updateResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private var skipNextResumeForSplash = false
+    private var isUpdateCheckInProgress = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        skipNextResumeForSplash = savedInstanceState == null
+        updateResultLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.StartIntentSenderForResult(),
+            ) { result ->
+                if (result.resultCode == Activity.RESULT_CANCELED) {
+                    finish()
+                }
+            }
         enableEdgeToEdge()
         setContent {
             BandalartApp(
@@ -33,4 +61,75 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (skipNextResumeForSplash) {
+            skipNextResumeForSplash = false
+            return
+        }
+        checkForImmediateUpdate()
+    }
+
+    private fun checkForImmediateUpdate() {
+        if (isUpdateCheckInProgress) return
+        isUpdateCheckInProgress = true
+
+        appUpdateManager.appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                isUpdateCheckInProgress = false
+                if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                    return@addOnSuccessListener
+                }
+                when {
+                    appUpdateInfo.updateAvailability() ==
+                        UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS -> {
+                        startImmediateUpdate(appUpdateInfo)
+                    }
+
+                    appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
+                        isImmediateUpdate(
+                            currentVersionCode = currentVersionCode(),
+                            availableVersionCode = appUpdateInfo.availableVersionCode(),
+                        ) -> {
+                        startImmediateUpdate(appUpdateInfo)
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                isUpdateCheckInProgress = false
+                Napier.e(
+                    "Failed to check immediate update on foreground",
+                    exception,
+                    tag = "InAppUpdate",
+                )
+            }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun startImmediateUpdate(appUpdateInfo: AppUpdateInfo) {
+        try {
+            val started =
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    updateResultLauncher,
+                    AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+                )
+            if (!started) {
+                Napier.w("Immediate update flow was not started", tag = "InAppUpdate")
+            }
+        } catch (exception: Exception) {
+            Napier.e(
+                "Failed to start immediate update on foreground",
+                exception,
+                tag = "InAppUpdate",
+            )
+        }
+    }
+
+    private fun currentVersionCode(): Int =
+        packageManager
+            .getPackageInfo(packageName, 0)
+            .longVersionCode
+            .toInt()
 }

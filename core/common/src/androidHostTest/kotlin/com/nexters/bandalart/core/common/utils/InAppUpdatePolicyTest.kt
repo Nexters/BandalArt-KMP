@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.feature.home
+package com.nexters.bandalart.core.common.utils
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class FlexibleUpdatePolicyTest {
+class InAppUpdatePolicyTest {
     @Test
     fun patchUpdateUsesFlexibleFlow() {
         assertFalse(
             isImmediateUpdate(
                 currentVersionCode = 20206,
-                availableVersionCode = 20207,
+                availableVersionCode = 20299,
             ),
         )
     }
 
     @Test
-    fun minorAndMajorUpdatesRemainImmediate() {
+    fun minorAndMajorUpdatesUseImmediateFlow() {
         assertTrue(
             isImmediateUpdate(
                 currentVersionCode = 20206,
@@ -43,6 +43,22 @@ class FlexibleUpdatePolicyTest {
             isImmediateUpdate(
                 currentVersionCode = 20206,
                 availableVersionCode = 30000,
+            ),
+        )
+    }
+
+    @Test
+    fun sameOrOlderVersionDoesNotStartImmediateFlow() {
+        assertFalse(
+            isImmediateUpdate(
+                currentVersionCode = 20206,
+                availableVersionCode = 20206,
+            ),
+        )
+        assertFalse(
+            isImmediateUpdate(
+                currentVersionCode = 20206,
+                availableVersionCode = 20199,
             ),
         )
     }
