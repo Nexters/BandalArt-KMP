@@ -40,6 +40,17 @@
     <string name="bandalart">BANDALART</string>
     <string name="home_list">List</string>
     <string name="home_add">Add</string>
+    <string name="settings_description">Settings icon</string>
+
+    <!-- SettingsBottomSheet.kt -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light mode</string>
+    <string name="settings_theme_dark">Dark mode</string>
+    <string name="settings_app_info">App info</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_value">v%1$s</string>
 
     <!--  BandalartListBottomSheet.kt -->
     <string name="bandalart_list_empty_title">New Bandalart %1$d</string>
@@ -139,6 +150,5 @@
     <string name="update_action_restart">Restart</string>
     <string name="update_installing">Installing the app update.</string>
     <string name="update_install_failed">Could not start installing the app update.</string>
-    <string name="app_version_info">Version: v%s</string>
 
 </resources>

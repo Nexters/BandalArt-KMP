@@ -26,6 +26,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
 class BandalartDataStore(
@@ -35,11 +36,22 @@ class BandalartDataStore(
         private const val RECENT_BANDALART_ID = "recent_bandalart_id"
         private const val COMPLETED_BANDALART_LIST_ID = "completed_bandalart_list_id"
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
+        private const val THEME_MODE = "theme_mode"
     }
 
     private val recentBandalartKey = longPreferencesKey(RECENT_BANDALART_ID)
     private val completedBandalartListKey = stringPreferencesKey(COMPLETED_BANDALART_LIST_ID)
     private val onboardingCompletedKey = booleanPreferencesKey(ONBOARDING_COMPLETED_ID)
+    private val themeModeKey = stringPreferencesKey(THEME_MODE)
+
+    val themeMode =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences -> preferences[themeModeKey] }
 
     suspend fun setRecentBandalartId(recentBandalartId: Long) {
         dataStore.edit { preferences ->
@@ -137,4 +149,10 @@ class BandalartDataStore(
                 else
                     throw exception
             }.first()[onboardingCompletedKey] ?: false
+
+    suspend fun setThemeMode(themeMode: String) {
+        dataStore.edit { preferences ->
+            preferences[themeModeKey] = themeMode
+        }
+    }
 }

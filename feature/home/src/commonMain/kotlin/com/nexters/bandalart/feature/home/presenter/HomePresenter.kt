@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.home.presenter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +30,10 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
+import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.mapper.toUiModel
@@ -53,6 +56,7 @@ class HomePresenter(
     @Assisted private val navigator: Navigator,
     private val bandalartRepository: BandalartRepository,
     private val inAppUpdateRepository: InAppUpdateRepository,
+    private val settingsRepository: SettingsRepository,
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
@@ -69,6 +73,7 @@ class HomePresenter(
         var updateVersionCode by remember { mutableStateOf<Int?>(null) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
         var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
+        val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val scope = rememberCoroutineScope()
 
         suspend fun loadBandalart(
@@ -404,6 +409,7 @@ class HomePresenter(
             isDropDownMenuOpened = isDropDownMenuOpened,
             imageRequest = imageRequest,
             updateVersionCode = updateVersionCode,
+            themeMode = themeMode,
             effect = effect,
         ) { event ->
             when (event) {
@@ -417,6 +423,9 @@ class HomePresenter(
 
                 HomeScreen.Event.AddBandalart -> scope.launch { createBandalart() }
                 HomeScreen.Event.OpenBandalartList -> openBandalartList()
+                HomeScreen.Event.OpenSettings -> {
+                    bottomSheet = HomeScreen.BottomSheetState.Settings
+                }
                 HomeScreen.Event.OpenEmoji -> openEmoji()
                 is HomeScreen.Event.OpenCell ->
                     openCell(
@@ -488,7 +497,9 @@ class HomePresenter(
 
                 is HomeScreen.Event.DeleteCell -> scope.launch { deleteCell(event.cellId) }
                 HomeScreen.Event.ConsumeEffect -> effect = null
-                HomeScreen.Event.ShowAppVersion -> effect = HomeScreen.Effect.ShowAppVersion
+                is HomeScreen.Event.SelectThemeMode -> {
+                    scope.launch { settingsRepository.setThemeMode(event.themeMode) }
+                }
                 HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
                 HomeScreen.Event.RequestSave -> {
                     isDropDownMenuOpened = false

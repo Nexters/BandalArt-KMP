@@ -40,6 +40,17 @@
     <string name="bandalart">반다라트</string>
     <string name="home_list">목록</string>
     <string name="home_add">추가</string>
+    <string name="settings_description">설정 아이콘</string>
+
+    <!-- SettingsBottomSheet.kt -->
+    <string name="settings_title">설정</string>
+    <string name="settings_appearance">화면 설정</string>
+    <string name="settings_theme_system">시스템 설정</string>
+    <string name="settings_theme_light">라이트 모드</string>
+    <string name="settings_theme_dark">다크 모드</string>
+    <string name="settings_app_info">앱 정보</string>
+    <string name="settings_version">버전</string>
+    <string name="settings_version_value">v%1$s</string>
 
     <!--  BandalartListBottomSheet.kt -->
     <string name="bandalart_list_empty_title">새 반다라트 %1$d</string>
@@ -141,6 +152,5 @@
     <string name="update_action_restart">재시작</string>
     <string name="update_installing">업데이트를 설치하고 있습니다.</string>
     <string name="update_install_failed">업데이트 설치를 시작하지 못했습니다.</string>
-    <string name="app_version_info">버전 정보: v%s</string>
 
 </resources>

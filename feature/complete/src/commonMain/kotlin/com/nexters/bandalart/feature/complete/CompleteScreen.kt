@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,8 +44,6 @@ import bandalart.core.designsystem.generated.resources.complete_title
 import com.eygraber.uri.Uri
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray50
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.BandalartButton
@@ -130,7 +129,7 @@ internal fun CompleteContent(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Gray50,
+        color = MaterialTheme.colorScheme.background,
     ) {
         Box {
             LottieImage(
@@ -154,7 +153,7 @@ internal fun CompleteContent(
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(Res.string.complete_title),
-                    color = Gray900,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W700,
                     fontSize = 22.sp,
@@ -184,7 +183,7 @@ internal fun CompleteContent(
                                     .fillMaxWidth()
                                     .padding(horizontal = 24.dp, vertical = 8.dp)
                                     .clip(shape = RoundedCornerShape(50.dp))
-                                    .background(Gray900),
+                                    .background(MaterialTheme.colorScheme.primary),
                         )
                         BandalartButton(
                             onClick = {
@@ -204,7 +203,7 @@ internal fun CompleteContent(
                                         start = 24.dp,
                                         end = 24.dp,
                                     ).clip(shape = RoundedCornerShape(50.dp))
-                                    .background(Gray900),
+                                    .background(MaterialTheme.colorScheme.primary),
                         )
                     }
                 }

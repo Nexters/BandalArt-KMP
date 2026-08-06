@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.home.presenter
 
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
@@ -29,7 +30,7 @@ import org.junit.jupiter.api.Test
 
 class HomePresenterRuntimeTest {
     @Test
-    fun shareSaveAndAppVersionEffectsAreClearedAfterUiHandling() =
+    fun shareAndSaveRequestsAreClearedAfterUiHandling() =
         runTest {
             val presenter = presenter()
 
@@ -58,14 +59,35 @@ class HomePresenterRuntimeTest {
                 state.eventSink(HomeScreen.Event.ImageRequestHandled)
                 state = awaitItem()
                 assertNull(state.imageRequest)
+            }
+        }
 
-                state.eventSink(HomeScreen.Event.ShowAppVersion)
-                state = awaitItem()
-                assertEquals(HomeScreen.Effect.ShowAppVersion, state.effect)
+    @Test
+    fun settingsSheetReflectsAndPersistsThemeSelection() =
+        runTest {
+            val settingsRepository = FakeSettingsRepository(ThemeMode.LIGHT)
+            val presenter = presenter(settingsRepository = settingsRepository)
 
-                state.eventSink(HomeScreen.Event.ConsumeEffect)
-                state = awaitItem()
-                assertNull(state.effect)
+            presenter.test {
+                var state = awaitLoadedBandalart()
+                assertEquals(ThemeMode.LIGHT, state.themeMode)
+
+                state.eventSink(HomeScreen.Event.OpenSettings)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet != HomeScreen.BottomSheetState.Settings)
+
+                state.eventSink(HomeScreen.Event.SelectThemeMode(ThemeMode.DARK))
+                do {
+                    state = awaitItem()
+                } while (state.themeMode != ThemeMode.DARK)
+
+                assertEquals(listOf(ThemeMode.DARK), settingsRepository.savedThemeModes)
+                state.eventSink(HomeScreen.Event.DismissBottomSheet)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet != null)
+                assertEquals(ThemeMode.DARK, state.themeMode)
             }
         }
 
@@ -84,6 +106,7 @@ class HomePresenterRuntimeTest {
                     navigator = navigator,
                     bandalartRepository = repository,
                     inAppUpdateRepository = FakeInAppUpdateRepository(),
+                    settingsRepository = FakeSettingsRepository(),
                 )
 
             presenter.test {
@@ -134,7 +157,10 @@ class HomePresenterRuntimeTest {
             }
         }
 
-    private fun presenter(updateRepository: FakeInAppUpdateRepository = FakeInAppUpdateRepository()): HomePresenter =
+    private fun presenter(
+        updateRepository: FakeInAppUpdateRepository = FakeInAppUpdateRepository(),
+        settingsRepository: FakeSettingsRepository = FakeSettingsRepository(),
+    ): HomePresenter =
         HomePresenter(
             navigator = FakeNavigator(HomeScreen),
             bandalartRepository =
@@ -143,6 +169,7 @@ class HomePresenterRuntimeTest {
                     recentBandalartId = 1L,
                 ),
             inAppUpdateRepository = updateRepository,
+            settingsRepository = settingsRepository,
         )
 
     private suspend fun app.cash.turbine.ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(): HomeScreen.State {

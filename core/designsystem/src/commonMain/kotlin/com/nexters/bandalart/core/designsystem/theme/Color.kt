@@ -21,6 +21,16 @@ val Gray700 = Color(0xFF374151)
 val Gray800 = Color(0xFF1F2937)
 val Gray900 = Color(0xFF111827)
 
+// Dark theme semantic colors
+val DarkBackground = Color(0xFF181A20)
+val DarkSurface = Color(0xFF22252D)
+val DarkSurfaceVariant = Color(0xFF2B303A)
+val DarkOnBackground = Color(0xFFF3F4F6)
+val DarkOnSurface = Color(0xFFF3F4F6)
+val DarkOnSurfaceVariant = Color(0xFFB8BEC9)
+val DarkOutline = Color(0xFF626A78)
+val DarkOutlineVariant = Color(0xFF343A45)
+
 val Gray = Color(0xFFDDE0FF)
 val Error = Color(0xFFFF2727)
 

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -40,7 +41,6 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.app_version_info
 import bandalart.core.designsystem.generated.resources.create_bandalart
 import bandalart.core.designsystem.generated.resources.delete_bandalart
 import bandalart.core.designsystem.generated.resources.limit_create_bandalart
@@ -50,7 +50,6 @@ import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
@@ -85,6 +84,7 @@ internal fun Home(
     val homeGraphicsLayer = rememberGraphicsLayer()
     val completeGraphicsLayer = rememberGraphicsLayer()
     val updateSnackbarHostState = remember { SnackbarHostState() }
+    val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
 
     FlexibleUpdateEffect(
         updateVersionCode = state.updateVersionCode,
@@ -101,13 +101,13 @@ internal fun Home(
         state = state,
         homeGraphicsLayer = homeGraphicsLayer,
         completeGraphicsLayer = completeGraphicsLayer,
-        appVersionProvider = appVersionProvider,
         imageHandlerProvider = imageHandlerProvider,
     )
 
     HomeBottomSheets(
         state = state,
         eventSink = state.eventSink,
+        appVersion = appVersion,
     )
     HomeDialogs(
         state = state,
@@ -128,11 +128,9 @@ private fun HandleHomeEffects(
     state: HomeScreen.State,
     homeGraphicsLayer: GraphicsLayer,
     completeGraphicsLayer: GraphicsLayer,
-    appVersionProvider: AppVersionProvider,
     imageHandlerProvider: ImageHandlerProvider,
 ) {
     val showSnackbar = LocalShowSnackbar.current
-    val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
 
     LaunchedEffect(state.effect) {
         when (state.effect) {
@@ -150,10 +148,6 @@ private fun HandleHomeEffects(
 
             HomeScreen.Effect.ShowMainGoalToast -> {
                 showToast(getString(Res.string.please_input_main_goal))
-            }
-
-            HomeScreen.Effect.ShowAppVersion -> {
-                showToast(getString(Res.string.app_version_info, appVersion))
             }
 
             null -> Unit
@@ -213,7 +207,7 @@ internal fun HomeContent(
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Gray50,
+        color = MaterialTheme.colorScheme.background,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -229,7 +223,7 @@ internal fun HomeContent(
                 )
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = Gray100,
+                    color = MaterialTheme.colorScheme.outlineVariant,
                 )
                 Column(
                     modifier =

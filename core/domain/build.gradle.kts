@@ -12,5 +12,13 @@ kotlin {
 
             compileOnly(libs.compose.stable.marker)
         }
+
+        androidHostTest.dependencies {
+            implementation(libs.bundles.android.unit.test)
+        }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

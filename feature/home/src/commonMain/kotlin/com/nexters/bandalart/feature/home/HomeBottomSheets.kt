@@ -24,6 +24,7 @@ import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartListBottomSheet
+import com.nexters.bandalart.feature.home.ui.settings.SettingsBottomSheet
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 
@@ -31,6 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun HomeBottomSheets(
     state: HomeScreen.State,
     eventSink: (HomeScreen.Event) -> Unit,
+    appVersion: String,
 ) {
     when (val bottomSheet = state.bottomSheet) {
         is HomeScreen.BottomSheetState.Cell -> {
@@ -55,6 +57,14 @@ internal fun HomeBottomSheets(
             BandalartListBottomSheet(
                 bandalartList = updateBandalartListTitles(state.bandalartList).toImmutableList(),
                 currentBandalartId = bottomSheet.currentBandalartId,
+                onHomeUiAction = eventSink,
+            )
+        }
+
+        HomeScreen.BottomSheetState.Settings -> {
+            SettingsBottomSheet(
+                themeMode = state.themeMode,
+                appVersion = appVersion,
                 onHomeUiAction = eventSink,
             )
         }

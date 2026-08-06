@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.home
 
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -41,6 +42,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val isDropDownMenuOpened: Boolean = false,
         val imageRequest: ImageRequest? = null,
         val updateVersionCode: Int? = null,
+        val themeMode: ThemeMode = ThemeMode.SYSTEM,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -65,6 +67,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             val cellId: Long,
             val currentEmoji: String?,
         ) : BottomSheetState
+
+        data object Settings : BottomSheetState
     }
 
     sealed interface DialogState {
@@ -85,8 +89,6 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ShowLimitToast : Effect
 
         data object ShowMainGoalToast : Effect
-
-        data object ShowAppVersion : Effect
     }
 
     sealed interface ImageRequest {
@@ -178,7 +180,11 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object ConsumeEffect : Event
 
-        data object ShowAppVersion : Event
+        data object OpenSettings : Event
+
+        data class SelectThemeMode(
+            val themeMode: ThemeMode,
+        ) : Event
 
         data object RequestShare : Event
 

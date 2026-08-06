@@ -27,6 +27,7 @@ import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
+import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
@@ -58,6 +59,7 @@ interface AppGraph {
     val bandalartRepository: BandalartRepository
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository
+    val settingsRepository: SettingsRepository
     val circuit: Circuit
 
     @DependencyGraph.Factory

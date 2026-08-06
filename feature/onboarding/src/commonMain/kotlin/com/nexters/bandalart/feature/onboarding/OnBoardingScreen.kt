@@ -30,6 +30,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +54,6 @@ import com.nexters.bandalart.core.common.extension.aspectRatioBasedOnOrientation
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
-import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.BandalartButton
@@ -93,7 +93,7 @@ internal fun Onboarding(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = Gray50,
+        color = MaterialTheme.colorScheme.background,
     ) {
         val pageCount = 2
         val pagerState = rememberPagerState(pageCount = { pageCount })
@@ -121,7 +121,7 @@ internal fun Onboarding(
                             Text(
                                 text = stringResource(Res.string.onboarding_first_title),
                                 modifier = modifier,
-                                color = Gray900,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 fontFamily = pretendardFontFamily(),
                                 fontWeight = FontWeight.W700,
                                 fontSize = 22.sp,
@@ -181,7 +181,7 @@ internal fun Onboarding(
                                 Text(
                                     text = stringResource(Res.string.onboarding_second_title),
                                     modifier = modifier,
-                                    color = Gray900,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     fontFamily = pretendardFontFamily(),
                                     fontWeight = FontWeight.W700,
                                     fontSize = 22.sp,
@@ -222,7 +222,7 @@ internal fun Onboarding(
                                         .align(Alignment.BottomCenter)
                                         .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
                                         .clip(shape = RoundedCornerShape(50.dp))
-                                        .background(Gray900),
+                                        .background(MaterialTheme.colorScheme.primary),
                             )
 //                            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                                BandalartButton(

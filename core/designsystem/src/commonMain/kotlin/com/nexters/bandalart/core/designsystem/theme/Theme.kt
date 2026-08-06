@@ -10,23 +10,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
-private val DarkColorScheme = darkColorScheme(
-    background = Gray900,
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        background = DarkBackground,
+        onBackground = DarkOnBackground,
+        surface = DarkSurface,
+        onSurface = DarkOnSurface,
+        surfaceVariant = DarkSurfaceVariant,
+        onSurfaceVariant = DarkOnSurfaceVariant,
+        primary = DarkOnSurface,
+        onPrimary = Gray900,
+        outline = DarkOutline,
+        outlineVariant = DarkOutlineVariant,
+    )
 
-private val LightColorScheme = lightColorScheme(
-    background = Color.White,
-)
+private val LightColorScheme =
+    lightColorScheme(
+        background = Gray50,
+        onBackground = Gray900,
+        surface = Color.White,
+        onSurface = Gray900,
+        surfaceVariant = Gray100,
+        onSurfaceVariant = Gray600,
+        primary = Gray900,
+        onPrimary = Color.White,
+        outline = Gray300,
+        outlineVariant = Gray100,
+    )
 
 @Composable
 fun BandalartTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme =
+        when {
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
     CompositionLocalProvider(
         LocalDensity provides Density(density = LocalDensity.current.density, fontScale = 1f),
