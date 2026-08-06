@@ -47,6 +47,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.nexters.bandalart.core.common.utils.isImmediateUpdate
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -175,18 +176,6 @@ private fun isImmediateUpdate(
         currentVersionCode = currentVersionCode,
         availableVersionCode = availableVersionCode,
     )
-}
-
-internal fun isImmediateUpdate(
-    currentVersionCode: Int,
-    availableVersionCode: Int,
-): Boolean {
-    val availableMajor = availableVersionCode / 10_000
-    val availableMinor = (availableVersionCode % 10_000) / 100
-    val currentMajor = currentVersionCode / 10_000
-    val currentMinor = (currentVersionCode % 10_000) / 100
-
-    return availableMajor > currentMajor || availableMinor > currentMinor
 }
 
 @Suppress("TooGenericExceptionCaught")

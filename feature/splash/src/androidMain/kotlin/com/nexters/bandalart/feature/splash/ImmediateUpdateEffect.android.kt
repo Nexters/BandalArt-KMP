@@ -29,9 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -39,6 +36,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.nexters.bandalart.core.common.utils.isImmediateUpdate
 import io.github.aakira.napier.Napier
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -50,8 +48,6 @@ internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
     val context = LocalContext.current
     val activity = LocalActivity.current
     val appUpdateManager = remember(context) { AppUpdateManagerFactory.create(context) }
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val lifecycleState by lifecycle.currentStateFlow.collectAsStateWithLifecycle()
     val currentOnComplete by rememberUpdatedState(onComplete)
 
     val updateResultLauncher =
@@ -81,19 +77,6 @@ internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
             currentOnComplete()
         }
     }
-
-    LaunchedEffect(lifecycleState, appUpdateManager) {
-        if (lifecycleState == Lifecycle.State.RESUMED) {
-            try {
-                val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    appUpdateManager.startImmediateUpdate(appUpdateInfo, updateResultLauncher)
-                }
-            } catch (exception: Exception) {
-                Napier.e("Failed to resume immediate update", exception, tag = "InAppUpdate")
-            }
-        }
-    }
 }
 
 private fun isValidImmediateUpdate(
@@ -105,12 +88,10 @@ private fun isValidImmediateUpdate(
             .getPackageInfo(context.packageName, 0)
             .longVersionCode
             .toInt()
-    val availableMajor = availableVersionCode / 10_000
-    val availableMinor = (availableVersionCode % 10_000) / 100
-    val currentMajor = currentVersionCode / 10_000
-    val currentMinor = (currentVersionCode % 10_000) / 100
-
-    return availableMajor > currentMajor || availableMinor > currentMinor
+    return isImmediateUpdate(
+        currentVersionCode = currentVersionCode,
+        availableVersionCode = availableVersionCode,
+    )
 }
 
 private fun AppUpdateManager.startImmediateUpdate(
