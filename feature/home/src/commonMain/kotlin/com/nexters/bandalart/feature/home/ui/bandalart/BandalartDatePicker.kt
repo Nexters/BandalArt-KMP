@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -67,15 +68,16 @@ private val days = (1..31).map { it }
 fun BandalartDatePicker(
     onDueDateSelect: (LocalDateTime?) -> Unit,
     currentDueDate: LocalDateTime,
+    draftKey: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val chosenYear = remember { mutableStateOf(currentDueDate.year.toString()) }
-        val chosenMonth = remember { mutableStateOf(currentDueDate.monthValue.toString()) }
-        val chosenDay = remember { mutableStateOf(currentDueDate.dayOfMonth.toString()) }
+        val chosenYear = rememberSaveable(draftKey) { mutableStateOf(currentDueDate.year.toString()) }
+        val chosenMonth = rememberSaveable(draftKey) { mutableStateOf(currentDueDate.monthValue.toString()) }
+        val chosenDay = rememberSaveable(draftKey) { mutableStateOf(currentDueDate.dayOfMonth.toString()) }
 
         Row(
             modifier =
@@ -286,6 +288,7 @@ private fun BandalartDatePickerPreview() {
         BandalartDatePicker(
             onDueDateSelect = {},
             currentDueDate = LocalDateTime.now(),
+            draftKey = "preview",
         )
     }
 }
