@@ -1,3 +1,4 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
 import java.util.Properties
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.google.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.play.publisher)
 }
 
 android {
@@ -53,6 +55,16 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
+
+play {
+    val serviceAccountFile = rootProject.file("playstore/service-account-key.json")
+    if (serviceAccountFile.exists()) {
+        serviceAccountCredentials.set(serviceAccountFile)
+    }
+    track.set("internal")
+    releaseStatus.set(ReleaseStatus.COMPLETED)
+    defaultToAppBundles.set(true)
 }
 
 dependencies {
