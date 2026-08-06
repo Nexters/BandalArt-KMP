@@ -6,7 +6,7 @@ targetSdk = "36"
 compileSdk = "37"
 majorVersion = "2"
 minorVersion = "2"
-patchVersion = "6"
+patchVersion = "7"
 packageName = "com.nexters.bandalart"
 
 # Gradle Plugin
@@ -70,6 +70,7 @@ compottie = "2.0.0-rc04"
 buildkonfig = "0.15.2"
 cmptoast = "1.0.4"
 spotless = "7.0.1"
+play-publisher = "4.0.0"
 
 # Test
 junit5 = "5.12.1"
@@ -232,6 +233,7 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt-gradle-plugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
+play-publisher = { id = "com.github.triplet.play", version.ref = "play-publisher" }
 
 # Test
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
