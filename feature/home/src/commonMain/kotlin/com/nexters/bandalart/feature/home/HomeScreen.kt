@@ -46,9 +46,16 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart
 import bandalart.core.designsystem.generated.resources.limit_create_bandalart
 import bandalart.core.designsystem.generated.resources.please_input_main_goal
 import bandalart.core.designsystem.generated.resources.save_bandalart_image
+import bandalart.core.designsystem.generated.resources.settings_contact_body
+import bandalart.core.designsystem.generated.resources.settings_contact_fallback
+import bandalart.core.designsystem.generated.resources.settings_contact_subject
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.common.SupportMailDraft
+import com.nexters.bandalart.core.common.SupportMailLauncher
+import com.nexters.bandalart.core.common.SupportMailOpenResult
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
+import com.nexters.bandalart.core.common.openWithClipboardFallback
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
@@ -80,6 +87,7 @@ internal fun Home(
     modifier: Modifier,
     appVersionProvider: AppVersionProvider,
     imageHandlerProvider: ImageHandlerProvider,
+    supportMailLauncher: SupportMailLauncher,
 ) {
     val homeGraphicsLayer = rememberGraphicsLayer()
     val completeGraphicsLayer = rememberGraphicsLayer()
@@ -102,6 +110,8 @@ internal fun Home(
         homeGraphicsLayer = homeGraphicsLayer,
         completeGraphicsLayer = completeGraphicsLayer,
         imageHandlerProvider = imageHandlerProvider,
+        appVersion = appVersion,
+        supportMailLauncher = supportMailLauncher,
     )
 
     HomeBottomSheets(
@@ -129,6 +139,8 @@ private fun HandleHomeEffects(
     homeGraphicsLayer: GraphicsLayer,
     completeGraphicsLayer: GraphicsLayer,
     imageHandlerProvider: ImageHandlerProvider,
+    appVersion: String,
+    supportMailLauncher: SupportMailLauncher,
 ) {
     val showSnackbar = LocalShowSnackbar.current
 
@@ -148,6 +160,27 @@ private fun HandleHomeEffects(
 
             HomeScreen.Effect.ShowMainGoalToast -> {
                 showToast(getString(Res.string.please_input_main_goal))
+            }
+
+            HomeScreen.Effect.OpenSupportMail -> {
+                val result =
+                    supportMailLauncher.openWithClipboardFallback(
+                        SupportMailDraft(
+                            subject = getString(Res.string.settings_contact_subject),
+                            body =
+                                getString(
+                                    Res.string.settings_contact_body,
+                                    appVersion,
+                                    supportMailLauncher.platformName,
+                                ),
+                        ),
+                    )
+                if (result != SupportMailOpenResult.OPENED) {
+                    showSnackbarForDuration(
+                        getString(Res.string.settings_contact_fallback),
+                        showSnackbar,
+                    )
+                }
             }
 
             null -> Unit

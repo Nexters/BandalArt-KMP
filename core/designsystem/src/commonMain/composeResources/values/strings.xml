@@ -49,6 +49,10 @@
     <string name="settings_theme_light">라이트 모드</string>
     <string name="settings_theme_dark">다크 모드</string>
     <string name="settings_app_info">앱 정보</string>
+    <string name="settings_contact">문의하기</string>
+    <string name="settings_contact_subject">[반다라트 문의]</string>
+    <string name="settings_contact_body">문의 내용을 작성해 주세요.\n\n---\n앱 버전: %1$s\n운영체제: %2$s</string>
+    <string name="settings_contact_fallback">메일 앱을 열 수 없어 이메일 주소를 복사했어요.</string>
     <string name="settings_version">버전</string>
     <string name="settings_version_value">v%1$s</string>
 

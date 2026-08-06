@@ -500,6 +500,8 @@ class HomePresenter(
                 is HomeScreen.Event.SelectThemeMode -> {
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }
                 }
+
+                HomeScreen.Event.ContactSupport -> effect = HomeScreen.Effect.OpenSupportMail
                 HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
                 HomeScreen.Event.RequestSave -> {
                     isDropDownMenuOpened = false

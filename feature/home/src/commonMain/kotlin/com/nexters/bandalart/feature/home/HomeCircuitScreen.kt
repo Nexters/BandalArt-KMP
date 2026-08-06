@@ -89,6 +89,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ShowLimitToast : Effect
 
         data object ShowMainGoalToast : Effect
+
+        data object OpenSupportMail : Effect
     }
 
     sealed interface ImageRequest {
@@ -185,6 +187,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class SelectThemeMode(
             val themeMode: ThemeMode,
         ) : Event
+
+        data object ContactSupport : Event
 
         data object RequestShare : Event
 
