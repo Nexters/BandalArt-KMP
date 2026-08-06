@@ -59,6 +59,10 @@
 - Gemini Code Assist 리뷰 반영 요청은 `plugins/bandalart/skills/resolve-gemini-review/SKILL.md`를 따른다.
 - 새 작업 시작이나 이슈·worktree 생성 요청은 `plugins/bandalart/skills/start-workflow/SKILL.md`를 따른다.
 
+## 테스트
+
+- KMP 테스트 source set 선택, Circuit Presenter 테스트, 로컬·CI 실행 범위는 `docs/KMP_TESTING_GUIDE.md`를 따른다.
+
 ## MCP 설정
 
 - Codex MCP 설정은 `~/.codex/config.toml`의 `mcp_servers`에서 관리한다.
