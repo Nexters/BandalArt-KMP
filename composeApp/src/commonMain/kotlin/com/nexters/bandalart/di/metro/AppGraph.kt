@@ -26,6 +26,7 @@ import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
@@ -60,6 +61,7 @@ interface AppGraph {
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val bandalartRepository: BandalartRepository
+    val bandalartSlotRepository: BandalartSlotRepository
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository
     val settingsRepository: SettingsRepository

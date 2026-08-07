@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.catch
@@ -38,6 +39,7 @@ class BandalartDataStore(
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
         private const val THEME_MODE = "theme_mode"
         private const val RECENT_EMOJIS = "recent_emojis"
+        private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
         private const val MAX_RECENT_EMOJIS = 12
     }
 
@@ -46,6 +48,25 @@ class BandalartDataStore(
     private val onboardingCompletedKey = booleanPreferencesKey(ONBOARDING_COMPLETED_ID)
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
     private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
+    private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
+
+    suspend fun resolveMaxBandalartSlots(minimumSlots: Int): Int {
+        var resolvedSlots = minimumSlots
+        dataStore.edit { preferences ->
+            resolvedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots)
+            preferences[maxBandalartSlotsKey] = resolvedSlots
+        }
+        return resolvedSlots
+    }
+
+    suspend fun expandMaxBandalartSlots(minimumSlots: Int): Int {
+        var expandedSlots = minimumSlots + 1
+        dataStore.edit { preferences ->
+            expandedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots) + 1
+            preferences[maxBandalartSlotsKey] = expandedSlots
+        }
+        return expandedSlots
+    }
 
     val themeMode =
         dataStore.data
