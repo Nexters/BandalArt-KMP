@@ -1,6 +1,7 @@
-Find the perfect icon for every goal more easily.
+The icon picker now feels more at home in BandalArt.
 
-• Choose from 300 crisp Fluent Color emojis.
-• Search for emojis by name or keyword.
-• Browse nine categories or quickly revisit recently used emojis.
+• Restored the familiar bottom-sheet design to match the rest of the app.
+• All 300 emojis, search, categories, and recent items remain available.
+• Improved scrolling through the expanded emoji list.
 • Your existing saved emojis remain safe and unchanged.
+• Removed unused fonts to optimize app size.
