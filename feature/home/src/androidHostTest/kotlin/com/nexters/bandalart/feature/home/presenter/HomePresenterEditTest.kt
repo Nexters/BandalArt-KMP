@@ -379,13 +379,12 @@ class HomePresenterEditTest {
     private fun presenter(
         repository: FakeBandalartRepository,
         settingsRepository: FakeSettingsRepository = FakeSettingsRepository(),
-    ) =
-        HomePresenter(
-            navigator = FakeNavigator(HomeScreen),
-            bandalartRepository = repository,
-            inAppUpdateRepository = FakeInAppUpdateRepository(),
-            settingsRepository = settingsRepository,
-        )
+    ) = HomePresenter(
+        navigator = FakeNavigator(HomeScreen),
+        bandalartRepository = repository,
+        inAppUpdateRepository = FakeInAppUpdateRepository(),
+        settingsRepository = settingsRepository,
+    )
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long,): HomeScreen.State {
         var state = awaitItem()
