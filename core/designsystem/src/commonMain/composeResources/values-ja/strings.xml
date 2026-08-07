@@ -33,6 +33,7 @@
     <!-- BandalartCell.kt -->
     <string name="home_main_cell">メイン目標</string>
     <string name="home_sub_cell">サブ目標</string>
+    <string name="home_complete_task_long_click">目標を完了</string>
     <string name="please_input_main_goal">先にメイン目標を入力してください。</string>
     <string name="please_input_sub_goal">先にサブ目標を入力してください。</string>
 

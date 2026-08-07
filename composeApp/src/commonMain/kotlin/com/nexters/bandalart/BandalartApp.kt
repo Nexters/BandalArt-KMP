@@ -41,6 +41,7 @@ import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.nexters.bandalart.ui.BandalartSnackbar
+import io.github.compose.jindong.JindongProvider
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
@@ -51,44 +52,46 @@ fun BandalartApp(appGraph: AppGraph) {
         val themeMode by appGraph.settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val isDarkTheme = themeMode.isDarkTheme(isSystemInDarkTheme())
 
-        BandalartTheme(darkTheme = isDarkTheme) {
-            SystemBarAppearance(isDarkTheme)
-            val snackbarHostState = remember { SnackbarHostState() }
-            val backStack = rememberSaveableBackStack(root = SplashScreen)
-            val navigator = rememberBandalartNavigator(backStack)
-            val showSnackbar: suspend (String) -> Boolean = { message ->
-                snackbarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Short,
-                ) == SnackbarResult.ActionPerformed
-            }
+        JindongProvider {
+            BandalartTheme(darkTheme = isDarkTheme) {
+                SystemBarAppearance(isDarkTheme)
+                val snackbarHostState = remember { SnackbarHostState() }
+                val backStack = rememberSaveableBackStack(root = SplashScreen)
+                val navigator = rememberBandalartNavigator(backStack)
+                val showSnackbar: suspend (String) -> Boolean = { message ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        duration = SnackbarDuration.Short,
+                    ) == SnackbarResult.ActionPerformed
+                }
 
-            CircuitCompositionLocals(appGraph.circuit) {
-                CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
-                    Scaffold(
-                        snackbarHost = {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.TopCenter,
-                            ) {
-                                SnackbarHost(
-                                    modifier =
-                                        Modifier
-                                            .padding(top = 96.dp)
-                                            .height(36.dp),
-                                    hostState = snackbarHostState,
-                                    snackbar = {
-                                        BandalartSnackbar(message = it.visuals.message)
-                                    },
-                                )
-                            }
-                        },
-                    ) { innerPadding ->
-                        NavigableCircuitContent(
-                            navigator = navigator,
-                            backStack = backStack,
-                            modifier = Modifier.padding(innerPadding),
-                        )
+                CircuitCompositionLocals(appGraph.circuit) {
+                    CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
+                        Scaffold(
+                            snackbarHost = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter,
+                                ) {
+                                    SnackbarHost(
+                                        modifier =
+                                            Modifier
+                                                .padding(top = 96.dp)
+                                                .height(36.dp),
+                                        hostState = snackbarHostState,
+                                        snackbar = {
+                                            BandalartSnackbar(message = it.visuals.message)
+                                        },
+                                    )
+                                }
+                            },
+                        ) { innerPadding ->
+                            NavigableCircuitContent(
+                                navigator = navigator,
+                                backStack = backStack,
+                                modifier = Modifier.padding(innerPadding),
+                            )
+                        }
                     }
                 }
             }

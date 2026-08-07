@@ -91,6 +91,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ShowMainGoalToast : Effect
 
         data object OpenSupportMail : Effect
+
+        data class PlayTaskCompletionHaptic(
+            val taskCellId: Long,
+        ) : Effect
     }
 
     sealed interface ImageRequest {
@@ -119,6 +123,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class OpenCell(
             val cellType: CellType,
             val isMainCellTitleEmpty: Boolean,
+            val cellData: BandalartCellEntity,
+        ) : Event
+
+        data class CompleteTask(
             val cellData: BandalartCellEntity,
         ) : Event
 

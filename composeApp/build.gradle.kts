@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.circuit.runtime.ui)
 
             implementation(libs.cmptoast)
+            implementation(libs.jindong.compose)
             implementation(libs.napier)
         }
     }
