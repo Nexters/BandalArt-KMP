@@ -81,11 +81,12 @@ class HomePresenter(
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
         val scope = rememberCoroutineScope()
-        val recentEmojiSaveJob = remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+        val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
 
         fun recordRecentEmoji(emoji: String) {
-            val previousJob = recentEmojiSaveJob.value
-            recentEmojiSaveJob.value =
+            val previousJob = recentEmojiSaveJobs.lastOrNull()
+            recentEmojiSaveJobs.clear()
+            recentEmojiSaveJobs +=
                 scope.launch {
                     previousJob?.join()
                     settingsRepository.addRecentEmoji(emoji)

@@ -126,7 +126,11 @@ class HomePresenterEditTest {
                 state.eventSink(HomeScreen.Event.SaveCell)
                 do {
                     state = awaitItem()
-                } while (repository.mainCellUpdate == null || state.bottomSheet != null)
+                } while (
+                    repository.mainCellUpdate == null ||
+                    state.recentEmojis != listOf("🚀") ||
+                    state.bottomSheet != null
+                )
 
                 val update = requireNotNull(repository.mainCellUpdate)
                 assertEquals(1L, update.bandalartId)
@@ -287,7 +291,7 @@ class HomePresenterEditTest {
                     state = awaitItem()
                 } while (
                     repository.emojiUpdates.isEmpty() ||
-                    settingsRepository.savedRecentEmojis.isEmpty() ||
+                    state.recentEmojis != listOf("🌟") ||
                     state.bottomSheet != null
                 )
 
@@ -360,9 +364,9 @@ class HomePresenterEditTest {
                 allowFirstSave.complete(Unit)
                 do {
                     state = awaitItem()
-                } while (settingsRepository.recentEmojis.value != listOf("🚀", "🌟"))
+                } while (state.recentEmojis != listOf("🚀", "🌟"))
 
-                assertEquals(listOf("🚀", "🌟"), settingsRepository.recentEmojis.value)
+                assertEquals(listOf("🚀", "🌟"), state.recentEmojis)
             }
         }
 
