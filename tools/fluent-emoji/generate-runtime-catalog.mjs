@@ -13,11 +13,35 @@ if (catalog.items.length !== 300) {
   throw new Error(`Runtime catalog must contain 300 items, found ${catalog.items.length}.`);
 }
 
+const categoryByGroup = new Map([
+  ["Smileys & Emotion", "SMILEYS_AND_EMOTION"],
+  ["People & Body", "PEOPLE_AND_BODY"],
+  ["Animals & Nature", "ANIMALS_AND_NATURE"],
+  ["Food & Drink", "FOOD_AND_DRINK"],
+  ["Travel & Places", "TRAVEL_AND_PLACES"],
+  ["Activities", "ACTIVITIES"],
+  ["Objects", "OBJECTS"],
+  ["Symbols", "SYMBOLS"],
+  ["Flags", "FLAGS"],
+]);
+
 const entries = catalog.items
-  .map(
-    (item) =>
-      `            ${JSON.stringify(item.glyph)} to ${JSON.stringify(item.resourceKey)},`,
-  )
+  .map((item) => {
+    const category = categoryByGroup.get(item.group);
+    if (!category) {
+      throw new Error(`Unsupported Fluent Emoji group: ${item.group}`);
+    }
+    const keywords = item.keywords.map(JSON.stringify).join(", ");
+    const koreanAliases = item.koreanAliases.map(JSON.stringify).join(", ");
+    return `            FluentEmojiItem(
+                unicode = ${JSON.stringify(item.glyph)},
+                resourceKey = ${JSON.stringify(item.resourceKey)},
+                category = FluentEmojiCategory.${category},
+                cldrName = ${JSON.stringify(item.cldrName)},
+                keywords = listOf(${keywords}),
+                koreanAliases = listOf(${koreanAliases}),
+            ),`;
+  })
   .join("\n");
 
 const kotlinSource = `/*
@@ -39,10 +63,12 @@ const kotlinSource = `/*
 package com.nexters.bandalart.core.ui.component.emoji
 
 internal object FluentEmojiCatalog {
-    private val resourceKeys =
-        mapOf(
+    val items =
+        listOf(
 ${entries}
         )
+
+    private val resourceKeys = items.associate { it.unicode to it.resourceKey }
 
     val size: Int
         get() = resourceKeys.size

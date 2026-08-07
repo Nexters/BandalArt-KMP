@@ -68,6 +68,7 @@ class HomePresenter(
         var isLoading by remember { mutableStateOf(true) }
         var isBandalartCompleted by remember { mutableStateOf(false) }
         var isCreatingEmptyBandalart by remember { mutableStateOf(false) }
+        var isUpdatingBandalartEmoji by remember { mutableStateOf(false) }
         var bottomSheet by rememberRetained { mutableStateOf<HomeScreen.BottomSheetState?>(null) }
         var dialog by rememberRetained { mutableStateOf<HomeScreen.DialogState?>(null) }
         var isDropDownMenuOpened by remember { mutableStateOf(false) }
@@ -367,7 +368,6 @@ class HomePresenter(
                 cellId = cellId,
                 updateBandalartEmojiEntity = UpdateBandalartEmojiEntity(profileEmoji = emoji),
             )
-            bottomSheet = null
         }
 
         suspend fun deleteBandalart(bandalartId: Long) {
@@ -475,7 +475,9 @@ class HomePresenter(
                 HomeScreen.Event.OpenSettings -> {
                     bottomSheet = HomeScreen.BottomSheetState.Settings
                 }
-                HomeScreen.Event.OpenEmoji -> openEmoji()
+                HomeScreen.Event.OpenEmoji -> {
+                    if (!isUpdatingBandalartEmoji) openEmoji()
+                }
                 is HomeScreen.Event.OpenCell ->
                     openCell(
                         cellType = event.cellType,
@@ -533,14 +535,27 @@ class HomePresenter(
                     currentSheet?.let { bottomSheet = it.copy(isEmojiPickerOpened = true) }
                 }
 
+                HomeScreen.Event.CloseEmojiPicker -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell
+                    currentSheet?.let { bottomSheet = it.copy(isEmojiPickerOpened = false) }
+                }
+
                 HomeScreen.Event.SaveCell -> scope.launch { saveCell() }
                 is HomeScreen.Event.UpdateBandalartEmoji -> {
-                    scope.launch {
-                        updateBandalartEmoji(
-                            bandalartId = event.bandalartId,
-                            cellId = event.cellId,
-                            emoji = event.emoji,
-                        )
+                    if (!isUpdatingBandalartEmoji) {
+                        isUpdatingBandalartEmoji = true
+                        bottomSheet = null
+                        scope.launch {
+                            try {
+                                updateBandalartEmoji(
+                                    bandalartId = event.bandalartId,
+                                    cellId = event.cellId,
+                                    emoji = event.emoji,
+                                )
+                            } finally {
+                                isUpdatingBandalartEmoji = false
+                            }
+                        }
                     }
                 }
 

@@ -278,6 +278,7 @@ class HomePresenterEditTest {
                 } while (state.bottomSheet !is HomeScreen.BottomSheetState.Emoji)
 
                 state.eventSink(HomeScreen.Event.UpdateBandalartEmoji(1L, mainCell.id, "🌟"))
+                state.eventSink(HomeScreen.Event.UpdateBandalartEmoji(1L, mainCell.id, "🚀"))
                 do {
                     state = awaitItem()
                 } while (repository.emojiUpdates.isEmpty() || state.bottomSheet != null)
@@ -286,6 +287,33 @@ class HomePresenterEditTest {
                 assertEquals(1L, update.bandalartId)
                 assertEquals(mainCell.id, update.cellId)
                 assertEquals("🌟", update.entity.profileEmoji)
+            }
+        }
+
+    @Test
+    fun closingEmojiPickerKeepsCellDraftOpen() =
+        runTest {
+            val mainCell = cell(id = 10L, title = "기존 목표")
+            val repository = repositoryWithCells(mainCell = mainCell)
+            val presenter = presenter(repository)
+
+            presenter.test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(HomeScreen.Event.OpenCell(CellType.MAIN, false, mainCell))
+                state = awaitCellSheet()
+
+                state.eventSink(HomeScreen.Event.OpenEmojiPicker)
+                do {
+                    state = awaitItem()
+                } while (!state.cellSheet().isEmojiPickerOpened)
+
+                state.eventSink(HomeScreen.Event.CloseEmojiPicker)
+                do {
+                    state = awaitItem()
+                } while (state.cellSheet().isEmojiPickerOpened)
+
+                assertInstanceOf(HomeScreen.BottomSheetState.Cell::class.java, state.bottomSheet)
+                assertEquals("기존 목표", state.cellSheet().cellData.title)
             }
         }
 

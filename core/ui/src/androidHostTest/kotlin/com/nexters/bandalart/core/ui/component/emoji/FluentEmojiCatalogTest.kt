@@ -16,8 +16,10 @@
 
 package com.nexters.bandalart.core.ui.component.emoji
 
+import com.nexters.bandalart.core.common.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class FluentEmojiCatalogTest {
@@ -39,5 +41,57 @@ class FluentEmojiCatalogTest {
     fun unregisteredLegacyUnicodeIsNotClaimedByFluentCatalog() {
         assertNull(FluentEmojiCatalog.resourceKeyFor("😎"))
         assertNull(FluentEmojiCatalog.resourceKeyFor("👨‍⚕️"))
+    }
+
+    @Test
+    fun everyCatalogItemHasUniqueUnicodeAndKnownCategory() {
+        assertEquals(
+            300,
+            FluentEmojiCatalog.items
+                .map { it.unicode }
+                .distinct()
+                .size,
+        )
+        assertEquals(
+            FluentEmojiCategory.entries.toSet(),
+            FluentEmojiCatalog.items.map { it.category }.toSet(),
+        )
+        assertTrue(
+            FluentEmojiCatalog.items.all { item ->
+                FluentEmojiCatalog.resourceKeyFor(item.unicode) == item.resourceKey
+            },
+        )
+    }
+
+    @Test
+    fun searchMatchesEnglishNameKeywordAndKoreanAlias() {
+        assertTrue(filterFluentEmojiItems("bullseye", null).any { it.unicode == "🎯" })
+        assertTrue(filterFluentEmojiItems("dart", null).any { it.unicode == "🎯" })
+        assertTrue(filterFluentEmojiItems("저축", null).any { it.unicode == "🪙" })
+    }
+
+    @Test
+    fun categoryAndQueryFiltersCanBeCombined() {
+        val activities = filterFluentEmojiItems("", FluentEmojiCategory.ACTIVITIES)
+
+        assertTrue(activities.isNotEmpty())
+        assertTrue(activities.all { it.category == FluentEmojiCategory.ACTIVITIES })
+        val targetResults = filterFluentEmojiItems("target", FluentEmojiCategory.ACTIVITIES)
+        assertTrue(targetResults.any { it.unicode == "🎯" })
+        assertTrue(targetResults.all { it.category == FluentEmojiCategory.ACTIVITIES })
+        assertTrue(filterFluentEmojiItems("없는 검색어", null).isEmpty())
+    }
+
+    @Test
+    fun blankQueryReturnsTheWholeCatalogAndKoreanNameUsesCuratedAlias() {
+        assertEquals(300, filterFluentEmojiItems("   ", null).size)
+
+        val target = FluentEmojiCatalog.items.single { it.unicode == "🎯" }
+        assertEquals("목표", target.displayName(Language.KOREAN))
+        assertEquals("bullseye", target.displayName(Language.ENGLISH))
+        assertEquals("🎯", target.displayName(Language.JAPANESE))
+
+        val uncategorizedAlias = FluentEmojiCatalog.items.first { it.koreanAliases.isEmpty() }
+        assertEquals(uncategorizedAlias.unicode, uncategorizedAlias.displayName(Language.KOREAN))
     }
 }
