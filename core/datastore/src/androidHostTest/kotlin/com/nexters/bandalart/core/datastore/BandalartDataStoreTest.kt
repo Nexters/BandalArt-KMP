@@ -104,7 +104,7 @@ class BandalartDataStoreTest {
         @DisplayName("최근 12개까지만 저장해야 한다")
         fun recentEmojisAreLimitedToTwelveItems() =
             runTest {
-                (1..13).forEach { index ->
+                for (index in 1..13) {
                     bandalartDataStore.addRecentEmoji("emoji-$index")
                 }
 
