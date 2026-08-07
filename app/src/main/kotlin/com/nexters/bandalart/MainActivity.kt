@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.nexters.bandalart.ads.AdsInitializer
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.feature.home.ShareScreen
@@ -38,9 +39,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var circuit: Circuit
 
+    @Inject
+    lateinit var adsInitializer: AdsInitializer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        adsInitializer.initialize()
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(TRANSPARENT, TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(TRANSPARENT, TRANSPARENT),
