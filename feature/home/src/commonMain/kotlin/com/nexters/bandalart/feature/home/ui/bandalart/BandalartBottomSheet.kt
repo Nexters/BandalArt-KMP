@@ -273,9 +273,6 @@ fun BandalartBottomSheet(
                                 onEmojiSelect = { selectedEmoji ->
                                     onHomeUiAction(HomeScreen.Event.UpdateEmojiDraft(selectedEmoji))
                                 },
-                                onClose = {
-                                    onHomeUiAction(HomeScreen.Event.CloseEmojiPicker)
-                                },
                             )
                         }
                     }

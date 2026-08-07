@@ -26,14 +26,12 @@ fun BandalartEmojiPicker(
     recentEmojis: List<String>,
     isBottomSheet: Boolean,
     onEmojiSelect: (String) -> Unit,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     FluentEmojiPicker(
         currentEmoji = currentEmoji,
         recentEmojis = recentEmojis,
         onEmojiSelect = onEmojiSelect,
-        onClose = onClose,
         modifier = modifier,
         expanded = isBottomSheet,
     )

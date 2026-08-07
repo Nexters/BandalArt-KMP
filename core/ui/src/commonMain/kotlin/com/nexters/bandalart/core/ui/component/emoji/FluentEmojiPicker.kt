@@ -20,29 +20,21 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,148 +43,75 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_activities
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_all
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_flags
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_food
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_nature
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_objects
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_people
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_recent
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_smileys
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_symbols
-import bandalart.core.designsystem.generated.resources.emoji_picker_category_travel
-import bandalart.core.designsystem.generated.resources.emoji_picker_close
-import bandalart.core.designsystem.generated.resources.emoji_picker_empty
-import bandalart.core.designsystem.generated.resources.emoji_picker_reset
-import bandalart.core.designsystem.generated.resources.emoji_picker_search_placeholder
-import bandalart.core.designsystem.generated.resources.emoji_picker_title
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
-import org.jetbrains.compose.resources.stringResource
+
+private const val PICKER_COLUMN_COUNT = 6
+private const val PICKER_VISIBLE_ROW_COUNT = 4
+private val PICKER_CELL_SPACING = 8.dp
 
 @Composable
 fun FluentEmojiPicker(
     currentEmoji: String?,
     recentEmojis: List<String>,
     onEmojiSelect: (String) -> Unit,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
-    var selectedCategoryName by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedEmoji by rememberSaveable(currentEmoji) { mutableStateOf(currentEmoji) }
-
-    val availableRecentEmojis =
+    val pickerItems =
         remember(recentEmojis) {
-            recentEmojis
-                .distinct()
-                .filter { FluentEmojiCatalog.resourceKeyFor(it) != null }
+            val recentItems =
+                filterFluentEmojiItems(
+                    query = "",
+                    category = FluentEmojiCategory.RECENT,
+                    recentEmojis = recentEmojis,
+                )
+            recentItems + FluentEmojiCatalog.items.filterNot { it in recentItems }
         }
-    val selectedCategory =
-        selectedCategoryName
-            ?.let { FluentEmojiCategory.valueOf(it) }
-            ?.takeUnless {
-                it == FluentEmojiCategory.RECENT && availableRecentEmojis.isEmpty()
-            }
-    val filteredItems =
-        remember(query, selectedCategory, availableRecentEmojis) {
-            filterFluentEmojiItems(
-                query = query,
-                category = selectedCategory,
-                recentEmojis = availableRecentEmojis,
-            )
-        }
-    val sizeModifier =
-        if (expanded) {
-            Modifier.fillMaxHeight()
-        } else {
-            Modifier.heightIn(min = 360.dp, max = 480.dp)
-        }
+    val horizontalPadding = if (expanded) 23.dp else 8.dp
+    val topPadding = if (expanded) 23.dp else 8.dp
+    val bottomPadding = if (expanded) 26.dp else 0.dp
 
-    Column(
+    BoxWithConstraints(
         modifier =
             modifier
-                .then(sizeModifier)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(top = if (expanded) 16.dp else 0.dp),
     ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, top = 12.dp, end = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = stringResource(Res.string.emoji_picker_title),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            TextButton(onClick = onClose) {
-                Text(text = stringResource(Res.string.emoji_picker_close))
-            }
-        }
+        val cellSize =
+            (maxWidth -
+                horizontalPadding * 2 -
+                PICKER_CELL_SPACING * (PICKER_COLUMN_COUNT - 1)) / PICKER_COLUMN_COUNT
+        val gridHeight =
+            topPadding +
+                bottomPadding +
+                cellSize * PICKER_VISIBLE_ROW_COUNT +
+                PICKER_CELL_SPACING * (PICKER_VISIBLE_ROW_COUNT - 1)
 
-        OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            placeholder = {
-                Text(text = stringResource(Res.string.emoji_picker_search_placeholder))
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(14.dp),
-        )
-
-        EmojiCategoryRow(
-            selectedCategory = selectedCategory,
-            hasRecentEmojis = availableRecentEmojis.isNotEmpty(),
-            onCategorySelect = { category ->
-                selectedCategoryName = category?.name
-            },
-        )
-
-        if (filteredItems.isEmpty()) {
-            EmojiPickerEmptyState(
-                onReset = {
-                    query = ""
-                    selectedCategoryName = null
-                },
-                modifier = Modifier.weight(1f),
-            )
-        } else {
+        Column(modifier = Modifier.fillMaxWidth()) {
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 56.dp),
+                columns = GridCells.Fixed(PICKER_COLUMN_COUNT),
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .height(gridHeight),
                 contentPadding =
                     PaddingValues(
-                        start = 16.dp,
-                        top = 12.dp,
-                        end = 16.dp,
-                        bottom = if (expanded) NavigationBarHeightDp + 16.dp else 16.dp,
+                        start = horizontalPadding,
+                        top = topPadding,
+                        end = horizontalPadding,
+                        bottom = bottomPadding,
                     ),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(PICKER_CELL_SPACING),
+                verticalArrangement = Arrangement.spacedBy(PICKER_CELL_SPACING),
             ) {
                 items(
-                    items = filteredItems,
+                    items = pickerItems,
                     key = FluentEmojiItem::unicode,
                 ) { item ->
                     FluentEmojiPickerCell(
@@ -207,63 +126,7 @@ fun FluentEmojiPicker(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun EmojiCategoryRow(
-    selectedCategory: FluentEmojiCategory?,
-    hasRecentEmojis: Boolean,
-    onCategorySelect: (FluentEmojiCategory?) -> Unit,
-) {
-    val categories =
-        remember(hasRecentEmojis) {
-            listOf(null) +
-                (if (hasRecentEmojis) listOf(FluentEmojiCategory.RECENT) else emptyList()) +
-                FluentEmojiCategory.entries.filterNot { it == FluentEmojiCategory.RECENT }
-        }
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(
-            items = categories,
-            key = { it?.name ?: "all" },
-        ) { category ->
-            val selected = selectedCategory == category
-            Surface(
-                modifier =
-                    Modifier.selectable(
-                        selected = selected,
-                        onClick = { onCategorySelect(category) },
-                    ),
-                shape = RoundedCornerShape(50),
-                color =
-                    if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-                border =
-                    BorderStroke(
-                        width = 1.dp,
-                        color =
-                            if (selected) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.outline
-                            },
-                    ),
-            ) {
-                Text(
-                    text = categoryLabel(category),
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            Box(modifier = Modifier.height(NavigationBarHeightDp))
         }
     }
 }
@@ -275,100 +138,38 @@ private fun FluentEmojiPickerCell(
     onClick: () -> Unit,
 ) {
     val contentDescription = item.displayName(getLocale().language)
-    Surface(
-        modifier =
-            Modifier
-                .aspectRatio(1f)
-                .selectable(
-                    selected = selected,
-                    onClick = onClick,
-                ).semantics(mergeDescendants = true) {
-                    this.contentDescription = contentDescription
-                },
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
+
+    Card(
+        modifier = Modifier.aspectRatio(1f),
+        shape = RoundedCornerShape(12.dp),
         border =
-            BorderStroke(
-                width = if (selected) 2.dp else 1.dp,
-                color =
-                    if (selected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outline
-                    },
-            ),
+            if (selected) {
+                BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            } else {
+                null
+            },
     ) {
         Box(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .selectable(
+                        selected = selected,
+                        onClick = onClick,
+                    ).semantics(mergeDescendants = true) {
+                        this.contentDescription = contentDescription
+                    },
             contentAlignment = Alignment.Center,
         ) {
             BandalartEmoji(
                 unicode = item.unicode,
                 contentDescription = null,
-                size = 32.dp,
+                size = 24.dp,
             )
-            if (selected) {
-                Box(
-                    modifier =
-                        Modifier
-                            .align(Alignment.TopEnd)
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clearAndSetSemantics { },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "✓",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            }
         }
     }
 }
-
-@Composable
-private fun EmojiPickerEmptyState(
-    onReset: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = stringResource(Res.string.emoji_picker_empty),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            TextButton(onClick = onReset) {
-                Text(text = stringResource(Res.string.emoji_picker_reset))
-            }
-        }
-    }
-}
-
-@Composable
-private fun categoryLabel(category: FluentEmojiCategory?): String =
-    stringResource(
-        when (category) {
-            null -> Res.string.emoji_picker_category_all
-            FluentEmojiCategory.RECENT -> Res.string.emoji_picker_category_recent
-            FluentEmojiCategory.SMILEYS_AND_EMOTION -> Res.string.emoji_picker_category_smileys
-            FluentEmojiCategory.PEOPLE_AND_BODY -> Res.string.emoji_picker_category_people
-            FluentEmojiCategory.ANIMALS_AND_NATURE -> Res.string.emoji_picker_category_nature
-            FluentEmojiCategory.FOOD_AND_DRINK -> Res.string.emoji_picker_category_food
-            FluentEmojiCategory.TRAVEL_AND_PLACES -> Res.string.emoji_picker_category_travel
-            FluentEmojiCategory.ACTIVITIES -> Res.string.emoji_picker_category_activities
-            FluentEmojiCategory.OBJECTS -> Res.string.emoji_picker_category_objects
-            FluentEmojiCategory.SYMBOLS -> Res.string.emoji_picker_category_symbols
-            FluentEmojiCategory.FLAGS -> Res.string.emoji_picker_category_flags
-        },
-    )
