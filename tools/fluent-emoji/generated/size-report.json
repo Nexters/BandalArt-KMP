@@ -1,0 +1,31 @@
+{
+  "sourceRepository": "https://github.com/microsoft/fluentui-emoji",
+  "sourceCommit": "62ecdc0d7ca5c6df32148c169556bc8d3782fca4",
+  "imageSizePx": 128,
+  "webpQuality": 92,
+  "converterVersions": {
+    "rsvgConvert": "2.60.0",
+    "cwebp": "1.6.0"
+  },
+  "sampleItemCount": 20,
+  "styles": {
+    "color": {
+      "sampleAssetBytes": 57752,
+      "averageAssetBytes": 2887,
+      "projectedAssetBytes": {
+        "100": 288760,
+        "200": 577520,
+        "300": 866280
+      }
+    },
+    "3d": {
+      "sampleAssetBytes": 55916,
+      "averageAssetBytes": 2795,
+      "projectedAssetBytes": {
+        "100": 279580,
+        "200": 559160,
+        "300": 838740
+      }
+    }
+  }
+}
