@@ -8,6 +8,14 @@
 
 기존 24개 Unicode 이모지 고정 그리드를 목표 중심 Fluent UI Emoji 선택기로 교체한다. Room에는 지금처럼 Unicode 문자열만 저장해 기존 사용자 데이터와 Android/iOS 의미를 유지하고, Fluent 리소스는 UI 계층에서만 매핑한다.
 
+## 현재 검증 브랜치의 성공 기준
+
+- 대표 20개 Color/3D를 22px, 32px, 48px의 라이트·다크 surface에서 한 화면으로 비교할 수 있다.
+- 검색, 카테고리, 선택 표시를 포함한 picker 라이트·다크 wireframe을 확인할 수 있다.
+- pinned upstream에서 선정한 300개 Color asset을 실제 변환하고, 동일한 순서의 100/200/300개 WebP·catalog·ZIP payload 크기를 기록한다.
+- 위 결과로 v1 스타일과 catalog 개수를 확정하되, 실제 AAB/iOS artifact 증가는 renderer 단계의 CI 산출물로 최종 확인한다.
+- 앱 런타임 코드, Compose resource, DB schema는 이 검증 브랜치에서 변경하지 않는다.
+
 ## 현재 구조와 제약
 
 - `BandalartEmojiPicker`가 24개 문자열과 4×6 레이아웃을 직접 소유한다.
@@ -29,14 +37,14 @@
 
 ## PR 분할
 
-현재 PR은 1단계의 재현 가능한 생성 기반과 대표 20개 예비 비교까지만 다룬다. 100/200/300개 실제 catalog artifact 측정, 20개 전체 UI 크기 비교, wireframe과 다크 모드 검토가 끝나기 전에는 1단계를 완료로 표시하지 않는다.
+1단계는 재현 가능한 생성 기반을 만든 PR #228과 실제 UI·용량 검증 브랜치로 나눴다. 현재 검증 브랜치에서 20개 전체 UI 크기 비교, wireframe, 다크 모드와 실제 100/200/300개 payload 측정을 마치고 1단계를 완료한다.
 
 ### 1. catalog/resource spike
 
 - pinned upstream commit과 선별 Unicode manifest를 기록한다.
 - metadata와 Color asset에서 동일한 결과물을 만드는 sync script 계약을 만든다.
 - 대표 20개를 picker 32dp, 본문 22~32dp, 카드 40~48dp 기준으로 확인한다.
-- 100/200/300개 압축 결과의 예상 증가량을 기록하고 v1 개수를 확정한다.
+- 100/200/300개를 실제 변환해 WebP, catalog JSON과 ZIP payload를 기록하고 v1 개수를 확정한다.
 - Microsoft MIT 원문과 파생 리소스 고지를 추가한다.
 - manifest 중복, Unicode/resource 누락, 안정적인 파일명을 자동 검증한다.
 
@@ -44,7 +52,7 @@
 
 - upstream 전체 clone 없이 결과물을 재생성할 수 있다.
 - 같은 입력으로 같은 catalog와 파일명이 생성된다.
-- 선택한 v1 카탈로그가 압축 artifact 증가 예산 5MB 이하를 만족한다.
+- 선택한 v1 카탈로그의 resource payload가 5MB 예산 이하이며, 실제 AAB/iOS artifact 검증 시점이 문서에 남아 있다.
 - 앱 런타임 코드와 DB schema는 변경하지 않는다.
 
 ### 2. 공통 renderer
