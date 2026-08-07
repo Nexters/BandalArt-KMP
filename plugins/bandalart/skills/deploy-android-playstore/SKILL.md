@@ -46,15 +46,19 @@ service account는 `client_email`만 기대 계정과 일치하는지 검사하�
 - Play 전체 track의 기존 최대 versionCode
 - 배포 대상 `Internal Testing`
 - release notes
-- 실행할 Android Gradle upload task
+- 실행할 Android clean bundle 및 upload task
 
-### 5. Android AAB build와 업로드
+### 5. Android clean AAB 검증과 업로드
 
-1. 저장소가 설정한 Android release bundle upload task를 configuration cache 없이 실행한다.
-2. 배포 산출물 생성이 목적이므로 이 workflow에서는 Android release build를 실행할 수 있다.
-3. upload target이 Internal track이고 의도한 release status인지 task 설정과 결과에서 확인한다.
-4. 실패하면 즉시 중단하고 secret을 가린 실패 단계와 원인을 보고한다.
-5. 성공하면 AAB, package, versionName/versionCode, track과 결과를 보고한다.
+1. `./gradlew clean :androidApp:bundleRelease --no-configuration-cache`로 기존 생성물을 제거하고 release AAB를 먼저 생성한다.
+2. 생성된 AAB의 versionName/versionCode, 크기와 Compose resource namespace를 검사한다.
+   - 제거된 source set의 generated resource namespace가 남아 있으면 업로드하지 않는다.
+   - 저장소가 사용하는 resource namespace가 없으면 업로드하지 않는다.
+3. 사전 검증이 통과하면 `./gradlew publishReleaseBundle --no-configuration-cache`로 검증된 소스와 산출물 상태에서 업로드한다.
+4. 배포 산출물 생성이 목적이므로 이 workflow에서는 Android release build를 실행할 수 있다.
+5. upload target이 Internal track이고 의도한 release status인지 task 설정과 결과에서 확인한다.
+6. 실패하면 즉시 중단하고 secret을 가린 실패 단계와 원인을 보고한다.
+7. 성공하면 AAB, package, versionName/versionCode, track과 결과를 보고한다.
 
 ## 제약
 
