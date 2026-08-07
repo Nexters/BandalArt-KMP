@@ -1,0 +1,5049 @@
+{
+  "sourceCommit": "62ecdc0d7ca5c6df32148c169556bc8d3782fca4",
+  "selectionMethod": "goal-term relevance within balanced Fluent metadata group quotas; gender-specific man/woman sequences excluded",
+  "groupQuotas": {
+    "Smileys & Emotion": 30,
+    "People & Body": 30,
+    "Animals & Nature": 35,
+    "Food & Drink": 35,
+    "Travel & Places": 35,
+    "Activities": 45,
+    "Objects": 60,
+    "Symbols": 25,
+    "Flags": 5
+  },
+  "candidateCount": 1428,
+  "items": [
+    {
+      "rank": 1,
+      "unicode": "2764 fe0f 200d 1f525",
+      "glyph": "❤️‍🔥",
+      "group": "Smileys & Emotion",
+      "cldrName": "heart on fire",
+      "keywords": [
+        "burn",
+        "heart",
+        "heart on fire",
+        "love",
+        "lust",
+        "sacred heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart on fire/metadata.json",
+      "colorSourcePath": "assets/Heart on fire/Color/heart_on_fire_color.svg",
+      "resourceKey": "fluent_2764_fe0f_200d_1f525"
+    },
+    {
+      "rank": 2,
+      "unicode": "1f4aa",
+      "glyph": "💪",
+      "group": "People & Body",
+      "cldrName": "flexed biceps",
+      "keywords": [
+        "biceps",
+        "comic",
+        "flex",
+        "flexed biceps",
+        "muscle"
+      ],
+      "koreanAliases": [
+        "근력",
+        "운동",
+        "건강"
+      ],
+      "metadataPath": "assets/Flexed biceps/metadata.json",
+      "colorSourcePath": "assets/Flexed biceps/Default/Color/flexed_biceps_color_default.svg",
+      "resourceKey": "fluent_1f4aa"
+    },
+    {
+      "rank": 3,
+      "unicode": "1f331",
+      "glyph": "🌱",
+      "group": "Animals & Nature",
+      "cldrName": "seedling",
+      "keywords": [
+        "seedling",
+        "young"
+      ],
+      "koreanAliases": [
+        "성장",
+        "습관",
+        "새싹"
+      ],
+      "metadataPath": "assets/Seedling/metadata.json",
+      "colorSourcePath": "assets/Seedling/Color/seedling_color.svg",
+      "resourceKey": "fluent_1f331"
+    },
+    {
+      "rank": 4,
+      "unicode": "1f955",
+      "glyph": "🥕",
+      "group": "Food & Drink",
+      "cldrName": "carrot",
+      "keywords": [
+        "carrot",
+        "food",
+        "vegetable"
+      ],
+      "koreanAliases": [
+        "식단",
+        "건강",
+        "채소"
+      ],
+      "metadataPath": "assets/Carrot/metadata.json",
+      "colorSourcePath": "assets/Carrot/Color/carrot_color.svg",
+      "resourceKey": "fluent_1f955"
+    },
+    {
+      "rank": 5,
+      "unicode": "23f0",
+      "glyph": "⏰",
+      "group": "Travel & Places",
+      "cldrName": "alarm clock",
+      "keywords": [
+        "alarm",
+        "clock"
+      ],
+      "koreanAliases": [
+        "기상",
+        "시간",
+        "루틴"
+      ],
+      "metadataPath": "assets/Alarm clock/metadata.json",
+      "colorSourcePath": "assets/Alarm clock/Color/alarm_clock_color.svg",
+      "resourceKey": "fluent_23f0"
+    },
+    {
+      "rank": 6,
+      "unicode": "1f3af",
+      "glyph": "🎯",
+      "group": "Activities",
+      "cldrName": "bullseye",
+      "keywords": [
+        "bullseye",
+        "dart",
+        "direct hit",
+        "game",
+        "hit",
+        "target"
+      ],
+      "koreanAliases": [
+        "목표",
+        "과녁",
+        "달성"
+      ],
+      "metadataPath": "assets/Bullseye/metadata.json",
+      "colorSourcePath": "assets/Bullseye/Color/bullseye_color.svg",
+      "resourceKey": "fluent_1f3af"
+    },
+    {
+      "rank": 7,
+      "unicode": "1f4c8",
+      "glyph": "📈",
+      "group": "Objects",
+      "cldrName": "chart increasing",
+      "keywords": [
+        "chart",
+        "chart increasing",
+        "graph",
+        "growth",
+        "trend",
+        "upward"
+      ],
+      "koreanAliases": [
+        "성과",
+        "상승",
+        "통계"
+      ],
+      "metadataPath": "assets/Chart increasing/metadata.json",
+      "colorSourcePath": "assets/Chart increasing/Color/chart_increasing_color.svg",
+      "resourceKey": "fluent_1f4c8"
+    },
+    {
+      "rank": 8,
+      "unicode": "2714 fe0f",
+      "glyph": "✔️",
+      "group": "Symbols",
+      "cldrName": "check mark",
+      "keywords": [
+        "✓",
+        "check",
+        "mark"
+      ],
+      "koreanAliases": [
+        "완료",
+        "체크",
+        "달성"
+      ],
+      "metadataPath": "assets/Check mark/metadata.json",
+      "colorSourcePath": "assets/Check mark/Color/check_mark_color.svg",
+      "resourceKey": "fluent_2714_fe0f"
+    },
+    {
+      "rank": 9,
+      "unicode": "1f3c1",
+      "glyph": "🏁",
+      "group": "Flags",
+      "cldrName": "chequered flag",
+      "keywords": [
+        "checkered",
+        "chequered",
+        "chequered flag",
+        "racing"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chequered flag/metadata.json",
+      "colorSourcePath": "assets/Chequered flag/Color/chequered_flag_color.svg",
+      "resourceKey": "fluent_1f3c1"
+    },
+    {
+      "rank": 10,
+      "unicode": "1fa99",
+      "glyph": "🪙",
+      "group": "Objects",
+      "cldrName": "coin",
+      "keywords": [
+        "coin",
+        "gold",
+        "metal",
+        "money",
+        "silver",
+        "treasure"
+      ],
+      "koreanAliases": [
+        "저축",
+        "재정",
+        "동전"
+      ],
+      "metadataPath": "assets/Coin/metadata.json",
+      "colorSourcePath": "assets/Coin/Color/coin_color.svg",
+      "resourceKey": "fluent_1fa99"
+    },
+    {
+      "rank": 11,
+      "unicode": "2728",
+      "glyph": "✨",
+      "group": "Activities",
+      "cldrName": "sparkles",
+      "keywords": [
+        "*",
+        "sparkle",
+        "sparkles",
+        "star"
+      ],
+      "koreanAliases": [
+        "정리",
+        "새로움",
+        "빛남"
+      ],
+      "metadataPath": "assets/Sparkles/metadata.json",
+      "colorSourcePath": "assets/Sparkles/Color/sparkles_color.svg",
+      "resourceKey": "fluent_2728"
+    },
+    {
+      "rank": 12,
+      "unicode": "1f335",
+      "glyph": "🌵",
+      "group": "Animals & Nature",
+      "cldrName": "cactus",
+      "keywords": [
+        "cactus",
+        "plant"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cactus/metadata.json",
+      "colorSourcePath": "assets/Cactus/Color/cactus_color.svg",
+      "resourceKey": "fluent_1f335"
+    },
+    {
+      "rank": 13,
+      "unicode": "1f951",
+      "glyph": "🥑",
+      "group": "Food & Drink",
+      "cldrName": "avocado",
+      "keywords": [
+        "avocado",
+        "food",
+        "fruit"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Avocado/metadata.json",
+      "colorSourcePath": "assets/Avocado/Color/avocado_color.svg",
+      "resourceKey": "fluent_1f951"
+    },
+    {
+      "rank": 14,
+      "unicode": "1f6b2",
+      "glyph": "🚲",
+      "group": "Travel & Places",
+      "cldrName": "bicycle",
+      "keywords": [
+        "bicycle",
+        "bike"
+      ],
+      "koreanAliases": [
+        "자전거",
+        "운동",
+        "라이딩"
+      ],
+      "metadataPath": "assets/Bicycle/metadata.json",
+      "colorSourcePath": "assets/Bicycle/Color/bicycle_color.svg",
+      "resourceKey": "fluent_1f6b2"
+    },
+    {
+      "rank": 15,
+      "unicode": "2764 fe0f 200d 1fa79",
+      "glyph": "❤️‍🩹",
+      "group": "Smileys & Emotion",
+      "cldrName": "mending heart",
+      "keywords": [
+        "healthier",
+        "improving",
+        "mending",
+        "mending heart",
+        "recovering",
+        "recuperating",
+        "well"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Mending heart/metadata.json",
+      "colorSourcePath": "assets/Mending heart/Color/mending_heart_color.svg",
+      "resourceKey": "fluent_2764_fe0f_200d_1fa79"
+    },
+    {
+      "rank": 16,
+      "unicode": "1faf0",
+      "glyph": "🫰",
+      "group": "People & Body",
+      "cldrName": "hand with index finger and thumb crossed",
+      "keywords": [
+        "expensive",
+        "hand with index finger and thumb crossed",
+        "heart",
+        "love",
+        "money",
+        "snap"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Hand with index finger and thumb crossed/metadata.json",
+      "colorSourcePath": "assets/Hand with index finger and thumb crossed/Default/Color/hand_with_index_finger_and_thumb_crossed_color_default.svg",
+      "resourceKey": "fluent_1faf0"
+    },
+    {
+      "rank": 17,
+      "unicode": "1f4da",
+      "glyph": "📚",
+      "group": "Objects",
+      "cldrName": "books",
+      "keywords": [
+        "book",
+        "books"
+      ],
+      "koreanAliases": [
+        "공부",
+        "독서",
+        "학습"
+      ],
+      "metadataPath": "assets/Books/metadata.json",
+      "colorSourcePath": "assets/Books/Color/books_color.svg",
+      "resourceKey": "fluent_1f4da"
+    },
+    {
+      "rank": 18,
+      "unicode": "1f4b1",
+      "glyph": "💱",
+      "group": "Symbols",
+      "cldrName": "currency exchange",
+      "keywords": [
+        "bank",
+        "currency",
+        "exchange",
+        "money"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Currency exchange/metadata.json",
+      "colorSourcePath": "assets/Currency exchange/Color/currency_exchange_color.svg",
+      "resourceKey": "fluent_1f4b1"
+    },
+    {
+      "rank": 19,
+      "unicode": "1f3c6",
+      "glyph": "🏆",
+      "group": "Activities",
+      "cldrName": "trophy",
+      "keywords": [
+        "prize",
+        "trophy"
+      ],
+      "koreanAliases": [
+        "성공",
+        "우승",
+        "성과"
+      ],
+      "metadataPath": "assets/Trophy/metadata.json",
+      "colorSourcePath": "assets/Trophy/Color/trophy_color.svg",
+      "resourceKey": "fluent_1f3c6"
+    },
+    {
+      "rank": 20,
+      "unicode": "1f4bc",
+      "glyph": "💼",
+      "group": "Objects",
+      "cldrName": "briefcase",
+      "keywords": [
+        "briefcase"
+      ],
+      "koreanAliases": [
+        "커리어",
+        "업무",
+        "직장"
+      ],
+      "metadataPath": "assets/Briefcase/metadata.json",
+      "colorSourcePath": "assets/Briefcase/Color/briefcase_color.svg",
+      "resourceKey": "fluent_1f4bc"
+    },
+    {
+      "rank": 21,
+      "unicode": "1f426 200d 1f525",
+      "glyph": "🐦‍🔥",
+      "group": "Animals & Nature",
+      "cldrName": "phoenix",
+      "keywords": [
+        "fantasy",
+        "firebird",
+        "phoenix",
+        "rebirth",
+        "reincarnation"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Phoenix bird/metadata.json",
+      "colorSourcePath": "assets/Phoenix bird/Color/phoenix_bird_color.svg",
+      "resourceKey": "fluent_1f426_200d_1f525"
+    },
+    {
+      "rank": 22,
+      "unicode": "1f344 200d 1f7eb",
+      "glyph": "🍄‍🟫",
+      "group": "Food & Drink",
+      "cldrName": "brown mushroom",
+      "keywords": [
+        "brown mushroom",
+        "food",
+        "fungus",
+        "nature",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Brown mushroom/metadata.json",
+      "colorSourcePath": "assets/Brown mushroom/Color/brown_mushroom_color.svg",
+      "resourceKey": "fluent_1f344_200d_1f7eb"
+    },
+    {
+      "rank": 23,
+      "unicode": "1f525",
+      "glyph": "🔥",
+      "group": "Travel & Places",
+      "cldrName": "fire",
+      "keywords": [
+        "fire",
+        "flame",
+        "tool"
+      ],
+      "koreanAliases": [
+        "열정",
+        "습관",
+        "연속"
+      ],
+      "metadataPath": "assets/Fire/metadata.json",
+      "colorSourcePath": "assets/Fire/Color/fire_color.svg",
+      "resourceKey": "fluent_1f525"
+    },
+    {
+      "rank": 24,
+      "unicode": "1f496",
+      "glyph": "💖",
+      "group": "Smileys & Emotion",
+      "cldrName": "sparkling heart",
+      "keywords": [
+        "excited",
+        "sparkle",
+        "sparkling heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Sparkling heart/metadata.json",
+      "colorSourcePath": "assets/Sparkling heart/Color/sparkling_heart_color.svg",
+      "resourceKey": "fluent_1f496"
+    },
+    {
+      "rank": 25,
+      "unicode": "1fac0",
+      "glyph": "🫀",
+      "group": "People & Body",
+      "cldrName": "anatomical heart",
+      "keywords": [
+        "anatomical",
+        "cardiology",
+        "heart",
+        "organ",
+        "pulse"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Anatomical heart/metadata.json",
+      "colorSourcePath": "assets/Anatomical heart/Color/anatomical_heart_color.svg",
+      "resourceKey": "fluent_1fac0"
+    },
+    {
+      "rank": 26,
+      "unicode": "1f387",
+      "glyph": "🎇",
+      "group": "Activities",
+      "cldrName": "sparkler",
+      "keywords": [
+        "celebration",
+        "fireworks",
+        "sparkle",
+        "sparkler"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Sparkler/metadata.json",
+      "colorSourcePath": "assets/Sparkler/Color/sparkler_color.svg",
+      "resourceKey": "fluent_1f387"
+    },
+    {
+      "rank": 27,
+      "unicode": "1f4bb",
+      "glyph": "💻",
+      "group": "Objects",
+      "cldrName": "laptop",
+      "keywords": [
+        "computer",
+        "laptop",
+        "pc",
+        "personal"
+      ],
+      "koreanAliases": [
+        "개발",
+        "업무",
+        "공부"
+      ],
+      "metadataPath": "assets/Laptop/metadata.json",
+      "colorSourcePath": "assets/Laptop/Color/laptop_color.svg",
+      "resourceKey": "fluent_1f4bb"
+    },
+    {
+      "rank": 28,
+      "unicode": "1f6dc",
+      "glyph": "🛜",
+      "group": "Symbols",
+      "cldrName": "wireless",
+      "keywords": [
+        "computer",
+        "internet",
+        "network",
+        "wireless"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Wireless/metadata.json",
+      "colorSourcePath": "assets/Wireless/Color/wireless_color.svg",
+      "resourceKey": "fluent_1f6dc"
+    },
+    {
+      "rank": 29,
+      "unicode": "1f4b0",
+      "glyph": "💰",
+      "group": "Objects",
+      "cldrName": "money bag",
+      "keywords": [
+        "bag",
+        "dollar",
+        "money",
+        "moneybag"
+      ],
+      "koreanAliases": [
+        "저축",
+        "재정",
+        "돈"
+      ],
+      "metadataPath": "assets/Money bag/metadata.json",
+      "colorSourcePath": "assets/Money bag/Color/money_bag_color.svg",
+      "resourceKey": "fluent_1f4b0"
+    },
+    {
+      "rank": 30,
+      "unicode": "1fab4",
+      "glyph": "🪴",
+      "group": "Animals & Nature",
+      "cldrName": "potted plant",
+      "keywords": [
+        "boring",
+        "grow",
+        "house",
+        "nurturing",
+        "plant",
+        "potted plant",
+        "useless"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Potted plant/metadata.json",
+      "colorSourcePath": "assets/Potted plant/Color/potted_plant_color.svg",
+      "resourceKey": "fluent_1fab4"
+    },
+    {
+      "rank": 31,
+      "unicode": "1f952",
+      "glyph": "🥒",
+      "group": "Food & Drink",
+      "cldrName": "cucumber",
+      "keywords": [
+        "cucumber",
+        "food",
+        "pickle",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cucumber/metadata.json",
+      "colorSourcePath": "assets/Cucumber/Color/cucumber_color.svg",
+      "resourceKey": "fluent_1f952"
+    },
+    {
+      "rank": 32,
+      "unicode": "1f680",
+      "glyph": "🚀",
+      "group": "Travel & Places",
+      "cldrName": "rocket",
+      "keywords": [
+        "rocket",
+        "space"
+      ],
+      "koreanAliases": [
+        "성장",
+        "도전",
+        "시작"
+      ],
+      "metadataPath": "assets/Rocket/metadata.json",
+      "colorSourcePath": "assets/Rocket/Color/rocket_color.svg",
+      "resourceKey": "fluent_1f680"
+    },
+    {
+      "rank": 33,
+      "unicode": "1f9e8",
+      "glyph": "🧨",
+      "group": "Activities",
+      "cldrName": "firecracker",
+      "keywords": [
+        "dynamite",
+        "explosive",
+        "firecracker",
+        "fireworks"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Firecracker/metadata.json",
+      "colorSourcePath": "assets/Firecracker/Color/firecracker_color.svg",
+      "resourceKey": "fluent_1f9e8"
+    },
+    {
+      "rank": 34,
+      "unicode": "1f493",
+      "glyph": "💓",
+      "group": "Smileys & Emotion",
+      "cldrName": "beating heart",
+      "keywords": [
+        "beating",
+        "beating heart",
+        "heartbeat",
+        "pulsating"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Beating heart/metadata.json",
+      "colorSourcePath": "assets/Beating heart/Color/beating_heart_color.svg",
+      "resourceKey": "fluent_1f493"
+    },
+    {
+      "rank": 35,
+      "unicode": "1f9d1 200d 2695 fe0f",
+      "glyph": "🧑‍⚕️",
+      "group": "People & Body",
+      "cldrName": "health worker",
+      "keywords": [
+        "doctor",
+        "health worker",
+        "healthcare",
+        "nurse",
+        "therapist"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Health worker/metadata.json",
+      "colorSourcePath": "assets/Health worker/Default/Color/health_worker_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_2695_fe0f"
+    },
+    {
+      "rank": 36,
+      "unicode": "1f45f",
+      "glyph": "👟",
+      "group": "Objects",
+      "cldrName": "running shoe",
+      "keywords": [
+        "athletic",
+        "clothing",
+        "running shoe",
+        "shoe",
+        "sneaker"
+      ],
+      "koreanAliases": [
+        "달리기",
+        "운동",
+        "러닝"
+      ],
+      "metadataPath": "assets/Running shoe/metadata.json",
+      "colorSourcePath": "assets/Running shoe/Color/running_shoe_color.svg",
+      "resourceKey": "fluent_1f45f"
+    },
+    {
+      "rank": 37,
+      "unicode": "1f386",
+      "glyph": "🎆",
+      "group": "Activities",
+      "cldrName": "fireworks",
+      "keywords": [
+        "celebration",
+        "fireworks"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fireworks/metadata.json",
+      "colorSourcePath": "assets/Fireworks/Color/fireworks_color.svg",
+      "resourceKey": "fluent_1f386"
+    },
+    {
+      "rank": 38,
+      "unicode": "1f3f5 fe0f",
+      "glyph": "🏵️",
+      "group": "Animals & Nature",
+      "cldrName": "rosette",
+      "keywords": [
+        "plant",
+        "rosette"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Rosette/metadata.json",
+      "colorSourcePath": "assets/Rosette/Color/rosette_color.svg",
+      "resourceKey": "fluent_1f3f5_fe0f"
+    },
+    {
+      "rank": 39,
+      "unicode": "1f346",
+      "glyph": "🍆",
+      "group": "Food & Drink",
+      "cldrName": "eggplant",
+      "keywords": [
+        "aubergine",
+        "eggplant",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Eggplant/metadata.json",
+      "colorSourcePath": "assets/Eggplant/Color/eggplant_color.svg",
+      "resourceKey": "fluent_1f346"
+    },
+    {
+      "rank": 40,
+      "unicode": "1f4a7",
+      "glyph": "💧",
+      "group": "Travel & Places",
+      "cldrName": "droplet",
+      "keywords": [
+        "cold",
+        "comic",
+        "drop",
+        "droplet",
+        "sweat"
+      ],
+      "koreanAliases": [
+        "물",
+        "수분",
+        "건강"
+      ],
+      "metadataPath": "assets/Droplet/metadata.json",
+      "colorSourcePath": "assets/Droplet/Color/droplet_color.svg",
+      "resourceKey": "fluent_1f4a7"
+    },
+    {
+      "rank": 41,
+      "unicode": "1f393",
+      "glyph": "🎓",
+      "group": "Objects",
+      "cldrName": "graduation cap",
+      "keywords": [
+        "cap",
+        "celebration",
+        "clothing",
+        "graduation",
+        "hat"
+      ],
+      "koreanAliases": [
+        "자격증",
+        "졸업",
+        "합격"
+      ],
+      "metadataPath": "assets/Graduation cap/metadata.json",
+      "colorSourcePath": "assets/Graduation cap/Color/graduation_cap_color.svg",
+      "resourceKey": "fluent_1f393"
+    },
+    {
+      "rank": 42,
+      "unicode": "1f3e7",
+      "glyph": "🏧",
+      "group": "Symbols",
+      "cldrName": "ATM sign",
+      "keywords": [
+        "atm",
+        "ATM sign",
+        "automated",
+        "bank",
+        "teller"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Atm sign/metadata.json",
+      "colorSourcePath": "assets/Atm sign/Color/atm_sign_color.svg",
+      "resourceKey": "fluent_1f3e7"
+    },
+    {
+      "rank": 43,
+      "unicode": "1f5a4",
+      "glyph": "🖤",
+      "group": "Smileys & Emotion",
+      "cldrName": "black heart",
+      "keywords": [
+        "black",
+        "black heart",
+        "evil",
+        "wicked"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Black heart/metadata.json",
+      "colorSourcePath": "assets/Black heart/Color/black_heart_color.svg",
+      "resourceKey": "fluent_1f5a4"
+    },
+    {
+      "rank": 44,
+      "unicode": "1faf6",
+      "glyph": "🫶",
+      "group": "People & Body",
+      "cldrName": "heart hands",
+      "keywords": [
+        "heart hands",
+        "love"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart hands/metadata.json",
+      "colorSourcePath": "assets/Heart hands/Default/Color/heart_hands_color_default.svg",
+      "resourceKey": "fluent_1faf6"
+    },
+    {
+      "rank": 45,
+      "unicode": "2665 fe0f",
+      "glyph": "♥️",
+      "group": "Activities",
+      "cldrName": "heart suit",
+      "keywords": [
+        "card",
+        "game",
+        "heart suit"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart suit/metadata.json",
+      "colorSourcePath": "assets/Heart suit/Color/heart_suit_color.svg",
+      "resourceKey": "fluent_2665_fe0f"
+    },
+    {
+      "rank": 46,
+      "unicode": "1f4b9",
+      "glyph": "💹",
+      "group": "Objects",
+      "cldrName": "chart increasing with yen",
+      "keywords": [
+        "chart",
+        "chart increasing with yen",
+        "graph",
+        "growth",
+        "money",
+        "yen"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chart increasing with yen/metadata.json",
+      "colorSourcePath": "assets/Chart increasing with yen/Color/chart_increasing_with_yen_color.svg",
+      "resourceKey": "fluent_1f4b9"
+    },
+    {
+      "rank": 47,
+      "unicode": "2618 fe0f",
+      "glyph": "☘️",
+      "group": "Animals & Nature",
+      "cldrName": "shamrock",
+      "keywords": [
+        "plant",
+        "shamrock"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Shamrock/metadata.json",
+      "colorSourcePath": "assets/Shamrock/Color/shamrock_color.svg",
+      "resourceKey": "fluent_2618_fe0f"
+    },
+    {
+      "rank": 48,
+      "unicode": "1f95d",
+      "glyph": "🥝",
+      "group": "Food & Drink",
+      "cldrName": "kiwi fruit",
+      "keywords": [
+        "food",
+        "fruit",
+        "kiwi"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Kiwi fruit/metadata.json",
+      "colorSourcePath": "assets/Kiwi fruit/Color/kiwi_fruit_color.svg",
+      "resourceKey": "fluent_1f95d"
+    },
+    {
+      "rank": 49,
+      "unicode": "1f6eb",
+      "glyph": "🛫",
+      "group": "Travel & Places",
+      "cldrName": "airplane departure",
+      "keywords": [
+        "aeroplane",
+        "airplane",
+        "check-in",
+        "departure",
+        "departures"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Airplane departure/metadata.json",
+      "colorSourcePath": "assets/Airplane departure/Color/airplane_departure_color.svg",
+      "resourceKey": "fluent_1f6eb"
+    },
+    {
+      "rank": 50,
+      "unicode": "1f4ca",
+      "glyph": "📊",
+      "group": "Objects",
+      "cldrName": "bar chart",
+      "keywords": [
+        "bar",
+        "chart",
+        "graph"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bar chart/metadata.json",
+      "colorSourcePath": "assets/Bar chart/Color/bar_chart_color.svg",
+      "resourceKey": "fluent_1f4ca"
+    },
+    {
+      "rank": 51,
+      "unicode": "1f3c5",
+      "glyph": "🏅",
+      "group": "Activities",
+      "cldrName": "sports medal",
+      "keywords": [
+        "medal",
+        "sports medal"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Sports medal/metadata.json",
+      "colorSourcePath": "assets/Sports medal/Color/sports_medal_color.svg",
+      "resourceKey": "fluent_1f3c5"
+    },
+    {
+      "rank": 52,
+      "unicode": "2652",
+      "glyph": "♒",
+      "group": "Symbols",
+      "cldrName": "Aquarius",
+      "keywords": [
+        "Aquarius",
+        "bearer",
+        "water",
+        "zodiac"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Aquarius/metadata.json",
+      "colorSourcePath": "assets/Aquarius/Color/aquarius_color.svg",
+      "resourceKey": "fluent_2652"
+    },
+    {
+      "rank": 53,
+      "unicode": "1f499",
+      "glyph": "💙",
+      "group": "Smileys & Emotion",
+      "cldrName": "blue heart",
+      "keywords": [
+        "blue",
+        "blue heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Blue heart/metadata.json",
+      "colorSourcePath": "assets/Blue heart/Color/blue_heart_color.svg",
+      "resourceKey": "fluent_1f499"
+    },
+    {
+      "rank": 54,
+      "unicode": "1f9d1 200d 1f4bc",
+      "glyph": "🧑‍💼",
+      "group": "People & Body",
+      "cldrName": "office worker",
+      "keywords": [
+        "architect",
+        "business",
+        "manager",
+        "office worker",
+        "white-collar"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Office worker/metadata.json",
+      "colorSourcePath": "assets/Office worker/Default/Color/office_worker_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f4bc"
+    },
+    {
+      "rank": 55,
+      "unicode": "1fae7",
+      "glyph": "🫧",
+      "group": "Objects",
+      "cldrName": "bubbles",
+      "keywords": [
+        "bubbles",
+        "burp",
+        "clean",
+        "soap",
+        "underwater"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bubbles/metadata.json",
+      "colorSourcePath": "assets/Bubbles/Color/bubbles_color.svg",
+      "resourceKey": "fluent_1fae7"
+    },
+    {
+      "rank": 56,
+      "unicode": "1f403",
+      "glyph": "🐃",
+      "group": "Animals & Nature",
+      "cldrName": "water buffalo",
+      "keywords": [
+        "buffalo",
+        "water"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Water buffalo/metadata.json",
+      "colorSourcePath": "assets/Water buffalo/Color/water_buffalo_color.svg",
+      "resourceKey": "fluent_1f403"
+    },
+    {
+      "rank": 57,
+      "unicode": "1f95c",
+      "glyph": "🥜",
+      "group": "Food & Drink",
+      "cldrName": "peanuts",
+      "keywords": [
+        "food",
+        "nut",
+        "peanut",
+        "peanuts",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Peanuts/metadata.json",
+      "colorSourcePath": "assets/Peanuts/Color/peanuts_color.svg",
+      "resourceKey": "fluent_1f95c"
+    },
+    {
+      "rank": 58,
+      "unicode": "1f31f",
+      "glyph": "🌟",
+      "group": "Travel & Places",
+      "cldrName": "glowing star",
+      "keywords": [
+        "glittery",
+        "glow",
+        "glowing star",
+        "shining",
+        "sparkle",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Glowing star/metadata.json",
+      "colorSourcePath": "assets/Glowing star/Color/glowing_star_color.svg",
+      "resourceKey": "fluent_1f31f"
+    },
+    {
+      "rank": 59,
+      "unicode": "1f947",
+      "glyph": "🥇",
+      "group": "Activities",
+      "cldrName": "1st place medal",
+      "keywords": [
+        "1st place medal",
+        "first",
+        "gold",
+        "medal"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/1st place medal/metadata.json",
+      "colorSourcePath": "assets/1st place medal/Color/1st_place_medal_color.svg",
+      "resourceKey": "fluent_1f947"
+    },
+    {
+      "rank": 60,
+      "unicode": "1f4c9",
+      "glyph": "📉",
+      "group": "Objects",
+      "cldrName": "chart decreasing",
+      "keywords": [
+        "chart",
+        "chart decreasing",
+        "down",
+        "graph",
+        "trend"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chart decreasing/metadata.json",
+      "colorSourcePath": "assets/Chart decreasing/Color/chart_decreasing_color.svg",
+      "resourceKey": "fluent_1f4c9"
+    },
+    {
+      "rank": 61,
+      "unicode": "1f494",
+      "glyph": "💔",
+      "group": "Smileys & Emotion",
+      "cldrName": "broken heart",
+      "keywords": [
+        "break",
+        "broken",
+        "broken heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Broken heart/metadata.json",
+      "colorSourcePath": "assets/Broken heart/Color/broken_heart_color.svg",
+      "resourceKey": "fluent_1f494"
+    },
+    {
+      "rank": 62,
+      "unicode": "1f9d1 200d 1f3a8",
+      "glyph": "🧑‍🎨",
+      "group": "People & Body",
+      "cldrName": "artist",
+      "keywords": [
+        "artist",
+        "palette"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Artist/metadata.json",
+      "colorSourcePath": "assets/Artist/Default/Color/artist_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f3a8"
+    },
+    {
+      "rank": 63,
+      "unicode": "1fab1",
+      "glyph": "🪱",
+      "group": "Animals & Nature",
+      "cldrName": "worm",
+      "keywords": [
+        "annelid",
+        "earthworm",
+        "parasite",
+        "worm"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Worm/metadata.json",
+      "colorSourcePath": "assets/Worm/Color/worm_color.svg",
+      "resourceKey": "fluent_1fab1"
+    },
+    {
+      "rank": 64,
+      "unicode": "1f954",
+      "glyph": "🥔",
+      "group": "Food & Drink",
+      "cldrName": "potato",
+      "keywords": [
+        "food",
+        "potato",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Potato/metadata.json",
+      "colorSourcePath": "assets/Potato/Color/potato_color.svg",
+      "resourceKey": "fluent_1f954"
+    },
+    {
+      "rank": 65,
+      "unicode": "1f3e3",
+      "glyph": "🏣",
+      "group": "Travel & Places",
+      "cldrName": "Japanese post office",
+      "keywords": [
+        "Japanese",
+        "Japanese post office",
+        "post"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Japanese post office/metadata.json",
+      "colorSourcePath": "assets/Japanese post office/Color/japanese_post_office_color.svg",
+      "resourceKey": "fluent_1f3e3"
+    },
+    {
+      "rank": 66,
+      "unicode": "1f948",
+      "glyph": "🥈",
+      "group": "Activities",
+      "cldrName": "2nd place medal",
+      "keywords": [
+        "2nd place medal",
+        "medal",
+        "second",
+        "silver"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/2nd place medal/metadata.json",
+      "colorSourcePath": "assets/2nd place medal/Color/2nd_place_medal_color.svg",
+      "resourceKey": "fluent_1f948"
+    },
+    {
+      "rank": 67,
+      "unicode": "1f4b5",
+      "glyph": "💵",
+      "group": "Objects",
+      "cldrName": "dollar banknote",
+      "keywords": [
+        "banknote",
+        "bill",
+        "currency",
+        "dollar",
+        "money",
+        "note"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Dollar banknote/metadata.json",
+      "colorSourcePath": "assets/Dollar banknote/Color/dollar_banknote_color.svg",
+      "resourceKey": "fluent_1f4b5"
+    },
+    {
+      "rank": 68,
+      "unicode": "2611 fe0f",
+      "glyph": "☑️",
+      "group": "Symbols",
+      "cldrName": "check box with check",
+      "keywords": [
+        "✓",
+        "box",
+        "check",
+        "check box with check"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Check box with check/metadata.json",
+      "colorSourcePath": "assets/Check box with check/Color/check_box_with_check_color.svg",
+      "resourceKey": "fluent_2611_fe0f"
+    },
+    {
+      "rank": 69,
+      "unicode": "1f3f4",
+      "glyph": "🏴",
+      "group": "Flags",
+      "cldrName": "black flag",
+      "keywords": [
+        "black flag",
+        "waving"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Black flag/metadata.json",
+      "colorSourcePath": "assets/Black flag/Color/black_flag_color.svg",
+      "resourceKey": "fluent_1f3f4"
+    },
+    {
+      "rank": 70,
+      "unicode": "1f4b6",
+      "glyph": "💶",
+      "group": "Objects",
+      "cldrName": "euro banknote",
+      "keywords": [
+        "banknote",
+        "bill",
+        "currency",
+        "euro",
+        "money",
+        "note"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Euro banknote/metadata.json",
+      "colorSourcePath": "assets/Euro banknote/Color/euro_banknote_color.svg",
+      "resourceKey": "fluent_1f4b6"
+    },
+    {
+      "rank": 71,
+      "unicode": "1f949",
+      "glyph": "🥉",
+      "group": "Activities",
+      "cldrName": "3rd place medal",
+      "keywords": [
+        "3rd place medal",
+        "bronze",
+        "medal",
+        "third"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/3rd place medal/metadata.json",
+      "colorSourcePath": "assets/3rd place medal/Color/3rd_place_medal_color.svg",
+      "resourceKey": "fluent_1f949"
+    },
+    {
+      "rank": 72,
+      "unicode": "1f996",
+      "glyph": "🦖",
+      "group": "Animals & Nature",
+      "cldrName": "T-Rex",
+      "keywords": [
+        "T-Rex",
+        "Tyrannosaurus Rex"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/T-rex/metadata.json",
+      "colorSourcePath": "assets/T-rex/Color/t-rex_color.svg",
+      "resourceKey": "fluent_1f996"
+    },
+    {
+      "rank": 73,
+      "unicode": "1f345",
+      "glyph": "🍅",
+      "group": "Food & Drink",
+      "cldrName": "tomato",
+      "keywords": [
+        "fruit",
+        "tomato",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Tomato/metadata.json",
+      "colorSourcePath": "assets/Tomato/Color/tomato_color.svg",
+      "resourceKey": "fluent_1f345"
+    },
+    {
+      "rank": 74,
+      "unicode": "1f69b",
+      "glyph": "🚛",
+      "group": "Travel & Places",
+      "cldrName": "articulated lorry",
+      "keywords": [
+        "articulated lorry",
+        "lorry",
+        "semi",
+        "truck"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Articulated lorry/metadata.json",
+      "colorSourcePath": "assets/Articulated lorry/Color/articulated_lorry_color.svg",
+      "resourceKey": "fluent_1f69b"
+    },
+    {
+      "rank": 75,
+      "unicode": "1f90e",
+      "glyph": "🤎",
+      "group": "Smileys & Emotion",
+      "cldrName": "brown heart",
+      "keywords": [
+        "brown",
+        "heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Brown heart/metadata.json",
+      "colorSourcePath": "assets/Brown heart/Color/brown_heart_color.svg",
+      "resourceKey": "fluent_1f90e"
+    },
+    {
+      "rank": 76,
+      "unicode": "1f9d1 200d 1f680",
+      "glyph": "🧑‍🚀",
+      "group": "People & Body",
+      "cldrName": "astronaut",
+      "keywords": [
+        "astronaut",
+        "rocket"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Astronaut/metadata.json",
+      "colorSourcePath": "assets/Astronaut/Default/Color/astronaut_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f680"
+    },
+    {
+      "rank": 77,
+      "unicode": "1f4b8",
+      "glyph": "💸",
+      "group": "Objects",
+      "cldrName": "money with wings",
+      "keywords": [
+        "banknote",
+        "bill",
+        "fly",
+        "money",
+        "money with wings",
+        "wings"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Money with wings/metadata.json",
+      "colorSourcePath": "assets/Money with wings/Color/money_with_wings_color.svg",
+      "resourceKey": "fluent_1f4b8"
+    },
+    {
+      "rank": 78,
+      "unicode": "2705",
+      "glyph": "✅",
+      "group": "Symbols",
+      "cldrName": "check mark button",
+      "keywords": [
+        "✓",
+        "button",
+        "check",
+        "mark"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Check mark button/metadata.json",
+      "colorSourcePath": "assets/Check mark button/Color/check_mark_button_color.svg",
+      "resourceKey": "fluent_2705"
+    },
+    {
+      "rank": 79,
+      "unicode": "1f3a8",
+      "glyph": "🎨",
+      "group": "Activities",
+      "cldrName": "artist palette",
+      "keywords": [
+        "art",
+        "artist palette",
+        "museum",
+        "painting",
+        "palette"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Artist palette/metadata.json",
+      "colorSourcePath": "assets/Artist palette/Color/artist_palette_color.svg",
+      "resourceKey": "fluent_1f3a8"
+    },
+    {
+      "rank": 80,
+      "unicode": "1f4b7",
+      "glyph": "💷",
+      "group": "Objects",
+      "cldrName": "pound banknote",
+      "keywords": [
+        "banknote",
+        "bill",
+        "currency",
+        "money",
+        "note",
+        "pound"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Pound banknote/metadata.json",
+      "colorSourcePath": "assets/Pound banknote/Color/pound_banknote_color.svg",
+      "resourceKey": "fluent_1f4b7"
+    },
+    {
+      "rank": 81,
+      "unicode": "1f41c",
+      "glyph": "🐜",
+      "group": "Animals & Nature",
+      "cldrName": "ant",
+      "keywords": [
+        "ant",
+        "insect"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ant/metadata.json",
+      "colorSourcePath": "assets/Ant/Color/ant_color.svg",
+      "resourceKey": "fluent_1f41c"
+    },
+    {
+      "rank": 82,
+      "unicode": "1f349",
+      "glyph": "🍉",
+      "group": "Food & Drink",
+      "cldrName": "watermelon",
+      "keywords": [
+        "fruit",
+        "watermelon"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Watermelon/metadata.json",
+      "colorSourcePath": "assets/Watermelon/Color/watermelon_color.svg",
+      "resourceKey": "fluent_1f349"
+    },
+    {
+      "rank": 83,
+      "unicode": "1f3e6",
+      "glyph": "🏦",
+      "group": "Travel & Places",
+      "cldrName": "bank",
+      "keywords": [
+        "bank",
+        "building"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bank/metadata.json",
+      "colorSourcePath": "assets/Bank/Color/bank_color.svg",
+      "resourceKey": "fluent_1f3e6"
+    },
+    {
+      "rank": 84,
+      "unicode": "1f49a",
+      "glyph": "💚",
+      "group": "Smileys & Emotion",
+      "cldrName": "green heart",
+      "keywords": [
+        "green",
+        "green heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Green heart/metadata.json",
+      "colorSourcePath": "assets/Green heart/Color/green_heart_color.svg",
+      "resourceKey": "fluent_1f49a"
+    },
+    {
+      "rank": 85,
+      "unicode": "1f477",
+      "glyph": "👷",
+      "group": "People & Body",
+      "cldrName": "construction worker",
+      "keywords": [
+        "construction",
+        "hat",
+        "worker"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Construction worker/metadata.json",
+      "colorSourcePath": "assets/Construction worker/Default/Color/construction_worker_color_default.svg",
+      "resourceKey": "fluent_1f477"
+    },
+    {
+      "rank": 86,
+      "unicode": "1f5bc fe0f",
+      "glyph": "🖼️",
+      "group": "Activities",
+      "cldrName": "framed picture",
+      "keywords": [
+        "art",
+        "frame",
+        "framed picture",
+        "museum",
+        "painting",
+        "picture"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Framed picture/metadata.json",
+      "colorSourcePath": "assets/Framed picture/Color/framed_picture_color.svg",
+      "resourceKey": "fluent_1f5bc_fe0f"
+    },
+    {
+      "rank": 87,
+      "unicode": "1fa7a",
+      "glyph": "🩺",
+      "group": "Objects",
+      "cldrName": "stethoscope",
+      "keywords": [
+        "doctor",
+        "heart",
+        "medicine",
+        "stethoscope"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Stethoscope/metadata.json",
+      "colorSourcePath": "assets/Stethoscope/Color/stethoscope_color.svg",
+      "resourceKey": "fluent_1fa7a"
+    },
+    {
+      "rank": 88,
+      "unicode": "1f52f",
+      "glyph": "🔯",
+      "group": "Symbols",
+      "cldrName": "dotted six-pointed star",
+      "keywords": [
+        "dotted six-pointed star",
+        "fortune",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Dotted six-pointed star/metadata.json",
+      "colorSourcePath": "assets/Dotted six-pointed star/Color/dotted_six-pointed_star_color.svg",
+      "resourceKey": "fluent_1f52f"
+    },
+    {
+      "rank": 89,
+      "unicode": "1f4b4",
+      "glyph": "💴",
+      "group": "Objects",
+      "cldrName": "yen banknote",
+      "keywords": [
+        "banknote",
+        "bill",
+        "currency",
+        "money",
+        "note",
+        "yen"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Yen banknote/metadata.json",
+      "colorSourcePath": "assets/Yen banknote/Color/yen_banknote_color.svg",
+      "resourceKey": "fluent_1f4b4"
+    },
+    {
+      "rank": 90,
+      "unicode": "1f424",
+      "glyph": "🐤",
+      "group": "Animals & Nature",
+      "cldrName": "baby chick",
+      "keywords": [
+        "baby",
+        "bird",
+        "chick"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Baby chick/metadata.json",
+      "colorSourcePath": "assets/Baby chick/Color/baby_chick_color.svg",
+      "resourceKey": "fluent_1f424"
+    },
+    {
+      "rank": 91,
+      "unicode": "1f3fa",
+      "glyph": "🏺",
+      "group": "Food & Drink",
+      "cldrName": "amphora",
+      "keywords": [
+        "amphora",
+        "Aquarius",
+        "cooking",
+        "drink",
+        "jug",
+        "zodiac"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Amphora/metadata.json",
+      "colorSourcePath": "assets/Amphora/Color/amphora_color.svg",
+      "resourceKey": "fluent_1f3fa"
+    },
+    {
+      "rank": 92,
+      "unicode": "1f3ec",
+      "glyph": "🏬",
+      "group": "Travel & Places",
+      "cldrName": "department store",
+      "keywords": [
+        "department",
+        "store"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Department store/metadata.json",
+      "colorSourcePath": "assets/Department store/Color/department_store_color.svg",
+      "resourceKey": "fluent_1f3ec"
+    },
+    {
+      "rank": 93,
+      "unicode": "1f945",
+      "glyph": "🥅",
+      "group": "Activities",
+      "cldrName": "goal net",
+      "keywords": [
+        "goal",
+        "net"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Goal net/metadata.json",
+      "colorSourcePath": "assets/Goal net/Color/goal_net_color.svg",
+      "resourceKey": "fluent_1f945"
+    },
+    {
+      "rank": 94,
+      "unicode": "1fa76",
+      "glyph": "🩶",
+      "group": "Smileys & Emotion",
+      "cldrName": "grey heart",
+      "keywords": [
+        "gray",
+        "grey heart",
+        "heart",
+        "silver",
+        "slate"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Grey heart/metadata.json",
+      "colorSourcePath": "assets/Grey heart/Color/grey_heart_color.svg",
+      "resourceKey": "fluent_1fa76"
+    },
+    {
+      "rank": 95,
+      "unicode": "1f9d1 200d 1f373",
+      "glyph": "🧑‍🍳",
+      "group": "People & Body",
+      "cldrName": "cook",
+      "keywords": [
+        "chef",
+        "cook"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cook/metadata.json",
+      "colorSourcePath": "assets/Cook/Default/Color/cook_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f373"
+    },
+    {
+      "rank": 96,
+      "unicode": "1f392",
+      "glyph": "🎒",
+      "group": "Objects",
+      "cldrName": "backpack",
+      "keywords": [
+        "backpack",
+        "bag",
+        "rucksack",
+        "satchel",
+        "school"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Backpack/metadata.json",
+      "colorSourcePath": "assets/Backpack/Color/backpack_color.svg",
+      "resourceKey": "fluent_1f392"
+    },
+    {
+      "rank": 97,
+      "unicode": "1f94d",
+      "glyph": "🥍",
+      "group": "Activities",
+      "cldrName": "lacrosse",
+      "keywords": [
+        "ball",
+        "goal",
+        "lacrosse",
+        "stick"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Lacrosse/metadata.json",
+      "colorSourcePath": "assets/Lacrosse/Color/lacrosse_color.svg",
+      "resourceKey": "fluent_1f94d"
+    },
+    {
+      "rank": 98,
+      "unicode": "1f9a1",
+      "glyph": "🦡",
+      "group": "Animals & Nature",
+      "cldrName": "badger",
+      "keywords": [
+        "badger",
+        "honey badger",
+        "pester"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Badger/metadata.json",
+      "colorSourcePath": "assets/Badger/Color/badger_color.svg",
+      "resourceKey": "fluent_1f9a1"
+    },
+    {
+      "rank": 99,
+      "unicode": "1f953",
+      "glyph": "🥓",
+      "group": "Food & Drink",
+      "cldrName": "bacon",
+      "keywords": [
+        "bacon",
+        "breakfast",
+        "food",
+        "meat"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bacon/metadata.json",
+      "colorSourcePath": "assets/Bacon/Color/bacon_color.svg",
+      "resourceKey": "fluent_1f953"
+    },
+    {
+      "rank": 100,
+      "unicode": "1f692",
+      "glyph": "🚒",
+      "group": "Travel & Places",
+      "cldrName": "fire engine",
+      "keywords": [
+        "engine",
+        "fire",
+        "truck"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fire engine/metadata.json",
+      "colorSourcePath": "assets/Fire engine/Color/fire_engine_color.svg",
+      "resourceKey": "fluent_1f692"
+    },
+    {
+      "rank": 101,
+      "unicode": "1fa95",
+      "glyph": "🪕",
+      "group": "Objects",
+      "cldrName": "banjo",
+      "keywords": [
+        "banjo",
+        "music",
+        "stringed"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Banjo/metadata.json",
+      "colorSourcePath": "assets/Banjo/Color/banjo_color.svg",
+      "resourceKey": "fluent_1fa95"
+    },
+    {
+      "rank": 102,
+      "unicode": "2734 fe0f",
+      "glyph": "✴️",
+      "group": "Symbols",
+      "cldrName": "eight-pointed star",
+      "keywords": [
+        "*",
+        "eight-pointed star",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Eight-pointed star/metadata.json",
+      "colorSourcePath": "assets/Eight-pointed star/Color/eight-pointed_star_color.svg",
+      "resourceKey": "fluent_2734_fe0f"
+    },
+    {
+      "rank": 103,
+      "unicode": "1f497",
+      "glyph": "💗",
+      "group": "Smileys & Emotion",
+      "cldrName": "growing heart",
+      "keywords": [
+        "excited",
+        "growing",
+        "growing heart",
+        "nervous",
+        "pulse"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Growing heart/metadata.json",
+      "colorSourcePath": "assets/Growing heart/Color/growing_heart_color.svg",
+      "resourceKey": "fluent_1f497"
+    },
+    {
+      "rank": 104,
+      "unicode": "1f9d1 200d 1f3ed",
+      "glyph": "🧑‍🏭",
+      "group": "People & Body",
+      "cldrName": "factory worker",
+      "keywords": [
+        "assembly",
+        "factory",
+        "industrial",
+        "worker"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Factory worker/metadata.json",
+      "colorSourcePath": "assets/Factory worker/Default/Color/factory_worker_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f3ed"
+    },
+    {
+      "rank": 105,
+      "unicode": "1f94b",
+      "glyph": "🥋",
+      "group": "Activities",
+      "cldrName": "martial arts uniform",
+      "keywords": [
+        "judo",
+        "karate",
+        "martial arts",
+        "martial arts uniform",
+        "taekwondo",
+        "uniform"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Martial arts uniform/metadata.json",
+      "colorSourcePath": "assets/Martial arts uniform/Color/martial_arts_uniform_color.svg",
+      "resourceKey": "fluent_1f94b"
+    },
+    {
+      "rank": 106,
+      "unicode": "1f6cf fe0f",
+      "glyph": "🛏️",
+      "group": "Objects",
+      "cldrName": "bed",
+      "keywords": [
+        "bed",
+        "hotel",
+        "sleep"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bed/metadata.json",
+      "colorSourcePath": "assets/Bed/Color/bed_color.svg",
+      "resourceKey": "fluent_1f6cf_fe0f"
+    },
+    {
+      "rank": 107,
+      "unicode": "1f987",
+      "glyph": "🦇",
+      "group": "Animals & Nature",
+      "cldrName": "bat",
+      "keywords": [
+        "bat",
+        "vampire"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bat/metadata.json",
+      "colorSourcePath": "assets/Bat/Color/bat_color.svg",
+      "resourceKey": "fluent_1f987"
+    },
+    {
+      "rank": 108,
+      "unicode": "1f956",
+      "glyph": "🥖",
+      "group": "Food & Drink",
+      "cldrName": "baguette bread",
+      "keywords": [
+        "baguette",
+        "bread",
+        "food",
+        "french"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Baguette bread/metadata.json",
+      "colorSourcePath": "assets/Baguette bread/Color/baguette_bread_color.svg",
+      "resourceKey": "fluent_1f956"
+    },
+    {
+      "rank": 109,
+      "unicode": "1f313",
+      "glyph": "🌓",
+      "group": "Travel & Places",
+      "cldrName": "first quarter moon",
+      "keywords": [
+        "first quarter moon",
+        "moon",
+        "quarter"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/First quarter moon/metadata.json",
+      "colorSourcePath": "assets/First quarter moon/Color/first_quarter_moon_color.svg",
+      "resourceKey": "fluent_1f313"
+    },
+    {
+      "rank": 110,
+      "unicode": "1f459",
+      "glyph": "👙",
+      "group": "Objects",
+      "cldrName": "bikini",
+      "keywords": [
+        "bikini",
+        "clothing",
+        "swim"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bikini/metadata.json",
+      "colorSourcePath": "assets/Bikini/Color/bikini_color.svg",
+      "resourceKey": "fluent_1f459"
+    },
+    {
+      "rank": 111,
+      "unicode": "1f396 fe0f",
+      "glyph": "🎖️",
+      "group": "Activities",
+      "cldrName": "military medal",
+      "keywords": [
+        "celebration",
+        "medal",
+        "military"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Military medal/metadata.json",
+      "colorSourcePath": "assets/Military medal/Color/military_medal_color.svg",
+      "resourceKey": "fluent_1f396_fe0f"
+    },
+    {
+      "rank": 112,
+      "unicode": "1f4b2",
+      "glyph": "💲",
+      "group": "Symbols",
+      "cldrName": "heavy dollar sign",
+      "keywords": [
+        "currency",
+        "dollar",
+        "heavy dollar sign",
+        "money"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heavy dollar sign/metadata.json",
+      "colorSourcePath": "assets/Heavy dollar sign/Color/heavy_dollar_sign_color.svg",
+      "resourceKey": "fluent_1f4b2"
+    },
+    {
+      "rank": 113,
+      "unicode": "1f49f",
+      "glyph": "💟",
+      "group": "Smileys & Emotion",
+      "cldrName": "heart decoration",
+      "keywords": [
+        "heart",
+        "heart decoration"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart decoration/metadata.json",
+      "colorSourcePath": "assets/Heart decoration/Color/heart_decoration_color.svg",
+      "resourceKey": "fluent_1f49f"
+    },
+    {
+      "rank": 114,
+      "unicode": "1f9d1 200d 1f692",
+      "glyph": "🧑‍🚒",
+      "group": "People & Body",
+      "cldrName": "firefighter",
+      "keywords": [
+        "firefighter",
+        "firetruck"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Firefighter/metadata.json",
+      "colorSourcePath": "assets/Firefighter/Default/Color/firefighter_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f692"
+    },
+    {
+      "rank": 115,
+      "unicode": "1f4d8",
+      "glyph": "📘",
+      "group": "Objects",
+      "cldrName": "blue book",
+      "keywords": [
+        "blue",
+        "book"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Blue book/metadata.json",
+      "colorSourcePath": "assets/Blue book/Color/blue_book_color.svg",
+      "resourceKey": "fluent_1f4d8"
+    },
+    {
+      "rank": 116,
+      "unicode": "1f43b",
+      "glyph": "🐻",
+      "group": "Animals & Nature",
+      "cldrName": "bear",
+      "keywords": [
+        "bear",
+        "face"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bear/metadata.json",
+      "colorSourcePath": "assets/Bear/Color/bear_color.svg",
+      "resourceKey": "fluent_1f43b"
+    },
+    {
+      "rank": 117,
+      "unicode": "1f34c",
+      "glyph": "🍌",
+      "group": "Food & Drink",
+      "cldrName": "banana",
+      "keywords": [
+        "banana",
+        "fruit"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Banana/metadata.json",
+      "colorSourcePath": "assets/Banana/Color/banana_color.svg",
+      "resourceKey": "fluent_1f34c"
+    },
+    {
+      "rank": 118,
+      "unicode": "1f31b",
+      "glyph": "🌛",
+      "group": "Travel & Places",
+      "cldrName": "first quarter moon face",
+      "keywords": [
+        "face",
+        "first quarter moon face",
+        "moon",
+        "quarter"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/First quarter moon face/metadata.json",
+      "colorSourcePath": "assets/First quarter moon face/Color/first_quarter_moon_face_color.svg",
+      "resourceKey": "fluent_1f31b"
+    },
+    {
+      "rank": 119,
+      "unicode": "1faa9",
+      "glyph": "🪩",
+      "group": "Activities",
+      "cldrName": "mirror ball",
+      "keywords": [
+        "dance",
+        "disco",
+        "glitter",
+        "mirror ball",
+        "party"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Mirror ball/metadata.json",
+      "colorSourcePath": "assets/Mirror ball/Color/mirror_ball_color.svg",
+      "resourceKey": "fluent_1faa9"
+    },
+    {
+      "rank": 120,
+      "unicode": "1f516",
+      "glyph": "🔖",
+      "group": "Objects",
+      "cldrName": "bookmark",
+      "keywords": [
+        "bookmark",
+        "mark"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bookmark/metadata.json",
+      "colorSourcePath": "assets/Bookmark/Color/bookmark_color.svg",
+      "resourceKey": "fluent_1f516"
+    },
+    {
+      "rank": 121,
+      "unicode": "2763 fe0f",
+      "glyph": "❣️",
+      "group": "Smileys & Emotion",
+      "cldrName": "heart exclamation",
+      "keywords": [
+        "exclamation",
+        "heart exclamation",
+        "mark",
+        "punctuation"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart exclamation/metadata.json",
+      "colorSourcePath": "assets/Heart exclamation/Color/heart_exclamation_color.svg",
+      "resourceKey": "fluent_2763_fe0f"
+    },
+    {
+      "rank": 122,
+      "unicode": "1f46f",
+      "glyph": "👯",
+      "group": "People & Body",
+      "cldrName": "people with bunny ears",
+      "keywords": [
+        "bunny ear",
+        "dancer",
+        "partying",
+        "people with bunny ears"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person with bunny ears/metadata.json",
+      "colorSourcePath": "assets/Person with bunny ears/Color/person_with_bunny_ears_color.svg",
+      "resourceKey": "fluent_1f46f"
+    },
+    {
+      "rank": 123,
+      "unicode": "1f9ab",
+      "glyph": "🦫",
+      "group": "Animals & Nature",
+      "cldrName": "beaver",
+      "keywords": [
+        "beaver",
+        "dam"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Beaver/metadata.json",
+      "colorSourcePath": "assets/Beaver/Color/beaver_color.svg",
+      "resourceKey": "fluent_1f9ab"
+    },
+    {
+      "rank": 124,
+      "unicode": "1fad8",
+      "glyph": "🫘",
+      "group": "Food & Drink",
+      "cldrName": "beans",
+      "keywords": [
+        "beans",
+        "food",
+        "kidney",
+        "legume"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Beans/metadata.json",
+      "colorSourcePath": "assets/Beans/Color/beans_color.svg",
+      "resourceKey": "fluent_1fad8"
+    },
+    {
+      "rank": 125,
+      "unicode": "1f30e",
+      "glyph": "🌎",
+      "group": "Travel & Places",
+      "cldrName": "globe showing Americas",
+      "keywords": [
+        "Americas",
+        "earth",
+        "globe",
+        "globe showing Americas",
+        "world"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Globe showing americas/metadata.json",
+      "colorSourcePath": "assets/Globe showing americas/Color/globe_showing_americas_color.svg",
+      "resourceKey": "fluent_1f30e"
+    },
+    {
+      "rank": 126,
+      "unicode": "1f389",
+      "glyph": "🎉",
+      "group": "Activities",
+      "cldrName": "party popper",
+      "keywords": [
+        "celebration",
+        "party",
+        "popper",
+        "tada"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Party popper/metadata.json",
+      "colorSourcePath": "assets/Party popper/Color/party_popper_color.svg",
+      "resourceKey": "fluent_1f389"
+    },
+    {
+      "rank": 127,
+      "unicode": "1f4d1",
+      "glyph": "📑",
+      "group": "Objects",
+      "cldrName": "bookmark tabs",
+      "keywords": [
+        "bookmark",
+        "mark",
+        "marker",
+        "tabs"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bookmark tabs/metadata.json",
+      "colorSourcePath": "assets/Bookmark tabs/Color/bookmark_tabs_color.svg",
+      "resourceKey": "fluent_1f4d1"
+    },
+    {
+      "rank": 128,
+      "unicode": "1f6b3",
+      "glyph": "🚳",
+      "group": "Symbols",
+      "cldrName": "no bicycles",
+      "keywords": [
+        "bicycle",
+        "bike",
+        "forbidden",
+        "no",
+        "no bicycles",
+        "prohibited"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/No bicycles/metadata.json",
+      "colorSourcePath": "assets/No bicycles/Color/no_bicycles_color.svg",
+      "resourceKey": "fluent_1f6b3"
+    },
+    {
+      "rank": 129,
+      "unicode": "1f38c",
+      "glyph": "🎌",
+      "group": "Flags",
+      "cldrName": "crossed flags",
+      "keywords": [
+        "celebration",
+        "cross",
+        "crossed",
+        "crossed flags",
+        "Japanese"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Crossed flags/metadata.json",
+      "colorSourcePath": "assets/Crossed flags/Color/crossed_flags_color.svg",
+      "resourceKey": "fluent_1f38c"
+    },
+    {
+      "rank": 130,
+      "unicode": "1fa72",
+      "glyph": "🩲",
+      "group": "Objects",
+      "cldrName": "briefs",
+      "keywords": [
+        "bathing suit",
+        "briefs",
+        "one-piece",
+        "swimsuit",
+        "underwear"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Briefs/metadata.json",
+      "colorSourcePath": "assets/Briefs/Color/briefs_color.svg",
+      "resourceKey": "fluent_1fa72"
+    },
+    {
+      "rank": 131,
+      "unicode": "1f3ad",
+      "glyph": "🎭",
+      "group": "Activities",
+      "cldrName": "performing arts",
+      "keywords": [
+        "art",
+        "mask",
+        "performing",
+        "performing arts",
+        "theater",
+        "theatre"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Performing arts/metadata.json",
+      "colorSourcePath": "assets/Performing arts/Color/performing_arts_color.svg",
+      "resourceKey": "fluent_1f3ad"
+    },
+    {
+      "rank": 132,
+      "unicode": "1fab2",
+      "glyph": "🪲",
+      "group": "Animals & Nature",
+      "cldrName": "beetle",
+      "keywords": [
+        "beetle",
+        "bug",
+        "insect"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Beetle/metadata.json",
+      "colorSourcePath": "assets/Beetle/Color/beetle_color.svg",
+      "resourceKey": "fluent_1fab2"
+    },
+    {
+      "rank": 133,
+      "unicode": "1fad1",
+      "glyph": "🫑",
+      "group": "Food & Drink",
+      "cldrName": "bell pepper",
+      "keywords": [
+        "bell pepper",
+        "capsicum",
+        "pepper",
+        "vegetable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bell pepper/metadata.json",
+      "colorSourcePath": "assets/Bell pepper/Color/bell_pepper_color.svg",
+      "resourceKey": "fluent_1fad1"
+    },
+    {
+      "rank": 134,
+      "unicode": "1f30f",
+      "glyph": "🌏",
+      "group": "Travel & Places",
+      "cldrName": "globe showing Asia-Australia",
+      "keywords": [
+        "Asia",
+        "Australia",
+        "earth",
+        "globe",
+        "globe showing Asia-Australia",
+        "world"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Globe showing asia-australia/metadata.json",
+      "colorSourcePath": "assets/Globe showing asia-australia/Color/globe_showing_asia-australia_color.svg",
+      "resourceKey": "fluent_1f30f"
+    },
+    {
+      "rank": 135,
+      "unicode": "1f498",
+      "glyph": "💘",
+      "group": "Smileys & Emotion",
+      "cldrName": "heart with arrow",
+      "keywords": [
+        "arrow",
+        "cupid",
+        "heart with arrow"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart with arrow/metadata.json",
+      "colorSourcePath": "assets/Heart with arrow/Color/heart_with_arrow_color.svg",
+      "resourceKey": "fluent_1f498"
+    },
+    {
+      "rank": 136,
+      "unicode": "1f6b4",
+      "glyph": "🚴",
+      "group": "People & Body",
+      "cldrName": "person biking",
+      "keywords": [
+        "bicycle",
+        "biking",
+        "cyclist",
+        "person biking"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person biking/metadata.json",
+      "colorSourcePath": "assets/Person biking/Default/Color/person_biking_color_default.svg",
+      "resourceKey": "fluent_1f6b4"
+    },
+    {
+      "rank": 137,
+      "unicode": "1f9f9",
+      "glyph": "🧹",
+      "group": "Objects",
+      "cldrName": "broom",
+      "keywords": [
+        "broom",
+        "cleaning",
+        "sweeping",
+        "witch"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Broom/metadata.json",
+      "colorSourcePath": "assets/Broom/Color/broom_color.svg",
+      "resourceKey": "fluent_1f9f9"
+    },
+    {
+      "rank": 138,
+      "unicode": "1f6b1",
+      "glyph": "🚱",
+      "group": "Symbols",
+      "cldrName": "non-potable water",
+      "keywords": [
+        "non-drinking",
+        "non-potable",
+        "water"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Non-potable water/metadata.json",
+      "colorSourcePath": "assets/Non-potable water/Color/non-potable_water_color.svg",
+      "resourceKey": "fluent_1f6b1"
+    },
+    {
+      "rank": 139,
+      "unicode": "1f9e7",
+      "glyph": "🧧",
+      "group": "Activities",
+      "cldrName": "red envelope",
+      "keywords": [
+        "gift",
+        "good luck",
+        "hóngbāo",
+        "lai see",
+        "money",
+        "red envelope"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Red envelope/metadata.json",
+      "colorSourcePath": "assets/Red envelope/Color/red_envelope_color.svg",
+      "resourceKey": "fluent_1f9e7"
+    },
+    {
+      "rank": 140,
+      "unicode": "1f4c5",
+      "glyph": "📅",
+      "group": "Objects",
+      "cldrName": "calendar",
+      "keywords": [
+        "calendar",
+        "date"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Calendar/metadata.json",
+      "colorSourcePath": "assets/Calendar/Color/calendar_color.svg",
+      "resourceKey": "fluent_1f4c5"
+    },
+    {
+      "rank": 141,
+      "unicode": "1f426",
+      "glyph": "🐦",
+      "group": "Animals & Nature",
+      "cldrName": "bird",
+      "keywords": [
+        "bird"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bird/metadata.json",
+      "colorSourcePath": "assets/Bird/Color/bird_color.svg",
+      "resourceKey": "fluent_1f426"
+    },
+    {
+      "rank": 142,
+      "unicode": "1f96b",
+      "glyph": "🥫",
+      "group": "Food & Drink",
+      "cldrName": "canned food",
+      "keywords": [
+        "can",
+        "canned food"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Canned food/metadata.json",
+      "colorSourcePath": "assets/Canned food/Color/canned_food_color.svg",
+      "resourceKey": "fluent_1f96b"
+    },
+    {
+      "rank": 143,
+      "unicode": "1f30d",
+      "glyph": "🌍",
+      "group": "Travel & Places",
+      "cldrName": "globe showing Europe-Africa",
+      "keywords": [
+        "Africa",
+        "earth",
+        "Europe",
+        "globe",
+        "globe showing Europe-Africa",
+        "world"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Globe showing europe-africa/metadata.json",
+      "colorSourcePath": "assets/Globe showing europe-africa/Color/globe_showing_europe-africa_color.svg",
+      "resourceKey": "fluent_1f30d"
+    },
+    {
+      "rank": 144,
+      "unicode": "1f49d",
+      "glyph": "💝",
+      "group": "Smileys & Emotion",
+      "cldrName": "heart with ribbon",
+      "keywords": [
+        "heart with ribbon",
+        "ribbon",
+        "valentine"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Heart with ribbon/metadata.json",
+      "colorSourcePath": "assets/Heart with ribbon/Color/heart_with_ribbon_color.svg",
+      "resourceKey": "fluent_1f49d"
+    },
+    {
+      "rank": 145,
+      "unicode": "1f938",
+      "glyph": "🤸",
+      "group": "People & Body",
+      "cldrName": "person cartwheeling",
+      "keywords": [
+        "cartwheel",
+        "gymnastics",
+        "person cartwheeling"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person cartwheeling/metadata.json",
+      "colorSourcePath": "assets/Person cartwheeling/Default/Color/person_cartwheeling_color_default.svg",
+      "resourceKey": "fluent_1f938"
+    },
+    {
+      "rank": 146,
+      "unicode": "1f3bd",
+      "glyph": "🎽",
+      "group": "Activities",
+      "cldrName": "running shirt",
+      "keywords": [
+        "athletics",
+        "running",
+        "sash",
+        "shirt"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Running shirt/metadata.json",
+      "colorSourcePath": "assets/Running shirt/Color/running_shirt_color.svg",
+      "resourceKey": "fluent_1f3bd"
+    },
+    {
+      "rank": 147,
+      "unicode": "1f4d5",
+      "glyph": "📕",
+      "group": "Objects",
+      "cldrName": "closed book",
+      "keywords": [
+        "book",
+        "closed"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Closed book/metadata.json",
+      "colorSourcePath": "assets/Closed book/Color/closed_book_color.svg",
+      "resourceKey": "fluent_1f4d5"
+    },
+    {
+      "rank": 148,
+      "unicode": "303d fe0f",
+      "glyph": "〽️",
+      "group": "Symbols",
+      "cldrName": "part alternation mark",
+      "keywords": [
+        "mark",
+        "part",
+        "part alternation mark"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Part alternation mark/metadata.json",
+      "colorSourcePath": "assets/Part alternation mark/Color/part_alternation_mark_color.svg",
+      "resourceKey": "fluent_303d_fe0f"
+    },
+    {
+      "rank": 149,
+      "unicode": "1f4bd",
+      "glyph": "💽",
+      "group": "Objects",
+      "cldrName": "computer disk",
+      "keywords": [
+        "computer",
+        "disk",
+        "minidisk",
+        "optical"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Computer disk/metadata.json",
+      "colorSourcePath": "assets/Computer disk/Color/computer_disk_color.svg",
+      "resourceKey": "fluent_1f4bd"
+    },
+    {
+      "rank": 150,
+      "unicode": "1f9ac",
+      "glyph": "🦬",
+      "group": "Animals & Nature",
+      "cldrName": "bison",
+      "keywords": [
+        "bison",
+        "buffalo",
+        "herd",
+        "wisent"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bison/metadata.json",
+      "colorSourcePath": "assets/Bison/Color/bison_color.svg",
+      "resourceKey": "fluent_1f9ac"
+    },
+    {
+      "rank": 151,
+      "unicode": "1f352",
+      "glyph": "🍒",
+      "group": "Food & Drink",
+      "cldrName": "cherries",
+      "keywords": [
+        "berries",
+        "cherries",
+        "cherry",
+        "fruit",
+        "red"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cherries/metadata.json",
+      "colorSourcePath": "assets/Cherries/Color/cherries_color.svg",
+      "resourceKey": "fluent_1f352"
+    },
+    {
+      "rank": 152,
+      "unicode": "1f310",
+      "glyph": "🌐",
+      "group": "Travel & Places",
+      "cldrName": "globe with meridians",
+      "keywords": [
+        "earth",
+        "globe",
+        "globe with meridians",
+        "meridians",
+        "world"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Globe with meridians/metadata.json",
+      "colorSourcePath": "assets/Globe with meridians/Color/globe_with_meridians_color.svg",
+      "resourceKey": "fluent_1f310"
+    },
+    {
+      "rank": 153,
+      "unicode": "1f384",
+      "glyph": "🎄",
+      "group": "Activities",
+      "cldrName": "Christmas tree",
+      "keywords": [
+        "celebration",
+        "Christmas",
+        "tree"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Christmas tree/metadata.json",
+      "colorSourcePath": "assets/Christmas tree/Color/christmas_tree_color.svg",
+      "resourceKey": "fluent_1f384"
+    },
+    {
+      "rank": 154,
+      "unicode": "1fa75",
+      "glyph": "🩵",
+      "group": "Smileys & Emotion",
+      "cldrName": "light blue heart",
+      "keywords": [
+        "cyan",
+        "heart",
+        "light blue",
+        "light blue heart",
+        "teal"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Light blue heart/metadata.json",
+      "colorSourcePath": "assets/Light blue heart/Color/light_blue_heart_color.svg",
+      "resourceKey": "fluent_1fa75"
+    },
+    {
+      "rank": 155,
+      "unicode": "1f6cc",
+      "glyph": "🛌",
+      "group": "People & Body",
+      "cldrName": "person in bed",
+      "keywords": [
+        "hotel",
+        "person in bed",
+        "sleep"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person in bed/metadata.json",
+      "colorSourcePath": "assets/Person in bed/Default/Color/person_in_bed_color_default.svg",
+      "resourceKey": "fluent_1f6cc"
+    },
+    {
+      "rank": 156,
+      "unicode": "1f5b1 fe0f",
+      "glyph": "🖱️",
+      "group": "Objects",
+      "cldrName": "computer mouse",
+      "keywords": [
+        "computer",
+        "computer mouse"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Computer mouse/metadata.json",
+      "colorSourcePath": "assets/Computer mouse/Color/computer_mouse_color.svg",
+      "resourceKey": "fluent_1f5b1_fe0f"
+    },
+    {
+      "rank": 157,
+      "unicode": "1f38e",
+      "glyph": "🎎",
+      "group": "Activities",
+      "cldrName": "Japanese dolls",
+      "keywords": [
+        "celebration",
+        "doll",
+        "festival",
+        "Japanese",
+        "Japanese dolls"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Japanese dolls/metadata.json",
+      "colorSourcePath": "assets/Japanese dolls/Color/japanese_dolls_color.svg",
+      "resourceKey": "fluent_1f38e"
+    },
+    {
+      "rank": 158,
+      "unicode": "1f426 200d 2b1b",
+      "glyph": "🐦‍⬛",
+      "group": "Animals & Nature",
+      "cldrName": "black bird",
+      "keywords": [
+        "bird",
+        "black",
+        "crow",
+        "raven",
+        "rook"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Blackbird/metadata.json",
+      "colorSourcePath": "assets/Blackbird/Color/blackbird_color.svg",
+      "resourceKey": "fluent_1f426_200d_2b1b"
+    },
+    {
+      "rank": 159,
+      "unicode": "1f330",
+      "glyph": "🌰",
+      "group": "Food & Drink",
+      "cldrName": "chestnut",
+      "keywords": [
+        "chestnut",
+        "plant"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chestnut/metadata.json",
+      "colorSourcePath": "assets/Chestnut/Color/chestnut_color.svg",
+      "resourceKey": "fluent_1f330"
+    },
+    {
+      "rank": 160,
+      "unicode": "231b",
+      "glyph": "⌛",
+      "group": "Travel & Places",
+      "cldrName": "hourglass done",
+      "keywords": [
+        "hourglass done",
+        "sand",
+        "timer"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Hourglass done/metadata.json",
+      "colorSourcePath": "assets/Hourglass done/Color/hourglass_done_color.svg",
+      "resourceKey": "fluent_231b"
+    },
+    {
+      "rank": 161,
+      "unicode": "1f39b fe0f",
+      "glyph": "🎛️",
+      "group": "Objects",
+      "cldrName": "control knobs",
+      "keywords": [
+        "control",
+        "knobs",
+        "music"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Control knobs/metadata.json",
+      "colorSourcePath": "assets/Control knobs/Color/control_knobs_color.svg",
+      "resourceKey": "fluent_1f39b_fe0f"
+    },
+    {
+      "rank": 162,
+      "unicode": "1f6c2",
+      "glyph": "🛂",
+      "group": "Symbols",
+      "cldrName": "passport control",
+      "keywords": [
+        "control",
+        "passport"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Passport control/metadata.json",
+      "colorSourcePath": "assets/Passport control/Color/passport_control_color.svg",
+      "resourceKey": "fluent_1f6c2"
+    },
+    {
+      "rank": 163,
+      "unicode": "1f48c",
+      "glyph": "💌",
+      "group": "Smileys & Emotion",
+      "cldrName": "love letter",
+      "keywords": [
+        "heart",
+        "letter",
+        "love",
+        "mail"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Love letter/metadata.json",
+      "colorSourcePath": "assets/Love letter/Color/love_letter_color.svg",
+      "resourceKey": "fluent_1f48c"
+    },
+    {
+      "rank": 164,
+      "unicode": "1f6b5",
+      "glyph": "🚵",
+      "group": "People & Body",
+      "cldrName": "person mountain biking",
+      "keywords": [
+        "bicycle",
+        "bicyclist",
+        "bike",
+        "cyclist",
+        "mountain",
+        "person mountain biking"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person mountain biking/metadata.json",
+      "colorSourcePath": "assets/Person mountain biking/Default/Color/person_mountain_biking_color_default.svg",
+      "resourceKey": "fluent_1f6b5"
+    },
+    {
+      "rank": 165,
+      "unicode": "1f39f fe0f",
+      "glyph": "🎟️",
+      "group": "Activities",
+      "cldrName": "admission tickets",
+      "keywords": [
+        "admission",
+        "admission tickets",
+        "ticket"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Admission tickets/metadata.json",
+      "colorSourcePath": "assets/Admission tickets/Color/admission_tickets_color.svg",
+      "resourceKey": "fluent_1f39f_fe0f"
+    },
+    {
+      "rank": 166,
+      "unicode": "1f4b3",
+      "glyph": "💳",
+      "group": "Objects",
+      "cldrName": "credit card",
+      "keywords": [
+        "card",
+        "credit",
+        "money"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Credit card/metadata.json",
+      "colorSourcePath": "assets/Credit card/Color/credit_card_color.svg",
+      "resourceKey": "fluent_1f4b3"
+    },
+    {
+      "rank": 167,
+      "unicode": "1f408 200d 2b1b",
+      "glyph": "🐈‍⬛",
+      "group": "Animals & Nature",
+      "cldrName": "black cat",
+      "keywords": [
+        "black",
+        "cat",
+        "unlucky"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Black cat/metadata.json",
+      "colorSourcePath": "assets/Black cat/Color/black_cat_color.svg",
+      "resourceKey": "fluent_1f408_200d_2b1b"
+    },
+    {
+      "rank": 168,
+      "unicode": "1f35a",
+      "glyph": "🍚",
+      "group": "Food & Drink",
+      "cldrName": "cooked rice",
+      "keywords": [
+        "cooked",
+        "rice"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cooked rice/metadata.json",
+      "colorSourcePath": "assets/Cooked rice/Color/cooked_rice_color.svg",
+      "resourceKey": "fluent_1f35a"
+    },
+    {
+      "rank": 169,
+      "unicode": "23f3",
+      "glyph": "⏳",
+      "group": "Travel & Places",
+      "cldrName": "hourglass not done",
+      "keywords": [
+        "hourglass",
+        "hourglass not done",
+        "sand",
+        "timer"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Hourglass not done/metadata.json",
+      "colorSourcePath": "assets/Hourglass not done/Color/hourglass_not_done_color.svg",
+      "resourceKey": "fluent_23f3"
+    },
+    {
+      "rank": 170,
+      "unicode": "1f5a5 fe0f",
+      "glyph": "🖥️",
+      "group": "Objects",
+      "cldrName": "desktop computer",
+      "keywords": [
+        "computer",
+        "desktop"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Desktop computer/metadata.json",
+      "colorSourcePath": "assets/Desktop computer/Color/desktop_computer_color.svg",
+      "resourceKey": "fluent_1f5a5_fe0f"
+    },
+    {
+      "rank": 171,
+      "unicode": "1f3c8",
+      "glyph": "🏈",
+      "group": "Activities",
+      "cldrName": "american football",
+      "keywords": [
+        "american",
+        "ball",
+        "football"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/American football/metadata.json",
+      "colorSourcePath": "assets/American football/Color/american_football_color.svg",
+      "resourceKey": "fluent_1f3c8"
+    },
+    {
+      "rank": 172,
+      "unicode": "1f6b0",
+      "glyph": "🚰",
+      "group": "Symbols",
+      "cldrName": "potable water",
+      "keywords": [
+        "drinking",
+        "potable",
+        "water"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Potable water/metadata.json",
+      "colorSourcePath": "assets/Potable water/Color/potable_water_color.svg",
+      "resourceKey": "fluent_1f6b0"
+    },
+    {
+      "rank": 173,
+      "unicode": "1f9e1",
+      "glyph": "🧡",
+      "group": "Smileys & Emotion",
+      "cldrName": "orange heart",
+      "keywords": [
+        "orange",
+        "orange heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Orange heart/metadata.json",
+      "colorSourcePath": "assets/Orange heart/Color/orange_heart_color.svg",
+      "resourceKey": "fluent_1f9e1"
+    },
+    {
+      "rank": 174,
+      "unicode": "1f93d",
+      "glyph": "🤽",
+      "group": "People & Body",
+      "cldrName": "person playing water polo",
+      "keywords": [
+        "person playing water polo",
+        "polo",
+        "water"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person playing water polo/metadata.json",
+      "colorSourcePath": "assets/Person playing water polo/Default/Color/person_playing_water_polo_color_default.svg",
+      "resourceKey": "fluent_1f93d"
+    },
+    {
+      "rank": 175,
+      "unicode": "1f941",
+      "glyph": "🥁",
+      "group": "Objects",
+      "cldrName": "drum",
+      "keywords": [
+        "drum",
+        "drumsticks",
+        "music"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Drum/metadata.json",
+      "colorSourcePath": "assets/Drum/Color/drum_color.svg",
+      "resourceKey": "fluent_1f941"
+    },
+    {
+      "rank": 176,
+      "unicode": "1f33c",
+      "glyph": "🌼",
+      "group": "Animals & Nature",
+      "cldrName": "blossom",
+      "keywords": [
+        "blossom",
+        "flower"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Blossom/metadata.json",
+      "colorSourcePath": "assets/Blossom/Color/blossom_color.svg",
+      "resourceKey": "fluent_1f33c"
+    },
+    {
+      "rank": 177,
+      "unicode": "1f36a",
+      "glyph": "🍪",
+      "group": "Food & Drink",
+      "cldrName": "cookie",
+      "keywords": [
+        "cookie",
+        "dessert",
+        "sweet"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cookie/metadata.json",
+      "colorSourcePath": "assets/Cookie/Color/cookie_color.svg",
+      "resourceKey": "fluent_1f36a"
+    },
+    {
+      "rank": 178,
+      "unicode": "1f3e0",
+      "glyph": "🏠",
+      "group": "Travel & Places",
+      "cldrName": "house",
+      "keywords": [
+        "home",
+        "house"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/House/metadata.json",
+      "colorSourcePath": "assets/House/Color/house_color.svg",
+      "resourceKey": "fluent_1f3e0"
+    },
+    {
+      "rank": 179,
+      "unicode": "1f3f8",
+      "glyph": "🏸",
+      "group": "Activities",
+      "cldrName": "badminton",
+      "keywords": [
+        "badminton",
+        "birdie",
+        "game",
+        "racquet",
+        "shuttlecock"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Badminton/metadata.json",
+      "colorSourcePath": "assets/Badminton/Color/badminton_color.svg",
+      "resourceKey": "fluent_1f3f8"
+    },
+    {
+      "rank": 180,
+      "unicode": "1f4c0",
+      "glyph": "📀",
+      "group": "Objects",
+      "cldrName": "dvd",
+      "keywords": [
+        "blu-ray",
+        "computer",
+        "disk",
+        "dvd",
+        "optical"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Dvd/metadata.json",
+      "colorSourcePath": "assets/Dvd/Color/dvd_color.svg",
+      "resourceKey": "fluent_1f4c0"
+    },
+    {
+      "rank": 181,
+      "unicode": "1fa77",
+      "glyph": "🩷",
+      "group": "Smileys & Emotion",
+      "cldrName": "pink heart",
+      "keywords": [
+        "cute",
+        "heart",
+        "like",
+        "love",
+        "pink"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Pink heart/metadata.json",
+      "colorSourcePath": "assets/Pink heart/Color/pink_heart_color.svg",
+      "resourceKey": "fluent_1fa77"
+    },
+    {
+      "rank": 182,
+      "unicode": "1f3c3",
+      "glyph": "🏃",
+      "group": "People & Body",
+      "cldrName": "person running",
+      "keywords": [
+        "marathon",
+        "person running",
+        "running"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person running/metadata.json",
+      "colorSourcePath": "assets/Person running/Default/Color/person_running_color_default.svg",
+      "resourceKey": "fluent_1f3c3"
+    },
+    {
+      "rank": 183,
+      "unicode": "1f421",
+      "glyph": "🐡",
+      "group": "Animals & Nature",
+      "cldrName": "blowfish",
+      "keywords": [
+        "blowfish",
+        "fish"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Blowfish/metadata.json",
+      "colorSourcePath": "assets/Blowfish/Color/blowfish_color.svg",
+      "resourceKey": "fluent_1f421"
+    },
+    {
+      "rank": 184,
+      "unicode": "1f373",
+      "glyph": "🍳",
+      "group": "Food & Drink",
+      "cldrName": "cooking",
+      "keywords": [
+        "breakfast",
+        "cooking",
+        "egg",
+        "frying",
+        "pan"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cooking/metadata.json",
+      "colorSourcePath": "assets/Cooking/Color/cooking_color.svg",
+      "resourceKey": "fluent_1f373"
+    },
+    {
+      "rank": 185,
+      "unicode": "1f3e1",
+      "glyph": "🏡",
+      "group": "Travel & Places",
+      "cldrName": "house with garden",
+      "keywords": [
+        "garden",
+        "home",
+        "house",
+        "house with garden"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/House with garden/metadata.json",
+      "colorSourcePath": "assets/House with garden/Color/house_with_garden_color.svg",
+      "resourceKey": "fluent_1f3e1"
+    },
+    {
+      "rank": 186,
+      "unicode": "1f388",
+      "glyph": "🎈",
+      "group": "Activities",
+      "cldrName": "balloon",
+      "keywords": [
+        "balloon",
+        "celebration"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Balloon/metadata.json",
+      "colorSourcePath": "assets/Balloon/Color/balloon_color.svg",
+      "resourceKey": "fluent_1f388"
+    },
+    {
+      "rank": 187,
+      "unicode": "1f9ef",
+      "glyph": "🧯",
+      "group": "Objects",
+      "cldrName": "fire extinguisher",
+      "keywords": [
+        "extinguish",
+        "fire",
+        "fire extinguisher",
+        "quench"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fire extinguisher/metadata.json",
+      "colorSourcePath": "assets/Fire extinguisher/Color/fire_extinguisher_color.svg",
+      "resourceKey": "fluent_1f9ef"
+    },
+    {
+      "rank": 188,
+      "unicode": "2747 fe0f",
+      "glyph": "❇️",
+      "group": "Symbols",
+      "cldrName": "sparkle",
+      "keywords": [
+        "*",
+        "sparkle"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Sparkle/metadata.json",
+      "colorSourcePath": "assets/Sparkle/Color/sparkle_color.svg",
+      "resourceKey": "fluent_2747_fe0f"
+    },
+    {
+      "rank": 189,
+      "unicode": "1f3f4 200d 2620 fe0f",
+      "glyph": "🏴‍☠️",
+      "group": "Flags",
+      "cldrName": "pirate flag",
+      "keywords": [
+        "Jolly Roger",
+        "pirate",
+        "pirate flag",
+        "plunder",
+        "treasure"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Pirate flag/metadata.json",
+      "colorSourcePath": "assets/Pirate flag/Color/pirate_flag_color.svg",
+      "resourceKey": "fluent_1f3f4_200d_2620_fe0f"
+    },
+    {
+      "rank": 190,
+      "unicode": "1f4be",
+      "glyph": "💾",
+      "group": "Objects",
+      "cldrName": "floppy disk",
+      "keywords": [
+        "computer",
+        "disk",
+        "floppy"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Floppy disk/metadata.json",
+      "colorSourcePath": "assets/Floppy disk/Color/floppy_disk_color.svg",
+      "resourceKey": "fluent_1f4be"
+    },
+    {
+      "rank": 191,
+      "unicode": "26be",
+      "glyph": "⚾",
+      "group": "Activities",
+      "cldrName": "baseball",
+      "keywords": [
+        "ball",
+        "baseball"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Baseball/metadata.json",
+      "colorSourcePath": "assets/Baseball/Color/baseball_color.svg",
+      "resourceKey": "fluent_26be"
+    },
+    {
+      "rank": 192,
+      "unicode": "1f417",
+      "glyph": "🐗",
+      "group": "Animals & Nature",
+      "cldrName": "boar",
+      "keywords": [
+        "boar",
+        "pig"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Boar/metadata.json",
+      "colorSourcePath": "assets/Boar/Color/boar_color.svg",
+      "resourceKey": "fluent_1f417"
+    },
+    {
+      "rank": 193,
+      "unicode": "1f950",
+      "glyph": "🥐",
+      "group": "Food & Drink",
+      "cldrName": "croissant",
+      "keywords": [
+        "bread",
+        "breakfast",
+        "croissant",
+        "food",
+        "french",
+        "roll"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Croissant/metadata.json",
+      "colorSourcePath": "assets/Croissant/Color/croissant_color.svg",
+      "resourceKey": "fluent_1f950"
+    },
+    {
+      "rank": 194,
+      "unicode": "1f317",
+      "glyph": "🌗",
+      "group": "Travel & Places",
+      "cldrName": "last quarter moon",
+      "keywords": [
+        "last quarter moon",
+        "moon",
+        "quarter"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Last quarter moon/metadata.json",
+      "colorSourcePath": "assets/Last quarter moon/Color/last_quarter_moon_color.svg",
+      "resourceKey": "fluent_1f317"
+    },
+    {
+      "rank": 195,
+      "unicode": "1f49c",
+      "glyph": "💜",
+      "group": "Smileys & Emotion",
+      "cldrName": "purple heart",
+      "keywords": [
+        "purple",
+        "purple heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Purple heart/metadata.json",
+      "colorSourcePath": "assets/Purple heart/Color/purple_heart_color.svg",
+      "resourceKey": "fluent_1f49c"
+    },
+    {
+      "rank": 196,
+      "unicode": "1f3c3 200d 27a1 fe0f",
+      "glyph": "🏃‍➡️",
+      "group": "People & Body",
+      "cldrName": "person running facing right",
+      "keywords": [
+        "marathon",
+        "person running",
+        "running"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person running facing right/metadata.json",
+      "colorSourcePath": "assets/Person running facing right/Default/Color/person_running_facing_right_color_default.svg",
+      "resourceKey": "fluent_1f3c3_200d_27a1_fe0f"
+    },
+    {
+      "rank": 197,
+      "unicode": "1fa88",
+      "glyph": "🪈",
+      "group": "Objects",
+      "cldrName": "flute",
+      "keywords": [
+        "fife",
+        "flute",
+        "music",
+        "pipe",
+        "recorder",
+        "woodwind"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Flute/metadata.json",
+      "colorSourcePath": "assets/Flute/Color/flute_color.svg",
+      "resourceKey": "fluent_1fa88"
+    },
+    {
+      "rank": 198,
+      "unicode": "262a fe0f",
+      "glyph": "☪️",
+      "group": "Symbols",
+      "cldrName": "star and crescent",
+      "keywords": [
+        "islam",
+        "Muslim",
+        "religion",
+        "star and crescent"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Star and crescent/metadata.json",
+      "colorSourcePath": "assets/Star and crescent/Color/star_and_crescent_color.svg",
+      "resourceKey": "fluent_262a_fe0f"
+    },
+    {
+      "rank": 199,
+      "unicode": "1f3c0",
+      "glyph": "🏀",
+      "group": "Activities",
+      "cldrName": "basketball",
+      "keywords": [
+        "ball",
+        "basketball",
+        "hoop"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Basketball/metadata.json",
+      "colorSourcePath": "assets/Basketball/Color/basketball_color.svg",
+      "resourceKey": "fluent_1f3c0"
+    },
+    {
+      "rank": 200,
+      "unicode": "1f97d",
+      "glyph": "🥽",
+      "group": "Objects",
+      "cldrName": "goggles",
+      "keywords": [
+        "eye protection",
+        "goggles",
+        "swimming",
+        "welding"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Goggles/metadata.json",
+      "colorSourcePath": "assets/Goggles/Color/goggles_color.svg",
+      "resourceKey": "fluent_1f97d"
+    },
+    {
+      "rank": 201,
+      "unicode": "1f490",
+      "glyph": "💐",
+      "group": "Animals & Nature",
+      "cldrName": "bouquet",
+      "keywords": [
+        "bouquet",
+        "flower"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bouquet/metadata.json",
+      "colorSourcePath": "assets/Bouquet/Color/bouquet_color.svg",
+      "resourceKey": "fluent_1f490"
+    },
+    {
+      "rank": 202,
+      "unicode": "1f36e",
+      "glyph": "🍮",
+      "group": "Food & Drink",
+      "cldrName": "custard",
+      "keywords": [
+        "custard",
+        "dessert",
+        "pudding",
+        "sweet"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Custard/metadata.json",
+      "colorSourcePath": "assets/Custard/Color/custard_color.svg",
+      "resourceKey": "fluent_1f36e"
+    },
+    {
+      "rank": 203,
+      "unicode": "1f31c",
+      "glyph": "🌜",
+      "group": "Travel & Places",
+      "cldrName": "last quarter moon face",
+      "keywords": [
+        "face",
+        "last quarter moon face",
+        "moon",
+        "quarter"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Last quarter moon face/metadata.json",
+      "colorSourcePath": "assets/Last quarter moon face/Color/last_quarter_moon_face_color.svg",
+      "resourceKey": "fluent_1f31c"
+    },
+    {
+      "rank": 204,
+      "unicode": "2764 fe0f",
+      "glyph": "❤️",
+      "group": "Smileys & Emotion",
+      "cldrName": "red heart",
+      "keywords": [
+        "heart",
+        "red heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Red heart/metadata.json",
+      "colorSourcePath": "assets/Red heart/Color/red_heart_color.svg",
+      "resourceKey": "fluent_2764_fe0f"
+    },
+    {
+      "rank": 205,
+      "unicode": "1f3ca",
+      "glyph": "🏊",
+      "group": "People & Body",
+      "cldrName": "person swimming",
+      "keywords": [
+        "person swimming",
+        "swim"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person swimming/metadata.json",
+      "colorSourcePath": "assets/Person swimming/Default/Color/person_swimming_color_default.svg",
+      "resourceKey": "fluent_1f3ca"
+    },
+    {
+      "rank": 206,
+      "unicode": "1f3b3",
+      "glyph": "🎳",
+      "group": "Activities",
+      "cldrName": "bowling",
+      "keywords": [
+        "ball",
+        "bowling",
+        "game"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bowling/metadata.json",
+      "colorSourcePath": "assets/Bowling/Color/bowling_color.svg",
+      "resourceKey": "fluent_1f3b3"
+    },
+    {
+      "rank": 207,
+      "unicode": "1f4d7",
+      "glyph": "📗",
+      "group": "Objects",
+      "cldrName": "green book",
+      "keywords": [
+        "book",
+        "green"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Green book/metadata.json",
+      "colorSourcePath": "assets/Green book/Color/green_book_color.svg",
+      "resourceKey": "fluent_1f4d7"
+    },
+    {
+      "rank": 208,
+      "unicode": "2721 fe0f",
+      "glyph": "✡️",
+      "group": "Symbols",
+      "cldrName": "star of David",
+      "keywords": [
+        "David",
+        "Jew",
+        "Jewish",
+        "religion",
+        "star",
+        "star of David"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Star of david/metadata.json",
+      "colorSourcePath": "assets/Star of david/Color/star_of_david_color.svg",
+      "resourceKey": "fluent_2721_fe0f"
+    },
+    {
+      "rank": 209,
+      "unicode": "1f3b8",
+      "glyph": "🎸",
+      "group": "Objects",
+      "cldrName": "guitar",
+      "keywords": [
+        "guitar",
+        "instrument",
+        "music"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Guitar/metadata.json",
+      "colorSourcePath": "assets/Guitar/Color/guitar_color.svg",
+      "resourceKey": "fluent_1f3b8"
+    },
+    {
+      "rank": 210,
+      "unicode": "1f41b",
+      "glyph": "🐛",
+      "group": "Animals & Nature",
+      "cldrName": "bug",
+      "keywords": [
+        "bug",
+        "insect"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Bug/metadata.json",
+      "colorSourcePath": "assets/Bug/Color/bug_color.svg",
+      "resourceKey": "fluent_1f41b"
+    },
+    {
+      "rank": 211,
+      "unicode": "1f95a",
+      "glyph": "🥚",
+      "group": "Food & Drink",
+      "cldrName": "egg",
+      "keywords": [
+        "breakfast",
+        "egg",
+        "food"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Egg/metadata.json",
+      "colorSourcePath": "assets/Egg/Color/egg_color.svg",
+      "resourceKey": "fluent_1f95a"
+    },
+    {
+      "rank": 212,
+      "unicode": "1f9f3",
+      "glyph": "🧳",
+      "group": "Travel & Places",
+      "cldrName": "luggage",
+      "keywords": [
+        "luggage",
+        "packing",
+        "travel"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Luggage/metadata.json",
+      "colorSourcePath": "assets/Luggage/Color/luggage_color.svg",
+      "resourceKey": "fluent_1f9f3"
+    },
+    {
+      "rank": 213,
+      "unicode": "1f94a",
+      "glyph": "🥊",
+      "group": "Activities",
+      "cldrName": "boxing glove",
+      "keywords": [
+        "boxing",
+        "glove"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Boxing glove/metadata.json",
+      "colorSourcePath": "assets/Boxing glove/Color/boxing_glove_color.svg",
+      "resourceKey": "fluent_1f94a"
+    },
+    {
+      "rank": 214,
+      "unicode": "1f49e",
+      "glyph": "💞",
+      "group": "Smileys & Emotion",
+      "cldrName": "revolving hearts",
+      "keywords": [
+        "revolving",
+        "revolving hearts"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Revolving hearts/metadata.json",
+      "colorSourcePath": "assets/Revolving hearts/Color/revolving_hearts_color.svg",
+      "resourceKey": "fluent_1f49e"
+    },
+    {
+      "rank": 215,
+      "unicode": "1f6b6",
+      "glyph": "🚶",
+      "group": "People & Body",
+      "cldrName": "person walking",
+      "keywords": [
+        "hike",
+        "person walking",
+        "walk",
+        "walking"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person walking/metadata.json",
+      "colorSourcePath": "assets/Person walking/Default/Color/person_walking_color_default.svg",
+      "resourceKey": "fluent_1f6b6"
+    },
+    {
+      "rank": 216,
+      "unicode": "2328 fe0f",
+      "glyph": "⌨️",
+      "group": "Objects",
+      "cldrName": "keyboard",
+      "keywords": [
+        "computer",
+        "keyboard"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Keyboard/metadata.json",
+      "colorSourcePath": "assets/Keyboard/Color/keyboard_color.svg",
+      "resourceKey": "fluent_2328_fe0f"
+    },
+    {
+      "rank": 217,
+      "unicode": "1f38f",
+      "glyph": "🎏",
+      "group": "Activities",
+      "cldrName": "carp streamer",
+      "keywords": [
+        "carp",
+        "celebration",
+        "streamer"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Carp streamer/metadata.json",
+      "colorSourcePath": "assets/Carp streamer/Color/carp_streamer_color.svg",
+      "resourceKey": "fluent_1f38f"
+    },
+    {
+      "rank": 218,
+      "unicode": "1f98b",
+      "glyph": "🦋",
+      "group": "Animals & Nature",
+      "cldrName": "butterfly",
+      "keywords": [
+        "butterfly",
+        "insect",
+        "pretty"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Butterfly/metadata.json",
+      "colorSourcePath": "assets/Butterfly/Color/butterfly_color.svg",
+      "resourceKey": "fluent_1f98b"
+    },
+    {
+      "rank": 219,
+      "unicode": "1f374",
+      "glyph": "🍴",
+      "group": "Food & Drink",
+      "cldrName": "fork and knife",
+      "keywords": [
+        "cooking",
+        "cutlery",
+        "fork",
+        "fork and knife",
+        "knife"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fork and knife/metadata.json",
+      "colorSourcePath": "assets/Fork and knife/Color/fork_and_knife_color.svg",
+      "resourceKey": "fluent_1f374"
+    },
+    {
+      "rank": 220,
+      "unicode": "1f303",
+      "glyph": "🌃",
+      "group": "Travel & Places",
+      "cldrName": "night with stars",
+      "keywords": [
+        "night",
+        "night with stars",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Night with stars/metadata.json",
+      "colorSourcePath": "assets/Night with stars/Color/night_with_stars_color.svg",
+      "resourceKey": "fluent_1f303"
+    },
+    {
+      "rank": 221,
+      "unicode": "1fa9c",
+      "glyph": "🪜",
+      "group": "Objects",
+      "cldrName": "ladder",
+      "keywords": [
+        "climb",
+        "ladder",
+        "rung",
+        "step"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ladder/metadata.json",
+      "colorSourcePath": "assets/Ladder/Color/ladder_color.svg",
+      "resourceKey": "fluent_1fa9c"
+    },
+    {
+      "rank": 222,
+      "unicode": "1f6be",
+      "glyph": "🚾",
+      "group": "Symbols",
+      "cldrName": "water closet",
+      "keywords": [
+        "closet",
+        "lavatory",
+        "restroom",
+        "water",
+        "wc"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Water closet/metadata.json",
+      "colorSourcePath": "assets/Water closet/Color/water_closet_color.svg",
+      "resourceKey": "fluent_1f6be"
+    },
+    {
+      "rank": 223,
+      "unicode": "1f63b",
+      "glyph": "😻",
+      "group": "Smileys & Emotion",
+      "cldrName": "smiling cat with heart-eyes",
+      "keywords": [
+        "cat",
+        "eye",
+        "face",
+        "heart",
+        "love",
+        "smile",
+        "smiling cat with heart-eyes"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Smiling cat with heart-eyes/metadata.json",
+      "colorSourcePath": "assets/Smiling cat with heart-eyes/Color/smiling_cat_with_heart-eyes_color.svg",
+      "resourceKey": "fluent_1f63b"
+    },
+    {
+      "rank": 224,
+      "unicode": "1f6b6 200d 27a1 fe0f",
+      "glyph": "🚶‍➡️",
+      "group": "People & Body",
+      "cldrName": "person walking facing right",
+      "keywords": [
+        "hike",
+        "person walking",
+        "walk",
+        "walking"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person walking facing right/metadata.json",
+      "colorSourcePath": "assets/Person walking facing right/Default/Color/person_walking_facing_right_color_default.svg",
+      "resourceKey": "fluent_1f6b6_200d_27a1_fe0f"
+    },
+    {
+      "rank": 225,
+      "unicode": "265f fe0f",
+      "glyph": "♟️",
+      "group": "Activities",
+      "cldrName": "chess pawn",
+      "keywords": [
+        "chess",
+        "chess pawn",
+        "dupe",
+        "expendable"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chess pawn/metadata.json",
+      "colorSourcePath": "assets/Chess pawn/Color/chess_pawn_color.svg",
+      "resourceKey": "fluent_265f_fe0f"
+    },
+    {
+      "rank": 226,
+      "unicode": "1f4d2",
+      "glyph": "📒",
+      "group": "Objects",
+      "cldrName": "ledger",
+      "keywords": [
+        "ledger",
+        "notebook"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ledger/metadata.json",
+      "colorSourcePath": "assets/Ledger/Color/ledger_color.svg",
+      "resourceKey": "fluent_1f4d2"
+    },
+    {
+      "rank": 227,
+      "unicode": "1f42a",
+      "glyph": "🐪",
+      "group": "Animals & Nature",
+      "cldrName": "camel",
+      "keywords": [
+        "camel",
+        "dromedary",
+        "hump"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Camel/metadata.json",
+      "colorSourcePath": "assets/Camel/Color/camel_color.svg",
+      "resourceKey": "fluent_1f42a"
+    },
+    {
+      "rank": 228,
+      "unicode": "1f37d fe0f",
+      "glyph": "🍽️",
+      "group": "Food & Drink",
+      "cldrName": "fork and knife with plate",
+      "keywords": [
+        "cooking",
+        "fork",
+        "fork and knife with plate",
+        "knife",
+        "plate"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fork and knife with plate/metadata.json",
+      "colorSourcePath": "assets/Fork and knife with plate/Color/fork_and_knife_with_plate_color.svg",
+      "resourceKey": "fluent_1f37d_fe0f"
+    },
+    {
+      "rank": 229,
+      "unicode": "1f3e2",
+      "glyph": "🏢",
+      "group": "Travel & Places",
+      "cldrName": "office building",
+      "keywords": [
+        "building",
+        "office building"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Office building/metadata.json",
+      "colorSourcePath": "assets/Office building/Color/office_building_color.svg",
+      "resourceKey": "fluent_1f3e2"
+    },
+    {
+      "rank": 230,
+      "unicode": "1f39a fe0f",
+      "glyph": "🎚️",
+      "group": "Objects",
+      "cldrName": "level slider",
+      "keywords": [
+        "level",
+        "music",
+        "slider"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Level slider/metadata.json",
+      "colorSourcePath": "assets/Level slider/Color/level_slider_color.svg",
+      "resourceKey": "fluent_1f39a_fe0f"
+    },
+    {
+      "rank": 231,
+      "unicode": "2663 fe0f",
+      "glyph": "♣️",
+      "group": "Activities",
+      "cldrName": "club suit",
+      "keywords": [
+        "card",
+        "club suit",
+        "game"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Club suit/metadata.json",
+      "colorSourcePath": "assets/Club suit/Color/club_suit_color.svg",
+      "resourceKey": "fluent_2663_fe0f"
+    },
+    {
+      "rank": 232,
+      "unicode": "1f170 fe0f",
+      "glyph": "🅰️",
+      "group": "Symbols",
+      "cldrName": "A button (blood type)",
+      "keywords": [
+        "a",
+        "A button (blood type)",
+        "blood type"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/A button blood type/metadata.json",
+      "colorSourcePath": "assets/A button blood type/Color/a_button_blood_type_color.svg",
+      "resourceKey": "fluent_1f170_fe0f"
+    },
+    {
+      "rank": 233,
+      "unicode": "1f60d",
+      "glyph": "😍",
+      "group": "Smileys & Emotion",
+      "cldrName": "smiling face with heart-eyes",
+      "keywords": [
+        "eye",
+        "face",
+        "love",
+        "smile",
+        "smiling face with heart-eyes"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Smiling face with heart-eyes/metadata.json",
+      "colorSourcePath": "assets/Smiling face with heart-eyes/Color/smiling_face_with_heart-eyes_color.svg",
+      "resourceKey": "fluent_1f60d"
+    },
+    {
+      "rank": 234,
+      "unicode": "1f46e",
+      "glyph": "👮",
+      "group": "People & Body",
+      "cldrName": "police officer",
+      "keywords": [
+        "cop",
+        "officer",
+        "police"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Police officer/metadata.json",
+      "colorSourcePath": "assets/Police officer/Default/Color/police_officer_color_default.svg",
+      "resourceKey": "fluent_1f46e"
+    },
+    {
+      "rank": 235,
+      "unicode": "1fa87",
+      "glyph": "🪇",
+      "group": "Objects",
+      "cldrName": "maracas",
+      "keywords": [
+        "instrument",
+        "maracas",
+        "music",
+        "percussion",
+        "rattle",
+        "shake"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Maracas/metadata.json",
+      "colorSourcePath": "assets/Maracas/Color/maracas_color.svg",
+      "resourceKey": "fluent_1fa87"
+    },
+    {
+      "rank": 236,
+      "unicode": "1f408",
+      "glyph": "🐈",
+      "group": "Animals & Nature",
+      "cldrName": "cat",
+      "keywords": [
+        "cat",
+        "pet"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cat/metadata.json",
+      "colorSourcePath": "assets/Cat/Color/cat_color.svg",
+      "resourceKey": "fluent_1f408"
+    },
+    {
+      "rank": 237,
+      "unicode": "1f960",
+      "glyph": "🥠",
+      "group": "Food & Drink",
+      "cldrName": "fortune cookie",
+      "keywords": [
+        "fortune cookie",
+        "prophecy"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fortune cookie/metadata.json",
+      "colorSourcePath": "assets/Fortune cookie/Color/fortune_cookie_color.svg",
+      "resourceKey": "fluent_1f960"
+    },
+    {
+      "rank": 238,
+      "unicode": "1f3e4",
+      "glyph": "🏤",
+      "group": "Travel & Places",
+      "cldrName": "post office",
+      "keywords": [
+        "European",
+        "post",
+        "post office"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Post office/metadata.json",
+      "colorSourcePath": "assets/Post office/Color/post_office_color.svg",
+      "resourceKey": "fluent_1f3e4"
+    },
+    {
+      "rank": 239,
+      "unicode": "1f38a",
+      "glyph": "🎊",
+      "group": "Activities",
+      "cldrName": "confetti ball",
+      "keywords": [
+        "ball",
+        "celebration",
+        "confetti"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Confetti ball/metadata.json",
+      "colorSourcePath": "assets/Confetti ball/Color/confetti_ball_color.svg",
+      "resourceKey": "fluent_1f38a"
+    },
+    {
+      "rank": 240,
+      "unicode": "1f4dd",
+      "glyph": "📝",
+      "group": "Objects",
+      "cldrName": "memo",
+      "keywords": [
+        "memo",
+        "pencil"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Memo/metadata.json",
+      "colorSourcePath": "assets/Memo/Color/memo_color.svg",
+      "resourceKey": "fluent_1f4dd"
+    },
+    {
+      "rank": 241,
+      "unicode": "1f970",
+      "glyph": "🥰",
+      "group": "Smileys & Emotion",
+      "cldrName": "smiling face with hearts",
+      "keywords": [
+        "adore",
+        "crush",
+        "hearts",
+        "in love",
+        "smiling face with hearts"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Smiling face with hearts/metadata.json",
+      "colorSourcePath": "assets/Smiling face with hearts/Color/smiling_face_with_hearts_color.svg",
+      "resourceKey": "fluent_1f970"
+    },
+    {
+      "rank": 242,
+      "unicode": "1f9d1 200d 1f3a4",
+      "glyph": "🧑‍🎤",
+      "group": "People & Body",
+      "cldrName": "singer",
+      "keywords": [
+        "actor",
+        "entertainer",
+        "rock",
+        "singer",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Singer/metadata.json",
+      "colorSourcePath": "assets/Singer/Default/Color/singer_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f3a4"
+    },
+    {
+      "rank": 243,
+      "unicode": "1f431",
+      "glyph": "🐱",
+      "group": "Animals & Nature",
+      "cldrName": "cat face",
+      "keywords": [
+        "cat",
+        "face",
+        "pet"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cat face/metadata.json",
+      "colorSourcePath": "assets/Cat face/Color/cat_face_color.svg",
+      "resourceKey": "fluent_1f431"
+    },
+    {
+      "rank": 244,
+      "unicode": "1f347",
+      "glyph": "🍇",
+      "group": "Food & Drink",
+      "cldrName": "grapes",
+      "keywords": [
+        "fruit",
+        "grape",
+        "grapes"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Grapes/metadata.json",
+      "colorSourcePath": "assets/Grapes/Color/grapes_color.svg",
+      "resourceKey": "fluent_1f347"
+    },
+    {
+      "rank": 245,
+      "unicode": "1f6df",
+      "glyph": "🛟",
+      "group": "Travel & Places",
+      "cldrName": "ring buoy",
+      "keywords": [
+        "float",
+        "life preserver",
+        "life saver",
+        "rescue",
+        "ring buoy",
+        "safety"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ring buoy/metadata.json",
+      "colorSourcePath": "assets/Ring buoy/Color/ring_buoy_color.svg",
+      "resourceKey": "fluent_1f6df"
+    },
+    {
+      "rank": 246,
+      "unicode": "1f3cf",
+      "glyph": "🏏",
+      "group": "Activities",
+      "cldrName": "cricket game",
+      "keywords": [
+        "ball",
+        "bat",
+        "cricket game",
+        "game"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cricket game/metadata.json",
+      "colorSourcePath": "assets/Cricket game/Color/cricket_game_color.svg",
+      "resourceKey": "fluent_1f3cf"
+    },
+    {
+      "rank": 247,
+      "unicode": "1f3b9",
+      "glyph": "🎹",
+      "group": "Objects",
+      "cldrName": "musical keyboard",
+      "keywords": [
+        "instrument",
+        "keyboard",
+        "music",
+        "musical keyboard",
+        "piano"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Musical keyboard/metadata.json",
+      "colorSourcePath": "assets/Musical keyboard/Color/musical_keyboard_color.svg",
+      "resourceKey": "fluent_1f3b9"
+    },
+    {
+      "rank": 248,
+      "unicode": "1f18e",
+      "glyph": "🆎",
+      "group": "Symbols",
+      "cldrName": "AB button (blood type)",
+      "keywords": [
+        "ab",
+        "AB button (blood type)",
+        "blood type"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ab button blood type/metadata.json",
+      "colorSourcePath": "assets/Ab button blood type/Color/ab_button_blood_type_color.svg",
+      "resourceKey": "fluent_1f18e"
+    },
+    {
+      "rank": 249,
+      "unicode": "1f3f3 fe0f 200d 1f308",
+      "glyph": "🏳️‍🌈",
+      "group": "Flags",
+      "cldrName": "rainbow flag",
+      "keywords": [
+        "pride",
+        "rainbow",
+        "rainbow flag"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Rainbow flag/metadata.json",
+      "colorSourcePath": "assets/Rainbow flag/Color/rainbow_flag_color.svg",
+      "resourceKey": "fluent_1f3f3_fe0f_200d_1f308"
+    },
+    {
+      "rank": 250,
+      "unicode": "1f3b5",
+      "glyph": "🎵",
+      "group": "Objects",
+      "cldrName": "musical note",
+      "keywords": [
+        "music",
+        "musical note",
+        "note"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Musical note/metadata.json",
+      "colorSourcePath": "assets/Musical note/Color/musical_note_color.svg",
+      "resourceKey": "fluent_1f3b5"
+    },
+    {
+      "rank": 251,
+      "unicode": "1f52e",
+      "glyph": "🔮",
+      "group": "Activities",
+      "cldrName": "crystal ball",
+      "keywords": [
+        "ball",
+        "crystal",
+        "fairy tale",
+        "fantasy",
+        "fortune",
+        "tool"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Crystal ball/metadata.json",
+      "colorSourcePath": "assets/Crystal ball/Color/crystal_ball_color.svg",
+      "resourceKey": "fluent_1f52e"
+    },
+    {
+      "rank": 252,
+      "unicode": "1f338",
+      "glyph": "🌸",
+      "group": "Animals & Nature",
+      "cldrName": "cherry blossom",
+      "keywords": [
+        "blossom",
+        "cherry",
+        "flower"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cherry blossom/metadata.json",
+      "colorSourcePath": "assets/Cherry blossom/Color/cherry_blossom_color.svg",
+      "resourceKey": "fluent_1f338"
+    },
+    {
+      "rank": 253,
+      "unicode": "1f34f",
+      "glyph": "🍏",
+      "group": "Food & Drink",
+      "cldrName": "green apple",
+      "keywords": [
+        "apple",
+        "fruit",
+        "green"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Green apple/metadata.json",
+      "colorSourcePath": "assets/Green apple/Color/green_apple_color.svg",
+      "resourceKey": "fluent_1f34f"
+    },
+    {
+      "rank": 254,
+      "unicode": "1f3eb",
+      "glyph": "🏫",
+      "group": "Travel & Places",
+      "cldrName": "school",
+      "keywords": [
+        "building",
+        "school"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/School/metadata.json",
+      "colorSourcePath": "assets/School/Color/school_color.svg",
+      "resourceKey": "fluent_1f3eb"
+    },
+    {
+      "rank": 255,
+      "unicode": "1f495",
+      "glyph": "💕",
+      "group": "Smileys & Emotion",
+      "cldrName": "two hearts",
+      "keywords": [
+        "love",
+        "two hearts"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Two hearts/metadata.json",
+      "colorSourcePath": "assets/Two hearts/Color/two_hearts_color.svg",
+      "resourceKey": "fluent_1f495"
+    },
+    {
+      "rank": 256,
+      "unicode": "1f9d1 200d 1f393",
+      "glyph": "🧑‍🎓",
+      "group": "People & Body",
+      "cldrName": "student",
+      "keywords": [
+        "graduate",
+        "student"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Student/metadata.json",
+      "colorSourcePath": "assets/Student/Default/Color/student_color_default.svg",
+      "resourceKey": "fluent_1f9d1_200d_1f393"
+    },
+    {
+      "rank": 257,
+      "unicode": "1f3b6",
+      "glyph": "🎶",
+      "group": "Objects",
+      "cldrName": "musical notes",
+      "keywords": [
+        "music",
+        "musical notes",
+        "note",
+        "notes"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Musical notes/metadata.json",
+      "colorSourcePath": "assets/Musical notes/Color/musical_notes_color.svg",
+      "resourceKey": "fluent_1f3b6"
+    },
+    {
+      "rank": 258,
+      "unicode": "2648",
+      "glyph": "♈",
+      "group": "Symbols",
+      "cldrName": "Aries",
+      "keywords": [
+        "Aries",
+        "ram",
+        "zodiac"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Aries/metadata.json",
+      "colorSourcePath": "assets/Aries/Color/aries_color.svg",
+      "resourceKey": "fluent_2648"
+    },
+    {
+      "rank": 259,
+      "unicode": "1f94c",
+      "glyph": "🥌",
+      "group": "Activities",
+      "cldrName": "curling stone",
+      "keywords": [
+        "curling stone",
+        "game",
+        "rock"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Curling stone/metadata.json",
+      "colorSourcePath": "assets/Curling stone/Color/curling_stone_color.svg",
+      "resourceKey": "fluent_1f94c"
+    },
+    {
+      "rank": 260,
+      "unicode": "1f3bc",
+      "glyph": "🎼",
+      "group": "Objects",
+      "cldrName": "musical score",
+      "keywords": [
+        "music",
+        "musical score",
+        "score"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Musical score/metadata.json",
+      "colorSourcePath": "assets/Musical score/Color/musical_score_color.svg",
+      "resourceKey": "fluent_1f3bc"
+    },
+    {
+      "rank": 261,
+      "unicode": "1f414",
+      "glyph": "🐔",
+      "group": "Animals & Nature",
+      "cldrName": "chicken",
+      "keywords": [
+        "bird",
+        "chicken"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chicken/metadata.json",
+      "colorSourcePath": "assets/Chicken/Color/chicken_color.svg",
+      "resourceKey": "fluent_1f414"
+    },
+    {
+      "rank": 262,
+      "unicode": "1f957",
+      "glyph": "🥗",
+      "group": "Food & Drink",
+      "cldrName": "green salad",
+      "keywords": [
+        "food",
+        "green",
+        "salad"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Green salad/metadata.json",
+      "colorSourcePath": "assets/Green salad/Color/green_salad_color.svg",
+      "resourceKey": "fluent_1f957"
+    },
+    {
+      "rank": 263,
+      "unicode": "1f320",
+      "glyph": "🌠",
+      "group": "Travel & Places",
+      "cldrName": "shooting star",
+      "keywords": [
+        "falling",
+        "shooting",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Shooting star/metadata.json",
+      "colorSourcePath": "assets/Shooting star/Color/shooting_star_color.svg",
+      "resourceKey": "fluent_1f320"
+    },
+    {
+      "rank": 264,
+      "unicode": "1f90d",
+      "glyph": "🤍",
+      "group": "Smileys & Emotion",
+      "cldrName": "white heart",
+      "keywords": [
+        "heart",
+        "white"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/White heart/metadata.json",
+      "colorSourcePath": "assets/White heart/Color/white_heart_color.svg",
+      "resourceKey": "fluent_1f90d"
+    },
+    {
+      "rank": 265,
+      "unicode": "270d fe0f",
+      "glyph": "✍️",
+      "group": "People & Body",
+      "cldrName": "writing hand",
+      "keywords": [
+        "hand",
+        "write",
+        "writing hand"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Writing hand/metadata.json",
+      "colorSourcePath": "assets/Writing hand/Default/Color/writing_hand_color_default.svg",
+      "resourceKey": "fluent_270d_fe0f"
+    },
+    {
+      "rank": 266,
+      "unicode": "2666 fe0f",
+      "glyph": "♦️",
+      "group": "Activities",
+      "cldrName": "diamond suit",
+      "keywords": [
+        "card",
+        "diamond suit",
+        "game"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Diamond suit/metadata.json",
+      "colorSourcePath": "assets/Diamond suit/Color/diamond_suit_color.svg",
+      "resourceKey": "fluent_2666_fe0f"
+    },
+    {
+      "rank": 267,
+      "unicode": "1f4d3",
+      "glyph": "📓",
+      "group": "Objects",
+      "cldrName": "notebook",
+      "keywords": [
+        "notebook"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Notebook/metadata.json",
+      "colorSourcePath": "assets/Notebook/Color/notebook_color.svg",
+      "resourceKey": "fluent_1f4d3"
+    },
+    {
+      "rank": 268,
+      "unicode": "1f171 fe0f",
+      "glyph": "🅱️",
+      "group": "Symbols",
+      "cldrName": "B button (blood type)",
+      "keywords": [
+        "b",
+        "B button (blood type)",
+        "blood type"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/B button blood type/metadata.json",
+      "colorSourcePath": "assets/B button blood type/Color/b_button_blood_type_color.svg",
+      "resourceKey": "fluent_1f171_fe0f"
+    },
+    {
+      "rank": 269,
+      "unicode": "1f4d4",
+      "glyph": "📔",
+      "group": "Objects",
+      "cldrName": "notebook with decorative cover",
+      "keywords": [
+        "book",
+        "cover",
+        "decorated",
+        "notebook",
+        "notebook with decorative cover"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Notebook with decorative cover/metadata.json",
+      "colorSourcePath": "assets/Notebook with decorative cover/Color/notebook_with_decorative_cover_color.svg",
+      "resourceKey": "fluent_1f4d4"
+    },
+    {
+      "rank": 270,
+      "unicode": "1f43f fe0f",
+      "glyph": "🐿️",
+      "group": "Animals & Nature",
+      "cldrName": "chipmunk",
+      "keywords": [
+        "chipmunk",
+        "squirrel"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Chipmunk/metadata.json",
+      "colorSourcePath": "assets/Chipmunk/Color/chipmunk_color.svg",
+      "resourceKey": "fluent_1f43f_fe0f"
+    },
+    {
+      "rank": 271,
+      "unicode": "1f52a",
+      "glyph": "🔪",
+      "group": "Food & Drink",
+      "cldrName": "kitchen knife",
+      "keywords": [
+        "cooking",
+        "hocho",
+        "kitchen knife",
+        "knife",
+        "tool",
+        "weapon"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Kitchen knife/metadata.json",
+      "colorSourcePath": "assets/Kitchen knife/Color/kitchen_knife_color.svg",
+      "resourceKey": "fluent_1f52a"
+    },
+    {
+      "rank": 272,
+      "unicode": "1f699",
+      "glyph": "🚙",
+      "group": "Travel & Places",
+      "cldrName": "sport utility vehicle",
+      "keywords": [
+        "recreational",
+        "sport utility",
+        "sport utility vehicle"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Sport utility vehicle/metadata.json",
+      "colorSourcePath": "assets/Sport utility vehicle/Color/sport_utility_vehicle_color.svg",
+      "resourceKey": "fluent_1f699"
+    },
+    {
+      "rank": 273,
+      "unicode": "1f93f",
+      "glyph": "🤿",
+      "group": "Activities",
+      "cldrName": "diving mask",
+      "keywords": [
+        "diving",
+        "diving mask",
+        "scuba",
+        "snorkeling"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Diving mask/metadata.json",
+      "colorSourcePath": "assets/Diving mask/Color/diving_mask_color.svg",
+      "resourceKey": "fluent_1f93f"
+    },
+    {
+      "rank": 274,
+      "unicode": "1f49b",
+      "glyph": "💛",
+      "group": "Smileys & Emotion",
+      "cldrName": "yellow heart",
+      "keywords": [
+        "yellow",
+        "yellow heart"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Yellow heart/metadata.json",
+      "colorSourcePath": "assets/Yellow heart/Color/yellow_heart_color.svg",
+      "resourceKey": "fluent_1f49b"
+    },
+    {
+      "rank": 275,
+      "unicode": "1f9df",
+      "glyph": "🧟",
+      "group": "People & Body",
+      "cldrName": "zombie",
+      "keywords": [
+        "undead",
+        "walking dead",
+        "zombie"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Person zombie/metadata.json",
+      "colorSourcePath": "assets/Person zombie/Color/person_zombie_color.svg",
+      "resourceKey": "fluent_1f9df"
+    },
+    {
+      "rank": 276,
+      "unicode": "1fa71",
+      "glyph": "🩱",
+      "group": "Objects",
+      "cldrName": "one-piece swimsuit",
+      "keywords": [
+        "bathing suit",
+        "one-piece swimsuit"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/One-piece swimsuit/metadata.json",
+      "colorSourcePath": "assets/One-piece swimsuit/Color/one-piece_swimsuit_color.svg",
+      "resourceKey": "fluent_1fa71"
+    },
+    {
+      "rank": 277,
+      "unicode": "1f3d1",
+      "glyph": "🏑",
+      "group": "Activities",
+      "cldrName": "field hockey",
+      "keywords": [
+        "ball",
+        "field",
+        "game",
+        "hockey",
+        "stick"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Field hockey/metadata.json",
+      "colorSourcePath": "assets/Field hockey/Color/field_hockey_color.svg",
+      "resourceKey": "fluent_1f3d1"
+    },
+    {
+      "rank": 278,
+      "unicode": "1fab3",
+      "glyph": "🪳",
+      "group": "Animals & Nature",
+      "cldrName": "cockroach",
+      "keywords": [
+        "cockroach",
+        "insect",
+        "pest",
+        "roach"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cockroach/metadata.json",
+      "colorSourcePath": "assets/Cockroach/Color/cockroach_color.svg",
+      "resourceKey": "fluent_1fab3"
+    },
+    {
+      "rank": 279,
+      "unicode": "1f34b",
+      "glyph": "🍋",
+      "group": "Food & Drink",
+      "cldrName": "lemon",
+      "keywords": [
+        "citrus",
+        "fruit",
+        "lemon"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Lemon/metadata.json",
+      "colorSourcePath": "assets/Lemon/Color/lemon_color.svg",
+      "resourceKey": "fluent_1f34b"
+    },
+    {
+      "rank": 280,
+      "unicode": "2b50",
+      "glyph": "⭐",
+      "group": "Travel & Places",
+      "cldrName": "star",
+      "keywords": [
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Star/metadata.json",
+      "colorSourcePath": "assets/Star/Color/star_color.svg",
+      "resourceKey": "fluent_2b50"
+    },
+    {
+      "rank": 281,
+      "unicode": "1f4d6",
+      "glyph": "📖",
+      "group": "Objects",
+      "cldrName": "open book",
+      "keywords": [
+        "book",
+        "open"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Open book/metadata.json",
+      "colorSourcePath": "assets/Open book/Color/open_book_color.svg",
+      "resourceKey": "fluent_1f4d6"
+    },
+    {
+      "rank": 282,
+      "unicode": "1f519",
+      "glyph": "🔙",
+      "group": "Symbols",
+      "cldrName": "BACK arrow",
+      "keywords": [
+        "arrow",
+        "back",
+        "BACK arrow"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Back arrow/metadata.json",
+      "colorSourcePath": "assets/Back arrow/Color/back_arrow_color.svg",
+      "resourceKey": "fluent_1f519"
+    },
+    {
+      "rank": 283,
+      "unicode": "1f4a8",
+      "glyph": "💨",
+      "group": "Smileys & Emotion",
+      "cldrName": "dashing away",
+      "keywords": [
+        "comic",
+        "dash",
+        "dashing away",
+        "running"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Dashing away/metadata.json",
+      "colorSourcePath": "assets/Dashing away/Color/dashing_away_color.svg",
+      "resourceKey": "fluent_1f4a8"
+    },
+    {
+      "rank": 284,
+      "unicode": "1f936",
+      "glyph": "🤶",
+      "group": "People & Body",
+      "cldrName": "Mrs. Claus",
+      "keywords": [
+        "celebration",
+        "Christmas",
+        "claus",
+        "mother",
+        "Mrs.",
+        "Mrs. Claus"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Mrs claus/metadata.json",
+      "colorSourcePath": "assets/Mrs claus/Default/Color/mrs_claus_color_default.svg",
+      "resourceKey": "fluent_1f936"
+    },
+    {
+      "rank": 285,
+      "unicode": "1f3a3",
+      "glyph": "🎣",
+      "group": "Activities",
+      "cldrName": "fishing pole",
+      "keywords": [
+        "fish",
+        "fishing pole",
+        "pole"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Fishing pole/metadata.json",
+      "colorSourcePath": "assets/Fishing pole/Color/fishing_pole_color.svg",
+      "resourceKey": "fluent_1f3a3"
+    },
+    {
+      "rank": 286,
+      "unicode": "1f4bf",
+      "glyph": "💿",
+      "group": "Objects",
+      "cldrName": "optical disk",
+      "keywords": [
+        "cd",
+        "computer",
+        "disk",
+        "optical"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Optical disk/metadata.json",
+      "colorSourcePath": "assets/Optical disk/Color/optical_disk_color.svg",
+      "resourceKey": "fluent_1f4bf"
+    },
+    {
+      "rank": 287,
+      "unicode": "1fab8",
+      "glyph": "🪸",
+      "group": "Animals & Nature",
+      "cldrName": "coral",
+      "keywords": [
+        "coral",
+        "ocean",
+        "reef"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Coral/metadata.json",
+      "colorSourcePath": "assets/Coral/Color/coral_color.svg",
+      "resourceKey": "fluent_1fab8"
+    },
+    {
+      "rank": 288,
+      "unicode": "1f34b 200d 1f7e9",
+      "glyph": "🍋‍🟩",
+      "group": "Food & Drink",
+      "cldrName": "lime",
+      "keywords": [
+        "citrus",
+        "fruit",
+        "lime",
+        "tropical"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Lime/metadata.json",
+      "colorSourcePath": "assets/Lime/Color/lime_color.svg",
+      "resourceKey": "fluent_1f34b_200d_1f7e9"
+    },
+    {
+      "rank": 289,
+      "unicode": "23f2 fe0f",
+      "glyph": "⏲️",
+      "group": "Travel & Places",
+      "cldrName": "timer clock",
+      "keywords": [
+        "clock",
+        "timer"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Timer clock/metadata.json",
+      "colorSourcePath": "assets/Timer clock/Color/timer_clock_color.svg",
+      "resourceKey": "fluent_23f2_fe0f"
+    },
+    {
+      "rank": 290,
+      "unicode": "1f4d9",
+      "glyph": "📙",
+      "group": "Objects",
+      "cldrName": "orange book",
+      "keywords": [
+        "book",
+        "orange"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Orange book/metadata.json",
+      "colorSourcePath": "assets/Orange book/Color/orange_book_color.svg",
+      "resourceKey": "fluent_1f4d9"
+    },
+    {
+      "rank": 291,
+      "unicode": "26f3",
+      "glyph": "⛳",
+      "group": "Activities",
+      "cldrName": "flag in hole",
+      "keywords": [
+        "flag in hole",
+        "golf",
+        "hole"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Flag in hole/metadata.json",
+      "colorSourcePath": "assets/Flag in hole/Color/flag_in_hole_color.svg",
+      "resourceKey": "fluent_26f3"
+    },
+    {
+      "rank": 292,
+      "unicode": "1f191",
+      "glyph": "🆑",
+      "group": "Symbols",
+      "cldrName": "CL button",
+      "keywords": [
+        "cl",
+        "CL button"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cl button/metadata.json",
+      "colorSourcePath": "assets/Cl button/Color/cl_button_color.svg",
+      "resourceKey": "fluent_1f191"
+    },
+    {
+      "rank": 293,
+      "unicode": "1f4ab",
+      "glyph": "💫",
+      "group": "Smileys & Emotion",
+      "cldrName": "dizzy",
+      "keywords": [
+        "comic",
+        "dizzy",
+        "star"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Dizzy/metadata.json",
+      "colorSourcePath": "assets/Dizzy/Color/dizzy_color.svg",
+      "resourceKey": "fluent_1f4ab"
+    },
+    {
+      "rank": 294,
+      "unicode": "1f44c",
+      "glyph": "👌",
+      "group": "People & Body",
+      "cldrName": "OK hand",
+      "keywords": [
+        "hand",
+        "OK"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Ok hand/metadata.json",
+      "colorSourcePath": "assets/Ok hand/Default/Color/ok_hand_color_default.svg",
+      "resourceKey": "fluent_1f44c"
+    },
+    {
+      "rank": 295,
+      "unicode": "270f fe0f",
+      "glyph": "✏️",
+      "group": "Objects",
+      "cldrName": "pencil",
+      "keywords": [
+        "pencil"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Pencil/metadata.json",
+      "colorSourcePath": "assets/Pencil/Color/pencil_color.svg",
+      "resourceKey": "fluent_270f_fe0f"
+    },
+    {
+      "rank": 296,
+      "unicode": "1f404",
+      "glyph": "🐄",
+      "group": "Animals & Nature",
+      "cldrName": "cow",
+      "keywords": [
+        "cow"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Cow/metadata.json",
+      "colorSourcePath": "assets/Cow/Color/cow_color.svg",
+      "resourceKey": "fluent_1f404"
+    },
+    {
+      "rank": 297,
+      "unicode": "1f99e",
+      "glyph": "🦞",
+      "group": "Food & Drink",
+      "cldrName": "lobster",
+      "keywords": [
+        "bisque",
+        "claws",
+        "lobster",
+        "seafood"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Lobster/metadata.json",
+      "colorSourcePath": "assets/Lobster/Color/lobster_color.svg",
+      "resourceKey": "fluent_1f99e"
+    },
+    {
+      "rank": 298,
+      "unicode": "1f30a",
+      "glyph": "🌊",
+      "group": "Travel & Places",
+      "cldrName": "water wave",
+      "keywords": [
+        "ocean",
+        "water",
+        "wave"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Water wave/metadata.json",
+      "colorSourcePath": "assets/Water wave/Color/water_wave_color.svg",
+      "resourceKey": "fluent_1f30a"
+    },
+    {
+      "rank": 299,
+      "unicode": "1f3b4",
+      "glyph": "🎴",
+      "group": "Activities",
+      "cldrName": "flower playing cards",
+      "keywords": [
+        "card",
+        "flower",
+        "flower playing cards",
+        "game",
+        "Japanese",
+        "playing"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Flower playing cards/metadata.json",
+      "colorSourcePath": "assets/Flower playing cards/Color/flower_playing_cards_color.svg",
+      "resourceKey": "fluent_1f3b4"
+    },
+    {
+      "rank": 300,
+      "unicode": "1f5a8 fe0f",
+      "glyph": "🖨️",
+      "group": "Objects",
+      "cldrName": "printer",
+      "keywords": [
+        "computer",
+        "printer"
+      ],
+      "koreanAliases": [],
+      "metadataPath": "assets/Printer/metadata.json",
+      "colorSourcePath": "assets/Printer/Color/printer_color.svg",
+      "resourceKey": "fluent_1f5a8_fe0f"
+    }
+  ]
+}

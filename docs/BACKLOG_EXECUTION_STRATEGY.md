@@ -9,6 +9,7 @@
 - 계층별 KMP, Circuit, Metro 통합 작업인 #180, #181, #182는 코드 기준 완료되어 닫았다.
 - 포그라운드 복귀 시 강제 업데이트를 다시 검사하는 #186 구현은 PR #215로 `main`에 병합했다.
 - 태스크 셀 롱클릭 완료와 KMP 햅틱 #213은 PR #227로 `main`에 병합했다.
+- Fluent UI Emoji #212는 PR #228에서 재현 가능한 resource spike 기반을 만들었고, 후속 검증에서 Color 300개를 v1 기준으로 확정했다.
 - iOS 실제 기기·배포 검증은 계정이 복구될 때 수행할 후속 이슈 #214로 분리했다.
 - 따라서 다음 작업은 남은 마이그레이션이 아니라 테스트·상태 정책을 고정한 뒤 작은 기능부터 확장하는 순서다.
 
@@ -42,7 +43,7 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 ### 5. #212 Fluent UI Emoji 선택기 — M~L
 
-전체 에셋을 바로 포함하지 않고 스타일·용량 spike, pinned manifest와 resource pipeline, picker UI 순으로 나눈다. 템플릿 기능의 공통 아이콘 catalog 선행 작업이다.
+전체 에셋을 바로 포함하지 않고 스타일·용량 spike, pinned manifest와 resource pipeline, 공통 renderer, picker UI 순으로 나눈다. 템플릿 기능의 공통 아이콘 catalog 선행 작업이다. 1단계 검증 결과 v1은 Color 300개로 진행한다.
 
 ### 6. #211 마감일 기반 로컬 알림 — L
 
@@ -81,4 +82,4 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 ## 바로 이어갈 작업
 
-#212의 Color/3D 스타일·용량 spike와 resource pipeline을 먼저 확정한 뒤 공통 renderer, picker UI, 최근 사용 순서로 진행한다.
+#212의 Color 300개 catalog와 resource pipeline 결정을 바탕으로 공통 renderer, picker UI, 최근 사용 순서로 진행한다.

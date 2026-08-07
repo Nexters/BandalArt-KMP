@@ -1,0 +1,43 @@
+{
+  "sourceRepository": "https://github.com/microsoft/fluentui-emoji.git",
+  "sourceCommit": "62ecdc0d7ca5c6df32148c169556bc8d3782fca4",
+  "imageSizePx": 128,
+  "webpQuality": 92,
+  "normalizedZipTimestamp": "2020-01-01T00:00:00",
+  "normalizedFileMode": "0644",
+  "converterVersions": {
+    "rsvgConvert": "2.60.0",
+    "cwebp": "1.6.0",
+    "infoZip": "3.0"
+  },
+  "measurementType": "actual generated Color WebP files plus deterministic ZIP payload proxy",
+  "measurements": [
+    {
+      "catalogCount": 100,
+      "colorWebpBytes": 315670,
+      "catalogJsonBytes": 46103,
+      "inputPayloadBytes": 361773,
+      "zipPayloadBytes": 335186,
+      "zipSavingsBytes": 26587,
+      "zipSha256": "1f55f05b3462c179434420651c4517d45acb63932b28643d174c5bbf13551f38"
+    },
+    {
+      "catalogCount": 200,
+      "colorWebpBytes": 627978,
+      "catalogJsonBytes": 90763,
+      "inputPayloadBytes": 718741,
+      "zipPayloadBytes": 665642,
+      "zipSavingsBytes": 53099,
+      "zipSha256": "87c55fb509407424c44cc56d5e509e4295906946d0a85d350954168d7117189b"
+    },
+    {
+      "catalogCount": 300,
+      "colorWebpBytes": 935622,
+      "catalogJsonBytes": 134374,
+      "inputPayloadBytes": 1069996,
+      "zipPayloadBytes": 991213,
+      "zipSavingsBytes": 78783,
+      "zipSha256": "3d37cd8e13b96af3e65909749327301df148679488eed52ed798c896569d0d0e"
+    }
+  ]
+}
