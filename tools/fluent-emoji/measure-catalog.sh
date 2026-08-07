@@ -12,7 +12,19 @@ readonly REQUIRED_CWEBP_VERSION="1.6.0"
 readonly REQUIRED_ZIP_VERSION="3.0"
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly OUTPUT_DIR="${SCRIPT_DIR}/measurement"
+readonly RUNTIME_DRAWABLE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/drawable"
+readonly RUNTIME_CATALOG_PATH="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji_catalog.json"
+readonly RUNTIME_KOTLIN_PATH="${PROJECT_DIR}/core/ui/src/commonMain/kotlin/com/nexters/bandalart/core/ui/component/emoji/FluentEmojiCatalog.generated.kt"
+
+sync_runtime_resources=false
+if [[ "${1:-}" == "--sync-resources" ]]; then
+    sync_runtime_resources=true
+elif [[ -n "${1:-}" ]]; then
+    echo "Usage: $0 [--sync-resources]" >&2
+    exit 1
+fi
 
 for command_name in git jq node rsvg-convert cwebp zip shasum; do
     if ! command -v "${command_name}" >/dev/null 2>&1; then
@@ -157,6 +169,40 @@ jq -s \
         measurements: .
     }' "${report_items_path}" > "${working_output_dir}/measurement-report.json"
 
+if [[ "${sync_runtime_resources}" == true ]]; then
+    runtime_drawable_staging_dir="${temporary_dir}/runtime-drawable"
+    runtime_catalog_staging_path="${temporary_dir}/fluent_emoji_catalog.json"
+    runtime_kotlin_staging_path="${temporary_dir}/FluentEmojiCatalog.generated.kt"
+    mkdir -p "${runtime_drawable_staging_dir}"
+    cp "${generated_dir}"/*.webp "${runtime_drawable_staging_dir}/"
+    cp "${candidate_catalog_path}" "${runtime_catalog_staging_path}"
+    node "${SCRIPT_DIR}/generate-runtime-catalog.mjs" \
+        "${candidate_catalog_path}" \
+        "${runtime_kotlin_staging_path}"
+
+    runtime_asset_count="$(find "${runtime_drawable_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
+    if [[ "${runtime_asset_count}" -ne 300 ]]; then
+        echo "Expected 300 runtime assets, but found ${runtime_asset_count}." >&2
+        exit 1
+    fi
+
+    mkdir -p "${RUNTIME_DRAWABLE_DIR}" "$(dirname "${RUNTIME_CATALOG_PATH}")" "$(dirname "${RUNTIME_KOTLIN_PATH}")"
+    cp "${runtime_drawable_staging_dir}"/*.webp "${RUNTIME_DRAWABLE_DIR}/"
+    while IFS= read -r -d '' existing_asset_path; do
+        asset_name="${existing_asset_path##*/}"
+        if [[ ! -f "${runtime_drawable_staging_dir}/${asset_name}" ]]; then
+            rm -f "${existing_asset_path}"
+        fi
+    done < <(find "${RUNTIME_DRAWABLE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
+    cp "${runtime_catalog_staging_path}" "${RUNTIME_CATALOG_PATH}.tmp"
+    mv "${RUNTIME_CATALOG_PATH}.tmp" "${RUNTIME_CATALOG_PATH}"
+    cp "${runtime_kotlin_staging_path}" "${RUNTIME_KOTLIN_PATH}.tmp"
+    mv "${RUNTIME_KOTLIN_PATH}.tmp" "${RUNTIME_KOTLIN_PATH}"
+fi
+
 rm -rf "${OUTPUT_DIR}"
 mv "${working_output_dir}" "${OUTPUT_DIR}"
 echo "Measured actual 100, 200, and 300 item Color catalogs in ${OUTPUT_DIR}."
+if [[ "${sync_runtime_resources}" == true ]]; then
+    echo "Synced 300 Color assets and runtime catalog resources."
+fi

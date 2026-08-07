@@ -64,6 +64,7 @@ import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
@@ -108,9 +109,9 @@ fun HomeHeader(
                                 tint = Color.Unspecified,
                             )
                         } else {
-                            Text(
-                                text = bandalartData.profileEmoji,
-                                fontSize = 22.sp,
+                            BandalartEmoji(
+                                unicode = bandalartData.profileEmoji.orEmpty(),
+                                contentDescription = stringResource(Res.string.edit_description),
                             )
                         }
                     }

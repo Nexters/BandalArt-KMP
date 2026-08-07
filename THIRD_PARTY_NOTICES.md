@@ -7,4 +7,4 @@
 - License: MIT (`tools/fluent-emoji/LICENSE`)
 - Copyright: Microsoft Corporation
 
-The generated WebP comparison assets under `tools/fluent-emoji/generated/color/` are derived from Fluent UI Emoji Color SVG assets. Files under `tools/fluent-emoji/generated/3d/` are derived from Fluent UI Emoji 3D PNG assets. The application does not download Fluent UI Emoji resources at runtime.
+The generated WebP comparison assets under `tools/fluent-emoji/generated/color/` and runtime assets under `core/designsystem/src/commonMain/composeResources/drawable/fluent_*.webp` are derived from Fluent UI Emoji Color SVG assets. Files under `tools/fluent-emoji/generated/3d/` are derived from Fluent UI Emoji 3D PNG assets. The application does not download Fluent UI Emoji resources at runtime.
