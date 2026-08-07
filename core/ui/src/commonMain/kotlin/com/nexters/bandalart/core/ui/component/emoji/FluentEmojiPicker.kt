@@ -47,7 +47,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.common.getLocale
-import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 
 private const val PICKER_COLUMN_COUNT = 6
 private const val PICKER_VISIBLE_ROW_COUNT = 4
@@ -126,7 +125,6 @@ fun FluentEmojiPicker(
                     )
                 }
             }
-            Box(modifier = Modifier.height(NavigationBarHeightDp))
         }
     }
 }
