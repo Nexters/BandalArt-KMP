@@ -333,23 +333,25 @@ class HomePresenter(
             if (!completingTaskCellIds.add(currentCell.id)) return
 
             try {
-                bandalartRepository.updateBandalartTaskCell(
-                    bandalartId = currentBandalart.id,
-                    cellId = currentCell.id,
-                    updateBandalartTaskCellEntity =
-                        UpdateBandalartTaskCellEntity(
-                            title = currentCell.title,
-                            description = currentCell.description,
-                            dueDate = currentCell.dueDate,
-                            isCompleted = true,
-                        ),
-                )
-                bandalartCellData = bandalartCellData?.completeTask(currentCell.id)
-                emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
-            } catch (exception: CancellationException) {
-                throw exception
-            } catch (exception: Exception) {
-                Napier.e("Failed to complete task cell", exception, tag = "HomePresenter")
+                runCatching {
+                    bandalartRepository.updateBandalartTaskCell(
+                        bandalartId = currentBandalart.id,
+                        cellId = currentCell.id,
+                        updateBandalartTaskCellEntity =
+                            UpdateBandalartTaskCellEntity(
+                                title = currentCell.title,
+                                description = currentCell.description,
+                                dueDate = currentCell.dueDate,
+                                isCompleted = true,
+                            ),
+                    )
+                }.onSuccess {
+                    bandalartCellData = bandalartCellData?.completeTask(currentCell.id)
+                    emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
+                }.onFailure { exception ->
+                    if (exception is CancellationException) throw exception
+                    Napier.e("Failed to complete task cell", exception, tag = "HomePresenter")
+                }
             } finally {
                 completingTaskCellIds.remove(currentCell.id)
             }
