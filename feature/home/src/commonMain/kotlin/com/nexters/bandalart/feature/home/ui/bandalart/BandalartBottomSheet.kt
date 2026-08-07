@@ -90,6 +90,7 @@ import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.ThemeColor
+import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
 import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
@@ -214,9 +215,9 @@ fun BandalartBottomSheet(
                                                 tint = Color.Unspecified,
                                             )
                                         } else {
-                                            Text(
-                                                text = bottomSheetData.bandalartData.profileEmoji,
-                                                fontSize = 22.sp,
+                                            BandalartEmoji(
+                                                unicode = bottomSheetData.bandalartData.profileEmoji.orEmpty(),
+                                                contentDescription = stringResource(Res.string.edit_description),
                                             )
                                         }
                                     }

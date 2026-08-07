@@ -43,7 +43,7 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 ### 5. #212 Fluent UI Emoji 선택기 — M~L
 
-전체 에셋을 바로 포함하지 않고 스타일·용량 spike, pinned manifest와 resource pipeline, 공통 renderer, picker UI 순으로 나눈다. 템플릿 기능의 공통 아이콘 catalog 선행 작업이다. 1단계 검증 결과 v1은 Color 300개로 진행한다.
+전체 에셋을 바로 포함하지 않고 스타일·용량 spike, pinned manifest와 resource pipeline, 공통 renderer, picker UI 순으로 나눈다. 템플릿 기능의 공통 아이콘 catalog 선행 작업이다. 1단계 검증 결과 v1은 Color 300개로 진행하며, 2단계에서 공통 renderer와 기존 노출 화면 전환을 적용한다.
 
 ### 6. #211 마감일 기반 로컬 알림 — L
 
@@ -82,4 +82,4 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 ## 바로 이어갈 작업
 
-#212의 Color 300개 catalog와 resource pipeline 결정을 바탕으로 공통 renderer, picker UI, 최근 사용 순서로 진행한다.
+#212의 Color 300개 catalog와 공통 renderer를 바탕으로 picker UI, 검색·카테고리, 최근 사용 순서로 진행한다.

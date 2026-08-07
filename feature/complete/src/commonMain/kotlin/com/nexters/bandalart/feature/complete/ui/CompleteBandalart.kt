@@ -49,6 +49,7 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray100
 import com.nexters.bandalart.core.designsystem.theme.Gray300
 import com.nexters.bandalart.core.designsystem.theme.Gray400
+import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -109,9 +110,9 @@ fun CompleteBandalart(
                                     tint = Color.Unspecified,
                                 )
                             } else {
-                                Text(
-                                    text = profileEmoji,
-                                    fontSize = 22.sp,
+                                BandalartEmoji(
+                                    unicode = profileEmoji,
+                                    contentDescription = null,
                                 )
                             }
                         }

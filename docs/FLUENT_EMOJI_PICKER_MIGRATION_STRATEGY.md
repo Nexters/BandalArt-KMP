@@ -16,6 +16,38 @@
 - 위 결과로 v1 스타일과 catalog 개수를 확정하되, 실제 AAB/iOS artifact 증가는 renderer 단계의 CI 산출물로 최종 확인한다.
 - 앱 런타임 코드, Compose resource, DB schema는 이 검증 브랜치에서 변경하지 않는다.
 
+## 공통 renderer 브랜치의 성공 기준
+
+- 확정한 Color 300개 WebP와 catalog JSON을 `core/designsystem` 공통 Compose resource에 동기화한다.
+- 생성된 Unicode → resource key mapping과 `BandalartEmoji` renderer는 `core/ui`에서 단일 소스로 제공한다.
+- Home header, 반다라트 목록, 편집 bottom sheet와 Complete 화면이 같은 renderer를 사용한다.
+- catalog에 포함된 Unicode는 Fluent Color asset으로, 기존 데이터처럼 catalog에 없는 Unicode는 시스템 emoji `Text`로 표시한다.
+- `profileEmoji` 저장값과 Room schema는 변경하지 않는다.
+- asset에 theme tint를 적용하지 않고 크기와 content description만 호출자가 지정할 수 있게 한다.
+- 생성 pipeline은 기존 pinned commit, Color 300개, 성별 변형 제외 결정을 그대로 재현한다.
+- 최종 CI의 Android/iOS build로 Compose resource codegen을 검증하고, release artifact 비교가 가능한 기준값을 남긴다.
+
+### 파일 책임
+
+- `core/designsystem/composeResources/drawable`: `fluent_<codepoints>.webp` 300개
+- `core/designsystem/composeResources/files`: 검색·카테고리 후속 단계가 사용할 catalog JSON
+- `core/ui/component/emoji`: 생성 mapping, 공통 renderer와 fallback
+- `feature/home`, `feature/complete`: 기존 직접 `Text(profileEmoji)`만 renderer 호출로 교체
+
+### 롤백 경계
+
+renderer 또는 resource codegen 문제가 생기면 feature 호출부를 기존 `Text`로 되돌리고 `fluent_*.webp`와 생성 mapping을 제거한다. Unicode 저장값과 DB는 건드리지 않으므로 데이터 migration이나 복구는 필요하지 않다.
+
+### 구현 결과
+
+- Color WebP 300개를 공통 drawable resource로 동기화했으며 파일 합계는 935,622B다.
+- runtime catalog JSON과 생성 Kotlin mapping은 같은 300개 Unicode/resource key를 사용한다.
+- 남성·여성 sign 및 man/woman person code point를 포함한 성별 변형은 runtime catalog에도 포함하지 않았다.
+- Home header, 반다라트 목록, 편집 bottom sheet와 Complete 화면이 공통 renderer를 사용한다.
+- 현재 공유·저장 이미지인 `BandalartChart`에는 `profileEmoji`가 포함되지 않아 renderer 교체 대상이 없다. 이후 export에 이모지를 추가할 때는 공통 renderer를 사용한다.
+- 등록되지 않은 기존 Unicode와 사용자 저장값은 시스템 emoji fallback으로 유지한다.
+- local release build는 수행하지 않고 Android/iOS resource codegen과 artifact 영향은 CI 및 후속 release 측정에서 확인한다.
+
 ## 현재 구조와 제약
 
 - `BandalartEmojiPicker`가 24개 문자열과 4×6 레이아웃을 직접 소유한다.
@@ -59,7 +91,8 @@
 
 - Unicode를 입력받는 `BandalartEmoji`를 공통 UI 모듈에 추가한다.
 - Fluent 리소스가 있으면 원색 asset, 없으면 Unicode fallback을 그린다.
-- Home header, 목록, 편집 sheet, Complete와 공유/저장 화면의 직접 `Text`를 교체한다.
+- Home header, 목록, 편집 sheet와 Complete 화면의 직접 `Text`를 교체한다.
+- 현재 공유·저장용 `BandalartChart`에는 profile emoji가 없음을 확인하고 export 구성을 변경하지 않는다.
 - 기존 24개 및 미등록 Unicode fallback 테스트를 추가한다.
 
 완료 기준:
@@ -108,7 +141,7 @@ flowchart LR
 ## 테스트 전략
 
 - catalog: Unicode 중복, code point 파일명, metadata/resource 일대일 매핑
-- renderer: 등록 asset과 미등록 Unicode fallback
+- renderer: 등록 asset과 미등록 Unicode fallback의 분기(mapping unit test), 실제 Compose tree 검증은 공통 UI test harness 이슈 #217에서 추가
 - 검색: CLDR 이름, keyword, 한국어 alias, 빈 결과
 - 최근 사용: 중복 제거, 최신순, 최대 12개, 제거된 catalog 항목 필터링
 - Presenter: 즉시 저장과 draft 저장/취소, 빠른 중복 입력

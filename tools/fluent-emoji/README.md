@@ -31,6 +31,12 @@ Actual 100/200/300 item Color resource and deterministic ZIP payload measurement
 ./tools/fluent-emoji/measure-catalog.sh
 ```
 
+Sync the finalized 300 Color assets, runtime catalog JSON, and generated Kotlin mapping into the KMP modules:
+
+```bash
+./tools/fluent-emoji/measure-catalog.sh --sync-resources
+```
+
 The measurement script uses a blob-filtered temporary Git checkout at the pinned commit, balances Fluent metadata groups, prioritizes goal-related terms, excludes gender-specific man/woman sequences, and commits only the selected catalog and measurement report. ZIP input timestamps and file modes are normalized, and the Info-ZIP version is checked. The temporary 300 WebP files and ZIP payloads are not added to the repository.
 
 Fluent UI Emoji is distributed under the Microsoft MIT license preserved in `LICENSE`.

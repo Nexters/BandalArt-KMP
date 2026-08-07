@@ -56,6 +56,7 @@ import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray900
+import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import org.jetbrains.compose.resources.stringResource
@@ -106,9 +107,9 @@ fun BandalartListItem(
                             tint = Color.Unspecified,
                         )
                     } else {
-                        Text(
-                            text = bandalartItem.profileEmoji,
-                            fontSize = 22.sp,
+                        BandalartEmoji(
+                            unicode = bandalartItem.profileEmoji.orEmpty(),
+                            contentDescription = null,
                         )
                     }
                 }
