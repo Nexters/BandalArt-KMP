@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import java.io.IOException
@@ -24,12 +25,32 @@ class BandalartDataStore @Inject constructor(
         private const val RECENT_BANDALART_ID = "recent_bandalart_id"
         private const val COMPLETED_BANDALART_LIST_ID = "completed_bandalart_list_id"
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
+        private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
     }
 
     private val guestLoginTokenKey = stringPreferencesKey(GUEST_LOGIN_TOKEN)
     private val recentBandalartKey = longPreferencesKey(RECENT_BANDALART_ID)
     private val completedBandalartListKey = stringPreferencesKey(COMPLETED_BANDALART_LIST_ID)
     private val onboardingCompletedKey = booleanPreferencesKey(ONBOARDING_COMPLETED_ID)
+    private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
+
+    suspend fun resolveMaxBandalartSlots(minimumSlots: Int): Int {
+        var resolvedSlots = minimumSlots
+        dataStore.edit { preferences ->
+            resolvedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots)
+            preferences[maxBandalartSlotsKey] = resolvedSlots
+        }
+        return resolvedSlots
+    }
+
+    suspend fun expandMaxBandalartSlots(minimumSlots: Int): Int {
+        var expandedSlots = minimumSlots + 1
+        dataStore.edit { preferences ->
+            expandedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots) + 1
+            preferences[maxBandalartSlotsKey] = expandedSlots
+        }
+        return expandedSlots
+    }
 
     suspend fun setGuestLoginToken(guestLoginToken: String) {
         dataStore.edit { preferences ->

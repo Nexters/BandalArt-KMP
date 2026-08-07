@@ -1,10 +1,12 @@
 package com.nexters.bandalart.core.data.di
 
 import com.nexters.bandalart.core.data.repository.BandalartRepositoryImpl
+import com.nexters.bandalart.core.data.repository.BandalartSlotRepositoryImpl
 import com.nexters.bandalart.core.data.repository.GuestLoginTokenRepositoryImpl
 import com.nexters.bandalart.core.data.repository.InAppUpdateRepositoryImpl
 import com.nexters.bandalart.core.data.repository.OnboardingRepositoryImpl
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.GuestLoginTokenRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
@@ -29,6 +31,12 @@ internal abstract class RepositoryModule {
     abstract fun bindBandalartRepository(
         bandalartRepositoryImpl: BandalartRepositoryImpl,
     ): BandalartRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBandalartSlotRepository(
+        bandalartSlotRepositoryImpl: BandalartSlotRepositoryImpl,
+    ): BandalartSlotRepository
 
     @Binds
     @Singleton
