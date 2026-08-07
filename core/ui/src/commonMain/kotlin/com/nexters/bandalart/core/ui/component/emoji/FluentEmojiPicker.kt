@@ -66,6 +66,7 @@ import bandalart.core.designsystem.generated.resources.emoji_picker_category_foo
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_nature
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_objects
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_people
+import bandalart.core.designsystem.generated.resources.emoji_picker_category_recent
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_smileys
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_symbols
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_travel
@@ -81,6 +82,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun FluentEmojiPicker(
     currentEmoji: String?,
+    recentEmojis: List<String>,
     onEmojiSelect: (String) -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
@@ -90,12 +92,24 @@ fun FluentEmojiPicker(
     var selectedCategoryName by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedEmoji by rememberSaveable(currentEmoji) { mutableStateOf(currentEmoji) }
 
-    val selectedCategory = selectedCategoryName?.let { FluentEmojiCategory.valueOf(it) }
+    val availableRecentEmojis =
+        remember(recentEmojis) {
+            recentEmojis
+                .distinct()
+                .filter { FluentEmojiCatalog.resourceKeyFor(it) != null }
+        }
+    val selectedCategory =
+        selectedCategoryName
+            ?.let { FluentEmojiCategory.valueOf(it) }
+            ?.takeUnless {
+                it == FluentEmojiCategory.RECENT && availableRecentEmojis.isEmpty()
+            }
     val filteredItems =
-        remember(query, selectedCategory) {
+        remember(query, selectedCategory, availableRecentEmojis) {
             filterFluentEmojiItems(
                 query = query,
                 category = selectedCategory,
+                recentEmojis = availableRecentEmojis,
             )
         }
     val sizeModifier =
@@ -146,6 +160,7 @@ fun FluentEmojiPicker(
 
         EmojiCategoryRow(
             selectedCategory = selectedCategory,
+            hasRecentEmojis = availableRecentEmojis.isNotEmpty(),
             onCategorySelect = { category ->
                 selectedCategoryName = category?.name
             },
@@ -199,9 +214,15 @@ fun FluentEmojiPicker(
 @Composable
 private fun EmojiCategoryRow(
     selectedCategory: FluentEmojiCategory?,
+    hasRecentEmojis: Boolean,
     onCategorySelect: (FluentEmojiCategory?) -> Unit,
 ) {
-    val categories = remember { listOf(null) + FluentEmojiCategory.entries }
+    val categories =
+        remember(hasRecentEmojis) {
+            listOf(null) +
+                (if (hasRecentEmojis) listOf(FluentEmojiCategory.RECENT) else emptyList()) +
+                FluentEmojiCategory.entries.filterNot { it == FluentEmojiCategory.RECENT }
+        }
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -339,6 +360,7 @@ private fun categoryLabel(category: FluentEmojiCategory?): String =
     stringResource(
         when (category) {
             null -> Res.string.emoji_picker_category_all
+            FluentEmojiCategory.RECENT -> Res.string.emoji_picker_category_recent
             FluentEmojiCategory.SMILEYS_AND_EMOTION -> Res.string.emoji_picker_category_smileys
             FluentEmojiCategory.PEOPLE_AND_BODY -> Res.string.emoji_picker_category_people
             FluentEmojiCategory.ANIMALS_AND_NATURE -> Res.string.emoji_picker_category_nature

@@ -35,6 +35,7 @@ class SettingsRepositoryTest {
     fun storedValuesAreMappedToThemeModeWithSystemFallback() =
         runTest {
             every { dataStore.themeMode } returns flowOf("unexpected")
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
 
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -45,11 +46,26 @@ class SettingsRepositoryTest {
     fun themeSelectionIsStoredAsStableString() =
         runTest {
             every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
             coEvery { dataStore.setThemeMode(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
             repository.setThemeMode(ThemeMode.DARK)
 
             coVerify(exactly = 1) { dataStore.setThemeMode("dark") }
+        }
+
+    @Test
+    fun recentEmojisAreExposedAndSelectionsAreStored() =
+        runTest {
+            every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(listOf("🎯", "🚀"))
+            coEvery { dataStore.addRecentEmoji(any()) } returns Unit
+            val repository = DefaultSettingsRepository(dataStore)
+
+            assertEquals(listOf("🎯", "🚀"), repository.recentEmojis.first())
+            repository.addRecentEmoji("🎯")
+
+            coVerify(exactly = 1) { dataStore.addRecentEmoji("🎯") }
         }
 }

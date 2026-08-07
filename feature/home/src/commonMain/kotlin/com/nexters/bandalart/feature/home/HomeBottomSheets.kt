@@ -41,6 +41,7 @@ internal fun HomeBottomSheets(
                 isBlankCell = bottomSheet.initialCellData.title.isNullOrEmpty(),
                 onHomeUiAction = eventSink,
                 bottomSheetData = bottomSheet,
+                recentEmojis = state.recentEmojis,
             )
         }
 
@@ -49,6 +50,7 @@ internal fun HomeBottomSheets(
                 bandalartId = bottomSheet.bandalartId,
                 cellId = bottomSheet.cellId,
                 currentEmoji = bottomSheet.currentEmoji,
+                recentEmojis = state.recentEmojis,
                 onHomeUiAction = eventSink,
             )
         }

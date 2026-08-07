@@ -23,15 +23,27 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class FakeSettingsRepository(
     initialThemeMode: ThemeMode = ThemeMode.SYSTEM,
+    private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
 ) : SettingsRepository {
     private val themeModeState = MutableStateFlow(initialThemeMode)
+    private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
 
     override val themeMode = themeModeState.asStateFlow()
+    override val recentEmojis = recentEmojisState.asStateFlow()
 
     val savedThemeModes = mutableListOf<ThemeMode>()
+    val savedRecentEmojis = mutableListOf<String>()
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         savedThemeModes += themeMode
         themeModeState.value = themeMode
+    }
+
+    override suspend fun addRecentEmoji(emoji: String) {
+        beforeRecentEmojiSave(emoji)
+        savedRecentEmojis += emoji
+        recentEmojisState.value =
+            (listOf(emoji) + recentEmojisState.value.filterNot { it == emoji })
+                .take(12)
     }
 }

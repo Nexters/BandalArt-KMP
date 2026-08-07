@@ -76,6 +76,21 @@ renderer 또는 resource codegen 문제가 생기면 feature 호출부를 기존
 - 기존 값 선택 표시, 동일 항목 중복 callback 방지, dismiss 무변경은 Presenter/수동 검증
 - 실제 Compose interaction harness는 #217에서 추가하고 이번 단계는 host unit test와 Android/iOS CI compile로 검증
 
+## 최근 사용 브랜치의 성공 기준
+
+- 최근 선택한 Unicode를 중복 없이 최신순 최대 12개까지 기존 KMP DataStore에 저장한다.
+- 새 repository를 추가하지 않고 `SettingsRepository` → `BandalartDataStore` 경로를 재사용한다.
+- DataStore에는 Unicode 목록만 JSON으로 저장하고 사용자 목표나 개인 콘텐츠는 저장하지 않는다.
+- 독립 시트와 셀 편집 draft에서 선택한 이모지를 모두 최근 사용에 기록한다.
+- 최근 사용 category는 저장 순서를 유지하며, 현재 300개 catalog에서 제거된 Unicode는 UI에서 자동 제외한다.
+- 최근 목록이 비어 있을 때는 category를 노출하지 않고, 하나 이상 있을 때만 검색·category 필터와 같이 사용한다.
+
+### 최근 사용 검증
+
+- DataStore 초기값, 최신순, 중복 제거, 12개 상한을 host test로 검증한다.
+- repository Flow·저장 위임과 Presenter의 독립/draft 선택 기록을 검증한다.
+- catalog에 없는 저장값 제외·최근순 유지·검색 결과를 unit test로 검증한다.
+
 ## picker UI 이전 구조와 제약
 
 - `BandalartEmojiPicker`가 24개 문자열과 4×6 레이아웃을 직접 소유한다.

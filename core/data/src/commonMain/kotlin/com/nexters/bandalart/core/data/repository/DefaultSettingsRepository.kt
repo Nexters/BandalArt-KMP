@@ -27,8 +27,13 @@ class DefaultSettingsRepository(
 ) : SettingsRepository {
     override val themeMode: Flow<ThemeMode> =
         bandalartDataStore.themeMode.map(ThemeMode::fromStorageValue)
+    override val recentEmojis: Flow<List<String>> = bandalartDataStore.recentEmojis
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         bandalartDataStore.setThemeMode(themeMode.storageValue)
+    }
+
+    override suspend fun addRecentEmoji(emoji: String) {
+        bandalartDataStore.addRecentEmoji(emoji)
     }
 }

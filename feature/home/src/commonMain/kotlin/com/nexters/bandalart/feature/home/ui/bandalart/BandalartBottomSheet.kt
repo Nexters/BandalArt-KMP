@@ -104,6 +104,7 @@ fun BandalartBottomSheet(
     cellType: CellType,
     isBlankCell: Boolean,
     bottomSheetData: HomeScreen.BottomSheetState.Cell,
+    recentEmojis: List<String>,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -267,6 +268,7 @@ fun BandalartBottomSheet(
                                                 ),
                                         ),
                                 currentEmoji = bottomSheetData.bandalartData.profileEmoji,
+                                recentEmojis = recentEmojis,
                                 isBottomSheet = false,
                                 onEmojiSelect = { selectedEmoji ->
                                     onHomeUiAction(HomeScreen.Event.UpdateEmojiDraft(selectedEmoji))
@@ -457,6 +459,7 @@ private fun BandalartMainCellBottomSheetPreview() {
                     initialBandalartData = dummyBandalartData,
                     bandalartData = dummyBandalartData,
                 ),
+            recentEmojis = listOf("🎯", "🚀"),
             onHomeUiAction = {},
         )
     }
@@ -478,6 +481,7 @@ private fun BandalartSubCellBottomSheetPreview() {
                     initialBandalartData = dummyBandalartData,
                     bandalartData = dummyBandalartData,
                 ),
+            recentEmojis = listOf("🎯", "🚀"),
             onHomeUiAction = {},
         )
     }
@@ -499,6 +503,7 @@ private fun BandalartTaskCellBottomSheetPreview() {
                     initialBandalartData = dummyBandalartData,
                     bandalartData = dummyBandalartData,
                 ),
+            recentEmojis = listOf("🎯", "🚀"),
             onHomeUiAction = {},
         )
     }

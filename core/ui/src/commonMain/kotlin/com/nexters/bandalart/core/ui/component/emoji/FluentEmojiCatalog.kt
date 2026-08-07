@@ -19,6 +19,7 @@ package com.nexters.bandalart.core.ui.component.emoji
 import com.nexters.bandalart.core.common.Language
 
 internal enum class FluentEmojiCategory {
+    RECENT,
     SMILEYS_AND_EMOTION,
     PEOPLE_AND_BODY,
     ANIMALS_AND_NATURE,
@@ -49,10 +50,21 @@ internal data class FluentEmojiItem(
 internal fun filterFluentEmojiItems(
     query: String,
     category: FluentEmojiCategory?,
+    recentEmojis: List<String> = emptyList(),
 ): List<FluentEmojiItem> {
     val normalizedQuery = query.trim().lowercase()
-    return FluentEmojiCatalog.items.filter { item ->
-        val matchesCategory = category == null || item.category == category
+    val candidates =
+        if (category == FluentEmojiCategory.RECENT) {
+            val itemByUnicode = FluentEmojiCatalog.items.associateBy(FluentEmojiItem::unicode)
+            recentEmojis.distinct().mapNotNull(itemByUnicode::get)
+        } else {
+            FluentEmojiCatalog.items
+        }
+    return candidates.filter { item ->
+        val matchesCategory =
+            category == null ||
+                category == FluentEmojiCategory.RECENT ||
+                item.category == category
         val matchesQuery =
             normalizedQuery.isEmpty() ||
                 item.unicode.contains(normalizedQuery) ||
