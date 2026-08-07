@@ -1,0 +1,443 @@
+{
+  "sourceRepository": "https://github.com/microsoft/fluentui-emoji",
+  "sourceCommit": "62ecdc0d7ca5c6df32148c169556bc8d3782fca4",
+  "styles": [
+    "Color",
+    "3D"
+  ],
+  "imageSizePx": 128,
+  "items": [
+    {
+      "unicode": "1f331",
+      "glyph": "🌱",
+      "resourceKey": "fluent_1f331",
+      "group": "Animals & Nature",
+      "cldrName": "seedling",
+      "keywords": [
+        "seedling",
+        "young"
+      ],
+      "koreanAliases": [
+        "성장",
+        "습관",
+        "새싹"
+      ],
+      "sourcePaths": {
+        "color": "assets/Seedling/Color/seedling_color.svg",
+        "3d": "assets/Seedling/3D/seedling_3d.png"
+      }
+    },
+    {
+      "unicode": "1f393",
+      "glyph": "🎓",
+      "resourceKey": "fluent_1f393",
+      "group": "Objects",
+      "cldrName": "graduation cap",
+      "keywords": [
+        "cap",
+        "celebration",
+        "clothing",
+        "graduation",
+        "hat"
+      ],
+      "koreanAliases": [
+        "자격증",
+        "졸업",
+        "합격"
+      ],
+      "sourcePaths": {
+        "color": "assets/Graduation cap/Color/graduation_cap_color.svg",
+        "3d": "assets/Graduation cap/3D/graduation_cap_3d.png"
+      }
+    },
+    {
+      "unicode": "1f3af",
+      "glyph": "🎯",
+      "resourceKey": "fluent_1f3af",
+      "group": "Activities",
+      "cldrName": "bullseye",
+      "keywords": [
+        "bullseye",
+        "dart",
+        "direct hit",
+        "game",
+        "hit",
+        "target"
+      ],
+      "koreanAliases": [
+        "목표",
+        "과녁",
+        "달성"
+      ],
+      "sourcePaths": {
+        "color": "assets/Bullseye/Color/bullseye_color.svg",
+        "3d": "assets/Bullseye/3D/bullseye_3d.png"
+      }
+    },
+    {
+      "unicode": "1f3c6",
+      "glyph": "🏆",
+      "resourceKey": "fluent_1f3c6",
+      "group": "Activities",
+      "cldrName": "trophy",
+      "keywords": [
+        "prize",
+        "trophy"
+      ],
+      "koreanAliases": [
+        "성공",
+        "우승",
+        "성과"
+      ],
+      "sourcePaths": {
+        "color": "assets/Trophy/Color/trophy_color.svg",
+        "3d": "assets/Trophy/3D/trophy_3d.png"
+      }
+    },
+    {
+      "unicode": "1f45f",
+      "glyph": "👟",
+      "resourceKey": "fluent_1f45f",
+      "group": "Objects",
+      "cldrName": "running shoe",
+      "keywords": [
+        "athletic",
+        "clothing",
+        "running shoe",
+        "shoe",
+        "sneaker"
+      ],
+      "koreanAliases": [
+        "달리기",
+        "운동",
+        "러닝"
+      ],
+      "sourcePaths": {
+        "color": "assets/Running shoe/Color/running_shoe_color.svg",
+        "3d": "assets/Running shoe/3D/running_shoe_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4a7",
+      "glyph": "💧",
+      "resourceKey": "fluent_1f4a7",
+      "group": "Travel & Places",
+      "cldrName": "droplet",
+      "keywords": [
+        "cold",
+        "comic",
+        "drop",
+        "droplet",
+        "sweat"
+      ],
+      "koreanAliases": [
+        "물",
+        "수분",
+        "건강"
+      ],
+      "sourcePaths": {
+        "color": "assets/Droplet/Color/droplet_color.svg",
+        "3d": "assets/Droplet/3D/droplet_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4aa",
+      "glyph": "💪",
+      "resourceKey": "fluent_1f4aa",
+      "group": "People & Body",
+      "cldrName": "flexed biceps",
+      "keywords": [
+        "biceps",
+        "comic",
+        "flex",
+        "flexed biceps",
+        "muscle"
+      ],
+      "koreanAliases": [
+        "근력",
+        "운동",
+        "건강"
+      ],
+      "sourcePaths": {
+        "color": "assets/Flexed biceps/Default/Color/flexed_biceps_color_default.svg",
+        "3d": "assets/Flexed biceps/Default/3D/flexed_biceps_3d_default.png"
+      }
+    },
+    {
+      "unicode": "1f4b0",
+      "glyph": "💰",
+      "resourceKey": "fluent_1f4b0",
+      "group": "Objects",
+      "cldrName": "money bag",
+      "keywords": [
+        "bag",
+        "dollar",
+        "money",
+        "moneybag"
+      ],
+      "koreanAliases": [
+        "저축",
+        "재정",
+        "돈"
+      ],
+      "sourcePaths": {
+        "color": "assets/Money bag/Color/money_bag_color.svg",
+        "3d": "assets/Money bag/3D/money_bag_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4bb",
+      "glyph": "💻",
+      "resourceKey": "fluent_1f4bb",
+      "group": "Objects",
+      "cldrName": "laptop",
+      "keywords": [
+        "computer",
+        "laptop",
+        "pc",
+        "personal"
+      ],
+      "koreanAliases": [
+        "개발",
+        "업무",
+        "공부"
+      ],
+      "sourcePaths": {
+        "color": "assets/Laptop/Color/laptop_color.svg",
+        "3d": "assets/Laptop/3D/laptop_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4bc",
+      "glyph": "💼",
+      "resourceKey": "fluent_1f4bc",
+      "group": "Objects",
+      "cldrName": "briefcase",
+      "keywords": [
+        "briefcase"
+      ],
+      "koreanAliases": [
+        "커리어",
+        "업무",
+        "직장"
+      ],
+      "sourcePaths": {
+        "color": "assets/Briefcase/Color/briefcase_color.svg",
+        "3d": "assets/Briefcase/3D/briefcase_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4c8",
+      "glyph": "📈",
+      "resourceKey": "fluent_1f4c8",
+      "group": "Objects",
+      "cldrName": "chart increasing",
+      "keywords": [
+        "chart",
+        "chart increasing",
+        "graph",
+        "growth",
+        "trend",
+        "upward"
+      ],
+      "koreanAliases": [
+        "성과",
+        "상승",
+        "통계"
+      ],
+      "sourcePaths": {
+        "color": "assets/Chart increasing/Color/chart_increasing_color.svg",
+        "3d": "assets/Chart increasing/3D/chart_increasing_3d.png"
+      }
+    },
+    {
+      "unicode": "1f4da",
+      "glyph": "📚",
+      "resourceKey": "fluent_1f4da",
+      "group": "Objects",
+      "cldrName": "books",
+      "keywords": [
+        "book",
+        "books"
+      ],
+      "koreanAliases": [
+        "공부",
+        "독서",
+        "학습"
+      ],
+      "sourcePaths": {
+        "color": "assets/Books/Color/books_color.svg",
+        "3d": "assets/Books/3D/books_3d.png"
+      }
+    },
+    {
+      "unicode": "1f525",
+      "glyph": "🔥",
+      "resourceKey": "fluent_1f525",
+      "group": "Travel & Places",
+      "cldrName": "fire",
+      "keywords": [
+        "fire",
+        "flame",
+        "tool"
+      ],
+      "koreanAliases": [
+        "열정",
+        "습관",
+        "연속"
+      ],
+      "sourcePaths": {
+        "color": "assets/Fire/Color/fire_color.svg",
+        "3d": "assets/Fire/3D/fire_3d.png"
+      }
+    },
+    {
+      "unicode": "1f680",
+      "glyph": "🚀",
+      "resourceKey": "fluent_1f680",
+      "group": "Travel & Places",
+      "cldrName": "rocket",
+      "keywords": [
+        "rocket",
+        "space"
+      ],
+      "koreanAliases": [
+        "성장",
+        "도전",
+        "시작"
+      ],
+      "sourcePaths": {
+        "color": "assets/Rocket/Color/rocket_color.svg",
+        "3d": "assets/Rocket/3D/rocket_3d.png"
+      }
+    },
+    {
+      "unicode": "1f6b2",
+      "glyph": "🚲",
+      "resourceKey": "fluent_1f6b2",
+      "group": "Travel & Places",
+      "cldrName": "bicycle",
+      "keywords": [
+        "bicycle",
+        "bike"
+      ],
+      "koreanAliases": [
+        "자전거",
+        "운동",
+        "라이딩"
+      ],
+      "sourcePaths": {
+        "color": "assets/Bicycle/Color/bicycle_color.svg",
+        "3d": "assets/Bicycle/3D/bicycle_3d.png"
+      }
+    },
+    {
+      "unicode": "1f955",
+      "glyph": "🥕",
+      "resourceKey": "fluent_1f955",
+      "group": "Food & Drink",
+      "cldrName": "carrot",
+      "keywords": [
+        "carrot",
+        "food",
+        "vegetable"
+      ],
+      "koreanAliases": [
+        "식단",
+        "건강",
+        "채소"
+      ],
+      "sourcePaths": {
+        "color": "assets/Carrot/Color/carrot_color.svg",
+        "3d": "assets/Carrot/3D/carrot_3d.png"
+      }
+    },
+    {
+      "unicode": "1fa99",
+      "glyph": "🪙",
+      "resourceKey": "fluent_1fa99",
+      "group": "Objects",
+      "cldrName": "coin",
+      "keywords": [
+        "coin",
+        "gold",
+        "metal",
+        "money",
+        "silver",
+        "treasure"
+      ],
+      "koreanAliases": [
+        "저축",
+        "재정",
+        "동전"
+      ],
+      "sourcePaths": {
+        "color": "assets/Coin/Color/coin_color.svg",
+        "3d": "assets/Coin/3D/coin_3d.png"
+      }
+    },
+    {
+      "unicode": "23f0",
+      "glyph": "⏰",
+      "resourceKey": "fluent_23f0",
+      "group": "Travel & Places",
+      "cldrName": "alarm clock",
+      "keywords": [
+        "alarm",
+        "clock"
+      ],
+      "koreanAliases": [
+        "기상",
+        "시간",
+        "루틴"
+      ],
+      "sourcePaths": {
+        "color": "assets/Alarm clock/Color/alarm_clock_color.svg",
+        "3d": "assets/Alarm clock/3D/alarm_clock_3d.png"
+      }
+    },
+    {
+      "unicode": "2714 fe0f",
+      "glyph": "✔️",
+      "resourceKey": "fluent_2714_fe0f",
+      "group": "Symbols",
+      "cldrName": "check mark",
+      "keywords": [
+        "✓",
+        "check",
+        "mark"
+      ],
+      "koreanAliases": [
+        "완료",
+        "체크",
+        "달성"
+      ],
+      "sourcePaths": {
+        "color": "assets/Check mark/Color/check_mark_color.svg",
+        "3d": "assets/Check mark/3D/check_mark_3d.png"
+      }
+    },
+    {
+      "unicode": "2728",
+      "glyph": "✨",
+      "resourceKey": "fluent_2728",
+      "group": "Activities",
+      "cldrName": "sparkles",
+      "keywords": [
+        "*",
+        "sparkle",
+        "sparkles",
+        "star"
+      ],
+      "koreanAliases": [
+        "정리",
+        "새로움",
+        "빛남"
+      ],
+      "sourcePaths": {
+        "color": "assets/Sparkles/Color/sparkles_color.svg",
+        "3d": "assets/Sparkles/3D/sparkles_3d.png"
+      }
+    }
+  ]
+}
