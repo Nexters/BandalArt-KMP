@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.core.ui.component.emoji
 
+@Suppress("LargeClass")
 internal object FluentEmojiCatalog {
     val items =
         listOf(
