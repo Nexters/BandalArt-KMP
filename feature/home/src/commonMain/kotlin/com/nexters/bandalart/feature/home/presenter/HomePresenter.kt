@@ -542,7 +542,10 @@ class HomePresenter(
 
                 HomeScreen.Event.SaveCell -> scope.launch { saveCell() }
                 is HomeScreen.Event.UpdateBandalartEmoji -> {
-                    if (!isUpdatingBandalartEmoji) {
+                    if (
+                        !isUpdatingBandalartEmoji &&
+                        bottomSheet is HomeScreen.BottomSheetState.Emoji
+                    ) {
                         isUpdatingBandalartEmoji = true
                         bottomSheet = null
                         scope.launch {
