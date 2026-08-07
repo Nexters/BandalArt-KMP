@@ -62,6 +62,23 @@
     <string name="bandalart_list_title">バンダラートリスト</string>
     <string name="bandalart_list_add">バンダラートを追加</string>
 
+    <!-- FluentEmojiPicker.kt -->
+    <string name="emoji_picker_title">アイコンを選択</string>
+    <string name="emoji_picker_close">閉じる</string>
+    <string name="emoji_picker_search_placeholder">絵文字を検索</string>
+    <string name="emoji_picker_empty">該当する絵文字がありません。</string>
+    <string name="emoji_picker_reset">すべて表示</string>
+    <string name="emoji_picker_category_all">すべて</string>
+    <string name="emoji_picker_category_smileys">表情・感情</string>
+    <string name="emoji_picker_category_people">人</string>
+    <string name="emoji_picker_category_nature">動物・自然</string>
+    <string name="emoji_picker_category_food">食べ物</string>
+    <string name="emoji_picker_category_travel">旅行・場所</string>
+    <string name="emoji_picker_category_activities">活動・運動</string>
+    <string name="emoji_picker_category_objects">物</string>
+    <string name="emoji_picker_category_symbols">記号</string>
+    <string name="emoji_picker_category_flags">旗</string>
+
     <!-- BandalartDropDownMenu.kt -->
     <string name="dropdown_save">保存</string>
     <string name="dropdown_delete">削除</string>

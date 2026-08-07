@@ -48,11 +48,39 @@ renderer 또는 resource codegen 문제가 생기면 feature 호출부를 기존
 - 등록되지 않은 기존 Unicode와 사용자 저장값은 시스템 emoji fallback으로 유지한다.
 - local release build는 수행하지 않고 Android/iOS resource codegen과 artifact 영향은 CI 및 후속 release 측정에서 확인한다.
 
-## 현재 구조와 제약
+## picker UI 브랜치의 성공 기준
+
+- 300개 runtime catalog metadata를 Kotlin generated source로 제공하고 drawable mapping과 같은 Unicode를 단일 pipeline에서 생성한다.
+- 검색은 CLDR name, English keyword, 선별된 한국어 alias를 대소문자 구분 없이 조회한다.
+- Fluent metadata group을 앱의 9개 category로 정규화하고 category별 모든 항목에 도달할 수 있다.
+- picker UI와 catalog 검색·분류 책임은 `core/ui`에 두고, `feature/home`은 현재 값과 선택 callback만 전달한다.
+- 독립 emoji sheet는 첫 선택을 수락하면 즉시 닫고 repository update를 진행하며, 셀 편집 sheet는 draft만 바꾼 뒤 기존 저장/취소 의미를 유지한다.
+- standalone sheet와 편집 sheet가 같은 검색·category·adaptive grid UI를 사용한다.
+- cell은 최소 48dp touch target, Fluent 원색 asset, 선택 border/check, 이름 기반 content description을 제공한다.
+- picker 제목·검색·category·empty state UI 문자열은 한국어·영어·일본어 resource로 제공한다.
+- 항목 content description은 영어 CLDR 이름과 선별된 한국어 별칭을 사용하고, 별칭이 없는 한국어·일본어에서는 플랫폼 스크린리더가 현지화해 읽을 수 있도록 Unicode glyph를 제공한다.
+- 최근 사용 DataStore는 다음 단계로 남기며 이번 브랜치에서 repository/database schema를 변경하지 않는다.
+
+### picker UI 파일 책임
+
+- `tools/fluent-emoji`: runtime Kotlin catalog에 glyph, group, CLDR name, keyword와 한국어 alias를 생성
+- `core/ui/component/emoji`: catalog model, 검색·category filter, 공통 picker UI
+- `core/designsystem/composeResources/values*`: picker 공통 UI 문자열
+- `feature/home`: 기존 24개 picker를 공통 picker 호출로 교체하고 두 selection flow 유지
+
+### picker UI 검증
+
+- catalog 300개와 generated renderer mapping의 Unicode 집합 일치
+- group normalization 결과에 미분류 항목이 없고 각 category filter가 전체 catalog의 부분집합
+- CLDR name, English keyword, 한국어 alias, 공백 query와 빈 결과 검색 단위 테스트
+- 기존 값 선택 표시, 동일 항목 중복 callback 방지, dismiss 무변경은 Presenter/수동 검증
+- 실제 Compose interaction harness는 #217에서 추가하고 이번 단계는 host unit test와 Android/iOS CI compile로 검증
+
+## picker UI 이전 구조와 제약
 
 - `BandalartEmojiPicker`가 24개 문자열과 4×6 레이아웃을 직접 소유한다.
 - 독립 이모지 sheet는 선택 즉시 저장하지만 셀 편집 sheet는 저장 전 draft만 변경한다.
-- Home header, 목록, 편집 sheet, Complete 화면은 Unicode `Text`를 각각 직접 그린다.
+- Home header, 목록, 편집 sheet, Complete 화면은 이미 공통 `BandalartEmoji` renderer로 수렴했다.
 - Fluent 원본 전체를 번들링하면 앱 크기 예산을 크게 넘는다.
 - Compose Multiplatform 공통 리소스에는 선별·변환된 raster asset만 포함한다.
 - 로컬 저장소에는 앱 및 빌드에 필요한 결과물만 두며 upstream 전체 repository나 submodule은 추가하지 않는다.

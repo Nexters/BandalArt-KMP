@@ -258,7 +258,6 @@ fun BandalartBottomSheet(
                             BandalartEmojiPicker(
                                 modifier =
                                     Modifier
-                                        .wrapContentSize()
                                         .padding(top = 4.dp)
                                         .animateContentSize(
                                             animationSpec =
@@ -271,6 +270,9 @@ fun BandalartBottomSheet(
                                 isBottomSheet = false,
                                 onEmojiSelect = { selectedEmoji ->
                                     onHomeUiAction(HomeScreen.Event.UpdateEmojiDraft(selectedEmoji))
+                                },
+                                onClose = {
+                                    onHomeUiAction(HomeScreen.Event.CloseEmojiPicker)
                                 },
                             )
                         }

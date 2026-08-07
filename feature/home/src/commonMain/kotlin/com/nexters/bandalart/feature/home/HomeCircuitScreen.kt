@@ -172,6 +172,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object OpenEmojiPicker : Event
 
+        data object CloseEmojiPicker : Event
+
         data object SaveCell : Event
 
         data class UpdateBandalartEmoji(

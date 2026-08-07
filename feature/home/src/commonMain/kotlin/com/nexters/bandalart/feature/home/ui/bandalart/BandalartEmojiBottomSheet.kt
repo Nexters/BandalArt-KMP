@@ -16,8 +16,7 @@
 
 package com.nexters.bandalart.feature.home.ui.bandalart
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -42,25 +41,26 @@ fun BandalartEmojiBottomSheet(
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
-        modifier = modifier.wrapContentSize(),
+        modifier = modifier.fillMaxHeight(0.92f),
         sheetState = bottomSheetState,
         dragHandle = null,
     ) {
-        Column {
-            BandalartEmojiPicker(
-                currentEmoji = currentEmoji,
-                isBottomSheet = true,
-                onEmojiSelect = { selectedEmoji ->
-                    onHomeUiAction(
-                        HomeScreen.Event.UpdateBandalartEmoji(
-                            bandalartId = bandalartId,
-                            cellId = cellId,
-                            emoji = selectedEmoji,
-                        ),
-                    )
-                },
-            )
-        }
+        BandalartEmojiPicker(
+            currentEmoji = currentEmoji,
+            isBottomSheet = true,
+            onEmojiSelect = { selectedEmoji ->
+                onHomeUiAction(
+                    HomeScreen.Event.UpdateBandalartEmoji(
+                        bandalartId = bandalartId,
+                        cellId = cellId,
+                        emoji = selectedEmoji,
+                    ),
+                )
+            },
+            onClose = {
+                onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
+            },
+        )
     }
 }
 
