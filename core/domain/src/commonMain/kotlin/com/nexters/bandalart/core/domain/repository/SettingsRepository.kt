@@ -21,6 +21,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
     val themeMode: Flow<ThemeMode>
+    val recentEmojis: Flow<List<String>>
 
     suspend fun setThemeMode(themeMode: ThemeMode)
+
+    suspend fun addRecentEmoji(emoji: String)
 }

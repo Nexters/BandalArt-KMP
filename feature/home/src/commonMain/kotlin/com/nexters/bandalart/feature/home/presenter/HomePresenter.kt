@@ -79,7 +79,18 @@ class HomePresenter(
         val completingTaskCellIds = remember { mutableSetOf<Long>() }
         val pendingEffects = remember { ArrayDeque<HomeScreen.Effect>() }
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
+        val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
         val scope = rememberCoroutineScope()
+        val recentEmojiSaveJob = remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+
+        fun recordRecentEmoji(emoji: String) {
+            val previousJob = recentEmojiSaveJob.value
+            recentEmojiSaveJob.value =
+                scope.launch {
+                    previousJob?.join()
+                    settingsRepository.addRecentEmoji(emoji)
+                }
+        }
 
         fun emitEffect(newEffect: HomeScreen.Effect) {
             if (effect == newEffect || pendingEffects.lastOrNull() == newEffect) return
@@ -252,13 +263,14 @@ class HomePresenter(
                 )
         }
 
-        fun updateEmojiDraft(emoji: String) {
-            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell ?: return
+        fun updateEmojiDraft(emoji: String): Boolean {
+            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell ?: return false
             bottomSheet =
                 currentSheet.copy(
                     bandalartData = currentSheet.bandalartData.copy(profileEmoji = emoji),
                     isEmojiPickerOpened = false,
                 )
+            return true
         }
 
         fun updateThemeColor(
@@ -459,6 +471,7 @@ class HomePresenter(
             imageRequest = imageRequest,
             updateVersionCode = updateVersionCode,
             themeMode = themeMode,
+            recentEmojis = recentEmojis.toPersistentList(),
             effect = effect,
         ) { event ->
             when (event) {
@@ -518,7 +531,11 @@ class HomePresenter(
                 is HomeScreen.Event.UpdateDescription -> updateDescription(event.description)
                 is HomeScreen.Event.UpdateDueDate -> updateDueDate(event.dueDate)
                 is HomeScreen.Event.UpdateCompletion -> updateCompletion(event.isCompleted)
-                is HomeScreen.Event.UpdateEmojiDraft -> updateEmojiDraft(event.emoji)
+                is HomeScreen.Event.UpdateEmojiDraft -> {
+                    if (updateEmojiDraft(event.emoji)) {
+                        recordRecentEmoji(event.emoji)
+                    }
+                }
                 is HomeScreen.Event.UpdateThemeColor ->
                     updateThemeColor(
                         mainColor = event.mainColor,
@@ -548,6 +565,7 @@ class HomePresenter(
                     ) {
                         isUpdatingBandalartEmoji = true
                         bottomSheet = null
+                        event.emoji?.let(::recordRecentEmoji)
                         scope.launch {
                             try {
                                 updateBandalartEmoji(

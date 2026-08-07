@@ -37,12 +37,15 @@ class BandalartDataStore(
         private const val COMPLETED_BANDALART_LIST_ID = "completed_bandalart_list_id"
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
         private const val THEME_MODE = "theme_mode"
+        private const val RECENT_EMOJIS = "recent_emojis"
+        private const val MAX_RECENT_EMOJIS = 12
     }
 
     private val recentBandalartKey = longPreferencesKey(RECENT_BANDALART_ID)
     private val completedBandalartListKey = stringPreferencesKey(COMPLETED_BANDALART_LIST_ID)
     private val onboardingCompletedKey = booleanPreferencesKey(ONBOARDING_COMPLETED_ID)
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
+    private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
 
     val themeMode =
         dataStore.data
@@ -52,6 +55,19 @@ class BandalartDataStore(
                 else
                     throw exception
             }.map { preferences -> preferences[themeModeKey] }
+
+    val recentEmojis =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences ->
+                preferences[recentEmojisKey]
+                    ?.let { Json.decodeFromString<List<String>>(it) }
+                    ?: emptyList()
+            }
 
     suspend fun setRecentBandalartId(recentBandalartId: Long) {
         dataStore.edit { preferences ->
@@ -153,6 +169,19 @@ class BandalartDataStore(
     suspend fun setThemeMode(themeMode: String) {
         dataStore.edit { preferences ->
             preferences[themeModeKey] = themeMode
+        }
+    }
+
+    suspend fun addRecentEmoji(emoji: String) {
+        dataStore.edit { preferences ->
+            val currentEmojis =
+                preferences[recentEmojisKey]
+                    ?.let { Json.decodeFromString<List<String>>(it) }
+                    ?: emptyList()
+            val updatedEmojis =
+                (listOf(emoji) + currentEmojis.filterNot { it == emoji })
+                    .take(MAX_RECENT_EMOJIS)
+            preferences[recentEmojisKey] = Json.encodeToString(updatedEmojis)
         }
     }
 }

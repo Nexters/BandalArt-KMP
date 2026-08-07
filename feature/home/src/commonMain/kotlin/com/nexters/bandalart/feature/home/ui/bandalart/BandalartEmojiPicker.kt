@@ -23,6 +23,7 @@ import com.nexters.bandalart.core.ui.component.emoji.FluentEmojiPicker
 @Composable
 fun BandalartEmojiPicker(
     currentEmoji: String?,
+    recentEmojis: List<String>,
     isBottomSheet: Boolean,
     onEmojiSelect: (String) -> Unit,
     onClose: () -> Unit,
@@ -30,6 +31,7 @@ fun BandalartEmojiPicker(
 ) {
     FluentEmojiPicker(
         currentEmoji = currentEmoji,
+        recentEmojis = recentEmojis,
         onEmojiSelect = onEmojiSelect,
         onClose = onClose,
         modifier = modifier,

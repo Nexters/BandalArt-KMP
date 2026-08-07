@@ -53,7 +53,7 @@ class FluentEmojiCatalogTest {
                 .size,
         )
         assertEquals(
-            FluentEmojiCategory.entries.toSet(),
+            FluentEmojiCategory.entries.filterNot { it == FluentEmojiCategory.RECENT }.toSet(),
             FluentEmojiCatalog.items.map { it.category }.toSet(),
         )
         assertTrue(
@@ -93,5 +93,25 @@ class FluentEmojiCatalogTest {
 
         val uncategorizedAlias = FluentEmojiCatalog.items.first { it.koreanAliases.isEmpty() }
         assertEquals(uncategorizedAlias.unicode, uncategorizedAlias.displayName(Language.KOREAN))
+    }
+
+    @Test
+    fun recentFilterKeepsStoredOrderAndDropsItemsOutsideTheCatalog() {
+        val recentItems =
+            filterFluentEmojiItems(
+                query = "",
+                category = FluentEmojiCategory.RECENT,
+                recentEmojis = listOf("🚀", "😎", "🎯", "🚀"),
+            )
+
+        assertEquals(listOf("🚀", "🎯"), recentItems.map { it.unicode })
+        assertEquals(
+            listOf("🎯"),
+            filterFluentEmojiItems(
+                query = "target",
+                category = FluentEmojiCategory.RECENT,
+                recentEmojis = listOf("🚀", "🎯"),
+            ).map { it.unicode },
+        )
     }
 }

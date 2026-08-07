@@ -80,6 +80,42 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("최근 사용 이모지 관련 테스트")
+    inner class RecentEmojisTest {
+        @Test
+        @DisplayName("초기값은 빈 목록이어야 한다")
+        fun recentEmojisAreEmptyByDefault() =
+            runTest {
+                assertEquals(emptyList<String>(), bandalartDataStore.recentEmojis.first())
+            }
+
+        @Test
+        @DisplayName("중복을 제거하고 최신 사용 순으로 저장해야 한다")
+        fun recentEmojisAreDeduplicatedAndMovedToFront() =
+            runTest {
+                bandalartDataStore.addRecentEmoji("🎯")
+                bandalartDataStore.addRecentEmoji("🚀")
+                bandalartDataStore.addRecentEmoji("🎯")
+
+                assertEquals(listOf("🎯", "🚀"), bandalartDataStore.recentEmojis.first())
+            }
+
+        @Test
+        @DisplayName("최근 12개까지만 저장해야 한다")
+        fun recentEmojisAreLimitedToTwelveItems() =
+            runTest {
+                (1..13).forEach { index ->
+                    bandalartDataStore.addRecentEmoji("emoji-$index")
+                }
+
+                assertEquals(
+                    (13 downTo 2).map { index -> "emoji-$index" },
+                    bandalartDataStore.recentEmojis.first(),
+                )
+            }
+    }
+
+    @Nested
     @DisplayName("완료된 반다라트 목록 관련 테스트")
     inner class CompletedBandalartListTest {
         @Test

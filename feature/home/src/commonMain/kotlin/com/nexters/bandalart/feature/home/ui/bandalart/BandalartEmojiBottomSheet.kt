@@ -32,6 +32,7 @@ fun BandalartEmojiBottomSheet(
     bandalartId: Long,
     cellId: Long,
     currentEmoji: String?,
+    recentEmojis: List<String>,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -47,6 +48,7 @@ fun BandalartEmojiBottomSheet(
     ) {
         BandalartEmojiPicker(
             currentEmoji = currentEmoji,
+            recentEmojis = recentEmojis,
             isBottomSheet = true,
             onEmojiSelect = { selectedEmoji ->
                 onHomeUiAction(
@@ -73,6 +75,7 @@ private fun BandalartEmojiBottomSheetPreview() {
             bandalartId = 0L,
             cellId = 0L,
             currentEmoji = "😎",
+            recentEmojis = listOf("🎯", "🚀"),
             onHomeUiAction = {},
         )
     }

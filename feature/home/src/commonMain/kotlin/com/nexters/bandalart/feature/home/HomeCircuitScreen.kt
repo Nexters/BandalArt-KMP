@@ -43,6 +43,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val imageRequest: ImageRequest? = null,
         val updateVersionCode: Int? = null,
         val themeMode: ThemeMode = ThemeMode.SYSTEM,
+        val recentEmojis: ImmutableList<String> = persistentListOf(),
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState

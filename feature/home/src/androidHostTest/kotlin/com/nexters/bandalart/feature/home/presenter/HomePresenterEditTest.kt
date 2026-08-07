@@ -24,6 +24,7 @@ import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -97,7 +98,8 @@ class HomePresenterEditTest {
         runTest {
             val mainCell = cell(id = 10L, title = "기존 목표")
             val repository = repositoryWithCells(mainCell = mainCell)
-            val presenter = presenter(repository)
+            val settingsRepository = FakeSettingsRepository()
+            val presenter = presenter(repository, settingsRepository)
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -135,6 +137,7 @@ class HomePresenterEditTest {
                 assertEquals("🚀", update.entity.profileEmoji)
                 assertEquals("#ABCDEF", update.entity.mainColor)
                 assertEquals("#123456", update.entity.subColor)
+                assertEquals(listOf("🚀"), settingsRepository.savedRecentEmojis)
             }
         }
 
@@ -261,7 +264,8 @@ class HomePresenterEditTest {
             val mainCell = cell(id = 10L, title = null)
             val subCell = cell(id = 11L, title = "서브", parentId = mainCell.id)
             val repository = repositoryWithCells(mainCell = mainCell)
-            val presenter = presenter(repository)
+            val settingsRepository = FakeSettingsRepository()
+            val presenter = presenter(repository, settingsRepository)
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
@@ -281,12 +285,17 @@ class HomePresenterEditTest {
                 state.eventSink(HomeScreen.Event.UpdateBandalartEmoji(1L, mainCell.id, "🚀"))
                 do {
                     state = awaitItem()
-                } while (repository.emojiUpdates.isEmpty() || state.bottomSheet != null)
+                } while (
+                    repository.emojiUpdates.isEmpty() ||
+                    settingsRepository.savedRecentEmojis.isEmpty() ||
+                    state.bottomSheet != null
+                )
 
                 val update = repository.emojiUpdates.single()
                 assertEquals(1L, update.bandalartId)
                 assertEquals(mainCell.id, update.cellId)
                 assertEquals("🌟", update.entity.profileEmoji)
+                assertEquals(listOf("🌟"), settingsRepository.savedRecentEmojis)
             }
         }
 
@@ -317,6 +326,46 @@ class HomePresenterEditTest {
             }
         }
 
+    @Test
+    fun recentEmojiWritesAreSerializedInSelectionOrder() =
+        runTest {
+            val mainCell = cell(id = 10L, title = "기존 목표")
+            val firstSaveStarted = CompletableDeferred<Unit>()
+            val allowFirstSave = CompletableDeferred<Unit>()
+            val repository = repositoryWithCells(mainCell = mainCell)
+            val settingsRepository =
+                FakeSettingsRepository(
+                    beforeRecentEmojiSave = { emoji ->
+                        if (emoji == "🌟") {
+                            firstSaveStarted.complete(Unit)
+                            allowFirstSave.await()
+                        }
+                    },
+                )
+            val presenter = presenter(repository, settingsRepository)
+
+            presenter.test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(HomeScreen.Event.OpenEmoji)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.Emoji)
+
+                state.eventSink(HomeScreen.Event.UpdateBandalartEmoji(1L, mainCell.id, "🌟"))
+                firstSaveStarted.await()
+
+                state.eventSink(HomeScreen.Event.OpenCell(CellType.MAIN, false, mainCell))
+                state = awaitCellSheet()
+                state.eventSink(HomeScreen.Event.UpdateEmojiDraft("🚀"))
+                allowFirstSave.complete(Unit)
+                do {
+                    state = awaitItem()
+                } while (settingsRepository.recentEmojis.value != listOf("🚀", "🌟"))
+
+                assertEquals(listOf("🚀", "🌟"), settingsRepository.recentEmojis.value)
+            }
+        }
+
     private fun repositoryWithCells(
         mainCell: BandalartCellEntity,
         childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
@@ -327,12 +376,15 @@ class HomePresenterEditTest {
         childCells = childCells,
     )
 
-    private fun presenter(repository: FakeBandalartRepository) =
+    private fun presenter(
+        repository: FakeBandalartRepository,
+        settingsRepository: FakeSettingsRepository = FakeSettingsRepository(),
+    ) =
         HomePresenter(
             navigator = FakeNavigator(HomeScreen),
             bandalartRepository = repository,
             inAppUpdateRepository = FakeInAppUpdateRepository(),
-            settingsRepository = FakeSettingsRepository(),
+            settingsRepository = settingsRepository,
         )
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long,): HomeScreen.State {

@@ -69,6 +69,7 @@
     <string name="emoji_picker_empty">No emojis found.</string>
     <string name="emoji_picker_reset">Show all</string>
     <string name="emoji_picker_category_all">All</string>
+    <string name="emoji_picker_category_recent">Recent</string>
     <string name="emoji_picker_category_smileys">Smileys</string>
     <string name="emoji_picker_category_people">People</string>
     <string name="emoji_picker_category_nature">Nature</string>

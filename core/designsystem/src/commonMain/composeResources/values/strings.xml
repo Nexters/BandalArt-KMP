@@ -69,6 +69,7 @@
     <string name="emoji_picker_empty">검색 결과가 없어요.</string>
     <string name="emoji_picker_reset">전체 보기</string>
     <string name="emoji_picker_category_all">모두</string>
+    <string name="emoji_picker_category_recent">최근 사용</string>
     <string name="emoji_picker_category_smileys">표정·감정</string>
     <string name="emoji_picker_category_people">사람</string>
     <string name="emoji_picker_category_nature">동물·자연</string>
