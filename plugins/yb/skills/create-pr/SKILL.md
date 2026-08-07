@@ -1,17 +1,15 @@
 ---
 name: create-pr
-description: YeoBee Android PR creation workflow in the yb plugin. Use when the user says yb:create-pr, create-pr, create pr, PR 만들어줘, or asks Codex to create a GitHub PR while preserving the project template.
+description: Bandalart Android PR creation workflow. Use when the user says create-pr, create pr, PR 만들어줘, or asks Codex to create a GitHub PR while preserving the project template.
 ---
 
-# YB Create PR
-
-Codex-native migration of Claude `yb:create-pr`. Keep `.claude/plugins/yb/skills/create-pr/SKILL.md` unchanged as legacy reference.
+# Bandalart Create PR
 
 ## Inputs
 
 - Optional `--branch` / `-b`: source branch. Default: current branch.
 - Optional `--base`: target branch. Default: infer from branch history, fallback `develop`.
-- Required reviewer: the working counterpart who should review the PR.
+- Optional `--reviewer`: reviewer to request when the user explicitly names one.
 
 ## Workflow
 
@@ -36,21 +34,16 @@ Codex-native migration of Claude `yb:create-pr`. Keep `.claude/plugins/yb/skills
    - `docs:` -> `📃 docs`
    - `refactor:` -> `🔨 refactor`
    - `test:` -> `✅ test`
-7. Determine the required reviewer.
-   - Reviewer assignment is mandatory and must be the working counterpart for the task.
-   - If the user explicitly named a reviewer, use that reviewer.
-   - Otherwise, determine the current GitHub user with `gh api user --jq .login` and use the YeoBee counterpart mapping:
-     - `easyhooon` -> `LeeOhHyung`
-     - `LeeOhHyung` -> `easyhooon`
-   - If the current user is not in the mapping, ask for the reviewer before showing the preview.
-8. Show a preview with base/head, label, assignee, reviewer, title, and full body. Ask for confirmation before creating the PR.
+7. Use a reviewer only when the user explicitly names one. Do not infer or require a reviewer.
+8. Show a preview with base/head, label, assignee, optional reviewer, title, and full body. Ask for confirmation before creating the PR.
 9. Create the PR with `gh pr create`.
    - Use `--assignee @me`.
-   - Always include `--reviewer {reviewer}`.
-10. Report PR number, URL, title, label, assignee, reviewer, base, and head branch.
+   - Include `--reviewer {reviewer}` only when a reviewer was explicitly provided.
+10. Report PR number, URL, title, label, assignee, optional reviewer, base, and head branch.
 
 ## Constraints
 
 - Do not remove or reshape the PR template.
 - Do not include Codex/Claude boilerplate in the PR body.
+- Do not invent or require a reviewer for this personal project.
 - If `gh` auth or network fails, stop with the failing command context.
