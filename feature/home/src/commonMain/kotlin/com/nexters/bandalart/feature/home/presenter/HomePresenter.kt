@@ -47,8 +47,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import io.github.aakira.napier.Napier
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 @AssistedInject
@@ -73,8 +75,24 @@ class HomePresenter(
         var updateVersionCode by remember { mutableStateOf<Int?>(null) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
         var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
+        val completingTaskCellIds = remember { mutableSetOf<Long>() }
+        val pendingEffects = remember { ArrayDeque<HomeScreen.Effect>() }
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val scope = rememberCoroutineScope()
+
+        fun emitEffect(newEffect: HomeScreen.Effect) {
+            if (effect == newEffect || pendingEffects.lastOrNull() == newEffect) return
+
+            if (effect == null) {
+                effect = newEffect
+            } else {
+                pendingEffects.addLast(newEffect)
+            }
+        }
+
+        fun consumeEffect() {
+            effect = pendingEffects.removeFirstOrNull()
+        }
 
         suspend fun loadBandalart(
             bandalartId: Long,
@@ -137,7 +155,7 @@ class HomePresenter(
 
         suspend fun createBandalart() {
             if (bandalartList.size >= MAX_BANDALART_COUNT) {
-                effect = HomeScreen.Effect.ShowLimitToast
+                emitEffect(HomeScreen.Effect.ShowLimitToast)
                 return
             }
 
@@ -146,7 +164,7 @@ class HomePresenter(
                 bandalartRepository.setRecentBandalartId(bandalart.id)
                 bandalartRepository.upsertBandalartId(bandalart.id, bandalart.isCompleted)
                 loadBandalart(bandalart.id)
-                effect = HomeScreen.Effect.ShowCreateSnackbar
+                emitEffect(HomeScreen.Effect.ShowCreateSnackbar)
             }
         }
 
@@ -172,7 +190,7 @@ class HomePresenter(
             cellData: BandalartCellEntity,
         ) {
             if (cellType != CellType.MAIN && isMainCellTitleEmpty) {
-                effect = HomeScreen.Effect.ShowMainGoalToast
+                emitEffect(HomeScreen.Effect.ShowMainGoalToast)
                 return
             }
 
@@ -308,6 +326,37 @@ class HomePresenter(
             bottomSheet = null
         }
 
+        suspend fun completeTask(requestedCell: BandalartCellEntity) {
+            val currentBandalart = bandalartData ?: return
+            val currentCell = bandalartCellData?.findTaskCell(requestedCell.id) ?: return
+            if (currentCell.title.isNullOrBlank() || currentCell.isCompleted) return
+            if (!completingTaskCellIds.add(currentCell.id)) return
+
+            try {
+                runCatching {
+                    bandalartRepository.updateBandalartTaskCell(
+                        bandalartId = currentBandalart.id,
+                        cellId = currentCell.id,
+                        updateBandalartTaskCellEntity =
+                            UpdateBandalartTaskCellEntity(
+                                title = currentCell.title,
+                                description = currentCell.description,
+                                dueDate = currentCell.dueDate,
+                                isCompleted = true,
+                            ),
+                    )
+                }.onSuccess {
+                    bandalartCellData = bandalartCellData?.completeTask(currentCell.id)
+                    emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
+                }.onFailure { exception ->
+                    if (exception is CancellationException) throw exception
+                    Napier.e("Failed to complete task cell", exception, tag = "HomePresenter")
+                }
+            } finally {
+                completingTaskCellIds.remove(currentCell.id)
+            }
+        }
+
         suspend fun updateBandalartEmoji(
             bandalartId: Long,
             cellId: Long,
@@ -328,7 +377,7 @@ class HomePresenter(
             dialog = null
             bottomSheet = null
             isDropDownMenuOpened = false
-            effect = HomeScreen.Effect.ShowDeleteSnackbar
+            emitEffect(HomeScreen.Effect.ShowDeleteSnackbar)
         }
 
         suspend fun deleteCell(cellId: Long) {
@@ -434,6 +483,10 @@ class HomePresenter(
                         cellData = event.cellData,
                     )
 
+                is HomeScreen.Event.CompleteTask -> {
+                    scope.launch { completeTask(event.cellData) }
+                }
+
                 HomeScreen.Event.OpenBandalartDeleteDialog -> {
                     dialog = HomeScreen.DialogState.BandalartDelete
                 }
@@ -496,12 +549,12 @@ class HomePresenter(
                 }
 
                 is HomeScreen.Event.DeleteCell -> scope.launch { deleteCell(event.cellId) }
-                HomeScreen.Event.ConsumeEffect -> effect = null
+                HomeScreen.Event.ConsumeEffect -> consumeEffect()
                 is HomeScreen.Event.SelectThemeMode -> {
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }
                 }
 
-                HomeScreen.Event.ContactSupport -> effect = HomeScreen.Effect.OpenSupportMail
+                HomeScreen.Event.ContactSupport -> emitEffect(HomeScreen.Effect.OpenSupportMail)
                 HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
                 HomeScreen.Event.RequestSave -> {
                     isDropDownMenuOpened = false
@@ -558,3 +611,16 @@ class HomePresenter(
         const val MAX_DESCRIPTION_LENGTH = 1000
     }
 }
+
+private fun BandalartCellEntity.findTaskCell(cellId: Long): BandalartCellEntity? =
+    children
+        .asSequence()
+        .flatMap { subCell -> subCell.children.asSequence() }
+        .firstOrNull { taskCell -> taskCell.id == cellId }
+
+private fun BandalartCellEntity.completeTask(cellId: Long): BandalartCellEntity =
+    if (id == cellId) {
+        copy(isCompleted = true)
+    } else {
+        copy(children = children.map { child -> child.completeTask(cellId) })
+    }

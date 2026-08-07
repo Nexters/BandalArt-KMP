@@ -17,7 +17,7 @@
 package com.nexters.bandalart.feature.home.ui.bandalart
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -42,6 +42,7 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.complete_description
 import bandalart.core.designsystem.generated.resources.home_main_cell
+import bandalart.core.designsystem.generated.resources.home_complete_task_long_click
 import bandalart.core.designsystem.generated.resources.home_sub_cell
 import bandalart.core.designsystem.generated.resources.ic_cell_check
 import com.nexters.bandalart.core.common.extension.toColor
@@ -84,6 +85,23 @@ fun BandalartCell(
     innerPadding: Dp = 2.dp,
     mainCellPadding: Dp = 1.dp,
 ) {
+    val onLongClick =
+        if (
+            cellType == CellType.TASK &&
+            !cellData.title.isNullOrBlank() &&
+            !cellData.isCompleted
+        ) {
+            { onHomeUiAction(HomeScreen.Event.CompleteTask(cellData)) }
+        } else {
+            null
+        }
+    val onLongClickLabel =
+        if (onLongClick != null) {
+            stringResource(Res.string.home_complete_task_long_click)
+        } else {
+            null
+        }
+
     Box(
         modifier =
             modifier
@@ -119,13 +137,17 @@ fun BandalartCell(
                 ).aspectRatio(1f)
                 .clip(RoundedCornerShape(10.dp))
                 .background(getCellBackgroundColor(bandalartData, cellType, cellData))
-                .clickable {
-                    when (cellType) {
-                        CellType.MAIN -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
-                        CellType.SUB -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.SUB, bandalartData.titleText.isEmpty(), cellData))
-                        else -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.TASK, bandalartData.titleText.isEmpty(), cellData))
-                    }
-                },
+                .combinedClickable(
+                    onClick = {
+                        when (cellType) {
+                            CellType.MAIN -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
+                            CellType.SUB -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.SUB, bandalartData.titleText.isEmpty(), cellData))
+                            else -> onHomeUiAction(HomeScreen.Event.OpenCell(CellType.TASK, bandalartData.titleText.isEmpty(), cellData))
+                        }
+                    },
+                    onLongClickLabel = onLongClickLabel,
+                    onLongClick = onLongClick,
+                ),
         contentAlignment = Alignment.Center,
     ) {
         CellContent(

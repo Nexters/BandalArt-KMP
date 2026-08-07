@@ -35,6 +35,8 @@ internal class FakeBandalartRepository(
     details: Map<Long, BandalartEntity> = initialBandalarts.associateBy { it.id },
     private val mainCells: Map<Long, BandalartCellEntity> = emptyMap(),
     private val childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
+    private val beforeTaskCellUpdate: suspend () -> Unit = {},
+    private val taskCellUpdateError: Throwable? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
@@ -55,6 +57,8 @@ internal class FakeBandalartRepository(
     var subCellUpdate: SubCellUpdate? = null
         private set
     var taskCellUpdate: TaskCellUpdate? = null
+        private set
+    var taskCellUpdateCalls: Int = 0
         private set
 
     override suspend fun createBandalart(): BandalartEntity? {
@@ -125,6 +129,9 @@ internal class FakeBandalartRepository(
         cellId: Long,
         updateBandalartTaskCellEntity: UpdateBandalartTaskCellEntity,
     ) {
+        taskCellUpdateCalls += 1
+        beforeTaskCellUpdate()
+        taskCellUpdateError?.let { throw it }
         taskCellUpdate =
             TaskCellUpdate(
                 bandalartId = bandalartId,

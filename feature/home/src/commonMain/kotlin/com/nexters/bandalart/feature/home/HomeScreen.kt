@@ -70,12 +70,16 @@ import com.nexters.bandalart.feature.home.ui.bandalart.BandalartSkeleton
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import io.github.compose.jindong.Jindong
+import io.github.compose.jindong.core.model.HapticIntensity
+import io.github.compose.jindong.dsl.Haptic
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.resources.getString
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val SNACKBAR_DURATION_MILLIS = 1500L
 
@@ -143,6 +147,16 @@ private fun HandleHomeEffects(
     supportMailLauncher: SupportMailLauncher,
 ) {
     val showSnackbar = LocalShowSnackbar.current
+    val hapticEffect = state.effect as? HomeScreen.Effect.PlayTaskCompletionHaptic
+
+    if (hapticEffect != null) {
+        Jindong(hapticEffect.taskCellId) {
+            Haptic(
+                duration = TASK_COMPLETION_HAPTIC_MILLIS.milliseconds,
+                intensity = HapticIntensity.MEDIUM,
+            )
+        }
+    }
 
     LaunchedEffect(state.effect) {
         when (state.effect) {
@@ -183,6 +197,8 @@ private fun HandleHomeEffects(
                 }
             }
 
+            is HomeScreen.Effect.PlayTaskCompletionHaptic -> Unit
+
             null -> Unit
         }
 
@@ -218,6 +234,8 @@ private fun HandleHomeEffects(
         }
     }
 }
+
+private const val TASK_COMPLETION_HAPTIC_MILLIS = 50
 
 private suspend fun showSnackbarForDuration(
     message: String,

@@ -44,6 +44,8 @@ kotlin {
 
             implementation(libs.uri.kmp)
             implementation(libs.cmptoast)
+            implementation(libs.jindong.core)
+            implementation(libs.jindong.compose)
             implementation(libs.napier)
         }
 
