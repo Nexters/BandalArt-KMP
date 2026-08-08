@@ -1,5 +1,5 @@
-Added a rewarded-ad flow for creating more Bandalarts.
+Improved Home ads and emoji navigation.
 
-• An explanation dialog now appears after all free slots are used.
-• Finish the ad after confirming to unlock one slot and create one new Bandalart.
-• Closing the ad before earning the reward does not add a slot or Bandalart.
+• Added a test banner ad that adapts to the Home screen width.
+• Fluent Emoji can now be browsed by category.
+• After all free slots are used, the rewarded-ad prompt can unlock one more slot.

@@ -19,6 +19,7 @@ package com.nexters.bandalart.di.metro
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.IosSupportMailLauncher
+import com.nexters.bandalart.core.common.NoOpBannerAdHost
 import com.nexters.bandalart.core.common.NoOpRewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
@@ -27,6 +28,7 @@ private object IosPlatformBindings : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory()
     override val dataStoreFactory = BandalartDataStoreFactory()
     override val appVersionProvider = AppVersionProvider()
+    override val bannerAdHost = NoOpBannerAdHost
     override val imageHandlerProvider = ImageHandlerProvider()
     override val supportMailLauncher = IosSupportMailLauncher()
     override val rewardedAdGateway = NoOpRewardedAdGateway

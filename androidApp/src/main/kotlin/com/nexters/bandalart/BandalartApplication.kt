@@ -20,6 +20,7 @@ import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
+import com.nexters.bandalart.ads.AndroidBannerAdHost
 import com.nexters.bandalart.ads.AndroidRewardedAdGateway
 import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.di.metro.AppGraph
@@ -37,9 +38,11 @@ class BandalartApplication : Application() {
         super.onCreate()
 
         val rewardedAdGateway = DelegatingRewardedAdGateway()
+        val bannerAdHost = AndroidBannerAdHost(adsInitializer::awaitInitialized)
         appGraph =
             createAndroidAppGraph(
                 application = this,
+                bannerAdHost = bannerAdHost,
                 rewardedAdGateway = rewardedAdGateway,
             )
         rewardedAdGateway.delegate =

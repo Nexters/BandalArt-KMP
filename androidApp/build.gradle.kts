@@ -57,7 +57,15 @@ android {
                     "ca-app-pub-5570932833347277/6659503579"
                 },
             )
-            resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-5570932833347277/1215605203")
+            resValue(
+                "string",
+                "admob_banner_ad_unit_id",
+                if (useTestAds) {
+                    "ca-app-pub-3940256099942544/9214589741"
+                } else {
+                    "ca-app-pub-5570932833347277/1215605203"
+                },
+            )
             manifestPlaceholders +=
                 mapOf(
                     "appName" to "@string/app_name",

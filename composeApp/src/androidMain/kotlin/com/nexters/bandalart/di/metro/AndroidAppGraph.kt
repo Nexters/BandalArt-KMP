@@ -17,8 +17,9 @@
 package com.nexters.bandalart.di.metro
 
 import android.app.Application
-import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
+import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -26,6 +27,7 @@ import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 
 private class AndroidPlatformBindings(
     application: Application,
+    override val bannerAdHost: BannerAdHost,
     override val rewardedAdGateway: RewardedAdGateway,
 ) : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory(application)
@@ -37,8 +39,9 @@ private class AndroidPlatformBindings(
 
 fun createAndroidAppGraph(
     application: Application,
+    bannerAdHost: BannerAdHost,
     rewardedAdGateway: RewardedAdGateway,
-): AppGraph = createAppGraph(AndroidPlatformBindings(application, rewardedAdGateway))
+): AppGraph = createAppGraph(AndroidPlatformBindings(application, bannerAdHost, rewardedAdGateway))
 
 suspend fun recordRewardedCreation(
     appGraph: AppGraph,
