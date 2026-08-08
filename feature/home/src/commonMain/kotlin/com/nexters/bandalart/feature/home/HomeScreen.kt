@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -51,6 +52,7 @@ import bandalart.core.designsystem.generated.resources.settings_contact_body
 import bandalart.core.designsystem.generated.resources.settings_contact_fallback
 import bandalart.core.designsystem.generated.resources.settings_contact_subject
 import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.common.RewardedAdResult
@@ -96,6 +98,7 @@ internal fun Home(
     appVersionProvider: AppVersionProvider,
     imageHandlerProvider: ImageHandlerProvider,
     supportMailLauncher: SupportMailLauncher,
+    bannerAdHost: BannerAdHost,
     rewardedAdGateway: RewardedAdGateway,
 ) {
     val homeGraphicsLayer = rememberGraphicsLayer()
@@ -156,6 +159,7 @@ internal fun Home(
         homeGraphicsLayer = homeGraphicsLayer,
         completeGraphicsLayer = completeGraphicsLayer,
         updateSnackbarHostState = updateSnackbarHostState,
+        bannerAdHost = bannerAdHost,
         modifier = modifier,
     )
 }
@@ -281,77 +285,92 @@ internal fun HomeContent(
     homeGraphicsLayer: GraphicsLayer,
     completeGraphicsLayer: GraphicsLayer,
     updateSnackbarHostState: SnackbarHostState,
+    bannerAdHost: BannerAdHost,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(bottom = 32.dp),
-            ) {
-                HomeTopBar(
-                    bandalartCount = state.bandalartList.size,
-                    onHomeUiAction = state.eventSink,
-                )
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.weight(1f)) {
                 Column(
                     modifier =
                         Modifier
-                            .captureToGraphicsLayer(
-                                graphicsLayer = homeGraphicsLayer,
-                                captureBackgroundColor = Gray50,
-                            ),
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(bottom = 32.dp),
                 ) {
-                    if (state.bandalartCellData != null && state.bandalartData != null) {
-                        HomeHeader(
-                            bandalartData = state.bandalartData,
-                            cellData = state.bandalartCellData,
-                            isDropDownMenuOpened = state.isDropDownMenuOpened,
-                            onHomeUiAction = state.eventSink,
-                        )
-                        BandalartChart(
-                            bandalartData = state.bandalartData,
-                            bandalartCellData = state.bandalartCellData,
-                            onHomeUiAction = state.eventSink,
-                            modifier =
-                                Modifier
-                                    .captureToGraphicsLayer(
-                                        graphicsLayer = completeGraphicsLayer,
-                                        captureBackgroundColor = Gray50,
-                                    ),
-                        )
+                    HomeTopBar(
+                        bandalartCount = state.bandalartList.size,
+                        onHomeUiAction = state.eventSink,
+                    )
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+                    Column(
+                        modifier =
+                            Modifier
+                                .captureToGraphicsLayer(
+                                    graphicsLayer = homeGraphicsLayer,
+                                    captureBackgroundColor = Gray50,
+                                ),
+                    ) {
+                        if (state.bandalartCellData != null && state.bandalartData != null) {
+                            HomeHeader(
+                                bandalartData = state.bandalartData,
+                                cellData = state.bandalartCellData,
+                                isDropDownMenuOpened = state.isDropDownMenuOpened,
+                                onHomeUiAction = state.eventSink,
+                            )
+                            BandalartChart(
+                                bandalartData = state.bandalartData,
+                                bandalartCellData = state.bandalartCellData,
+                                onHomeUiAction = state.eventSink,
+                                modifier =
+                                    Modifier
+                                        .captureToGraphicsLayer(
+                                            graphicsLayer = completeGraphicsLayer,
+                                            captureBackgroundColor = Gray50,
+                                        ),
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(64.dp))
                     }
-                    Spacer(modifier = Modifier.height(64.dp))
+                    Spacer(modifier = Modifier.weight(1f))
+                    HomeShareButton(
+                        onShareButtonClick = {
+                            state.eventSink(HomeScreen.Event.RequestShare)
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                HomeShareButton(
-                    onShareButtonClick = {
-                        state.eventSink(HomeScreen.Event.RequestShare)
-                    },
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+
+                SnackbarHost(
+                    hostState = updateSnackbarHostState,
+                    modifier = Modifier.align(Alignment.BottomCenter),
                 )
+
+                if (state.isLoading) {
+                    BandalartSkeleton()
+                }
             }
 
-            SnackbarHost(
-                hostState = updateSnackbarHostState,
-                modifier = Modifier.align(Alignment.BottomCenter),
+            bannerAdHost.Content(
+                visible = state.isBannerCreativeVisible(),
+                modifier = Modifier.fillMaxWidth(),
             )
-
-            if (state.isLoading) {
-                BandalartSkeleton()
-            }
         }
     }
 }
+
+internal fun HomeScreen.State.isBannerCreativeVisible(): Boolean =
+    !isLoading &&
+        bottomSheet == null &&
+        dialog == null &&
+        imageRequest == null &&
+        rewardedAdRequestId == null
 
 @Preview
 @Composable
@@ -369,6 +388,7 @@ private fun HomeScreenPreview() {
             homeGraphicsLayer = rememberGraphicsLayer(),
             completeGraphicsLayer = rememberGraphicsLayer(),
             updateSnackbarHostState = remember { SnackbarHostState() },
+            bannerAdHost = com.nexters.bandalart.core.common.NoOpBannerAdHost,
         )
     }
 }

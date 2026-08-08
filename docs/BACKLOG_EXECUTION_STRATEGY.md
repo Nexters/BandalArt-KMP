@@ -11,7 +11,7 @@
 - KMP 테스트 가이드 #209, Circuit 상태 보존과 날짜 피커 복원 #210, 설정 화면 이메일 문의 #207은 각각 PR #216, #218, #220으로 `main`에 병합해 완료했다.
 - 태스크 셀 롱클릭 완료와 KMP 햅틱 #213은 PR #227로 `main`에 병합했다.
 - Fluent UI Emoji #212는 Color 300개 resource pipeline, 공통 renderer, picker·최근 사용과 Android 출시 검증을 완료했고 PR #245에서 metadata category 탐색을 추가했다. iOS 실제 기기·artifact 검증은 #214로 이관했다.
-- AdMob #206은 PR #241에서 무료 슬롯 정책과 Android GMA SDK 기반을, PR #243에서 사전 안내→Rewarded→정확히 한 개 생성과 process 복구를 병합했다. 홈 Banner만 후속 작업으로 남아 있다.
+- AdMob #206은 PR #241에서 무료 슬롯 정책과 Android GMA SDK 기반을, PR #243에서 사전 안내→Rewarded→정확히 한 개 생성과 process 복구를 병합했다. 현재 후속 작업에서 홈 Banner와 test-ad Internal 검증을 진행한다.
 - 따라서 다음 작업은 남은 마이그레이션이 아니라 테스트·상태 정책을 고정한 뒤 작은 기능부터 확장하는 순서다.
 
 ## 실행 원칙
@@ -52,7 +52,7 @@ Color 300개 catalog, pinned manifest와 resource pipeline, 공통 renderer, pic
 
 ### 7. #206 AdMob Rewarded Ad 기반 추가 생성 — L
 
-PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android GMA SDK 기반을 병합했다. PR #243에서 사전 안내, Rewarded 완료 뒤 정확히 한 번 생성, 광고 실패 fail-open과 process 복구를 연결했다. 홈 Anchored Adaptive Banner는 별도 후속 작업이다.
+PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android GMA SDK 기반을 병합했다. PR #243에서 사전 안내, Rewarded 완료 뒤 정확히 한 번 생성, 광고 실패 fail-open과 process 복구를 연결했다. 현재 후속 작업에서 홈 Anchored Adaptive Banner를 연결하고 Rewarded·Banner 테스트 광고를 함께 Internal 검증한다.
 
 ### 8. #208 목표 템플릿 기반 빠른 생성 — L
 
@@ -66,7 +66,7 @@ PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android
 
 - #214: iOS 개발자 계정 복구 후 실제 기기, 저장소, 설정, navigation, 배포 검증
 - #113: legacy Fastlane credential 폐기·회전과 Android Internal CD 보안 정리
-- #206 외부 준비: AdMob app/rewarded unit, UMP, app-ads.txt, Play Console 광고·Data safety 선언
+- #206 외부 준비: AdMob app/rewarded/banner unit, UMP, app-ads.txt, Play Console 광고·Data safety 선언
 
 이 운영 작업은 준비되는 즉시 병행할 수 있지만, 미완료 상태가 앞선 Android 기능 개발을 막지는 않는다.
 
@@ -78,7 +78,7 @@ PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android
 2. #213: long click과 햅틱
 3. #212: 이모지 에셋 용량·성능·다크 모드 — Android 완료, iOS는 #214로 이관
 4. #211: 알림 권한·예약·재예약
-5. #206: Rewarded 생성 flow — 구현 완료, Android test ad end-to-end는 Internal Testing에서 확인
+5. #206: Rewarded 생성 flow — 구현 완료, Home Banner와 Android test ad end-to-end는 Internal Testing에서 확인
 6. #208: 템플릿 + 광고 생성 end-to-end
 
 ## 바로 이어갈 작업

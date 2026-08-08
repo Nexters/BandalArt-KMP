@@ -50,6 +50,7 @@
 
 ### Ads
 
+- [AdMob 홈 하단 배너](features/ads/ADMOB_HOME_BANNER_STRATEGY.md)
 - [AdMob 보상형 생성 gate](features/ads/ADMOB_REWARDED_CREATE_GATE_STRATEGY.md)
 - [AdMob 슬롯 기반](features/ads/ADMOB_SLOT_FOUNDATION_STRATEGY.md)
 
