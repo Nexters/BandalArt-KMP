@@ -47,8 +47,7 @@ class DefaultBandalartSlotRepository(
     override suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation? =
         bandalartDataStore.grantRewardedCreation(requestId)?.toDomain()
 
-    override suspend fun getPendingRewardedCreation(): PendingRewardedCreation? =
-        bandalartDataStore.getPendingRewardedCreation()?.toDomain()
+    override suspend fun getPendingRewardedCreation(): PendingRewardedCreation? = bandalartDataStore.getPendingRewardedCreation()?.toDomain()
 
     override suspend fun clearPendingRewardedCreation(requestId: Long) {
         bandalartDataStore.clearPendingRewardedCreation(requestId)
