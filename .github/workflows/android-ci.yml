@@ -183,7 +183,6 @@ jobs:
             -   name: Setup Ruby
                 uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1 # v1
                 with:
-                    ruby-version: .ruby-version
                     bundler-cache: true
 
             -   name: Install pinned actionlint
