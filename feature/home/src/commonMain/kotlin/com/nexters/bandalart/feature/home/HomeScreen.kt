@@ -43,7 +43,8 @@ import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.create_bandalart
 import bandalart.core.designsystem.generated.resources.delete_bandalart
-import bandalart.core.designsystem.generated.resources.limit_create_bandalart
+import bandalart.core.designsystem.generated.resources.rewarded_ad_unavailable
+import bandalart.core.designsystem.generated.resources.rewarded_slot_error
 import bandalart.core.designsystem.generated.resources.please_input_main_goal
 import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import bandalart.core.designsystem.generated.resources.settings_contact_body
@@ -51,6 +52,8 @@ import bandalart.core.designsystem.generated.resources.settings_contact_fallback
 import bandalart.core.designsystem.generated.resources.settings_contact_subject
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.common.SupportMailDraft
 import com.nexters.bandalart.core.common.SupportMailLauncher
 import com.nexters.bandalart.core.common.SupportMailOpenResult
@@ -74,6 +77,7 @@ import io.github.compose.jindong.Jindong
 import io.github.compose.jindong.core.model.HapticIntensity
 import io.github.compose.jindong.dsl.Haptic
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,11 +96,30 @@ internal fun Home(
     appVersionProvider: AppVersionProvider,
     imageHandlerProvider: ImageHandlerProvider,
     supportMailLauncher: SupportMailLauncher,
+    rewardedAdGateway: RewardedAdGateway,
 ) {
     val homeGraphicsLayer = rememberGraphicsLayer()
     val completeGraphicsLayer = rememberGraphicsLayer()
     val updateSnackbarHostState = remember { SnackbarHostState() }
     val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
+    LaunchedEffect(state.rewardedAdRequestId) {
+        val requestId = state.rewardedAdRequestId ?: return@LaunchedEffect
+        val result =
+            try {
+                rewardedAdGateway.show(requestId)
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Exception) {
+                RewardedAdResult.FAILED
+            }
+        state.eventSink(
+            HomeScreen.Event.RewardedAdFinished(
+                requestId = requestId,
+                result = result,
+            ),
+        )
+        rewardedAdGateway.consume(requestId)
+    }
 
     FlexibleUpdateEffect(
         updateVersionCode = state.updateVersionCode,
@@ -168,8 +191,12 @@ private fun HandleHomeEffects(
                 showSnackbarForDuration(getString(Res.string.delete_bandalart), showSnackbar)
             }
 
-            HomeScreen.Effect.ShowLimitToast -> {
-                showToast(getString(Res.string.limit_create_bandalart))
+            HomeScreen.Effect.ShowAdUnavailableSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.rewarded_ad_unavailable), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowSlotErrorSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.rewarded_slot_error), showSnackbar)
             }
 
             HomeScreen.Effect.ShowMainGoalToast -> {

@@ -127,6 +127,7 @@ class HomePresenterRuntimeTest {
                 HomePresenter(
                     navigator = navigator,
                     bandalartRepository = repository,
+                    bandalartSlotRepository = FakeBandalartSlotRepository(),
                     inAppUpdateRepository = FakeInAppUpdateRepository(),
                     settingsRepository = FakeSettingsRepository(),
                 )
@@ -190,6 +191,7 @@ class HomePresenterRuntimeTest {
                     initialBandalarts = listOf(bandalart()),
                     recentBandalartId = 1L,
                 ),
+            bandalartSlotRepository = FakeBandalartSlotRepository(),
             inAppUpdateRepository = updateRepository,
             settingsRepository = settingsRepository,
         )

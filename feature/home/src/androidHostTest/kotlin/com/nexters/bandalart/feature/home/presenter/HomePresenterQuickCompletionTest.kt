@@ -213,6 +213,7 @@ class HomePresenterQuickCompletionTest {
         HomePresenter(
             navigator = FakeNavigator(HomeScreen),
             bandalartRepository = repository,
+            bandalartSlotRepository = FakeBandalartSlotRepository(),
             inAppUpdateRepository = FakeInAppUpdateRepository(),
             settingsRepository = FakeSettingsRepository(),
         )

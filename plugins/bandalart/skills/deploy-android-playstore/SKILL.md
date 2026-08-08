@@ -50,15 +50,17 @@ service account는 `client_email`만 기대 계정과 일치하는지 검사하�
 
 ### 5. Android clean AAB 검증과 업로드
 
-1. `./gradlew clean :androidApp:bundleRelease --no-configuration-cache`로 기존 생성물을 제거하고 release AAB를 먼저 생성한다.
+1. `./gradlew clean :androidApp:bundleRelease -Pbandalart.useTestAds=true --no-configuration-cache`로 기존 생성물을 제거하고 공식 Google 테스트 광고 ID가 포함된 release AAB를 먼저 생성한다.
 2. 생성된 AAB의 versionName/versionCode, 크기와 Compose resource namespace를 검사한다.
    - 제거된 source set의 generated resource namespace가 남아 있으면 업로드하지 않는다.
    - 저장소가 사용하는 resource namespace가 없으면 업로드하지 않는다.
-3. 사전 검증이 통과하면 `./gradlew publishReleaseBundle --no-configuration-cache`로 검증된 소스와 산출물 상태에서 업로드한다.
+   - 공식 Google Rewarded 테스트 광고 ID가 포함됐는지 확인하고 production 광고 ID가 포함됐으면 업로드하지 않는다.
+3. 사전 검증이 통과하면 `./gradlew publishReleaseBundle -Pbandalart.useTestAds=true --no-configuration-cache`로 검증된 소스와 산출물 상태에서 업로드한다.
 4. 배포 산출물 생성이 목적이므로 이 workflow에서는 Android release build를 실행할 수 있다.
 5. upload target이 Internal track이고 의도한 release status인지 task 설정과 결과에서 확인한다.
 6. 실패하면 즉시 중단하고 secret을 가린 실패 단계와 원인을 보고한다.
 7. 성공하면 AAB, package, versionName/versionCode, track과 결과를 보고한다.
+8. 테스트 광고 ID가 포함된 Internal artifact는 production으로 promote하지 않는다. production 배포는 실제 광고 ID로 새 AAB와 새 versionCode를 생성한다.
 
 ## 제약
 

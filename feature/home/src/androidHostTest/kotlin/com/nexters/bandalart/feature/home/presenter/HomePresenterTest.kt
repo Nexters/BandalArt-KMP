@@ -189,6 +189,7 @@ class HomePresenterTest {
         HomePresenter(
             navigator = FakeNavigator(HomeScreen),
             bandalartRepository = repository,
+            bandalartSlotRepository = FakeBandalartSlotRepository(),
             inAppUpdateRepository = FakeInAppUpdateRepository(),
             settingsRepository = FakeSettingsRepository(),
         )

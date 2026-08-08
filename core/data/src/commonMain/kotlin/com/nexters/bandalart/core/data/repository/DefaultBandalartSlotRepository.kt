@@ -19,6 +19,7 @@ package com.nexters.bandalart.core.data.repository
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.policy.resolveMaxBandalartSlots
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
+import com.nexters.bandalart.core.domain.repository.PendingRewardedCreation
 
 class DefaultBandalartSlotRepository(
     private val bandalartDataStore: BandalartDataStore,
@@ -32,4 +33,30 @@ class DefaultBandalartSlotRepository(
         bandalartDataStore.expandMaxBandalartSlots(
             minimumSlots = resolveMaxBandalartSlots(currentBandalartCount),
         )
+
+    override suspend fun prepareRewardedCreation(
+        requestId: Long,
+        currentBandalartCount: Int,
+    ): PendingRewardedCreation =
+        bandalartDataStore
+            .prepareRewardedCreation(
+                requestId = requestId,
+                minimumSlots = resolveMaxBandalartSlots(currentBandalartCount),
+            ).toDomain()
+
+    override suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation? =
+        bandalartDataStore.grantRewardedCreation(requestId)?.toDomain()
+
+    override suspend fun getPendingRewardedCreation(): PendingRewardedCreation? = bandalartDataStore.getPendingRewardedCreation()?.toDomain()
+
+    override suspend fun clearPendingRewardedCreation(requestId: Long) {
+        bandalartDataStore.clearPendingRewardedCreation(requestId)
+    }
 }
+
+private fun com.nexters.bandalart.core.datastore.StoredPendingRewardedCreation.toDomain() =
+    PendingRewardedCreation(
+        requestId = requestId,
+        targetSlots = targetSlots,
+        isGranted = isGranted,
+    )

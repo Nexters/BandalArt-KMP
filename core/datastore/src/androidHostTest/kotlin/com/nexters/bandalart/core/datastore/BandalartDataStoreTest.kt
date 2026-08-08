@@ -108,6 +108,39 @@ class BandalartDataStoreTest {
                 assertEquals(6, bandalartDataStore.expandMaxBandalartSlots(minimumSlots = 3))
                 assertEquals(6, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
             }
+
+        @Test
+        @DisplayName("보상 요청을 grant하면 목표 슬롯과 복구 상태를 원자적으로 저장해야 한다")
+        fun rewardedGrantPersistsTargetAndRecoveryState() =
+            runTest {
+                bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3)
+                val pending =
+                    bandalartDataStore.prepareRewardedCreation(
+                        requestId = 42L,
+                        minimumSlots = 3,
+                    )
+
+                assertEquals(StoredPendingRewardedCreation(42L, 4, false), pending)
+                assertEquals(StoredPendingRewardedCreation(42L, 4, true), bandalartDataStore.grantRewardedCreation(42L))
+                assertEquals(4, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
+                assertEquals(StoredPendingRewardedCreation(42L, 4, true), bandalartDataStore.getPendingRewardedCreation())
+
+                bandalartDataStore.clearPendingRewardedCreation(42L)
+                assertEquals(null, bandalartDataStore.getPendingRewardedCreation())
+            }
+
+        @Test
+        @DisplayName("중복 grant는 슬롯을 다시 늘리지 않아야 한다")
+        fun duplicateRewardedGrantIsIdempotent() =
+            runTest {
+                bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3)
+                bandalartDataStore.prepareRewardedCreation(requestId = 7L, minimumSlots = 3)
+
+                bandalartDataStore.grantRewardedCreation(7L)
+                bandalartDataStore.grantRewardedCreation(7L)
+
+                assertEquals(4, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
+            }
     }
 
     @Nested

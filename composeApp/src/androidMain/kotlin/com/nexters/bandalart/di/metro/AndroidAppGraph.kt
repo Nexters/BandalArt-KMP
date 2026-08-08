@@ -20,11 +20,13 @@ import android.app.Application
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 
 private class AndroidPlatformBindings(
     application: Application,
+    override val rewardedAdGateway: RewardedAdGateway,
 ) : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory(application)
     override val dataStoreFactory = BandalartDataStoreFactory(application)
@@ -33,4 +35,12 @@ private class AndroidPlatformBindings(
     override val supportMailLauncher = AndroidSupportMailLauncher(application)
 }
 
-fun createAndroidAppGraph(application: Application): AppGraph = createAppGraph(AndroidPlatformBindings(application))
+fun createAndroidAppGraph(
+    application: Application,
+    rewardedAdGateway: RewardedAdGateway,
+): AppGraph = createAppGraph(AndroidPlatformBindings(application, rewardedAdGateway))
+
+suspend fun recordRewardedCreation(
+    appGraph: AppGraph,
+    requestId: Long,
+): Boolean = appGraph.bandalartSlotRepository.grantRewardedCreation(requestId) != null

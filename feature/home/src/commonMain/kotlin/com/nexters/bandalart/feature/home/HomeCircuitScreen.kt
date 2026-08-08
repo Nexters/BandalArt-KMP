@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.home
 
 import com.nexters.bandalart.core.common.Language
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.navigation.CommonParcelize
@@ -44,6 +45,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val updateVersionCode: Int? = null,
         val themeMode: ThemeMode = ThemeMode.SYSTEM,
         val recentEmojis: ImmutableList<String> = persistentListOf(),
+        val rewardedAdRequestId: Long? = null,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -75,6 +77,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
     sealed interface DialogState {
         data object BandalartDelete : DialogState
 
+        data object RewardedCreate : DialogState
+
         data class CellDelete(
             val cellId: Long,
             val cellType: CellType,
@@ -87,7 +91,9 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object ShowDeleteSnackbar : Effect
 
-        data object ShowLimitToast : Effect
+        data object ShowAdUnavailableSnackbar : Effect
+
+        data object ShowSlotErrorSnackbar : Effect
 
         data object ShowMainGoalToast : Effect
 
@@ -116,6 +122,13 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object AddBandalart : Event
+
+        data object ConfirmRewardedCreate : Event
+
+        data class RewardedAdFinished(
+            val requestId: Long,
+            val result: RewardedAdResult,
+        ) : Event
 
         data object OpenBandalartList : Event
 

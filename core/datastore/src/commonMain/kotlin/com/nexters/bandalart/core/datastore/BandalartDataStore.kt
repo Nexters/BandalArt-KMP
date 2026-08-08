@@ -40,6 +40,9 @@ class BandalartDataStore(
         private const val THEME_MODE = "theme_mode"
         private const val RECENT_EMOJIS = "recent_emojis"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
+        private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
+        private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
+        private const val PENDING_REWARDED_GRANTED = "pending_rewarded_granted"
         private const val MAX_RECENT_EMOJIS = 12
     }
 
@@ -49,6 +52,9 @@ class BandalartDataStore(
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
     private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
     private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
+    private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
+    private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
+    private val pendingRewardedGrantedKey = booleanPreferencesKey(PENDING_REWARDED_GRANTED)
 
     suspend fun resolveMaxBandalartSlots(minimumSlots: Int): Int {
         var resolvedSlots = minimumSlots
@@ -66,6 +72,51 @@ class BandalartDataStore(
             preferences[maxBandalartSlotsKey] = expandedSlots
         }
         return expandedSlots
+    }
+
+    suspend fun prepareRewardedCreation(
+        requestId: Long,
+        minimumSlots: Int,
+    ): StoredPendingRewardedCreation {
+        var pending = StoredPendingRewardedCreation(requestId, minimumSlots + 1, false)
+        dataStore.edit { preferences ->
+            val resolvedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots)
+            pending = StoredPendingRewardedCreation(requestId, resolvedSlots + 1, false)
+            preferences[pendingRewardedRequestIdKey] = pending.requestId
+            preferences[pendingRewardedTargetSlotsKey] = pending.targetSlots
+            preferences[pendingRewardedGrantedKey] = false
+        }
+        return pending
+    }
+
+    suspend fun grantRewardedCreation(requestId: Long): StoredPendingRewardedCreation? {
+        var granted: StoredPendingRewardedCreation? = null
+        dataStore.edit { preferences ->
+            val pending = preferences.pendingRewardedCreation() ?: return@edit
+            if (pending.requestId != requestId) return@edit
+
+            granted = pending.copy(isGranted = true)
+            preferences[pendingRewardedGrantedKey] = true
+            preferences[maxBandalartSlotsKey] =
+                maxOf(preferences[maxBandalartSlotsKey] ?: 0, pending.targetSlots)
+        }
+        return granted
+    }
+
+    suspend fun getPendingRewardedCreation(): StoredPendingRewardedCreation? =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences()) else throw exception
+            }.first()
+            .pendingRewardedCreation()
+
+    suspend fun clearPendingRewardedCreation(requestId: Long) {
+        dataStore.edit { preferences ->
+            if (preferences[pendingRewardedRequestIdKey] != requestId) return@edit
+            preferences.remove(pendingRewardedRequestIdKey)
+            preferences.remove(pendingRewardedTargetSlotsKey)
+            preferences.remove(pendingRewardedGrantedKey)
+        }
     }
 
     val themeMode =
@@ -104,6 +155,16 @@ class BandalartDataStore(
                 else
                     throw exception
             }.first()[recentBandalartKey] ?: 0L
+
+    private fun Preferences.pendingRewardedCreation(): StoredPendingRewardedCreation? {
+        val requestId = this[pendingRewardedRequestIdKey] ?: return null
+        val targetSlots = this[pendingRewardedTargetSlotsKey] ?: return null
+        return StoredPendingRewardedCreation(
+            requestId = requestId,
+            targetSlots = targetSlots,
+            isGranted = this[pendingRewardedGrantedKey] ?: false,
+        )
+    }
 
     suspend fun getPrevBandalartList() =
         stringToList(
@@ -206,3 +267,9 @@ class BandalartDataStore(
         }
     }
 }
+
+data class StoredPendingRewardedCreation(
+    val requestId: Long,
+    val targetSlots: Int,
+    val isGranted: Boolean,
+)

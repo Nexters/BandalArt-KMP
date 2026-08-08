@@ -147,7 +147,12 @@
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">リクエストは成功しましたがデータの検証に失敗しました</string>
     <string name="create_bandalart">新しいバンダラートを作成しました。</string>
-    <string name="limit_create_bandalart">バンダラートは最大5個まで作成できます。</string>
+    <string name="rewarded_create_dialog_title">新しいバンダラートを追加しますか？</string>
+    <string name="rewarded_create_dialog_message">広告を最後まで見ると、バンダラートのスロットを1つ追加して使い続けられます。</string>
+    <string name="rewarded_create_dialog_confirm">広告を見て追加</string>
+    <string name="rewarded_create_dialog_cancel">キャンセル</string>
+    <string name="rewarded_ad_unavailable">広告を読み込めなかったため、広告なしで続けます。</string>
+    <string name="rewarded_slot_error">バンダラートのスロットを更新できませんでした。もう一度お試しください。</string>
     <string name="save_bandalart_image">バンダラートがギャラリーに保存されました。</string>
     <string name="delete_bandalart">バンダラートが削除されました。</string>
 

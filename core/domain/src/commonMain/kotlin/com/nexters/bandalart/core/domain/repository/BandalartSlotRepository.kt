@@ -20,4 +20,21 @@ interface BandalartSlotRepository {
     suspend fun getMaxBandalartSlots(currentBandalartCount: Int): Int
 
     suspend fun expandMaxBandalartSlots(currentBandalartCount: Int): Int
+
+    suspend fun prepareRewardedCreation(
+        requestId: Long,
+        currentBandalartCount: Int,
+    ): PendingRewardedCreation
+
+    suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation?
+
+    suspend fun getPendingRewardedCreation(): PendingRewardedCreation?
+
+    suspend fun clearPendingRewardedCreation(requestId: Long)
 }
+
+data class PendingRewardedCreation(
+    val requestId: Long,
+    val targetSlots: Int,
+    val isGranted: Boolean,
+)
