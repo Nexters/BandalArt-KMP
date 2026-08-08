@@ -61,7 +61,12 @@
 
 ## 테스트
 
-- KMP 테스트 source set 선택, Circuit Presenter 테스트, 로컬·CI 실행 범위는 `docs/KMP_TESTING_GUIDE.md`를 따른다.
+- KMP 테스트 source set 선택, Circuit Presenter 테스트, 로컬·CI 실행 범위는 `docs/architecture/kmp/KMP_TESTING_GUIDE.md`를 따른다.
+
+## 상태 관리
+
+- Compose와 Circuit 상태의 소유권·수명, `remember*` API와 영속 저장 선택은 `docs/architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md`를 따른다.
+- 새 문서는 `docs/README.md`의 분류 규칙에 따라 주제 폴더에 두고, `docs/` 루트에는 인덱스와 백로그만 둔다.
 
 ## MCP 설정
 

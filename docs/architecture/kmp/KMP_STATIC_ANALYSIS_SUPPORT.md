@@ -100,7 +100,7 @@ CI는 `-PspotlessRatchetFrom=origin/main`을 전달해 현재 PR에서 변경된
 
 ## 현재 검증 결과와 기존 문서 상태
 
-기존 `docs/KMP_AGP_9_MIGRATION_STRATEGY.md`와 `docs/KMP_METRO_MIGRATION_TROUBLESHOOTING.md`에는 “KMP에서 task가 생성되지만 규칙/source 범위 정비가 필요하며 CI gate에서 제외했다”는 요약만 있다. 지원 범위, 누락 모듈, type resolution 한계, Detekt source 덮어쓰기는 기록되어 있지 않았다.
+기존 `docs/architecture/kmp/KMP_AGP_9_MIGRATION_STRATEGY.md`와 `docs/architecture/metro/KMP_METRO_MIGRATION_TROUBLESHOOTING.md`에는 “KMP에서 task가 생성되지만 규칙/source 범위 정비가 필요하며 CI gate에서 제외했다”는 요약만 있다. 지원 범위, 누락 모듈, type resolution 한계, Detekt source 덮어쓰기는 기록되어 있지 않았다.
 
 `chore/kmp-integration-validation`에서 실제 실행한 결과는 다음과 같다.
 

@@ -140,4 +140,4 @@ BandalartApp
 
 ## 8. 문서 적용 메모
 
-현재 `main`에는 `AGENTS.md`가 참조하는 `.claude/CODING.md`, `.claude/WORKFLOW.md`가 없다. 이번 작업은 루트 `AGENTS.md`, 기존 소스의 코드 스타일, `docs/CIRCUIT_METRO_KMP_MIGRATION_MAP.md`를 기준으로 수행한다.
+현재 `main`에는 `AGENTS.md`가 참조하는 `.claude/CODING.md`, `.claude/WORKFLOW.md`가 없다. 이번 작업은 루트 `AGENTS.md`, 기존 소스의 코드 스타일, `docs/architecture/metro/CIRCUIT_METRO_KMP_MIGRATION_MAP.md`를 기준으로 수행한다.

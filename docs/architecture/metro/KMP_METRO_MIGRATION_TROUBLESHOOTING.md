@@ -515,7 +515,7 @@ CI clone과 로컬 linked worktree의 Git metadata 형태가 다르므로 ratche
 
 ## 참고 문서
 
-- [KMP AGP 9 마이그레이션 전략](KMP_AGP_9_MIGRATION_STRATEGY.md)
+- [KMP AGP 9 마이그레이션 전략](../kmp/KMP_AGP_9_MIGRATION_STRATEGY.md)
 - [Metro 부트스트랩 전략](METRO_BOOTSTRAP_STRATEGY.md)
 - [Metro Platform/Room/DataStore graph 전략](METRO_PLATFORM_DATA_GRAPH_STRATEGY.md)
 - [Circuit + Metro KMP 이식 맵](CIRCUIT_METRO_KMP_MIGRATION_MAP.md)

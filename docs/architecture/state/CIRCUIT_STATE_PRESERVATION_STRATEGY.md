@@ -5,6 +5,8 @@
 - 관련 이슈: [#210](https://github.com/Nexters/BandalArt-KMP/issues/210)
 - 후속 테스트 인프라: [#217](https://github.com/Nexters/BandalArt-KMP/issues/217)
 
+> 이 문서는 #210 당시의 DatePicker 작업 전략이다. 이후 기능을 포함한 프로젝트 공통 선택 기준은 [Compose와 Circuit 상태 수명 가이드](COMPOSE_STATE_LIFETIME_GUIDE.md)를 따른다.
+
 ## 목표
 
 1. Presenter와 UI의 `remember`, `rememberRetained`, `rememberSaveable` 사용 근거를 고정한다.
@@ -61,7 +63,7 @@ Circuit 공식 문서는 `rememberRetained`가 Android의 hidden ViewModel을 �
 - bottom sheet title/description `TextFieldValue`
   - 실제 문자열 draft는 매 입력마다 retained `bottomSheet.cellData`로 올라간다. 재생성 시 텍스트는 복원되며 cursor/selection만 초기화되는 현재 동작은 허용한다.
 - emoji/color picker local selection
-  - 선택 시 retained bottom sheet draft가 즉시 갱신되므로 재생성 시 입력값에서 복원된다.
+  - 현재 emoji picker의 작은 선택값은 `rememberSaveable`로 복원한다. caller의 retained draft도 즉시 갱신되므로 같은 의미를 가진 local state가 추가될 때는 중복 source of truth인지 먼저 확인한다.
 
 ## 확인된 복원 공백
 
@@ -70,9 +72,10 @@ Circuit 공식 문서는 `rememberRetained`가 Android의 hidden ViewModel을 �
 ### 구현
 
 - 세 문자열을 `rememberSaveable(draftKey)`로 변경한다.
-- `draftKey`는 cell id와 현재 확정 due date로 만든 안정적인 문자열을 UI 호출부에서 전달한다.
-- configuration change에서는 같은 key로 saved 값을 복원한다.
-- 다른 cell 또는 새로 확정된 due date는 key가 달라져 과거 값을 복원하지 않는다.
+- `draftKey`는 cell id와 현재 확정 due date로 만든 안정적인 문자열이며, UI 호출부에서 identity input으로 전달한다. 변수명과 달리 saved-state registry key는 아니다.
+- configuration change에서는 saved 값을 복원한다.
+- live composition에서 다른 cell 또는 새로 확정된 due date로 input이 바뀌면 과거 값을 버리고 초기화한다.
+- `rememberSaveable`의 inputs는 process restoration 때 기존 복원값의 identity를 검증하지 않는다. 이 작업은 미확정 날짜의 process 간 identity 정합성을 보장하지 않으며, 그 보장이 필요하면 payload에 cell identity를 포함해 검증하거나 Presenter/repository로 hoist한다.
 - picker를 닫으면 composition에서 제거되므로 같은 cell을 다시 열 때 미확정 값은 새로 초기화된다.
 - 연·월 변경 뒤 존재하지 않는 날짜를 월말로 보정하는 `selectedDateWithValidate` 동작은 유지한다.
 
@@ -80,7 +83,7 @@ Circuit 공식 문서는 `rememberRetained`가 Android의 hidden ViewModel을 �
 
 ## 변경 범위
 
-- `BandalartDatePicker` saveable state와 안정적인 key
+- `BandalartDatePicker` saveable state와 안정적인 identity input
 - 날짜 validation 단위 테스트
 - 상태 분류와 수동 복원 검증 문서
 

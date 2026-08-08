@@ -204,7 +204,7 @@ CI 병목 개선은 composition root 제거와 독립적인 workflow 작업으�
 - [Circuit + Metro KMP 이식 맵](CIRCUIT_METRO_KMP_MIGRATION_MAP.md)
 - [Metro 부트스트랩 전략](METRO_BOOTSTRAP_STRATEGY.md)
 - [Metro Platform/Room/DataStore graph 전략](METRO_PLATFORM_DATA_GRAPH_STRATEGY.md)
-- [Circuit Home 런타임 전환 전략](CIRCUIT_HOME_RUNTIME_MIGRATION_STRATEGY.md)
+- [Circuit Home 런타임 전환 전략](../circuit/CIRCUIT_HOME_RUNTIME_MIGRATION_STRATEGY.md)
 - [KMP Metro 마이그레이션 트러블슈팅](KMP_METRO_MIGRATION_TROUBLESHOOTING.md)
 
 ## 16. 구현 결과
