@@ -80,6 +80,37 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("반다라트 최대 슬롯 관련 테스트")
+    inner class MaxBandalartSlotsTest {
+        @Test
+        @DisplayName("저장값이 없으면 전달된 최소 슬롯을 저장해야 한다")
+        fun minimumSlotsAreStoredByDefault() =
+            runTest {
+                assertEquals(3, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
+                assertEquals(3, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 2))
+            }
+
+        @Test
+        @DisplayName("기존 보유 개수가 저장값보다 크면 최대 슬롯을 보정해야 한다")
+        fun currentCountRaisesStoredSlots() =
+            runTest {
+                bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3)
+
+                assertEquals(5, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 5))
+            }
+
+        @Test
+        @DisplayName("확장할 때 저장된 최대 슬롯을 정확히 하나 늘려야 한다")
+        fun expansionIncrementsStoredSlots() =
+            runTest {
+                bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 5)
+
+                assertEquals(6, bandalartDataStore.expandMaxBandalartSlots(minimumSlots = 3))
+                assertEquals(6, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
+            }
+    }
+
+    @Nested
     @DisplayName("최근 사용 이모지 관련 테스트")
     inner class RecentEmojisTest {
         @Test

@@ -17,6 +17,7 @@
 package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
+import com.nexters.bandalart.core.data.repository.DefaultBandalartSlotRepository
 import com.nexters.bandalart.core.data.repository.DefaultInAppUpdateRepository
 import com.nexters.bandalart.core.data.repository.DefaultOnboardingRepository
 import com.nexters.bandalart.core.data.repository.DefaultSettingsRepository
@@ -24,6 +25,7 @@ import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
@@ -40,6 +42,11 @@ object RepositoryBindings {
         bandalartDataStore: BandalartDataStore,
         bandalartDao: BandalartDao,
     ): BandalartRepository = DefaultBandalartRepository(bandalartDataStore, bandalartDao)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBandalartSlotRepository(bandalartDataStore: BandalartDataStore): BandalartSlotRepository =
+        DefaultBandalartSlotRepository(bandalartDataStore)
 
     @Provides
     @SingleIn(AppScope::class)

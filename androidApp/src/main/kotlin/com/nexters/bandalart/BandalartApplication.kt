@@ -19,6 +19,7 @@ package com.nexters.bandalart
 import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
+import com.nexters.bandalart.ads.AdsInitializer
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import io.github.aakira.napier.DebugAntilog
@@ -27,6 +28,7 @@ import io.github.aakira.napier.Napier
 class BandalartApplication : Application() {
     lateinit var appGraph: AppGraph
         private set
+    private val adsInitializer by lazy { AdsInitializer(applicationContext) }
 
     override fun onCreate() {
         super.onCreate()
@@ -38,6 +40,7 @@ class BandalartApplication : Application() {
         }
 
         Firebase.initialize(this)
+        adsInitializer.initialize()
 
         multiplatform.network.cmptoast.AppContext
             .apply { set(applicationContext) }

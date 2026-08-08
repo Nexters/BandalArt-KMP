@@ -12,6 +12,7 @@ packageName = "com.nexters.bandalart"
 # Gradle Plugin
 android-gradle-plugin = "9.3.0"
 google-service = "4.4.2"
+google-mobile-ads-next-gen = "1.2.1"
 
 # Kotlin
 kotlin-core = "2.4.10"
@@ -171,6 +172,7 @@ kmp-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics
 kmp-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "kotlin-firebase" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebase-common" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+google-mobile-ads-next-gen = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "google-mobile-ads-next-gen" }
 
 # Util
 kotlin-ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "kotlin-ktlint-source" }
