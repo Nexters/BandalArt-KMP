@@ -1,72 +1,380 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
+require "digest"
+require "fileutils"
+require "json"
+require "open3"
+require "plist"
+require "securerandom"
+require "shellwords"
+require "tmpdir"
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+require_relative "lib/app_store_connect_builds"
+require_relative "lib/plist_file"
 
 default_platform(:android)
 
+REPO_ROOT = File.expand_path("..", __dir__)
+ANDROID_PACKAGE = "com.nexters.bandalart"
+IOS_BUNDLE_ID = "com.nexters.bandalart.iosApp"
+IOS_TEAM_ID = "8R5768RCRA"
+IOS_APP_ID = "6743101965"
+
+def required_env!(name)
+  value = ENV[name]
+  UI.user_error!("Missing required environment variable: #{name}") if value.nil? || value.empty?
+  value
+end
+
+def capture_command!(*command)
+  stdout, stderr, status = Open3.capture3(*command, chdir: REPO_ROOT)
+  UI.user_error!("Command failed: #{command.first} (#{stderr.lines.last&.strip || "unknown error"})") unless status.success?
+  stdout
+end
+
+def verify_ci_source!
+  UI.user_error!("Mutating release lanes run only in GitHub Actions") unless ENV["CI"] == "true"
+
+  UI.user_error!("Release CD only runs from main") unless ENV["GITHUB_REF"] == "refs/heads/main"
+  actual_sha = capture_command!("git", "rev-parse", "HEAD").strip
+  expected_sha = required_env!("GITHUB_SHA")
+  UI.user_error!("Checked out SHA does not match GITHUB_SHA") unless actual_sha == expected_sha
+  capture_command!("git", "fetch", "--quiet", "--no-tags", "origin", "main")
+  remote_main_sha = capture_command!("git", "rev-parse", "origin/main").strip
+  UI.user_error!("main advanced after this release was queued; dispatch the latest main instead") unless actual_sha == remote_main_sha
+end
+
+def android_version
+  catalog = File.read(File.join(REPO_ROOT, "gradle/libs.versions.toml"))
+  values = %w[majorVersion minorVersion patchVersion].to_h do |key|
+    match = catalog.match(/^#{key}\s*=\s*"(\d+)"$/)
+    UI.user_error!("Missing #{key} in gradle/libs.versions.toml") unless match
+    [key, match[1].to_i]
+  end
+  name = "#{values.fetch("majorVersion")}.#{values.fetch("minorVersion")}.#{values.fetch("patchVersion")}"
+  code = (values.fetch("majorVersion") * 10_000) + (values.fetch("minorVersion") * 100) + values.fetch("patchVersion")
+  [name, code]
+end
+
+def play_version_check!(version_code, post_upload: false)
+  command = [
+    "uv",
+    "run",
+    "--frozen",
+    File.join(REPO_ROOT, "scripts/play_next_version_code.py"),
+    "--expect-version-code",
+    version_code.to_s,
+  ]
+  if post_upload
+    command += [
+      "--verify-track",
+      "internal",
+      "--verify-status",
+      "completed",
+      "--retries",
+      "6",
+    ]
+  end
+  output = capture_command!(*command)
+  output.each_line { |line| UI.message(line.strip) unless line.strip.empty? }
+end
+
+def provisioning_profile(path)
+  xml, stderr, status = Open3.capture3("/usr/bin/security", "cms", "-D", "-i", path)
+  UI.user_error!("Unable to decode provisioning profile: #{stderr.lines.last&.strip}") unless status.success?
+  Plist.parse_xml(xml)
+end
+
+def plist_file(path)
+  Bandalart::PlistFile.read(path)
+rescue Bandalart::PlistFile::Error => error
+  UI.user_error!(error.message)
+end
+
+def verify_profile!(profile)
+  name = profile["Name"]
+  uuid = profile["UUID"]
+  expires_at = profile["ExpirationDate"]
+  team_ids = profile["TeamIdentifier"] || []
+  application_identifier = profile.dig("Entitlements", "application-identifier")
+
+  UI.user_error!("Provisioning profile is missing Name or UUID") if name.to_s.empty? || uuid.to_s.empty?
+  UI.user_error!("Provisioning profile is expired") unless expires_at && expires_at > Time.now
+  UI.user_error!("Provisioning profile Team ID mismatch") unless team_ids.include?(IOS_TEAM_ID)
+  expected_identifier = "#{IOS_TEAM_ID}.#{IOS_BUNDLE_ID}"
+  UI.user_error!("Provisioning profile bundle ID mismatch") unless application_identifier == expected_identifier
+  UI.user_error!("Development provisioning profile cannot be used for TestFlight") if profile.dig("Entitlements", "get-task-allow") == true
+  UI.user_error!("Ad Hoc provisioning profile cannot be used for TestFlight") if profile.key?("ProvisionedDevices")
+  UI.user_error!("Enterprise provisioning profile cannot be used for TestFlight") if profile["ProvisionsAllDevices"] == true
+
+  name
+end
+
+def verify_ipa!(ipa_path, version, build_number)
+  Dir.mktmpdir("bandalart-ipa-") do |directory|
+    _stdout, stderr, status = Open3.capture3("/usr/bin/unzip", "-qq", ipa_path, "-d", directory)
+    UI.user_error!("Unable to inspect IPA: #{stderr.lines.last&.strip}") unless status.success?
+
+    app_path = Dir[File.join(directory, "Payload", "*.app")].first
+    UI.user_error!("IPA does not contain an app bundle") unless app_path
+    info = plist_file(File.join(app_path, "Info.plist"))
+    UI.user_error!("IPA bundle identifier mismatch") unless info["CFBundleIdentifier"] == IOS_BUNDLE_ID
+    UI.user_error!("IPA marketing version mismatch") unless info["CFBundleShortVersionString"] == version
+    UI.user_error!("IPA build number mismatch") unless info["CFBundleVersion"].to_s == build_number.to_s
+
+    embedded_profile = provisioning_profile(File.join(app_path, "embedded.mobileprovision"))
+    verify_profile!(embedded_profile)
+
+    _codesign_out, codesign_err, codesign_status = Open3.capture3(
+      "/usr/bin/codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      app_path,
+    )
+    UI.user_error!("IPA code signature verification failed: #{codesign_err.lines.last&.strip}") unless codesign_status.success?
+  end
+end
+
+def latest_app_store_build_number!(key_id, key_content, version)
+  Bandalart::AppStoreConnectBuilds.new(
+    key_id: key_id,
+    key_content: key_content,
+    app_id: IOS_APP_ID,
+  ).latest_build_number(version)
+rescue Bandalart::AppStoreConnectBuilds::Error => error
+  UI.user_error!(error.message)
+end
+
+def app_store_build_exists!(key_id, key_content, version, build_number)
+  Bandalart::AppStoreConnectBuilds.new(
+    key_id: key_id,
+    key_content: key_content,
+    app_id: IOS_APP_ID,
+  ).build_number_exists?(version, build_number)
+rescue Bandalart::AppStoreConnectBuilds::Error => error
+  UI.user_error!(error.message)
+end
+
+def append_github_summary(lines)
+  summary_path = ENV["GITHUB_STEP_SUMMARY"]
+  return if summary_path.nil? || summary_path.empty?
+
+  File.open(summary_path, "a") do |file|
+    lines.each { |line| file.puts(line) }
+    file.puts
+  end
+end
+
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
+  desc "Build, validate, and upload a test-ad release AAB to Play Internal Testing"
+  lane :internal do
+    verify_ci_source!
+    service_account_path = required_env!("PLAY_SERVICE_ACCOUNT_PATH")
+    keystore_path = required_env!("ANDROID_KEYSTORE_PATH")
+    bundletool_path = required_env!("BUNDLETOOL_JAR")
+    UI.user_error!("Play service account file is missing") unless File.file?(service_account_path)
+    UI.user_error!("Android release keystore is missing") unless File.file?(keystore_path)
+    UI.user_error!("bundletool is missing") unless File.file?(bundletool_path)
+
+    version_name, version_code = android_version
+    source_sha = capture_command!("git", "rev-parse", "HEAD").strip
+    UI.message("SOURCE_SHA=#{source_sha}")
+    UI.message("PACKAGE=#{ANDROID_PACKAGE}")
+    UI.message("Android release #{version_name} (#{version_code}) -> Play Internal Testing")
+    %w[ko-KR en-US ja-JP].each do |locale|
+      notes_path = File.join(REPO_ROOT, "androidApp/src/main/play/release-notes", locale, "internal.txt")
+      UI.message("RELEASE_NOTES[#{locale}]=#{File.read(notes_path).strip}")
+    end
+    UI.message("TASKS=clean :androidApp:bundleRelease -> :androidApp:publishReleaseBundle")
+    play_version_check!(version_code)
+
+    gradle(
+      task: "clean :androidApp:bundleRelease",
+      project_dir: REPO_ROOT,
+      properties: { "bandalart.useTestAds" => "true" },
+      flags: "--no-configuration-cache --stacktrace",
+    )
+
+    aabs = Dir[File.join(REPO_ROOT, "androidApp/build/outputs/bundle/release/*.aab")]
+    UI.user_error!("Expected exactly one release AAB, found #{aabs.length}") unless aabs.length == 1
+    aab_path = aabs.first
+    capture_command!(
+      "python3",
+      File.join(REPO_ROOT, "scripts/validate_play_aab.py"),
+      "--aab",
+      aab_path,
+      "--bundletool",
+      bundletool_path,
+      "--version-name",
+      version_name,
+      "--version-code",
+      version_code.to_s,
+    ).each_line { |line| UI.message(line.strip) unless line.strip.empty? }
+
+    artifact_dir = File.join(Dir.tmpdir, "bandalart-play-artifact")
+    FileUtils.rm_rf(artifact_dir)
+    FileUtils.mkdir_p(artifact_dir)
+    verified_aab = File.join(artifact_dir, File.basename(aab_path))
+    FileUtils.cp(aab_path, verified_aab)
+    checksum = Digest::SHA256.file(verified_aab).hexdigest
+
+    verify_ci_source!
+    play_version_check!(version_code)
+    gradle(
+      task: ":androidApp:publishReleaseBundle",
+      project_dir: REPO_ROOT,
+      properties: { "bandalart.useTestAds" => "true" },
+      flags: "--artifact-dir #{Shellwords.escape(artifact_dir)} --no-configuration-cache --stacktrace",
+    )
+    UI.user_error!("Uploaded AAB changed after validation") unless Digest::SHA256.file(verified_aab).hexdigest == checksum
+    play_version_check!(version_code, post_upload: true)
+    append_github_summary(
+      [
+        "## Android Play Internal Testing",
+        "- Source: `#{source_sha}`",
+        "- Package: `#{ANDROID_PACKAGE}`",
+        "- Version: `#{version_name} (#{version_code})`",
+        "- Track/status: `internal / completed`",
+        "- Result: verified upload",
+      ],
+    )
+    UI.success("Play Internal Testing upload verified: #{version_name} (#{version_code})")
+  ensure
+    FileUtils.rm_rf(File.join(Dir.tmpdir, "bandalart-play-artifact"))
+  end
+end
+
+platform :ios do
+  desc "Verify the Individual App Store Connect key and report the next TestFlight build"
+  lane :preflight do
+    key_id = required_env!("APP_STORE_CONNECT_KEY_ID")
+    key_content = required_env!("APP_STORE_CONNECT_KEY_P8_BASE64")
+    info_plist = File.join(REPO_ROOT, "iosApp/iosApp/Info.plist")
+    version = get_info_plist_value(path: info_plist, key: "CFBundleShortVersionString")
+    app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: nil,
+      key_content: key_content,
+      is_key_content_base64: true,
+      in_house: false,
+    )
+    latest_build = latest_app_store_build_number!(key_id, key_content, version)
+    UI.success("TestFlight preflight: #{version}, latest=#{latest_build}, next=#{latest_build.to_i + 1}")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
+  desc "Archive the iOS app with manual signing and upload the next build to TestFlight"
   lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
+    keychain_created = false
+    installed_profile_path = nil
+    verify_ci_source!
+    certificate_path = required_env!("IOS_CERTIFICATE_PATH")
+    certificate_password = required_env!("IOS_DISTRIBUTION_CERTIFICATE_PASSWORD")
+    profile_path = required_env!("IOS_PROVISIONING_PROFILE_PATH")
+    key_id = required_env!("APP_STORE_CONNECT_KEY_ID")
+    key_content = required_env!("APP_STORE_CONNECT_KEY_P8_BASE64")
+    UI.user_error!("iOS distribution certificate is missing") unless File.file?(certificate_path)
+    UI.user_error!("iOS provisioning profile is missing") unless File.file?(profile_path)
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
-  end
+    info_plist = File.join(REPO_ROOT, "iosApp/iosApp/Info.plist")
+    version = get_info_plist_value(path: info_plist, key: "CFBundleShortVersionString")
+    UI.user_error!("iOS marketing version is missing") if version.to_s.empty?
 
-  desc "Lane for distribution"
-    lane :stagingDeploy do
-
-    gradle(task: "clean assembleDebug")
-
-    firebase_app_distribution(
-      app: "1:197590766195:android:61e8f68629de40aa179006",
-      groups: "bandalart-android",
-      release_notes_file: "fastlane/release-notes.txt",
-      firebase_cli_token: "1//0eV3oUhnwn9XXCgYIARAAGA4SNwF-L9IruXeQwoAxHUkWvTnm2Jye7iYRU2HMCVDxZ1ZXrH__kmW9_UrWnRke28rDL7FFT3m-Nvg",
-      debug: false
+    api_key = app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: nil,
+      key_content: key_content,
+      is_key_content_base64: true,
+      in_house: false,
     )
-  end
+    latest_build = latest_app_store_build_number!(key_id, key_content, version)
+    build_number = latest_build.to_i + 1
+    set_info_plist_value(path: info_plist, key: "CFBundleVersion", value: build_number.to_s)
+    UI.message("iOS release #{version} (#{build_number}) -> TestFlight")
 
-  desc "Deploy a new version to the Google Play (ProductionType)"
-  lane :productionDeploy do
-    gradle(task: "release")
-
-    # 특정 폴더에 .aab 파일 찾고 나서 앞에 .. -> . 치환 처리
-    filePath = Dir['../app/build/outputs/bundle/release/*.aab'].last
-    artifactPath = filePath.sub("..",".")
-    puts artifactPath
-
-    upload_to_play_store(
-        track: "production",
-        aab: artifactPath,
-        skip_upload_metadata: true,
-        skip_upload_images: true,
-        skip_upload_screenshots: true,
-        skip_upload_apk: true,
-        release_status: "completed"
+    profile = provisioning_profile(profile_path)
+    profile_name = verify_profile!(profile)
+    keychain_name = "bandalart-ci"
+    keychain_password = SecureRandom.hex(24)
+    create_keychain(
+      name: keychain_name,
+      password: keychain_password,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3_600,
+      lock_when_sleeps: false,
     )
+    keychain_created = true
+    import_certificate(
+      certificate_path: certificate_path,
+      certificate_password: certificate_password,
+      keychain_name: keychain_name,
+      keychain_password: keychain_password,
+      log_output: false,
+    )
+    installed_profile_path = install_provisioning_profile(path: profile_path)
+
+    output_directory = File.join(REPO_ROOT, "build/ios-release")
+    FileUtils.rm_rf(output_directory)
+    ipa_path = build_app(
+      project: File.join(REPO_ROOT, "iosApp/iosApp.xcodeproj"),
+      scheme: "iosApp",
+      configuration: "Release",
+      clean: true,
+      export_method: "app-store",
+      output_directory: output_directory,
+      output_name: "BandalArt-#{version}-#{build_number}.ipa",
+      archive_path: File.join(output_directory, "BandalArt.xcarchive"),
+      disable_package_automatic_updates: true,
+      skip_profile_detection: true,
+      xcargs: [
+        "CODE_SIGN_STYLE=Manual",
+        "DEVELOPMENT_TEAM=#{IOS_TEAM_ID}",
+        "CODE_SIGN_IDENTITY=#{Shellwords.escape("Apple Distribution")}",
+        "PROVISIONING_PROFILE_SPECIFIER=#{Shellwords.escape(profile_name)}",
+      ].join(" "),
+      export_options: {
+        method: "app-store",
+        signingStyle: "manual",
+        teamID: IOS_TEAM_ID,
+        provisioningProfiles: { IOS_BUNDLE_ID => profile_name },
+        manageAppVersionAndBuildNumber: false,
+      },
+    )
+    verify_ipa!(ipa_path, version, build_number)
+    verify_ci_source!
+
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: IOS_BUNDLE_ID,
+      apple_id: IOS_APP_ID,
+      ipa: ipa_path,
+      changelog: File.read(File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test.txt")),
+      distribute_external: false,
+      skip_waiting_for_build_processing: false,
+    )
+    uploaded_build_exists = false
+    6.times do |attempt|
+      uploaded_build_exists = app_store_build_exists!(
+        key_id,
+        key_content,
+        version,
+        build_number,
+      )
+      break if uploaded_build_exists
+      sleep(10) if attempt < 5
+    end
+    UI.user_error!("TestFlight build verification failed") unless uploaded_build_exists
+    append_github_summary(
+      [
+        "## iOS TestFlight",
+        "- Source: `#{capture_command!("git", "rev-parse", "HEAD").strip}`",
+        "- Bundle ID: `#{IOS_BUNDLE_ID}`",
+        "- Version: `#{version} (#{build_number})`",
+        "- Result: exact build verified",
+      ],
+    )
+    UI.success("TestFlight upload verified: #{version} (#{build_number})")
+  ensure
+    FileUtils.rm_f(installed_profile_path) if installed_profile_path
+    delete_keychain(name: "bandalart-ci") if keychain_created
   end
 end

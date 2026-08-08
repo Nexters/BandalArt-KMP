@@ -171,6 +171,55 @@ jobs:
             -   name: Run iOS framework build
                 run: ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64 --stacktrace
 
+    release_cd:
+        name: Release CD validation
+        runs-on: macos-latest
+        timeout-minutes: 15
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+
+        steps:
+            -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+            -   name: Setup Ruby
+                uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1 # v1
+                with:
+                    ruby-version: .ruby-version
+                    bundler-cache: true
+
+            -   name: Install pinned actionlint
+                run: |
+                    set -euo pipefail
+                    case "$(uname -m)" in
+                        arm64)
+                            ACTIONLINT_ARCHIVE=actionlint_1.7.7_darwin_arm64.tar.gz
+                            ACTIONLINT_SHA256=2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc033873db
+                            ;;
+                        x86_64)
+                            ACTIONLINT_ARCHIVE=actionlint_1.7.7_darwin_amd64.tar.gz
+                            ACTIONLINT_SHA256=28e5de5a05fc558474f638323d736d822fff183d2d492f0aecb2b73cc44584f5
+                            ;;
+                        *)
+                            echo "Unsupported runner architecture" >&2
+                            exit 1
+                            ;;
+                    esac
+                    curl --fail --silent --show-error --location \
+                        "https://github.com/rhysd/actionlint/releases/download/v1.7.7/$ACTIONLINT_ARCHIVE" \
+                        --output "$RUNNER_TEMP/$ACTIONLINT_ARCHIVE"
+                    printf '%s  %s\n' \
+                        "$ACTIONLINT_SHA256" \
+                        "$RUNNER_TEMP/$ACTIONLINT_ARCHIVE" | shasum -a 256 --check
+                    tar -xzf "$RUNNER_TEMP/$ACTIONLINT_ARCHIVE" -C "$RUNNER_TEMP" actionlint
+
+            -   name: Run release CD validation
+                run: |
+                    "$RUNNER_TEMP/actionlint" .github/workflows/android-ci.yml .github/workflows/release-cd.yml
+                    bundle exec ruby fastlane/test/app_store_connect_builds_test.rb
+                    bundle exec ruby fastlane/test/plist_file_test.rb
+                    python3 -m unittest scripts.tests.test_play_release_scripts
+                    bundle exec fastlane lanes
+                    xmllint --noout iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/iosApp.xcscheme
+
     ci-build:
         name: ci-build
         runs-on: ubuntu-latest
@@ -180,6 +229,7 @@ jobs:
             - unit_tests
             - android
             - ios
+            - release_cd
 
         steps:
             -   name: Verify required jobs
@@ -188,8 +238,10 @@ jobs:
                     UNIT_TESTS_RESULT: ${{ needs.unit_tests.result }}
                     ANDROID_RESULT: ${{ needs.android.result }}
                     IOS_RESULT: ${{ needs.ios.result }}
+                    RELEASE_CD_RESULT: ${{ needs.release_cd.result }}
                 run: |
                     test "$QUALITY_RESULT" = "success"
                     test "$UNIT_TESTS_RESULT" = "success"
                     test "$ANDROID_RESULT" = "success"
                     test "$IOS_RESULT" = "success"
+                    test "$RELEASE_CD_RESULT" = "success"

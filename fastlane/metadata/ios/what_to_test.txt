@@ -1,0 +1,3 @@
+기존 App Store 버전을 삭제하지 않고 업데이트한 뒤 저장된 반다라트와 셀 데이터가 유지되는지 확인해 주세요.
+
+Circuit·Metro 기반 주요 생성/편집/완료 흐름과 Fluent Emoji 표시, 카테고리, 최근 사용, 저장을 확인해 주세요. 문제가 있으면 TestFlight의 Send Beta Feedback으로 기기·iOS 버전, 기대 결과와 실제 결과를 보내 주세요.

@@ -15,37 +15,34 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android test
+### android internal
 
 ```sh
-[bundle exec] fastlane android test
+[bundle exec] fastlane android internal
 ```
 
-Runs all the tests
+Build, validate, and upload a test-ad release AAB to Play Internal Testing
 
-### android beta
+----
+
+
+## iOS
+
+### ios preflight
 
 ```sh
-[bundle exec] fastlane android beta
+[bundle exec] fastlane ios preflight
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+Verify the Individual App Store Connect key and report the next TestFlight build
 
-### android deploy
+### ios beta
 
 ```sh
-[bundle exec] fastlane android deploy
+[bundle exec] fastlane ios beta
 ```
 
-Deploy a new version to the Google Play
-
-### android stagingDeploy
-
-```sh
-[bundle exec] fastlane android stagingDeploy
-```
-
-Lane for distribution
+Archive the iOS app with manual signing and upload the next build to TestFlight
 
 ----
 

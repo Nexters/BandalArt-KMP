@@ -1,2 +1,4 @@
-json_key_file("/fastlane/GoogleCloudPlatform.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.nexters.bandalart.android.dev") # e.g. com.krausefx.app
+package_name("com.nexters.bandalart")
+app_identifier("com.nexters.bandalart.iosApp")
+apple_id("6743101965")
+team_id("8R5768RCRA")

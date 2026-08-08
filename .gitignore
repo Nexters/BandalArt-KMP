@@ -56,6 +56,16 @@ keystore.properties
 # Secrets
 secrets.properties
 /playstore/service-account-key.json
+/fastlane/GoogleCloudPlatform.json
+/fastlane/report.xml
+/fastlane/test_output/
+/fastlane/screenshots/
+*.p8
+*.p12
+*.mobileprovision
+*.ipa
+*.xcarchive
+xcuserdata/
 
 # report module
 /report/*
@@ -63,3 +73,4 @@ secrets.properties
 /androidApp/release/*
 
 .kotlin/
+__pycache__/
