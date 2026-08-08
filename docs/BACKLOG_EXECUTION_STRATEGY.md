@@ -1,6 +1,6 @@
 # BandalArt 백로그 실행 우선순위
 
-- 갱신일: 2026-08-07
+- 갱신일: 2026-08-08
 - 기준 브랜치: `origin/main`
 - 대상: KMP/Circuit/Metro 기반 앱의 안정화와 신규 기능 백로그
 
@@ -8,9 +8,10 @@
 
 - 계층별 KMP, Circuit, Metro 통합 작업인 #180, #181, #182는 코드 기준 완료되어 닫았다.
 - 포그라운드 복귀 시 강제 업데이트를 다시 검사하는 #186 구현은 PR #215로 `main`에 병합했다.
+- KMP 테스트 가이드 #209, Circuit 상태 보존과 날짜 피커 복원 #210, 설정 화면 이메일 문의 #207은 각각 PR #216, #218, #220으로 `main`에 병합해 완료했다.
 - 태스크 셀 롱클릭 완료와 KMP 햅틱 #213은 PR #227로 `main`에 병합했다.
-- Fluent UI Emoji #212는 PR #228에서 재현 가능한 resource spike 기반을 만들었고, 후속 검증에서 Color 300개를 v1 기준으로 확정했다.
-- iOS 실제 기기·배포 검증은 계정이 복구될 때 수행할 후속 이슈 #214로 분리했다.
+- Fluent UI Emoji #212는 Color 300개 resource pipeline, 공통 renderer, picker·최근 사용과 Android 출시 검증을 완료했고 PR #245에서 metadata category 탐색을 추가했다. iOS 실제 기기·artifact 검증은 #214로 이관했다.
+- AdMob #206은 PR #241에서 무료 슬롯 정책과 Android GMA SDK 기반을, PR #243에서 사전 안내→Rewarded→정확히 한 개 생성과 process 복구를 병합했다. 홈 Banner만 후속 작업으로 남아 있다.
 - 따라서 다음 작업은 남은 마이그레이션이 아니라 테스트·상태 정책을 고정한 뒤 작은 기능부터 확장하는 순서다.
 
 ## 실행 원칙
@@ -23,27 +24,27 @@
 
 ## 실행 순서
 
-### 1. #209 KMP 테스트와 Circuit/Molecule 문서화 — XS
+### 1. #209 KMP 테스트와 Circuit/Molecule 문서화 — 완료
 
-현재 test source set, dependency, Gradle task와 CI 범위를 문서로 고정한다. 이후 모든 PR의 검증 기준으로 사용한다.
+PR #216에서 현재 test source set, dependency, Gradle task와 CI 범위를 문서로 고정했다. 이후 모든 PR의 검증 기준으로 사용한다.
 
-### 2. #210 Circuit 상태 보존 정책과 날짜 피커 복원 — S
+### 2. #210 Circuit 상태 보존 정책과 날짜 피커 복원 — 완료
 
-`remember`, `rememberRetained`, `rememberSaveable`의 책임을 감사하고, 날짜 피커의 미확정 draft가 구성 변경에서 사라지는 문제를 수정한다. 신규 기능이 사용할 one-shot effect 기준도 함께 확인한다.
+PR #218에서 `remember`, `rememberRetained`, `rememberSaveable`의 책임을 감사하고, 날짜 피커의 미확정 draft가 구성 변경에서 사라지는 문제를 수정했다. 신규 기능이 사용할 one-shot effect 기준도 함께 확인했다.
 
 Compose UI restoration을 실제 UI tree에서 자동 검증하는 runner·CI 도입은 #217로 분리한다. #210의 blocker로 삼지 않고, gesture와 platform interaction 테스트가 누적될 때 별도 인프라 작업으로 진행한다.
 
-### 3. #207 설정 화면 이메일 문의 — S
+### 3. #207 설정 화면 이메일 문의 — 완료
 
-설정 화면에서 `mraz3068@gmail.com`으로 문의 메일 작성기를 여는 Android/iOS launcher를 추가한다. 메일 앱 부재 fallback과 URI encoding을 포함한다.
+PR #220에서 설정 화면의 Android/iOS 메일 launcher, 메일 앱 부재 fallback과 URI encoding을 추가했다.
 
 ### 4. #213 햅틱 기반 태스크 셀 빠른 완료 — 완료
 
 PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 처리하며, 성공 시 KMP 햅틱을 한 번 실행하도록 적용했다. 일반 탭 동작은 유지한다.
 
-### 5. #212 Fluent UI Emoji 선택기 — M~L
+### 5. #212 Fluent UI Emoji 선택기 — Android/picker 구현 완료
 
-전체 에셋을 바로 포함하지 않고 스타일·용량 spike, pinned manifest와 resource pipeline, 공통 renderer, picker UI 순으로 나눈다. 템플릿 기능의 공통 아이콘 catalog 선행 작업이다. 1단계 검증 결과 v1은 Color 300개로 진행하며, 2단계에서 공통 renderer와 기존 노출 화면 전환을 적용한다.
+Color 300개 catalog, pinned manifest와 resource pipeline, 공통 renderer, picker·최근 사용과 Android 출시 검증을 완료했고 PR #245에서 metadata category 탐색을 추가했다. iOS 실제 기기 렌더링·저장·artifact 크기는 #214 TestFlight 업데이트에서 검증한다.
 
 ### 6. #211 마감일 기반 로컬 알림 — L
 
@@ -51,7 +52,7 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 ### 7. #206 AdMob Rewarded Ad 기반 추가 생성 — L
 
-모든 사용자 추가 생성을 사전 안내와 reward 완료 뒤 허용한다. 광고 실패가 기존 표 사용을 막지 않도록 creation credit과 정확히 한 번 생성 경계를 먼저 설계한다.
+PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android GMA SDK 기반을 병합했다. PR #243에서 사전 안내, Rewarded 완료 뒤 정확히 한 번 생성, 광고 실패 fail-open과 process 복구를 연결했다. 홈 Anchored Adaptive Banner는 별도 후속 작업이다.
 
 ### 8. #208 목표 템플릿 기반 빠른 생성 — L
 
@@ -75,11 +76,11 @@ PR #227에서 task cell long click으로 바텀시트를 열지 않고 완료 �
 
 1. #210 + #207: 상태 복원과 platform mail launcher
 2. #213: long click과 햅틱
-3. #212: 이모지 에셋 용량·성능·다크 모드
+3. #212: 이모지 에셋 용량·성능·다크 모드 — Android 완료, iOS는 #214로 이관
 4. #211: 알림 권한·예약·재예약
-5. #206: test/production ad unit end-to-end
+5. #206: Rewarded 생성 flow — 구현 완료, Android test ad end-to-end는 Internal Testing에서 확인
 6. #208: 템플릿 + 광고 생성 end-to-end
 
 ## 바로 이어갈 작업
 
-#212의 Color 300개 catalog와 공통 renderer를 바탕으로 picker UI, 검색·카테고리, 최근 사용 순서로 진행한다.
+#214 iOS `1.1.0` TestFlight 업데이트 검증을 진행한다. CD 환경이 준비되면 GitHub workflow를 우선 사용하고, 준비 전에는 Xcode Organizer를 fallback으로 사용한다. 기존 App Store `1.0.1` 위 업데이트, 데이터 보존, Circuit/Metro 흐름, Fluent Emoji category와 App Thinning 결과를 검증한다. Firebase 콘솔 관측은 비차단 후속 검증으로 분리하며, 구체적인 절차는 `releases/ios/IOS_TESTFLIGHT_UPDATE_STRATEGY.md`를 따른다.

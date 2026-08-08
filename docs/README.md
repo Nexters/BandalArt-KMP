@@ -88,6 +88,7 @@
 - [iOS release size baseline](releases/ios/IOS_RELEASE_SIZE_BASELINE.md)
 - [iOS release size 최적화 조사](releases/ios/IOS_RELEASE_SIZE_OPTIMIZATION_RESEARCH.md)
 - [iOS release size 최적화 전략](releases/ios/IOS_RELEASE_SIZE_OPTIMIZATION_STRATEGY.md)
+- [iOS TestFlight 업데이트 검증](releases/ios/IOS_TESTFLIGHT_UPDATE_STRATEGY.md)
 
 ## Project
 
