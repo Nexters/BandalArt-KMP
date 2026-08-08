@@ -50,7 +50,7 @@
 - Android Play Store Internal Testing 배포 요청은 `plugins/bandalart/skills/deploy-android-playstore/SKILL.md`를 따른다.
 - 배포 skill 이름은 Android 대상임을 드러내는 `deploy-android-*` 형식만 사용한다.
 - 두 workflow는 Android APK/AAB만 다룬다. iOS, TestFlight, App Store 또는 공통 KMP release를 포함하지 않는다.
-- 실패했던 Fastlane 설정은 배포 근거 또는 fallback으로 사용하지 않는다.
+- 복구된 GitHub Actions/Fastlane CD는 `main`에 병합된 현재 workflow만 사용하며, Git history의 legacy Fastlane 설정은 배포 근거나 fallback으로 사용하지 않는다.
 - credential 파일과 값은 출력하거나 Git에 추가하지 않는다.
 
 ## 리뷰와 새 작업

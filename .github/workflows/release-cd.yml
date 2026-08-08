@@ -1,0 +1,221 @@
+name: Release CD
+
+on:
+    workflow_dispatch:
+        inputs:
+            target:
+                description: Store target
+                required: true
+                default: both
+                type: choice
+                options:
+                    - both
+                    - android
+                    - ios
+            confirm_release:
+                description: I confirm main deployment to Play Internal/TestFlight (Android uses test Rewarded and Banner ads)
+                required: true
+                default: false
+                type: boolean
+
+concurrency:
+    group: release-cd
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+env:
+    FASTLANE_SKIP_UPDATE_CHECK: true
+    FASTLANE_HIDE_CHANGELOG: true
+    GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false
+
+jobs:
+    guard:
+        name: Validate release source
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   name: Require main
+                env:
+                    RELEASE_REF: ${{ github.ref }}
+                    RELEASE_CONFIRMED: ${{ inputs.confirm_release }}
+                run: |
+                    test "$RELEASE_REF" = "refs/heads/main"
+                    test "$RELEASE_CONFIRMED" = "true"
+
+    android:
+        name: Play Internal Testing
+        needs: guard
+        if: ${{ inputs.target == 'both' || inputs.target == 'android' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+        environment: android-internal
+        steps:
+            -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+                with:
+                    fetch-depth: 0
+
+            -   name: Require latest main
+                run: |
+                    git fetch --quiet --no-tags origin main
+                    test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+            -   name: Setup JDK 21
+                uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+                with:
+                    distribution: zulu
+                    java-version: 21
+
+            -   name: Setup Android SDK
+                uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@4733eaac7c1b0da527e4206b7671e0061de1ce37 # v6
+
+            -   name: Setup uv
+                uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+
+            -   name: Setup Ruby
+                uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+                with:
+                    bundler-cache: true
+
+            -   name: Install pinned bundletool
+                run: |
+                    curl --fail --silent --show-error --location \
+                        https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar \
+                        --output "$RUNNER_TEMP/bundletool-all-1.18.3.jar"
+                    printf '%s  %s\n' \
+                        'a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29' \
+                        "$RUNNER_TEMP/bundletool-all-1.18.3.jar" | shasum -a 256 --check
+
+            -   name: Restore Android release credentials
+                env:
+                    KEYSTORE_BASE64: ${{ secrets.APP_RELEASE_KEY_STORE_BASE_64 }}
+                    STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+                    KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+                    KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+                    PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+                    SERVER_BASE_URL: ${{ secrets.SERVER_BASE_URL }}
+                    EXPECTED_PLAY_SERVICE_ACCOUNT_EMAIL: bandalart-play-publisher@bandalart-396909.iam.gserviceaccount.com
+                run: |
+                    set -euo pipefail
+                    : "${KEYSTORE_BASE64:?APP_RELEASE_KEY_STORE_BASE_64 is required}"
+                    : "${STORE_PASSWORD:?STORE_PASSWORD is required}"
+                    : "${KEY_ALIAS:?KEY_ALIAS is required}"
+                    : "${KEY_PASSWORD:?KEY_PASSWORD is required}"
+                    : "${PLAY_SERVICE_ACCOUNT_JSON:?PLAY_SERVICE_ACCOUNT_JSON is required}"
+                    : "${SERVER_BASE_URL:?SERVER_BASE_URL is required}"
+                    umask 077
+                    mkdir -p playstore
+                    printf '%s' "$KEYSTORE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-upload.jks"
+                    printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > playstore/service-account-key.json
+                    jq -e --arg expected "$EXPECTED_PLAY_SERVICE_ACCOUNT_EMAIL" \
+                        '.type == "service_account" and .client_email == $expected' \
+                        playstore/service-account-key.json >/dev/null
+                    printf 'STORE_FILE=%s\n' "$RUNNER_TEMP/bandalart-upload.jks" > keystore.properties
+                    printf 'STORE_PASSWORD=%s\n' "$STORE_PASSWORD" >> keystore.properties
+                    printf 'KEY_ALIAS=%s\n' "$KEY_ALIAS" >> keystore.properties
+                    printf 'KEY_PASSWORD=%s\n' "$KEY_PASSWORD" >> keystore.properties
+                    printf 'SERVER_BASE_URL=%s\n' "$SERVER_BASE_URL" > secrets.properties
+
+            -   name: Deploy Android Internal
+                env:
+                    PLAY_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/playstore/service-account-key.json
+                    ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/bandalart-upload.jks
+                    BUNDLETOOL_JAR: ${{ runner.temp }}/bundletool-all-1.18.3.jar
+                run: bundle exec fastlane android internal
+
+            -   name: Remove Android credentials
+                if: always()
+                run: |
+                    rm -f "$RUNNER_TEMP/bandalart-upload.jks"
+                    rm -f "$RUNNER_TEMP/bundletool-all-1.18.3.jar"
+                    rm -f playstore/service-account-key.json
+                    rm -f keystore.properties secrets.properties
+
+    ios:
+        name: TestFlight
+        needs: guard
+        if: ${{ inputs.target == 'both' || inputs.target == 'ios' }}
+        runs-on: macos-latest
+        timeout-minutes: 90
+        environment: ios-testflight
+        steps:
+            -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+                with:
+                    fetch-depth: 0
+
+            -   name: Require latest main
+                run: |
+                    git fetch --quiet --no-tags origin main
+                    test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+            -   name: Setup JDK 21
+                uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+                with:
+                    distribution: zulu
+                    java-version: 21
+
+            -   name: Setup Android SDK
+                uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@4733eaac7c1b0da527e4206b7671e0061de1ce37 # v6
+
+            -   name: Setup Ruby
+                uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+                with:
+                    bundler-cache: true
+
+            -   name: Show Xcode version
+                run: xcodebuild -version
+
+            -   name: Restore iOS release credentials
+                env:
+                    CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+                    CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+                    PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+                    ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+                    ASC_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
+                    SERVER_BASE_URL: ${{ secrets.SERVER_BASE_URL }}
+                run: |
+                    set -euo pipefail
+                    : "${CERTIFICATE_BASE64:?IOS_DISTRIBUTION_CERTIFICATE_BASE64 is required}"
+                    : "${CERTIFICATE_PASSWORD:?IOS_DISTRIBUTION_CERTIFICATE_PASSWORD is required}"
+                    : "${PROFILE_BASE64:?IOS_PROVISIONING_PROFILE_BASE64 is required}"
+                    : "${ASC_KEY_ID:?APP_STORE_CONNECT_KEY_ID is required}"
+                    : "${ASC_KEY_BASE64:?APP_STORE_CONNECT_KEY_P8_BASE64 is required}"
+                    : "${SERVER_BASE_URL:?SERVER_BASE_URL is required}"
+                    umask 077
+                    printf '%s' "$CERTIFICATE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-distribution.p12"
+                    printf '%s' "$PROFILE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-appstore.mobileprovision"
+                    touch "$RUNNER_TEMP/unused-android-keystore.jks"
+                    printf 'STORE_FILE=%s\n' "$RUNNER_TEMP/unused-android-keystore.jks" > keystore.properties
+                    printf 'STORE_PASSWORD=unused\nKEY_ALIAS=unused\nKEY_PASSWORD=unused\n' >> keystore.properties
+                    printf 'SERVER_BASE_URL=%s\n' "$SERVER_BASE_URL" > secrets.properties
+
+            -   name: Deploy iOS TestFlight
+                env:
+                    IOS_CERTIFICATE_PATH: ${{ runner.temp }}/bandalart-distribution.p12
+                    IOS_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+                    IOS_PROVISIONING_PROFILE_PATH: ${{ runner.temp }}/bandalart-appstore.mobileprovision
+                    APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+                    APP_STORE_CONNECT_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
+                run: bundle exec fastlane ios beta
+
+            -   name: Remove iOS credentials
+                if: always()
+                run: |
+                    security delete-keychain bandalart-ci 2>/dev/null || true
+                    if test -f "$RUNNER_TEMP/bandalart-appstore.mobileprovision"; then
+                        PROFILE_UUID="$(security cms -D -i "$RUNNER_TEMP/bandalart-appstore.mobileprovision" 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || true)"
+                        if test -n "$PROFILE_UUID"; then
+                            rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+                        fi
+                    fi
+                    rm -f "$RUNNER_TEMP/bandalart-distribution.p12"
+                    rm -f "$RUNNER_TEMP/bandalart-appstore.mobileprovision"
+                    rm -f "$RUNNER_TEMP/unused-android-keystore.jks"
+                    rm -f keystore.properties secrets.properties

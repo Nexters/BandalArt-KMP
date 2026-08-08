@@ -65,7 +65,7 @@ PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android
 ## 별도 운영 트랙
 
 - #214: iOS 개발자 계정 복구 후 실제 기기, 저장소, 설정, navigation, 배포 검증
-- #113: legacy Fastlane credential 폐기·회전과 Android Internal CD 보안 정리
+- #113: legacy Google key·Firebase token 폐기 완료, Android/iOS Fastlane CD PR 및 첫 workflow 배포 검증 진행
 - #206 외부 준비: AdMob app/rewarded/banner unit, UMP, app-ads.txt, Play Console 광고·Data safety 선언
 
 이 운영 작업은 준비되는 즉시 병행할 수 있지만, 미완료 상태가 앞선 Android 기능 개발을 막지는 않는다.
