@@ -7,14 +7,14 @@
 
 ## 스타일 비교
 
-![대표 20개 Color와 3D의 실제 UI 크기 비교](../tools/fluent-emoji/ui-spike/color-3d-ui-comparison.svg)
+![대표 20개 Color와 3D의 실제 UI 크기 비교](../../../tools/fluent-emoji/ui-spike/color-3d-ui-comparison.svg)
 
 | 대상 | Color | 3D |
 | --- | --- | --- |
-| 목표 | <img src="../tools/fluent-emoji/generated/color/fluent_1f3af.webp" width="64" alt="Fluent Color bullseye"> | <img src="../tools/fluent-emoji/generated/3d/fluent_1f3af.webp" width="64" alt="Fluent 3D bullseye"> |
-| 운동 | <img src="../tools/fluent-emoji/generated/color/fluent_1f4aa.webp" width="64" alt="Fluent Color flexed biceps"> | <img src="../tools/fluent-emoji/generated/3d/fluent_1f4aa.webp" width="64" alt="Fluent 3D flexed biceps"> |
-| 식단 | <img src="../tools/fluent-emoji/generated/color/fluent_1f955.webp" width="64" alt="Fluent Color carrot"> | <img src="../tools/fluent-emoji/generated/3d/fluent_1f955.webp" width="64" alt="Fluent 3D carrot"> |
-| 성장 | <img src="../tools/fluent-emoji/generated/color/fluent_1f331.webp" width="64" alt="Fluent Color seedling"> | <img src="../tools/fluent-emoji/generated/3d/fluent_1f331.webp" width="64" alt="Fluent 3D seedling"> |
+| 목표 | <img src="../../../tools/fluent-emoji/generated/color/fluent_1f3af.webp" width="64" alt="Fluent Color bullseye"> | <img src="../../../tools/fluent-emoji/generated/3d/fluent_1f3af.webp" width="64" alt="Fluent 3D bullseye"> |
+| 운동 | <img src="../../../tools/fluent-emoji/generated/color/fluent_1f4aa.webp" width="64" alt="Fluent Color flexed biceps"> | <img src="../../../tools/fluent-emoji/generated/3d/fluent_1f4aa.webp" width="64" alt="Fluent 3D flexed biceps"> |
+| 식단 | <img src="../../../tools/fluent-emoji/generated/color/fluent_1f955.webp" width="64" alt="Fluent Color carrot"> | <img src="../../../tools/fluent-emoji/generated/3d/fluent_1f955.webp" width="64" alt="Fluent 3D carrot"> |
+| 성장 | <img src="../../../tools/fluent-emoji/generated/color/fluent_1f331.webp" width="64" alt="Fluent Color seedling"> | <img src="../../../tools/fluent-emoji/generated/3d/fluent_1f331.webp" width="64" alt="Fluent 3D seedling"> |
 
 Color도 단색 flat이 아니라 Fluent 특유의 gradient와 그림자를 제공한다. 3D는 광택과 그림자가 조금 더 강하다. 현재 4개 대표 이미지를 64px로 비교했을 때 기존 반다라트의 정돈된 surface 및 cell UI에는 Color가 더 자연스러울 가능성이 높고, SVG 원본을 기준으로 출력 크기를 바꿔도 pipeline을 동일하게 유지할 수 있다.
 
@@ -24,7 +24,7 @@ Color도 단색 flat이 아니라 Fluent 특유의 gradient와 그림자를 제�
 
 ## picker wireframe
 
-![Fluent Emoji picker 라이트·다크 wireframe](../tools/fluent-emoji/ui-spike/picker-wireframe.svg)
+![Fluent Emoji picker 라이트·다크 wireframe](../../../tools/fluent-emoji/ui-spike/picker-wireframe.svg)
 
 - 검색 field, category chip, 5열 grid를 같은 sheet 안에 둔다.
 - cell은 76px wireframe으로 그렸으며 실제 구현에서도 최소 48dp touch target을 지킨다.

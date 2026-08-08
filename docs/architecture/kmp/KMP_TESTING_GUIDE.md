@@ -7,10 +7,10 @@
 ## 결론
 
 - `androidHostTest`는 프로젝트가 임의로 붙인 이름이 아니라 `com.android.kotlin.multiplatform.library`가 제공하는 공식 Android 호스트 테스트 source set이다.
-- 현재 테스트는 모두 `androidHostTest`에 있고, `commonTest`, `androidDeviceTest`, iOS test source set은 아직 없다.
+- KMP 모듈 테스트는 모두 `androidHostTest`에 있고, Android application module에는 별도 `androidApp/src/test` JVM 테스트가 있다. `commonTest`, `androidDeviceTest`, iOS test source set은 아직 없다.
 - 현재 JUnit 5, MockK, Robolectric 기반 테스트를 억지로 `commonTest`로 옮기지 않는다. 공통 테스트의 플랫폼 중복 실행 가치가 생길 때 `kotlin.test`와 multiplatform test dependency로 별도 전환한다.
 - Circuit Presenter 테스트는 `Presenter.test()`가 Molecule과 Turbine을 내부에서 조합한다. 프로젝트 코드가 Molecule API를 직접 import하지 않으므로 `molecule-runtime`을 직접 선언할 필요가 없다.
-- CI의 `allTests`는 현재 존재하는 10개 KMP 모듈의 `testAndroidHostTest`를 모두 실행한다. `androidApp`의 JVM 단위 테스트는 별도 `:androidApp:testDebugUnitTest`로 실행한다.
+- CI의 `allTests`는 현재 존재하는 11개 KMP 모듈의 `testAndroidHostTest`를 모두 실행한다. `androidApp`의 JVM 단위 테스트는 별도 `:androidApp:testDebugUnitTest`로 실행한다.
 
 ## Source set 선택 기준
 
@@ -47,12 +47,13 @@ AGP Android-KMP plugin에서는 host/device test가 기본 비활성이다. 이 
 | `core:database` | Room DAO/Robolectric, Android database path | Android host 유지 |
 | `core:datastore` | JVM temp file 기반 DataStore와 Android path | Android host 유지 |
 | `core:domain` | `ThemeMode` 순수 로직 | 향후 공통 후보지만 지금은 유지 |
+| `core:ui` | Fluent Emoji catalog, category/filter와 최근 항목 조합 | Android host 유지. UI restoration harness는 아직 없음 |
 | `feature:complete` | Circuit Presenter와 repository recording fake | Android host 유지 |
 | `feature:home` | Circuit Presenter 상태·event·navigation, Turbine helper | Android host 유지 |
 | `feature:onboarding` | Circuit Presenter 중복 입력과 root navigation | Android host 유지 |
 | `feature:splash` | Circuit Presenter 초기 routing | Android host 유지 |
 
-현재 `commonTest`, `androidDeviceTest`, `src/test`, `src/androidTest`, iOS test 디렉터리는 없다. 이번 감사에서는 테스트 파일을 이동하지 않는다.
+현재 KMP 모듈에는 `commonTest`, `androidDeviceTest`, `src/test`, `src/androidTest`, iOS test 디렉터리가 없다. Android application module에는 `androidApp/src/test`가 있다. 이번 문서 갱신에서는 테스트 파일을 이동하지 않는다.
 
 ## Circuit, Molecule, Turbine의 관계
 
@@ -116,7 +117,7 @@ Circuit/Metro 변경의 대표 회귀 검사:
 ./gradlew allTests :androidApp:testDebugUnitTest --stacktrace
 ```
 
-2026-08-06의 성공한 CI 로그에서 `allTests`가 아래 task를 모두 실행한 것을 확인했다.
+현재 `allTests`는 아래 task를 실행한다.
 
 ```text
 :composeApp:testAndroidHostTest
@@ -125,13 +126,20 @@ Circuit/Metro 변경의 대표 회귀 검사:
 :core:database:testAndroidHostTest
 :core:datastore:testAndroidHostTest
 :core:domain:testAndroidHostTest
+:core:ui:testAndroidHostTest
 :feature:complete:testAndroidHostTest
 :feature:home:testAndroidHostTest
 :feature:onboarding:testAndroidHostTest
 :feature:splash:testAndroidHostTest
 ```
 
-`androidApp:testDebugUnitTest`는 현재 `NO-SOURCE`지만 Android application module에 테스트가 추가될 경우를 위해 명시적으로 유지한다. Android lint/build와 iOS framework build는 각각 별도 CI job이며 테스트 실행을 대체하지 않는다.
+`androidApp:testDebugUnitTest`는 보상형 광고 SDK callback 순서를 검증하는 `RewardedAdCallbackCoordinatorTest`를 실행한다. Android lint/build와 iOS framework build는 각각 별도 CI job이며 테스트 실행을 대체하지 않는다.
+
+### `androidApp`에 `bandalart.kotest`를 적용한 이유
+
+보상형 광고 작업에서 `androidApp/src/test`에 처음 JUnit 5 테스트가 생겼다. 기존 `bandalart.kotest` convention plugin을 재사용한 직접적인 이유는 Android application module의 `Test` task에 `useJUnitPlatform()`과 공통 결과 logging을 적용해 이 테스트를 CI에서 발견·실행하기 위해서다.
+
+현재 테스트 자체는 Kotest spec/assertion DSL을 사용하지 않고 JUnit Jupiter `@Test`와 assertion을 사용한다. `kotest-runner-junit5-jvm`도 convention plugin이 함께 추가하지만 이 테스트가 요구하는 API는 아니다. plugin은 모든 실행에서 테스트 결과를 다시 보도록 `outputs.upToDateWhen { false }`도 설정한다. 따라서 “광고 로직 때문에 Kotest가 필요했다”는 뜻은 아니다. plugin 이름과 runner dependency가 실제 책임보다 넓은 것은 기존 build-logic의 기술 부채다. 다음에 test convention을 정리할 때 `bandalart.junit5` 같은 중립적인 plugin으로 분리할 수 있지만, 이번 문서 정리에서 빌드 구성을 함께 바꾸지는 않는다.
 
 문서만 변경한 PR은 workflow의 `paths-ignore: "**/*.md"` 조건으로 Android CI가 시작되지 않는다. 문서 PR에서는 링크와 저장소 구성 대조가 검증 기준이고, 코드나 Gradle 구성이 함께 바뀌면 전체 CI를 실행한다.
 
