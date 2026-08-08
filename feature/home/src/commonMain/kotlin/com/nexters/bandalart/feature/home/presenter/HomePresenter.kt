@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.nexters.bandalart.core.common.Language
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
@@ -32,6 +33,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.nexters.bandalart.feature.complete.CompleteScreen
@@ -51,12 +53,17 @@ import io.github.aakira.napier.Napier
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AssistedInject
+@Suppress("LargeClass")
 class HomePresenter(
     @Assisted private val navigator: Navigator,
     private val bandalartRepository: BandalartRepository,
+    private val bandalartSlotRepository: BandalartSlotRepository,
     private val inAppUpdateRepository: InAppUpdateRepository,
     private val settingsRepository: SettingsRepository,
 ) : Presenter<HomeScreen.State> {
@@ -68,12 +75,15 @@ class HomePresenter(
         var isLoading by remember { mutableStateOf(true) }
         var isBandalartCompleted by remember { mutableStateOf(false) }
         var isCreatingEmptyBandalart by remember { mutableStateOf(false) }
+        val rewardedCreateCoordinator = rememberRetained { RewardedCreateCoordinator() }
         var isUpdatingBandalartEmoji by remember { mutableStateOf(false) }
         var bottomSheet by rememberRetained { mutableStateOf<HomeScreen.BottomSheetState?>(null) }
         var dialog by rememberRetained { mutableStateOf<HomeScreen.DialogState?>(null) }
         var isDropDownMenuOpened by remember { mutableStateOf(false) }
         var imageRequest by remember { mutableStateOf<HomeScreen.ImageRequest?>(null) }
         var updateVersionCode by remember { mutableStateOf<Int?>(null) }
+        var rewardedAdRequestId by rememberRetained { mutableStateOf<Long?>(null) }
+        var rewardedRecoveryChecked by rememberRetained { mutableStateOf(false) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
         var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
         val completingTaskCellIds = remember { mutableSetOf<Long>() }
@@ -166,18 +176,113 @@ class HomePresenter(
             }
         }
 
-        suspend fun createBandalart() {
-            if (bandalartList.size >= MAX_BANDALART_COUNT) {
-                emitEffect(HomeScreen.Effect.ShowLimitToast)
-                return
-            }
+        suspend fun createBandalart(): Boolean {
+            val bandalart = bandalartRepository.createBandalart() ?: return false
+            bottomSheet = null
+            bandalartRepository.setRecentBandalartId(bandalart.id)
+            bandalartRepository.upsertBandalartId(bandalart.id, bandalart.isCompleted)
+            loadBandalart(bandalart.id)
+            emitEffect(HomeScreen.Effect.ShowCreateSnackbar)
+            return true
+        }
 
-            bandalartRepository.createBandalart()?.let { bandalart ->
-                bottomSheet = null
-                bandalartRepository.setRecentBandalartId(bandalart.id)
-                bandalartRepository.upsertBandalartId(bandalart.id, bandalart.isCompleted)
-                loadBandalart(bandalart.id)
-                emitEffect(HomeScreen.Effect.ShowCreateSnackbar)
+        suspend fun requestCreateBandalart() {
+            if (!rewardedRecoveryChecked) return
+            if (!rewardedCreateCoordinator.beginSlotCheck()) return
+            val maxSlots =
+                runRewardedOperation {
+                    bandalartSlotRepository.getMaxBandalartSlots(bandalartList.size)
+                }.getOrElse { exception ->
+                    Napier.e("Failed to resolve bandalart slots", exception, tag = "RewardedAd")
+                    rewardedCreateCoordinator.slotCheckFailed()
+                    emitEffect(HomeScreen.Effect.ShowSlotErrorSnackbar)
+                    return
+                }
+            if (
+                rewardedCreateCoordinator.slotsResolved(
+                    canCreate = bandalartList.size < maxSlots,
+                    currentCount = bandalartList.size,
+                )
+            ) {
+                var created = false
+                try {
+                    created = createBandalart()
+                } finally {
+                    rewardedCreateCoordinator.creationFinished(created, bandalartList.size)
+                }
+            } else {
+                dialog = HomeScreen.DialogState.RewardedCreate
+            }
+        }
+
+        fun confirmRewardedCreate() {
+            val requestId = rewardedCreateCoordinator.confirm() ?: return
+
+            dialog = null
+            scope.launch(start = CoroutineStart.UNDISPATCHED) {
+                withContext(NonCancellable) {
+                    runRewardedOperation {
+                        bandalartSlotRepository.prepareRewardedCreation(requestId, bandalartList.size)
+                    }.onSuccess {
+                        rewardedAdRequestId = requestId
+                    }.onFailure { exception ->
+                        Napier.e("Failed to persist rewarded request", exception, tag = "RewardedAd")
+                        rewardedCreateCoordinator.adPreparationFailed(requestId)
+                        emitEffect(HomeScreen.Effect.ShowSlotErrorSnackbar)
+                    }
+                }
+            }
+        }
+
+        fun finishRewardedAd(
+            requestId: Long,
+            result: RewardedAdResult,
+        ) {
+            when (rewardedCreateCoordinator.adFinished(requestId, result)) {
+                RewardedCompletion.IGNORED -> Unit
+                RewardedCompletion.DISMISSED -> {
+                    rewardedAdRequestId = null
+                    scope.launch(start = CoroutineStart.UNDISPATCHED) {
+                        withContext(NonCancellable) {
+                            bandalartSlotRepository.clearPendingRewardedCreation(requestId)
+                        }
+                    }
+                }
+                RewardedCompletion.GRANTED -> {
+                    rewardedAdRequestId = null
+                    if (result == RewardedAdResult.FAILED) {
+                        emitEffect(HomeScreen.Effect.ShowAdUnavailableSnackbar)
+                    }
+                    scope.launch(start = CoroutineStart.UNDISPATCHED) {
+                        var created = false
+                        var expectedCount = bandalartList.size + 1
+                        try {
+                            withContext(NonCancellable) {
+                                val pending =
+                                    runRewardedOperation {
+                                        bandalartSlotRepository.grantRewardedCreation(requestId)
+                                    }.onFailure { exception ->
+                                        Napier.e("Failed to persist rewarded bandalart slot", exception, tag = "RewardedAd")
+                                        emitEffect(HomeScreen.Effect.ShowSlotErrorSnackbar)
+                                    }.getOrNull()
+                                if (pending != null) {
+                                    expectedCount = pending.targetSlots
+                                    created =
+                                        runRewardedOperation { createBandalart() }
+                                            .onFailure { exception ->
+                                                Napier.e("Failed to create rewarded bandalart", exception, tag = "RewardedAd")
+                                            }.getOrDefault(false)
+                                }
+                            }
+                        } finally {
+                            rewardedCreateCoordinator.grantFinished(
+                                wasCreated = created,
+                                expectedCount = expectedCount,
+                                currentCount = bandalartList.size,
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -404,6 +509,46 @@ class HomePresenter(
                 val currentList = entities.map { it.toUiModel() }
                 bandalartList = currentList.toPersistentList()
 
+                val pendingRewardedCreation =
+                    runRewardedOperation { bandalartSlotRepository.getPendingRewardedCreation() }
+                        .onFailure { exception ->
+                            Napier.e("Failed to recover rewarded creation", exception, tag = "RewardedAd")
+                        }.getOrNull()
+                if (pendingRewardedCreation?.isGranted == true) {
+                    if (currentList.size >= pendingRewardedCreation.targetSlots) {
+                        runRewardedOperation {
+                            bandalartSlotRepository.clearPendingRewardedCreation(
+                                pendingRewardedCreation.requestId,
+                            )
+                        }.onFailure { exception ->
+                            Napier.e("Failed to clear rewarded recovery", exception, tag = "RewardedAd")
+                        }
+                        rewardedCreateCoordinator.creationObserved(currentList.size)
+                    } else if (
+                        rewardedCreateCoordinator.beginPendingRecovery(
+                            pendingRewardedCreation.targetSlots,
+                        )
+                    ) {
+                        var created = false
+                        try {
+                            created =
+                                runRewardedOperation { createBandalart() }
+                                    .onFailure { exception ->
+                                        Napier.e("Failed to recover rewarded bandalart", exception, tag = "RewardedAd")
+                                    }.getOrDefault(false)
+                        } finally {
+                            rewardedCreateCoordinator.grantFinished(
+                                wasCreated = created,
+                                expectedCount = pendingRewardedCreation.targetSlots,
+                                currentCount = bandalartList.size,
+                            )
+                        }
+                    }
+                } else {
+                    rewardedCreateCoordinator.creationObserved(currentList.size)
+                }
+                rewardedRecoveryChecked = true
+
                 val previousList = bandalartRepository.getPrevBandalartList()
                 val newlyCompletedIds =
                     currentList
@@ -473,6 +618,7 @@ class HomePresenter(
             updateVersionCode = updateVersionCode,
             themeMode = themeMode,
             recentEmojis = recentEmojis.toPersistentList(),
+            rewardedAdRequestId = rewardedAdRequestId,
             effect = effect,
         ) { event ->
             when (event) {
@@ -484,7 +630,11 @@ class HomePresenter(
                     }
                 }
 
-                HomeScreen.Event.AddBandalart -> scope.launch { createBandalart() }
+                HomeScreen.Event.AddBandalart -> scope.launch { requestCreateBandalart() }
+                HomeScreen.Event.ConfirmRewardedCreate -> confirmRewardedCreate()
+                is HomeScreen.Event.RewardedAdFinished -> {
+                    finishRewardedAd(event.requestId, event.result)
+                }
                 HomeScreen.Event.OpenBandalartList -> openBandalartList()
                 HomeScreen.Event.OpenSettings -> {
                     bottomSheet = HomeScreen.BottomSheetState.Settings
@@ -522,7 +672,12 @@ class HomePresenter(
                 HomeScreen.Event.OpenDropDownMenu -> isDropDownMenuOpened = true
                 HomeScreen.Event.DismissDropDownMenu -> isDropDownMenuOpened = false
                 HomeScreen.Event.DismissBottomSheet -> bottomSheet = null
-                HomeScreen.Event.DismissDialog -> dialog = null
+                HomeScreen.Event.DismissDialog -> {
+                    if (dialog == HomeScreen.DialogState.RewardedCreate) {
+                        rewardedCreateCoordinator.dismissDialog()
+                    }
+                    dialog = null
+                }
                 is HomeScreen.Event.UpdateCellTitle ->
                     updateCellTitle(
                         title = event.title,
@@ -644,10 +799,19 @@ class HomePresenter(
     }
 
     private companion object {
-        const val MAX_BANDALART_COUNT = 5
         const val MAX_DESCRIPTION_LENGTH = 1000
     }
 }
+
+@Suppress("TooGenericExceptionCaught")
+private inline fun <T> runRewardedOperation(block: () -> T): Result<T> =
+    try {
+        Result.success(block())
+    } catch (exception: CancellationException) {
+        throw exception
+    } catch (exception: Exception) {
+        Result.failure(exception)
+    }
 
 private fun BandalartCellEntity.findTaskCell(cellId: Long): BandalartCellEntity? =
     children

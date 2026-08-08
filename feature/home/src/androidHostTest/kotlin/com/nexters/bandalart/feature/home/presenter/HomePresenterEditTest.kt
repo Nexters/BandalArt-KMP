@@ -68,27 +68,27 @@ class HomePresenterEditTest {
         }
 
     @Test
-    fun sixthBandalartIsRejectedWithoutRepositoryCall() =
+    fun usedSlotsShowRewardedCreateDialogWithoutRepositoryCall() =
         runTest {
             val repository =
                 FakeBandalartRepository(
                     initialBandalarts = List(5) { index -> bandalart(index + 1L) },
                     recentBandalartId = 1L,
                 )
-            val presenter = presenter(repository)
+            val presenter =
+                presenter(
+                    repository = repository,
+                    slotRepository = FakeBandalartSlotRepository(maxSlots = 5),
+                )
 
             presenter.test {
                 var state = awaitLoadedBandalart(1L)
                 state.eventSink(HomeScreen.Event.AddBandalart)
                 do {
                     state = awaitItem()
-                } while (state.effect != HomeScreen.Effect.ShowLimitToast)
+                } while (state.dialog != HomeScreen.DialogState.RewardedCreate)
 
                 assertEquals(0, repository.createCalls)
-                state.eventSink(HomeScreen.Event.ConsumeEffect)
-                do {
-                    state = awaitItem()
-                } while (state.effect != null)
                 assertNull(state.effect)
             }
         }
@@ -383,9 +383,11 @@ class HomePresenterEditTest {
     private fun presenter(
         repository: FakeBandalartRepository,
         settingsRepository: FakeSettingsRepository = FakeSettingsRepository(),
+        slotRepository: FakeBandalartSlotRepository = FakeBandalartSlotRepository(),
     ) = HomePresenter(
         navigator = FakeNavigator(HomeScreen),
         bandalartRepository = repository,
+        bandalartSlotRepository = slotRepository,
         inAppUpdateRepository = FakeInAppUpdateRepository(),
         settingsRepository = settingsRepository,
     )

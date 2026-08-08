@@ -18,6 +18,7 @@ package com.nexters.bandalart.di.metro
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
+import com.nexters.bandalart.core.common.NoOpRewardedAdGateway
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
@@ -42,7 +43,7 @@ class AppGraphTest {
     @BeforeEach
     fun setUp() {
         val application = ApplicationProvider.getApplicationContext<Application>()
-        appGraph = createAndroidAppGraph(application)
+        appGraph = createAndroidAppGraph(application, NoOpRewardedAdGateway)
     }
 
     @AfterEach
@@ -59,6 +60,7 @@ class AppGraphTest {
         assertSame(appGraph.appVersionProvider, appGraph.appVersionProvider)
         assertSame(appGraph.imageHandlerProvider, appGraph.imageHandlerProvider)
         assertSame(appGraph.supportMailLauncher, appGraph.supportMailLauncher)
+        assertSame(appGraph.rewardedAdGateway, appGraph.rewardedAdGateway)
         assertSame(appGraph.bandalartRepository, appGraph.bandalartRepository)
         assertSame(appGraph.bandalartSlotRepository, appGraph.bandalartSlotRepository)
         assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)

@@ -32,6 +32,7 @@ internal class FakeBandalartRepository(
     private val previousBandalartList: List<Pair<Long, Boolean>> =
         initialBandalarts.map { it.id to it.isCompleted },
     private val createdBandalart: BandalartEntity? = null,
+    private val publishCreatedBandalartImmediately: Boolean = true,
     details: Map<Long, BandalartEntity> = initialBandalarts.associateBy { it.id },
     private val mainCells: Map<Long, BandalartCellEntity> = emptyMap(),
     private val childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
@@ -40,6 +41,7 @@ internal class FakeBandalartRepository(
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
+    private var unpublishedCreatedBandalart: BandalartEntity? = null
 
     var recentBandalartId: Long = recentBandalartId
         private set
@@ -65,8 +67,18 @@ internal class FakeBandalartRepository(
         createCalls += 1
         return createdBandalart?.also { bandalart ->
             details[bandalart.id] = bandalart
-            bandalartFlow.value = bandalartFlow.value + bandalart
+            if (publishCreatedBandalartImmediately) {
+                bandalartFlow.value = bandalartFlow.value + bandalart
+            } else {
+                unpublishedCreatedBandalart = bandalart
+            }
         }
+    }
+
+    fun publishCreatedBandalart() {
+        val bandalart = unpublishedCreatedBandalart ?: return
+        unpublishedCreatedBandalart = null
+        bandalartFlow.value = bandalartFlow.value + bandalart
     }
 
     override fun getBandalartList(): Flow<List<BandalartEntity>> = bandalartFlow

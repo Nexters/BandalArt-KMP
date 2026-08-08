@@ -5,11 +5,14 @@ plugins {
     id("bandalart.lint")
     id("bandalart.android.application")
     id("bandalart.android.application.compose")
+    id("bandalart.kotest")
     alias(libs.plugins.google.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.baselineprofile)
     alias(libs.plugins.play.publisher)
 }
+
+val useTestAds = providers.gradleProperty("bandalart.useTestAds").orNull.toBoolean()
 
 android {
     namespace = "com.nexters.bandalart"
@@ -45,7 +48,15 @@ android {
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             resValue("string", "admob_app_id", "ca-app-pub-5570932833347277~6079637815")
-            resValue("string", "admob_rewarded_ad_unit_id", "ca-app-pub-5570932833347277/6659503579")
+            resValue(
+                "string",
+                "admob_rewarded_ad_unit_id",
+                if (useTestAds) {
+                    "ca-app-pub-3940256099942544/5224354917"
+                } else {
+                    "ca-app-pub-5570932833347277/6659503579"
+                },
+            )
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-5570932833347277/1215605203")
             manifestPlaceholders +=
                 mapOf(
@@ -91,5 +102,7 @@ dependencies {
     implementation(libs.cmptoast)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.napier)
+    testImplementation(libs.bundles.android.unit.test)
+    testRuntimeOnly(libs.junit.jupiter.engine)
     "baselineProfile"(project(":baselineprofile"))
 }

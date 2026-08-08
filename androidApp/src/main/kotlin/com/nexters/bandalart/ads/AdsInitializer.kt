@@ -18,10 +18,14 @@ package com.nexters.bandalart.ads
 
 import android.content.Context
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdPreloader
 import com.nexters.bandalart.R
 import io.github.aakira.napier.Napier
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,6 +35,7 @@ class AdsInitializer(
     private val context: Context,
 ) {
     private val isInitializationStarted = AtomicBoolean(false)
+    private val initialization = CompletableDeferred<Boolean>()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun initialize() {
@@ -42,12 +47,27 @@ class AdsInitializer(
                     context,
                     InitializationConfig.Builder(context.getString(R.string.admob_app_id)).build(),
                 ) {
+                    val adUnitId = context.getString(R.string.admob_rewarded_ad_unit_id)
+                    runCatching {
+                        RewardedAdPreloader.start(
+                            adUnitId,
+                            PreloadConfiguration(AdRequest.Builder(adUnitId).build()),
+                        )
+                    }.onFailure { exception ->
+                        Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
+                    }
+                    initialization.complete(true)
                     Napier.d("GMA Next-Gen SDK initialized", tag = "AdsInitializer")
                 }
             }.onFailure { exception ->
-                isInitializationStarted.set(false)
+                initialization.complete(false)
                 Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = "AdsInitializer")
             }
         }
+    }
+
+    suspend fun awaitInitialized(): Boolean {
+        initialize()
+        return initialization.await()
     }
 }

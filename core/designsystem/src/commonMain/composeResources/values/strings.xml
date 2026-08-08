@@ -148,7 +148,12 @@
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
     <string name="create_bandalart">새로운 반다라트를 생성했어요.</string>
-    <string name="limit_create_bandalart">반다라트는 최대 5개 생성할 수 있어요.</string>
+    <string name="rewarded_create_dialog_title">새 반다라트를 더 만들까요?</string>
+    <string name="rewarded_create_dialog_message">광고를 끝까지 보면 새 반다라트 슬롯 1개를 계속 사용할 수 있어요.</string>
+    <string name="rewarded_create_dialog_confirm">광고 보고 추가하기</string>
+    <string name="rewarded_create_dialog_cancel">취소</string>
+    <string name="rewarded_ad_unavailable">광고를 불러오지 못해 광고 없이 계속할게요.</string>
+    <string name="rewarded_slot_error">반다라트 슬롯을 확인하지 못했어요. 다시 시도해 주세요.</string>
     <string name="save_bandalart_image">반다라트가 갤러리에 저장되었어요.</string>
     <string name="delete_bandalart">반다라트가 삭제되었어요.</string>
 

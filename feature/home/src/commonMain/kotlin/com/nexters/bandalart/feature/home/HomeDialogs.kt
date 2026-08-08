@@ -29,6 +29,7 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_title
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDeleteAlertDialog
+import com.nexters.bandalart.feature.home.ui.bandalart.RewardedBandalartAlertDialog
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -55,6 +56,16 @@ internal fun HomeDialogs(
                     },
                 )
             }
+        }
+        HomeScreen.DialogState.RewardedCreate -> {
+            RewardedBandalartAlertDialog(
+                onConfirmClick = {
+                    eventSink(HomeScreen.Event.ConfirmRewardedCreate)
+                },
+                onCancelClick = {
+                    eventSink(HomeScreen.Event.DismissDialog)
+                },
+            )
         }
         is HomeScreen.DialogState.CellDelete -> {
             BandalartDeleteAlertDialog(

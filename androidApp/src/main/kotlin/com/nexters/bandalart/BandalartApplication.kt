@@ -20,8 +20,11 @@ import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
+import com.nexters.bandalart.ads.AndroidRewardedAdGateway
+import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
+import com.nexters.bandalart.di.metro.recordRewardedCreation
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 
@@ -33,7 +36,20 @@ class BandalartApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appGraph = createAndroidAppGraph(this)
+        val rewardedAdGateway = DelegatingRewardedAdGateway()
+        appGraph =
+            createAndroidAppGraph(
+                application = this,
+                rewardedAdGateway = rewardedAdGateway,
+            )
+        rewardedAdGateway.delegate =
+            AndroidRewardedAdGateway(
+                application = this,
+                awaitAdsInitialized = adsInitializer::awaitInitialized,
+                recordReward = { requestId ->
+                    recordRewardedCreation(appGraph, requestId)
+                },
+            )
 
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())

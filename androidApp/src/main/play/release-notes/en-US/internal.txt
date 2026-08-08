@@ -1,5 +1,5 @@
-The bottom area of the icon picker is now more reliable.
+Added a rewarded-ad flow for creating more Bandalarts.
 
-• Fixed the last emoji row being clipped on devices with a bottom navigation bar.
-• Matched the bottom-sheet and navigation-bar background colors for a seamless appearance.
-• All 300 emojis, search, categories, and recent items remain available.
+• An explanation dialog now appears after all free slots are used.
+• Finish the ad after confirming to unlock one slot and create one new Bandalart.
+• Closing the ad before earning the reward does not add a slot or Bandalart.

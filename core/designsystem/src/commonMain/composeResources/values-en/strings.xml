@@ -143,7 +143,12 @@
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
     <string name="create_bandalart">Created a new bandalart.</string>
-    <string name="limit_create_bandalart">You can create up to 5 bandalarts.</string>
+    <string name="rewarded_create_dialog_title">Create another Bandalart?</string>
+    <string name="rewarded_create_dialog_message">Finish watching an ad to keep one additional Bandalart slot.</string>
+    <string name="rewarded_create_dialog_confirm">Watch ad and add</string>
+    <string name="rewarded_create_dialog_cancel">Cancel</string>
+    <string name="rewarded_ad_unavailable">The ad could not be loaded, so we’ll continue without it.</string>
+    <string name="rewarded_slot_error">Couldn’t update your Bandalart slots. Please try again.</string>
     <string name="save_bandalart_image">Bandalart has been saved to the gallery.</string>
     <string name="delete_bandalart">New Bandalart created.</string>
 
