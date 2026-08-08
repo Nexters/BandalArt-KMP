@@ -57,6 +57,7 @@
 
 - [이모지 picker 하단 inset 수정](features/emoji/EMOJI_PICKER_BOTTOM_INSETS_FIX_STRATEGY.md)
 - [이모지 picker legacy UI 전략](features/emoji/EMOJI_PICKER_LEGACY_UI_STRATEGY.md)
+- [Fluent Emoji 카테고리 탐색](features/emoji/FLUENT_EMOJI_CATEGORY_NAVIGATION_STRATEGY.md)
 - [Fluent Emoji picker 마이그레이션](features/emoji/FLUENT_EMOJI_PICKER_MIGRATION_STRATEGY.md)
 - [Fluent Emoji resource spike](features/emoji/FLUENT_EMOJI_RESOURCE_SPIKE.md)
 

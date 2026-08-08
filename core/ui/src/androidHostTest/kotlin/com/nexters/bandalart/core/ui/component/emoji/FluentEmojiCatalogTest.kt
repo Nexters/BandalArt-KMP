@@ -114,4 +114,53 @@ class FluentEmojiCatalogTest {
             ).map { it.unicode },
         )
     }
+
+    @Test
+    fun allPickerViewKeepsRecentItemsFirstWithoutDuplicatingCatalogItems() {
+        val items =
+            fluentEmojiPickerItems(
+                category = null,
+                recentEmojis = listOf("🚀", "😎", "🎯", "🚀"),
+            )
+
+        assertEquals(listOf("🚀", "🎯"), items.take(2).map { it.unicode })
+        assertEquals(300, items.size)
+        assertEquals(300, items.map { it.unicode }.distinct().size)
+    }
+
+    @Test
+    fun pickerCategoryViewContainsOnlyTheSelectedMetadataGroup() {
+        FluentEmojiCategory.entries
+            .filterNot { it == FluentEmojiCategory.RECENT }
+            .forEach { category ->
+                val items = fluentEmojiPickerItems(category = category, recentEmojis = emptyList())
+
+                assertTrue(items.isNotEmpty())
+                assertTrue(items.all { it.category == category })
+            }
+    }
+
+    @Test
+    fun recentCategoryTabIsOnlyVisibleWhenCatalogBackedRecentItemsExist() {
+        assertTrue(
+            visibleFluentEmojiCategoryTabs(hasRecentEmojis = false)
+                .none { it.category == FluentEmojiCategory.RECENT },
+        )
+        assertTrue(
+            visibleFluentEmojiCategoryTabs(hasRecentEmojis = true)
+                .any { it.category == FluentEmojiCategory.RECENT },
+        )
+        assertEquals(
+            listOf(null) + FluentEmojiCategory.entries,
+            visibleFluentEmojiCategoryTabs(hasRecentEmojis = true).map { it.category },
+        )
+    }
+
+    @Test
+    fun everyCategoryTabUsesAnEmojiFromTheBundledFluentCatalog() {
+        assertTrue(
+            visibleFluentEmojiCategoryTabs(hasRecentEmojis = true)
+                .all { FluentEmojiCatalog.resourceKeyFor(it.iconUnicode) != null },
+        )
+    }
 }

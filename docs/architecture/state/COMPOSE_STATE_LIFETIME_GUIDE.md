@@ -104,7 +104,7 @@ in-flight flag만 retain하고 작업 coroutine은 composition에 묶으면, 구
 | 보상형 광고 coordinator/request/recovery flag | `rememberRetained` + DataStore | retained는 회전 연결, DataStore는 process death와 exactly-once 복구 담당 |
 | `BandalartDatePicker` 연·월·일 | `rememberSaveable(draftKey)` | `draftKey`를 identity input으로 사용해 작은 미확정 UI 입력을 저장. cross-process identity 보장은 별도 검증 필요 |
 | 이모지 picker 선택 | `rememberSaveable` 사용 중 | 현재 상위 draft와 의미가 중복될 수 있어 stateless 또는 `remember(currentEmoji)`로 정리할 후보 |
-| 이모지 picker 카테고리 | `rememberSaveable` 예정 | 작은 UI filter이며 카테고리 기능 브랜치에서 적용 예정 |
+| 이모지 picker 카테고리 | `rememberSaveable` | 작은 UI filter이며 configuration/process recreation 뒤 선택 복원 가치가 있음 |
 | `LazyGridState` 등 공식 `remember…State` | 해당 컴포넌트 API | framework의 Saver와 상태 계약을 재사용 |
 
 ## inputs와 identity 검증 규칙
