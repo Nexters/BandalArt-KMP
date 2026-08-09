@@ -65,6 +65,8 @@
 ### Home, Settings, Updates
 
 - [태스크 셀 햅틱 완료](features/home/TASK_CELL_HAPTIC_COMPLETION_STRATEGY.md)
+- [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
+- [마감일 기반 로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
 - [이메일 문의](features/settings/EMAIL_INQUIRY_STRATEGY.md)
 - [설정 bottom sheet typography](features/settings/SETTINGS_BOTTOM_SHEET_TYPOGRAPHY_STRATEGY.md)
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)
