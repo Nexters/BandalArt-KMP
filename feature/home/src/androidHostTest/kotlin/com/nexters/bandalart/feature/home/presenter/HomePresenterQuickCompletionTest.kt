@@ -49,7 +49,7 @@ class HomePresenterQuickCompletionTest {
 
             presenter(repository).test {
                 var state = awaitLoadedBandalart()
-                state.eventSink(HomeScreen.Event.CompleteTask(taskCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 do {
                     state = awaitItem()
                 } while (state.effect !is HomeScreen.Effect.PlayTaskCompletionHaptic)
@@ -77,11 +77,43 @@ class HomePresenterQuickCompletionTest {
         }
 
     @Test
-    fun invalidOrCompletedCellsAreIgnored() =
+    fun completedTaskIsUncompletedWithPreservedContentAndOneShotEffect() =
+        runTest {
+            val taskCell =
+                cell(
+                    id = 12L,
+                    title = "매일 걷기",
+                    description = "30분",
+                    dueDate = "2026-12-31",
+                    isCompleted = true,
+                )
+            val repository = repositoryWithTasks(taskCell)
+
+            presenter(repository).test {
+                var state = awaitLoadedBandalart()
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                do {
+                    state = awaitItem()
+                } while (state.effect !is HomeScreen.Effect.PlayTaskCompletionHaptic)
+
+                val update = requireNotNull(repository.taskCellUpdate)
+                assertEquals(1, repository.taskCellUpdateCalls)
+                assertEquals(1L, update.bandalartId)
+                assertEquals(taskCell.id, update.cellId)
+                assertEquals(taskCell.title, update.entity.title)
+                assertEquals(taskCell.description, update.entity.description)
+                assertEquals(taskCell.dueDate, update.entity.dueDate)
+                assertFalse(update.entity.isCompleted == true)
+                assertFalse(state.taskCell(taskCell.id).isCompleted)
+                assertEquals(taskCell.id, state.effect.taskCellId)
+            }
+        }
+
+    @Test
+    fun invalidCellsAreIgnored() =
         runTest {
             val emptyTask = cell(id = 12L, title = null)
-            val completedTask = cell(id = 13L, title = "완료", isCompleted = true)
-            val repository = repositoryWithTasks(emptyTask, completedTask)
+            val repository = repositoryWithTasks(emptyTask)
 
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
@@ -90,14 +122,12 @@ class HomePresenterQuickCompletionTest {
                 val mainCell = requireNotNull(state.bandalartCellData)
                 val subCell = mainCell.children.single()
 
-                state.eventSink(HomeScreen.Event.CompleteTask(emptyTask))
-                state.eventSink(HomeScreen.Event.CompleteTask(completedTask))
-                state.eventSink(HomeScreen.Event.CompleteTask(mainCell))
-                state.eventSink(HomeScreen.Event.CompleteTask(subCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(emptyTask))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(mainCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(subCell))
                 yield()
 
                 assertEquals(0, repository.taskCellUpdateCalls)
-                assertTrue(state.taskCell(completedTask.id).isCompleted)
                 expectNoEvents()
                 cancelAndIgnoreRemainingEvents()
             }
@@ -112,8 +142,8 @@ class HomePresenterQuickCompletionTest {
 
             presenter(repository).test {
                 var state = awaitLoadedBandalart()
-                state.eventSink(HomeScreen.Event.CompleteTask(firstTask))
-                state.eventSink(HomeScreen.Event.CompleteTask(secondTask))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(firstTask))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(secondTask))
 
                 do {
                     state = awaitItem()
@@ -154,10 +184,10 @@ class HomePresenterQuickCompletionTest {
 
             presenter(repository).test {
                 var state = awaitLoadedBandalart()
-                state.eventSink(HomeScreen.Event.CompleteTask(taskCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 updateStarted.await()
 
-                state.eventSink(HomeScreen.Event.CompleteTask(taskCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 yield()
                 assertEquals(1, repository.taskCellUpdateCalls)
 
@@ -166,6 +196,161 @@ class HomePresenterQuickCompletionTest {
                     state = awaitItem()
                 } while (state.effect !is HomeScreen.Effect.PlayTaskCompletionHaptic)
                 assertEquals(1, repository.taskCellUpdateCalls)
+            }
+        }
+
+    @Test
+    fun selectionDuringToggleDoesNotReplaceNewBandalartCells() =
+        runTest {
+            val updateStarted = CompletableDeferred<Unit>()
+            val allowUpdate = CompletableDeferred<Unit>()
+            val firstMain = cell(id = 10L, title = "첫 메인", parentId = null)
+            val firstSub = cell(id = 11L, title = "첫 서브", parentId = firstMain.id)
+            val firstTask = cell(id = 12L, title = "첫 목표", parentId = firstSub.id)
+            val secondMain = cell(id = 20L, title = "둘째 메인", parentId = null)
+            val secondSub = cell(id = 21L, title = "둘째 서브", parentId = secondMain.id)
+            val secondTask = cell(id = 22L, title = "둘째 목표", parentId = secondSub.id)
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
+                    recentBandalartId = 1L,
+                    mainCells = mapOf(1L to firstMain, 2L to secondMain),
+                    childCells =
+                        mapOf(
+                            firstMain.id to listOf(firstSub),
+                            firstSub.id to listOf(firstTask),
+                            secondMain.id to listOf(secondSub),
+                            secondSub.id to listOf(secondTask),
+                        ),
+                    beforeTaskCellUpdate = {
+                        updateStarted.complete(Unit)
+                        allowUpdate.await()
+                    },
+                )
+
+            presenter(repository).test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(firstTask))
+                updateStarted.await()
+
+                state.eventSink(HomeScreen.Event.SelectBandalart(2L))
+                state = awaitLoadedBandalart(2L)
+                assertEquals("둘째 목표", state.taskCell(secondTask.id).title)
+
+                allowUpdate.complete(Unit)
+                advanceUntilIdle()
+                state = expectMostRecentItem()
+
+                assertEquals(1, repository.taskCellUpdateCalls)
+                assertEquals(2L, state.bandalartData?.id)
+                assertEquals("둘째 목표", state.taskCell(secondTask.id).title)
+                assertEquals(2L, repository.recentBandalartId)
+                assertNull(state.effect)
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun roomRefreshDuringTogglePreservesLatestParentCompletion() =
+        runTest {
+            val updateStarted = CompletableDeferred<Unit>()
+            val allowUpdate = CompletableDeferred<Unit>()
+            val taskCell = cell(id = 12L, title = "목표")
+            val repository =
+                repositoryWithTasks(
+                    taskCell,
+                    beforeTaskCellUpdate = {
+                        updateStarted.complete(Unit)
+                        allowUpdate.await()
+                    },
+                )
+
+            presenter(repository).test {
+                var state = awaitLoadedBandalart()
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                updateStarted.await()
+
+                repository.publishBandalartRevision(
+                    bandalart = bandalart().copy(completionRatio = 1),
+                    mainCell = requireNotNull(state.bandalartCellData).copy(isCompleted = true),
+                )
+                do {
+                    state = awaitItem()
+                } while (state.bandalartCellData?.isCompleted != true || state.isLoading)
+
+                allowUpdate.complete(Unit)
+                do {
+                    state = awaitItem()
+                } while (state.effect !is HomeScreen.Effect.PlayTaskCompletionHaptic)
+
+                assertTrue(state.bandalartCellData?.isCompleted == true)
+                assertTrue(state.taskCell(taskCell.id).isCompleted)
+            }
+        }
+
+    @Test
+    fun taskResetDuringTogglePreservesLatestRoomStateWithoutHaptic() =
+        runTest {
+            val updatePersisted = CompletableDeferred<Unit>()
+            val allowUpdateReturn = CompletableDeferred<Unit>()
+            val taskCell = cell(id = 12L, title = "삭제될 목표")
+            val repository =
+                repositoryWithTasks(
+                    taskCell,
+                    afterTaskCellUpdate = {
+                        updatePersisted.complete(Unit)
+                        allowUpdateReturn.await()
+                    },
+                )
+
+            presenter(repository).test {
+                var state = awaitLoadedBandalart()
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                updatePersisted.await()
+
+                repository.publishTaskCellRevision(taskCell.copy(title = null, isCompleted = false))
+                repository.publishBandalartRevision(bandalart().copy(completionRatio = 2))
+                do {
+                    state = awaitItem()
+                } while (state.taskCell(taskCell.id).title != null || state.isLoading)
+
+                allowUpdateReturn.complete(Unit)
+                advanceUntilIdle()
+
+                assertNull(state.taskCell(taskCell.id).title)
+                assertFalse(state.taskCell(taskCell.id).isCompleted)
+                assertNull(state.effect)
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun authoritativeRefreshFailureDoesNotCrashOrEmitHaptic() =
+        runTest {
+            var failBandalartLoad = false
+            val taskCell = cell(id = 12L, title = "저장은 성공")
+            val repository =
+                repositoryWithTasks(
+                    taskCell,
+                    afterTaskCellUpdate = { failBandalartLoad = true },
+                    beforeBandalartLoad = {
+                        if (failBandalartLoad) error("refresh failed")
+                    },
+                )
+
+            presenter(repository).test {
+                val state = awaitLoadedBandalart()
+                advanceUntilIdle()
+                expectMostRecentItem()
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                advanceUntilIdle()
+
+                assertEquals(1, repository.taskCellUpdateCalls)
+                assertFalse(state.taskCell(taskCell.id).isCompleted)
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -185,7 +370,7 @@ class HomePresenterQuickCompletionTest {
                 val state = awaitLoadedBandalart()
                 advanceUntilIdle()
                 expectMostRecentItem()
-                state.eventSink(HomeScreen.Event.CompleteTask(taskCell))
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 updateAttempted.await()
                 yield()
 
@@ -197,9 +382,39 @@ class HomePresenterQuickCompletionTest {
             }
         }
 
+    @Test
+    fun failedSaveDoesNotUncompleteCellOrEmitHaptic() =
+        runTest {
+            val updateAttempted = CompletableDeferred<Unit>()
+            val taskCell = cell(id = 12L, title = "실패", isCompleted = true)
+            val repository =
+                repositoryWithTasks(
+                    taskCell,
+                    beforeTaskCellUpdate = { updateAttempted.complete(Unit) },
+                    taskCellUpdateError = IllegalStateException("save failed"),
+                )
+
+            presenter(repository).test {
+                val state = awaitLoadedBandalart()
+                advanceUntilIdle()
+                expectMostRecentItem()
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                updateAttempted.await()
+                yield()
+
+                assertEquals(1, repository.taskCellUpdateCalls)
+                assertNull(repository.taskCellUpdate)
+                assertTrue(state.taskCell(taskCell.id).isCompleted)
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun repositoryWithTasks(
         vararg taskCells: BandalartCellEntity,
         beforeTaskCellUpdate: suspend () -> Unit = {},
+        afterTaskCellUpdate: suspend () -> Unit = {},
+        beforeBandalartLoad: suspend (Long) -> Unit = {},
         taskCellUpdateError: Throwable? = null,
     ): FakeBandalartRepository {
         val mainCell = cell(id = 10L, title = "메인")
@@ -214,6 +429,8 @@ class HomePresenterQuickCompletionTest {
                     subCell.id to taskCells.toList(),
                 ),
             beforeTaskCellUpdate = beforeTaskCellUpdate,
+            afterTaskCellUpdate = afterTaskCellUpdate,
+            beforeBandalartLoad = beforeBandalartLoad,
             taskCellUpdateError = taskCellUpdateError,
         )
     }
@@ -227,9 +444,11 @@ class HomePresenterQuickCompletionTest {
             settingsRepository = FakeSettingsRepository(),
         )
 
-    private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(): HomeScreen.State {
+    private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(
+        bandalartId: Long = 1L,
+    ): HomeScreen.State {
         var state = awaitItem()
-        while (state.bandalartData?.id != 1L || state.isLoading) {
+        while (state.bandalartData?.id != bandalartId || state.isLoading) {
             state = awaitItem()
         }
         return state
@@ -243,9 +462,9 @@ class HomePresenterQuickCompletionTest {
                 ?.firstOrNull { taskCell -> taskCell.id == cellId },
         )
 
-    private fun bandalart() =
+    private fun bandalart(id: Long = 1L) =
         BandalartEntity(
-            id = 1L,
+            id = id,
             mainColor = "#3FFFBA",
             subColor = "#111827",
             profileEmoji = "🎯",

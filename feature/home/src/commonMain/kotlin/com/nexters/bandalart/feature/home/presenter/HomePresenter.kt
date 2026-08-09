@@ -105,7 +105,7 @@ class HomePresenter(
         var rewardedRecoveryChecked by rememberRetained { mutableStateOf(false) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
         var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
-        val completingTaskCellIds = remember { mutableSetOf<Long>() }
+        val togglingTaskCellIds = remember { mutableSetOf<Long>() }
         val pendingEffects = remember { ArrayDeque<HomeScreen.Effect>() }
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
@@ -146,12 +146,10 @@ class HomePresenter(
             effect = pendingEffects.removeFirstOrNull()
         }
 
-        suspend fun loadBandalart(
+        suspend fun readBandalart(
             bandalartId: Long,
             isCompleted: Boolean = false,
-            canCommit: () -> Boolean = { true },
-        ) {
-            isLoading = true
+        ): LoadedBandalart {
             val loadedBandalartData = bandalartRepository.getBandalart(bandalartId).toUiModel()
 
             val mainCell = bandalartRepository.getBandalartMainCell(bandalartId)
@@ -191,13 +189,22 @@ class HomePresenter(
                     parentId = mainCell?.parentId,
                     children = children,
                 )
+            return LoadedBandalart(
+                bandalartData = loadedBandalartData,
+                bandalartCellData = loadedBandalartCellData,
+                isCompleted = isCompleted,
+            )
+        }
+
+        suspend fun loadBandalart(
+            bandalartId: Long,
+            isCompleted: Boolean = false,
+            canCommit: () -> Boolean = { true },
+        ) {
+            isLoading = true
+            val refreshedBandalart = readBandalart(bandalartId, isCompleted)
             if (!canCommit()) return
-            loadedBandalart =
-                LoadedBandalart(
-                    bandalartData = loadedBandalartData,
-                    bandalartCellData = loadedBandalartCellData,
-                    isCompleted = isCompleted,
-                )
+            loadedBandalart = refreshedBandalart
             yield()
             isLoading = false
         }
@@ -517,11 +524,12 @@ class HomePresenter(
             bottomSheet = null
         }
 
-        suspend fun completeTask(requestedCell: BandalartCellEntity) {
+        suspend fun toggleTaskCompletion(requestedCell: BandalartCellEntity) {
             val currentBandalart = bandalartData ?: return
             val currentCell = bandalartCellData?.findTaskCell(requestedCell.id) ?: return
-            if (currentCell.title.isNullOrBlank() || currentCell.isCompleted) return
-            if (!completingTaskCellIds.add(currentCell.id)) return
+            if (currentCell.title.isNullOrBlank()) return
+            if (!togglingTaskCellIds.add(currentCell.id)) return
+            val updatedCompletion = !currentCell.isCompleted
 
             try {
                 runCatching {
@@ -533,22 +541,38 @@ class HomePresenter(
                                 title = currentCell.title,
                                 description = currentCell.description,
                                 dueDate = currentCell.dueDate,
-                                isCompleted = true,
+                                isCompleted = updatedCompletion,
                             ),
                     )
-                }.onSuccess {
-                    val updatedCellData = bandalartCellData.completeTask(currentCell.id)
-                    loadedBandalart =
-                        loadedBandalart?.copy(
-                            bandalartCellData = updatedCellData,
-                        )
-                    emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
+                    val activeBandalart = loadedBandalart
+                    if (activeBandalart?.bandalartData?.id != currentBandalart.id) {
+                        return@runCatching null
+                    }
+                    readBandalart(
+                        bandalartId = currentBandalart.id,
+                        isCompleted = activeBandalart.isCompleted,
+                    )
+                }.onSuccess { refreshedBandalart ->
+                    if (
+                        refreshedBandalart != null &&
+                        loadedBandalart?.bandalartData?.id == currentBandalart.id
+                    ) {
+                        val refreshedCell = refreshedBandalart.bandalartCellData.findTaskCell(currentCell.id)
+                        loadedBandalart = refreshedBandalart
+                        if (
+                            refreshedCell != null &&
+                            !refreshedCell.title.isNullOrBlank() &&
+                            refreshedCell.isCompleted == updatedCompletion
+                        ) {
+                            emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
+                        }
+                    }
                 }.onFailure { exception ->
                     if (exception is CancellationException) throw exception
-                    Napier.e("Failed to complete task cell", exception, tag = "HomePresenter")
+                    Napier.e("Failed to toggle task cell completion", exception, tag = "HomePresenter")
                 }
             } finally {
-                completingTaskCellIds.remove(currentCell.id)
+                togglingTaskCellIds.remove(currentCell.id)
             }
         }
 
@@ -779,8 +803,8 @@ class HomePresenter(
                         cellData = event.cellData,
                     )
 
-                is HomeScreen.Event.CompleteTask -> {
-                    scope.launch { completeTask(event.cellData) }
+                is HomeScreen.Event.ToggleTaskCompletion -> {
+                    scope.launch { toggleTaskCompletion(event.cellData) }
                 }
 
                 HomeScreen.Event.OpenBandalartDeleteDialog -> {
@@ -1009,10 +1033,3 @@ private fun BandalartCellEntity.findTaskCell(cellId: Long): BandalartCellEntity?
         .asSequence()
         .flatMap { subCell -> subCell.children.asSequence() }
         .firstOrNull { taskCell -> taskCell.id == cellId }
-
-private fun BandalartCellEntity.completeTask(cellId: Long): BandalartCellEntity =
-    if (id == cellId) {
-        copy(isCompleted = true)
-    } else {
-        copy(children = children.map { child -> child.completeTask(cellId) })
-    }

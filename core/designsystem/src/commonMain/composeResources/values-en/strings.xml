@@ -34,6 +34,7 @@
     <string name="home_main_cell">Main Goal</string>
     <string name="home_sub_cell">Sub Goal</string>
     <string name="home_complete_task_long_click">Complete goal</string>
+    <string name="home_uncomplete_task_long_click">Mark goal incomplete</string>
     <string name="please_input_main_goal">Please enter the main goal first.</string>
     <string name="please_input_sub_goal">Please enter the sub goal first.</string>
 

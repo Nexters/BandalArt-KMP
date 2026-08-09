@@ -35,14 +35,16 @@ internal class FakeBandalartRepository(
     private val publishCreatedBandalartImmediately: Boolean = true,
     details: Map<Long, BandalartEntity> = initialBandalarts.associateBy { it.id },
     mainCells: Map<Long, BandalartCellEntity> = emptyMap(),
-    private val childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
+    childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
     private val beforeTaskCellUpdate: suspend () -> Unit = {},
+    private val afterTaskCellUpdate: suspend () -> Unit = {},
     private val beforeBandalartLoad: suspend (Long) -> Unit = {},
     private val taskCellUpdateError: Throwable? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
     private val mainCells = mainCells.toMutableMap()
+    private val childCells = childCells.toMutableMap()
     private var unpublishedCreatedBandalart: BandalartEntity? = null
 
     var recentBandalartId: Long = recentBandalartId
@@ -93,6 +95,10 @@ internal class FakeBandalartRepository(
             bandalartFlow.value.map { current ->
                 if (current.id == bandalart.id) bandalart else current
             }
+    }
+
+    fun publishTaskCellRevision(taskCell: BandalartCellEntity) {
+        childCells.replaceTaskCell(taskCell)
     }
 
     override fun getBandalartList(): Flow<List<BandalartEntity>> = bandalartFlow
@@ -167,6 +173,17 @@ internal class FakeBandalartRepository(
                 cellId = cellId,
                 entity = updateBandalartTaskCellEntity,
             )
+        childCells.replaceTaskCell(
+            BandalartCellEntity(
+                id = cellId,
+                title = updateBandalartTaskCellEntity.title,
+                description = updateBandalartTaskCellEntity.description,
+                dueDate = updateBandalartTaskCellEntity.dueDate,
+                isCompleted = updateBandalartTaskCellEntity.isCompleted ?: false,
+                parentId = childCells.values.flatten().firstOrNull { it.id == cellId }?.parentId,
+            ),
+        )
+        afterTaskCellUpdate()
     }
 
     override suspend fun updateBandalartEmoji(
@@ -215,4 +232,13 @@ internal class FakeBandalartRepository(
         val cellId: Long,
         val entity: UpdateBandalartEmojiEntity,
     )
+
+    private fun MutableMap<Long, List<BandalartCellEntity>>.replaceTaskCell(taskCell: BandalartCellEntity) {
+        entries.forEach { entry ->
+            if (entry.value.any { it.id == taskCell.id }) {
+                entry.setValue(entry.value.map { current -> if (current.id == taskCell.id) taskCell else current })
+                return
+            }
+        }
+    }
 }

@@ -147,7 +147,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             val cellData: BandalartCellEntity,
         ) : Event
 
-        data class CompleteTask(
+        data class ToggleTaskCompletion(
             val cellData: BandalartCellEntity,
         ) : Event
 
