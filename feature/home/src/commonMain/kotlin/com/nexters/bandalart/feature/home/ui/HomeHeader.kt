@@ -112,6 +112,7 @@ fun HomeHeader(
                             BandalartEmoji(
                                 unicode = bandalartData.profileEmoji.orEmpty(),
                                 contentDescription = stringResource(Res.string.edit_description),
+                                size = 36.dp,
                             )
                         }
                     }
