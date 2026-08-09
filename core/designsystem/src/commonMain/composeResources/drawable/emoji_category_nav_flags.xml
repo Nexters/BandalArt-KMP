@@ -1,0 +1,13 @@
+<!--
+  Adapted from the Google Material Symbol "outlined_flag" 24px Outlined SVG to Android/Compose vector XML.
+  Copyright Google LLC. Licensed under the Apache License 2.0.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path android:fillColor="#FF000000" android:pathData="M200,-120v-680h360l16,80h224v400H520l-16,-80H280v280h-80Zm386,-280h134v-240H510l-16,-80H280v240h290l16,80Z" />
+  </group>
+</vector>
