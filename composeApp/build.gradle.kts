@@ -28,6 +28,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.androidx.core)
         }
 
         androidHostTest.dependencies {
@@ -36,6 +38,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.robolectric)
             implementation(libs.robolectric.junit5.extension)
+            implementation(libs.androidx.work.testing)
         }
 
         commonMain.dependencies {

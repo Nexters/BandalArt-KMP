@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,9 +44,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +62,16 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_body
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_blocked
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_cancel
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_confirm
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_degraded
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_dialog_body
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_dialog_title
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_overflow
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_section
 import bandalart.core.designsystem.generated.resources.settings_contact
 import bandalart.core.designsystem.generated.resources.settings_theme_dark
 import bandalart.core.designsystem.generated.resources.settings_theme_light
@@ -64,6 +81,8 @@ import bandalart.core.designsystem.generated.resources.settings_version
 import bandalart.core.designsystem.generated.resources.settings_version_value
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 
@@ -71,11 +90,38 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun SettingsBottomSheet(
     themeMode: ThemeMode,
+    deadlineReminderEnabled: Boolean,
+    deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
+    deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     appVersion: String,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showDeadlineReminderConfirmation by remember { mutableStateOf(false) }
+
+    if (showDeadlineReminderConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeadlineReminderConfirmation = false },
+            title = { Text(stringResource(Res.string.settings_deadline_reminder_dialog_title)) },
+            text = { Text(stringResource(Res.string.settings_deadline_reminder_dialog_body)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeadlineReminderConfirmation = false
+                        onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                    },
+                ) {
+                    Text(stringResource(Res.string.settings_deadline_reminder_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeadlineReminderConfirmation = false }) {
+                    Text(stringResource(Res.string.settings_deadline_reminder_cancel))
+                }
+            },
+        )
+    }
 
     ModalBottomSheet(
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
@@ -110,6 +156,31 @@ internal fun SettingsBottomSheet(
                 color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
+            if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
+                SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
+                DeadlineReminderRow(
+                    enabled = deadlineReminderEnabled,
+                    authorizationStatus = deadlineNotificationAuthorizationStatus,
+                    schedulingHealth = deadlineReminderSchedulingHealth,
+                    onToggle = { enabled ->
+                        if (!enabled) {
+                            onHomeUiAction(HomeScreen.Event.SetDeadlineReminderEnabled(false))
+                        } else if (
+                            deadlineNotificationAuthorizationStatus ==
+                            DeadlineNotificationAuthorizationStatus.BLOCKED
+                        ) {
+                            onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                        } else {
+                            showDeadlineReminderConfirmation = true
+                        }
+                    },
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
             SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
             SettingsContactRow(
                 onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
@@ -141,6 +212,57 @@ internal fun SettingsBottomSheet(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DeadlineReminderRow(
+    enabled: Boolean,
+    authorizationStatus: DeadlineNotificationAuthorizationStatus,
+    schedulingHealth: DeadlineReminderSchedulingHealth,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onToggle(!enabled) }
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(Res.string.settings_deadline_reminder),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 15.sp,
+                fontFamily = pretendardFontFamily(),
+                fontWeight = FontWeight.W600,
+            )
+            Text(
+                text =
+                    when {
+                        authorizationStatus == DeadlineNotificationAuthorizationStatus.BLOCKED ->
+                            stringResource(Res.string.settings_deadline_reminder_blocked)
+                        schedulingHealth.lastErrorCategory != null ->
+                            stringResource(Res.string.settings_deadline_reminder_degraded)
+                        schedulingHealth.overflowCount > 0 ->
+                            stringResource(
+                                Res.string.settings_deadline_reminder_overflow,
+                                schedulingHealth.overflowCount,
+                            )
+                        else -> stringResource(Res.string.settings_deadline_reminder_body)
+                    },
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp,
+                fontFamily = pretendardFontFamily(),
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(top = 4.dp, end = 12.dp),
+            )
+        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
+        )
     }
 }
 

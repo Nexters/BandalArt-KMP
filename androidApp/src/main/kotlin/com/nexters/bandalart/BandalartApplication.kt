@@ -17,6 +17,7 @@
 package com.nexters.bandalart
 
 import android.app.Application
+import android.content.Intent
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
@@ -25,6 +26,7 @@ import com.nexters.bandalart.ads.AndroidRewardedAdGateway
 import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
+import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -45,6 +47,9 @@ class BandalartApplication : Application() {
                 bannerAdHost = bannerAdHost,
                 rewardedAdGateway = rewardedAdGateway,
             )
+        installAndroidDeadlineReminderInfrastructure(appGraph) { _, _ ->
+            Intent(this, DeadlineNotificationTrampolineActivity::class.java)
+        }
         rewardedAdGateway.delegate =
             AndroidRewardedAdGateway(
                 application = this,

@@ -66,6 +66,9 @@ internal fun HomeBottomSheets(
         HomeScreen.BottomSheetState.Settings -> {
             SettingsBottomSheet(
                 themeMode = state.themeMode,
+                deadlineReminderEnabled = state.deadlineReminderEnabled,
+                deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
+                deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
                 appVersion = appVersion,
                 onHomeUiAction = eventSink,
             )

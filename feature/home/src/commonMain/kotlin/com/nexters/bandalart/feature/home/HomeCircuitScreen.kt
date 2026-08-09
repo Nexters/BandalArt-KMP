@@ -20,6 +20,8 @@ import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -46,6 +48,11 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val themeMode: ThemeMode = ThemeMode.SYSTEM,
         val recentEmojis: ImmutableList<String> = persistentListOf(),
         val rewardedAdRequestId: Long? = null,
+        val deadlineReminderEnabled: Boolean = false,
+        val deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus =
+            DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
+        val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
+        val deadlinePermissionRequestId: Long? = null,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -211,6 +218,16 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class SelectThemeMode(
             val themeMode: ThemeMode,
         ) : Event
+
+        data class SetDeadlineReminderEnabled(
+            val enabled: Boolean,
+        ) : Event
+
+        data object ConfirmDeadlineReminderPermission : Event
+
+        data object DeadlineReminderPermissionResult : Event
+
+        data object DeadlineReminderForegrounded : Event
 
         data object ContactSupport : Event
 

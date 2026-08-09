@@ -22,12 +22,15 @@ import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomePresenterRuntimeTest {
     @Test
     fun shareAndSaveRequestsAreClearedAfterUiHandling() =
@@ -163,6 +166,8 @@ class HomePresenterRuntimeTest {
 
             presenter.test {
                 var state = awaitLoadedBandalart()
+                advanceUntilIdle()
+                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.CheckForUpdate(20206))
                 expectNoEvents()
 
@@ -177,6 +182,7 @@ class HomePresenterRuntimeTest {
                 } while (state.updateVersionCode != null)
 
                 assertEquals(listOf(20207), updateRepository.rejectedVersionCodes)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

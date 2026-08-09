@@ -23,6 +23,8 @@ import com.nexters.bandalart.core.common.NoOpBannerAdHost
 import com.nexters.bandalart.core.common.NoOpRewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderScheduler
 
 private object IosPlatformBindings : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory()
@@ -32,6 +34,8 @@ private object IosPlatformBindings : PlatformBindings {
     override val imageHandlerProvider = ImageHandlerProvider()
     override val supportMailLauncher = IosSupportMailLauncher()
     override val rewardedAdGateway = NoOpRewardedAdGateway
+    override val deadlineReminderScheduler = NoOpDeadlineReminderScheduler
+    override val deadlineNotificationAuthorization = NoOpDeadlineNotificationAuthorization
 }
 
 internal fun createIosAppGraph(): AppGraph = createAppGraph(IosPlatformBindings)

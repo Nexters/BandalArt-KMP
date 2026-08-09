@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deadline_reminder_channel_name">마감일 알림</string>
+    <string name="deadline_reminder_channel_description">오늘 마감인 목표를 알려드려요</string>
+    <string name="deadline_reminder_title">오늘 마감인 목표가 있어요</string>
+    <string name="deadline_reminder_single_body">%1$s을(를) 완료할 시간이에요.</string>
+    <string name="deadline_reminder_multiple_body">%1$d개의 목표가 오늘 마감이에요.</string>
+</resources>

@@ -4,6 +4,7 @@
     tools:ignore="LockedOrientationActivity">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <queries>
@@ -64,6 +65,23 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name="com.nexters.bandalart.DeadlineNotificationTrampolineActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:theme="@style/Theme.Bandalart" />
+
+        <receiver
+            android:name="com.nexters.bandalart.notification.DeadlineReminderTimeChangeReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
