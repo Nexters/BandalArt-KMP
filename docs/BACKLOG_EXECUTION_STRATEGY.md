@@ -20,8 +20,8 @@
 
 ### `main` 병합·CI
 
-- [x] `origin/main`은 로컬 알림 조사·전략 PR #249까지 병합된 `ced78529`다.
-- [x] PR #249에서 로컬 알림 정책과 예정 PR 분할을 `main`에 반영했다.
+- [x] `origin/main`은 Android 로컬 알림 PR #251까지 병합된 `f6bfde64`다.
+- [x] PR #249의 정책, PR #250의 공통 foundation, PR #251의 Android vertical slice를 `main`에 반영했다.
 - [x] PR #241의 무료 슬롯·GMA 기반, PR #243의 Rewarded 생성 흐름, PR #245의 Fluent Emoji category 탐색, PR #247의 adaptive test banner가 `main`에 병합됐다.
 
 ### Android Play Internal Testing
@@ -37,7 +37,7 @@
 
 - [ ] Teams식 단색 category 아이콘과 선택 category 제목: `fix/fluent-emoji-category-icons`에서 로컬 테스트 12개 통과, 아직 commit·PR·merge·Internal 배포 전이다.
 - [ ] 홈 Banner `320x50` 고정과 추가 bottom sheet의 중복 window inset 제거: `fix/home-bottom-insets-banner-height`에서 로컬 테스트 2개 통과, 아직 commit·PR·merge·Internal 배포 전이다.
-- [ ] #211 로컬 알림: 조사·전략은 PR #249로 병합했고 공통 foundation은 로컬 구현·검증 완료 상태다. foundation의 commit·PR·merge와 전체 Android 기능·Internal 배포는 아직 전이다.
+- [ ] #211 로컬 알림: PR #249~#251로 전략·공통 foundation·Android 설정 ON/OFF와 WorkManager 알림을 `main`에 병합했다. `2.2.19 (20219)` Internal 업로드와 실제 권한·전달 검증은 아직 전이다.
 
 ### iOS·TestFlight
 
@@ -88,7 +88,7 @@ Color 300개 catalog, pinned manifest와 resource pipeline, 공통 renderer, pic
 
 ### 6. #211 마감일 기반 로컬 알림 — L
 
-공식 API와 저장소 접점을 조사해 제품 시간·집계·권한·reconcile 정책을 확정하고 PR #249로 병합했다. 예정 PR 2 공통 foundation도 로컬 구현·검토·테스트를 마쳤으며 현재 남은 단계는 foundation을 commit·PR·CI·merge하는 것이다. 이후 Android와 iOS vertical slice를 플랫폼별로 구현하고 두 플랫폼이 준비된 뒤 설정 UX를 활성화한다. 생성·수정·완료·삭제, 권한, 시간대, 재부팅에 대한 idempotent reschedule을 검증한다. 구체적인 단계는 [로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)을 따른다.
+공식 API와 저장소 접점을 조사해 제품 시간·집계·권한·reconcile 정책을 PR #249로 확정했고, 공통 foundation PR #250과 Android WorkManager·권한·설정 UI PR #251까지 병합했다. 현재 Android는 `2.2.19 (20219)` Internal 업로드와 실제 권한·전달·탭 이동 검증을 앞두고 있다. iOS UserNotifications vertical slice와 TestFlight 검증은 별도 후속이다. 구체적인 단계는 [로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)을 따른다.
 
 ### 7. #206 AdMob Rewarded Ad 기반 추가 생성 — L
 
@@ -123,4 +123,4 @@ PR #241에서 기본 무료 슬롯 3개, 영구 슬롯 저장·보정과 Android
 
 ## 바로 이어갈 작업
 
-#211 예정 PR 2 공통 foundation을 commit·PR·CI·merge한다. 그다음 예정 PR 3 Android WorkManager vertical slice를 시작하고 Android 설정 ON/OFF·권한 UI까지 연결해 Internal에서 사용할 수 있게 한다. #214 iOS TestFlight와 #206 Android test-ad 전체 acceptance는 credential·배포 환경이 준비되는 즉시 별도 운영 트랙에서 병행한다.
+#211 Android 구현이 병합된 최신 `main`을 `2.2.19 (20219)`로 올려 Play Internal에 배포하고 실제 권한·당일 전달·cold/warm 알림 탭 이동을 검증한다. 그다음 iOS UserNotifications vertical slice와 #214 TestFlight를 진행한다. #206 Android test-ad 전체 acceptance는 별도 운영 트랙에서 병행한다.

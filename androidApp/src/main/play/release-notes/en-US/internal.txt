@@ -1,5 +1,6 @@
-Improved Home ads and emoji navigation.
+Added deadline reminders.
 
-• Added a test banner ad that adapts to the Home screen width.
-• Fluent Emoji can now be browsed by category.
-• After all free slots are used, the rewarded-ad prompt can unlock one more slot.
+• Turn deadline reminders on or off in Settings.
+• Get a reminder on the due date for unfinished goals.
+• Tap a reminder to open its Bandalart.
+• This Internal build uses Google test ads for ad verification.
