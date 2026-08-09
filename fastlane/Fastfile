@@ -312,11 +312,22 @@ platform :ios do
       log_output: false,
     )
     installed_profile_path = install_provisioning_profile(path: profile_path)
+    project_path = File.join(REPO_ROOT, "iosApp/iosApp.xcodeproj")
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: project_path,
+      team_id: IOS_TEAM_ID,
+      targets: ["iosApp"],
+      build_configurations: ["Release"],
+      code_sign_identity: "Apple Distribution",
+      profile_name: profile_name,
+      bundle_identifier: IOS_BUNDLE_ID,
+    )
 
     output_directory = File.join(REPO_ROOT, "build/ios-release")
     FileUtils.rm_rf(output_directory)
     ipa_path = build_app(
-      project: File.join(REPO_ROOT, "iosApp/iosApp.xcodeproj"),
+      project: project_path,
       scheme: "iosApp",
       configuration: "Release",
       clean: true,
