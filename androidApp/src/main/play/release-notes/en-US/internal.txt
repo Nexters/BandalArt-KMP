@@ -1,8 +1,6 @@
 Please verify these updates in this Internal build.
 
-• Turn deadline reminders on or off in Settings, and tap one to open its Bandalart.
-• Long-press a completed cell again to mark it incomplete.
-• Emoji categories now use clearer navigation icons and visible names.
-• The Home emoji is larger and modal bottom spacing is corrected.
-• The Home banner is reduced to a centered 320×50 format.
+• Reduced the gap between the grid and Share button so it stays visible on typical screens with the 320×50 test banner.
+• Replaced the rewarded-create dialog graphic with a clearer outlined add-circle icon.
+• Please also regression-test deadline reminders in Settings and long-pressing a completed cell to mark it incomplete.
 • Google test ads are used for ad verification.
