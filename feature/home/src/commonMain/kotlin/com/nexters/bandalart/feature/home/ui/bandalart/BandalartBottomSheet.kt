@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -86,10 +85,8 @@ import com.nexters.bandalart.core.common.extension.toLocalDateTime
 import com.nexters.bandalart.core.common.extension.toStringLocalDateTime
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.ui.NavigationBarHeightDp
 import com.nexters.bandalart.core.ui.ThemeColor
 import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
-import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
@@ -162,7 +159,6 @@ fun BandalartBottomSheet(
             modifier =
                 Modifier
                     .background(MaterialTheme.colorScheme.surface)
-                    .navigationBarsPadding()
                     .noRippleClickable { focusManager.clearFocus() },
         ) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -422,7 +418,7 @@ fun BandalartBottomSheet(
                             modifier = Modifier.weight(1f),
                         )
                     }
-                    Spacer(modifier = Modifier.height(NavigationBarHeightDp + getNavigationBarPadding()))
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
 
                 if (showTopGradient) {
