@@ -326,12 +326,6 @@ platform :ios do
       archive_path: File.join(output_directory, "BandalArt.xcarchive"),
       disable_package_automatic_updates: true,
       skip_profile_detection: true,
-      xcargs: [
-        "CODE_SIGN_STYLE=Manual",
-        "DEVELOPMENT_TEAM=#{IOS_TEAM_ID}",
-        "CODE_SIGN_IDENTITY=#{Shellwords.escape("Apple Distribution")}",
-        "PROVISIONING_PROFILE_SPECIFIER=#{Shellwords.escape(profile_name)}",
-      ].join(" "),
       export_options: {
         method: "app-store",
         signingStyle: "manual",
