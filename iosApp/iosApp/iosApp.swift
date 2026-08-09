@@ -9,14 +9,62 @@ import SwiftUI
 import UIKit
 import ComposeApp
 import Firebase
+import UserNotifications
 
-private final class AppDelegate: NSObject, UIApplicationDelegate {
+private let deadlineReminderIdentifierPrefix = "deadline.v1."
+private let deadlineBandalartIdKey = "deadline_bandalart_id"
+
+final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
+        UNUserNotificationCenter.current().delegate = self
         return true
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        guard notification.request.identifier.hasPrefix(deadlineReminderIdentifierPrefix) else {
+            completionHandler([])
+            return
+        }
+        completionHandler([.banner, .list, .sound])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        defer { completionHandler() }
+
+        let request = response.notification.request
+        guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+              request.identifier.hasPrefix(deadlineReminderIdentifierPrefix) else {
+            return
+        }
+
+        let value = request.content.userInfo[deadlineBandalartIdKey]
+        let bandalartId: Int64?
+        if let stringValue = value as? String {
+            bandalartId = Int64(stringValue)
+        } else if let numberValue = value as? NSNumber {
+            bandalartId = numberValue.int64Value
+        } else {
+            bandalartId = nil
+        }
+        if let bandalartId, bandalartId > 0 {
+            DispatchQueue.main.async { [notificationLaunchBridge] in
+                notificationLaunchBridge.record(bandalartId: bandalartId)
+            }
+        }
     }
 }
 
@@ -26,7 +74,7 @@ struct iosApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(notificationLaunchBridge: appDelegate.notificationLaunchBridge)
         }
     }
 }

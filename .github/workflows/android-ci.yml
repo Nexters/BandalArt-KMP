@@ -134,7 +134,7 @@ jobs:
                 run: ./gradlew :androidApp:lintDebug :androidApp:assembleDebug --stacktrace
 
     ios:
-        name: iOS framework build
+        name: iOS host app build
         runs-on: macos-latest
         timeout-minutes: 30
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
@@ -168,8 +168,26 @@ jobs:
                     printf 'KEY_ALIAS=%s\n' "$KEY_ALIAS" >> keystore.properties
                     printf 'KEY_PASSWORD=%s\n' "$KEY_PASSWORD" >> keystore.properties
 
-            -   name: Run iOS framework build
-                run: ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64 --stacktrace
+            -   name: Build iOS host app
+                run: |
+                    xcodebuild \
+                        -project iosApp/iosApp.xcodeproj \
+                        -scheme iosApp \
+                        -configuration Debug \
+                        -sdk iphonesimulator \
+                        -destination 'generic/platform=iOS Simulator' \
+                        -derivedDataPath "$RUNNER_TEMP/bandalart-derived-data" \
+                        ARCHS=arm64 \
+                        CODE_SIGNING_ALLOWED=NO \
+                        build
+
+            -   name: Verify notification localizations
+                run: |
+                    APP_BUNDLE="$RUNNER_TEMP/bandalart-derived-data/Build/Products/Debug-iphonesimulator/iosApp.app"
+                    test -d "$APP_BUNDLE"
+                    for locale in en ja ko; do
+                        test -f "$APP_BUNDLE/$locale.lproj/Localizable.strings"
+                    done
 
     release_cd:
         name: Release CD validation

@@ -1,0 +1,3 @@
+"deadline_reminder_title" = "You have goals due today";
+"deadline_reminder_single_body" = "Time to complete %@.";
+"deadline_reminder_multiple_body" = "%ld goals are due today.";

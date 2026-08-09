@@ -921,8 +921,28 @@ class HomePresenter(
                             }
 
                             DeadlineNotificationAuthorizationStatus.REQUESTABLE -> {
-                                nextDeadlinePermissionRequestId += 1
-                                deadlinePermissionRequestId = nextDeadlinePermissionRequestId
+                                deadlineNotificationAuthorizationStatus =
+                                    deadlineNotificationAuthorization.requestAuthorization()
+                                when (deadlineNotificationAuthorizationStatus) {
+                                    DeadlineNotificationAuthorizationStatus.GRANTED,
+                                    DeadlineNotificationAuthorizationStatus.QUIET,
+                                    -> {
+                                        settingsRepository.setDeadlineReminderEnabled(true)
+                                        deadlineReminderReconciler.reconcileAll()
+                                    }
+
+                                    DeadlineNotificationAuthorizationStatus.REQUESTABLE -> {
+                                        nextDeadlinePermissionRequestId += 1
+                                        deadlinePermissionRequestId = nextDeadlinePermissionRequestId
+                                    }
+
+                                    DeadlineNotificationAuthorizationStatus.BLOCKED -> {
+                                        settingsRepository.setDeadlineReminderEnabled(false)
+                                        deadlineReminderReconciler.reconcileAll()
+                                    }
+
+                                    DeadlineNotificationAuthorizationStatus.UNSUPPORTED -> Unit
+                                }
                             }
 
                             DeadlineNotificationAuthorizationStatus.BLOCKED -> {

@@ -308,6 +308,39 @@ class HomePresenterDeadlineReminderTest {
         }
 
     @Test
+    fun requestableAuthorizationThatBecomesQuietEnablesAndReconcilesWithoutPlatformEffect() =
+        runTest {
+            val settings = FakeSettingsRepository()
+            val authorization =
+                FakeAuthorization(
+                    status = DeadlineNotificationAuthorizationStatus.REQUESTABLE,
+                    requestedStatus = DeadlineNotificationAuthorizationStatus.QUIET,
+                )
+            val reconciler = RecordingReconciler()
+            val presenter =
+                presenter(
+                    repository = repository(),
+                    settings = settings,
+                    authorization = authorization,
+                    reconciler = reconciler,
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                state.eventSink(HomeScreen.Event.OpenSettings)
+                state.eventSink(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                while (!state.deadlineReminderEnabled) state = awaitItem()
+
+                assertEquals(1, authorization.requestCalls)
+                assertEquals(DeadlineNotificationAuthorizationStatus.QUIET, state.deadlineNotificationAuthorizationStatus)
+                assertEquals(null, state.deadlinePermissionRequestId)
+                assertTrue(reconciler.reconcileCalls > 0)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun blockedEnabledReminderCanBeTurnedOff() =
         runTest {
             val settings = FakeSettingsRepository(initialDeadlineReminderEnabled = true)
@@ -412,10 +445,17 @@ class HomePresenterDeadlineReminderTest {
 
     private class FakeAuthorization(
         var status: DeadlineNotificationAuthorizationStatus,
+        private val requestedStatus: DeadlineNotificationAuthorizationStatus = status,
     ) : DeadlineNotificationAuthorization {
+        var requestCalls = 0
+
         override suspend fun getStatus() = status
 
-        override suspend fun requestAuthorization() = status
+        override suspend fun requestAuthorization(): DeadlineNotificationAuthorizationStatus {
+            requestCalls += 1
+            status = requestedStatus
+            return status
+        }
 
         override suspend fun openSettings() = Unit
     }

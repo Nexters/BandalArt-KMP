@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.feature.home
+package com.nexters.bandalart.notification
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.suspendCancellableCoroutine
 
-@Composable
-internal actual fun DeadlineReminderPermissionEffect(
-    requestId: Long?,
-    onResult: () -> Unit,
-) {
-    LaunchedEffect(requestId) {
-        if (requestId != null) onResult()
+internal suspend fun <T> awaitUserNotificationCallback(register: (resume: (T) -> Unit) -> Unit): T =
+    suspendCancellableCoroutine { continuation ->
+        register { value ->
+            // UserNotifications completion handlers are single-shot and expose no cancellation handle.
+            continuation.resume(value) { _, _, _ -> }
+        }
     }
-}
