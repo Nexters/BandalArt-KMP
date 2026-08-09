@@ -1,6 +1,6 @@
 Please verify these updates in this Internal build.
 
-• Reduced the gap between the grid and Share button so it stays visible on typical screens with the 320×50 test banner.
-• Replaced the rewarded-create dialog graphic with a clearer outlined add-circle icon.
-• Please also regression-test deadline reminders in Settings and long-pressing a completed cell to mark it incomplete.
+• Create a Bandalart instantly from five templates: job search, fitness habits, money habits, study plans, and travel preparation.
+• Cells created from a template remain fully editable, just like any other Bandalart.
+• Removed the ripple from emoji category tabs for a cleaner selected state.
 • Google test ads are used for ad verification.
