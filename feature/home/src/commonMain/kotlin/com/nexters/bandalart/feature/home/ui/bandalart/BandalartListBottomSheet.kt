@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -57,8 +56,6 @@ import bandalart.core.designsystem.generated.resources.bandalart_list_add
 import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.ui.NavigationBarHeightDp
-import com.nexters.bandalart.core.ui.getNavigationBarPadding
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -91,8 +88,7 @@ fun BandalartListBottomSheet(
         Column(
             modifier =
                 Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .navigationBarsPadding(),
+                    .background(MaterialTheme.colorScheme.surface),
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             Box(
@@ -130,7 +126,7 @@ fun BandalartListBottomSheet(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = NavigationBarHeightDp + getNavigationBarPadding()),
+                contentPadding = PaddingValues(bottom = 24.dp),
             ) {
                 items(
                     count = bandalartList.size,
