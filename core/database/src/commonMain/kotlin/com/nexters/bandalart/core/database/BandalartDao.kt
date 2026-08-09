@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BandalartDao {
     // Create
+
     /** 새로운 반다라트 생성 */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createBandalart(bandalart: BandalartDBEntity): Long
