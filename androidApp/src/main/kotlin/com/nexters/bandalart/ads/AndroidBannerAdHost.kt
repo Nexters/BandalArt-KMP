@@ -21,6 +21,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
@@ -54,20 +56,23 @@ class AndroidBannerAdHost(
         val activity = LocalActivity.current ?: return
         val isPreviewMode = LocalInspectionMode.current
 
-        BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-            val width = maxWidth.value.toInt().coerceAtLeast(1)
+        BoxWithConstraints(
+            modifier = modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (!supportsFixedBanner(maxWidth.value)) return@BoxWithConstraints
 
-            key(activity, width) {
-                val adSize =
-                    remember {
-                        AdSize.getLargeAnchoredAdaptiveBannerAdSize(activity, width)
-                    }
+            key(activity) {
+                val adSize = AdSize.BANNER
                 val adView = remember { AdView(activity) }
                 val released = remember { AtomicBoolean(false) }
                 var isLoaded by remember { mutableStateOf(false) }
 
                 AndroidView(
-                    modifier = Modifier.fillMaxWidth().height(adSize.height.dp),
+                    modifier =
+                        Modifier
+                            .width(FIXED_BANNER_WIDTH_DP.dp)
+                            .height(FIXED_BANNER_HEIGHT_DP.dp),
                     factory = { adView },
                     update = { view ->
                         view.visibility =
@@ -115,3 +120,8 @@ class AndroidBannerAdHost(
         }
     }
 }
+
+private const val FIXED_BANNER_WIDTH_DP = 320
+private const val FIXED_BANNER_HEIGHT_DP = 50
+
+internal fun supportsFixedBanner(availableWidthDp: Float): Boolean = availableWidthDp >= FIXED_BANNER_WIDTH_DP
