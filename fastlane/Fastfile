@@ -9,6 +9,7 @@ require "tmpdir"
 
 require_relative "lib/app_store_connect_builds"
 require_relative "lib/plist_file"
+require_relative "lib/provisioning_profile"
 
 default_platform(:android)
 
@@ -92,7 +93,7 @@ end
 def verify_profile!(profile)
   name = profile["Name"]
   uuid = profile["UUID"]
-  expires_at = profile["ExpirationDate"]
+  expires_at = Bandalart::ProvisioningProfile.expiration_time(profile)
   team_ids = profile["TeamIdentifier"] || []
   application_identifier = profile.dig("Entitlements", "application-identifier")
 

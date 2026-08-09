@@ -233,6 +233,7 @@ jobs:
                     "$RUNNER_TEMP/actionlint" .github/workflows/android-ci.yml .github/workflows/release-cd.yml
                     bundle exec ruby fastlane/test/app_store_connect_builds_test.rb
                     bundle exec ruby fastlane/test/plist_file_test.rb
+                    bundle exec ruby fastlane/test/provisioning_profile_test.rb
                     python3 -m unittest scripts.tests.test_play_release_scripts
                     bundle exec fastlane lanes
                     xmllint --noout iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/iosApp.xcscheme
