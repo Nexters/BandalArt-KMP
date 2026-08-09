@@ -175,6 +175,44 @@ class HomePresenterTest {
             }
         }
 
+    @Test
+    fun addButtonSwitchesExistingListSheetToCreationOptionsAndBack() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L)),
+                    recentBandalartId = 1L,
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L || state.isLoading) {
+                    state = awaitItem()
+                }
+                state.eventSink(HomeScreen.Event.OpenBandalartList)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.BandalartList)
+
+                state.eventSink(HomeScreen.Event.OpenBandalartCreationOptions)
+                do {
+                    state = awaitItem()
+                } while (
+                    (state.bottomSheet as? HomeScreen.BottomSheetState.BandalartList)
+                        ?.isCreationOptionsVisible != true
+                )
+
+                state.eventSink(HomeScreen.Event.CloseBandalartCreationOptions)
+                do {
+                    state = awaitItem()
+                } while (
+                    (state.bottomSheet as? HomeScreen.BottomSheetState.BandalartList)
+                        ?.isCreationOptionsVisible != false
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun bandalart(
         id: Long,
         isCompleted: Boolean = false,

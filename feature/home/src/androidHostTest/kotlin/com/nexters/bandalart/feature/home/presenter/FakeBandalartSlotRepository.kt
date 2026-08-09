@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.home.presenter
 
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.PendingRewardedCreation
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 
 class FakeBandalartSlotRepository(
     var maxSlots: Int = Int.MAX_VALUE,
@@ -48,11 +49,13 @@ class FakeBandalartSlotRepository(
     override suspend fun prepareRewardedCreation(
         requestId: Long,
         currentBandalartCount: Int,
+        templateId: BandalartTemplateId?,
     ): PendingRewardedCreation =
         PendingRewardedCreation(
             requestId = requestId,
             targetSlots = maxOf(maxSlots, currentBandalartCount) + 1,
             isGranted = false,
+            templateId = templateId,
         ).also { pendingRewardedCreation = it }
 
     override suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation? {

@@ -22,6 +22,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -70,6 +71,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data class BandalartList(
             val currentBandalartId: Long,
+            val isCreationOptionsVisible: Boolean = false,
         ) : BottomSheetState
 
         data class Emoji(
@@ -129,6 +131,14 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object AddBandalart : Event
+
+        data object OpenBandalartCreationOptions : Event
+
+        data object CloseBandalartCreationOptions : Event
+
+        data class CreateBandalartFromTemplate(
+            val templateId: BandalartTemplateId,
+        ) : Event
 
         data object ConfirmRewardedCreate : Event
 

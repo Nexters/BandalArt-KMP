@@ -19,6 +19,7 @@ package com.nexters.bandalart.core.data.repository
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.StoredPendingRewardedCreation
 import com.nexters.bandalart.core.domain.repository.PendingRewardedCreation
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -53,17 +54,21 @@ class BandalartSlotRepositoryTest {
     @Test
     fun rewardedCreationStateIsMappedFromDataStore() =
         runTest {
-            coEvery { dataStore.prepareRewardedCreation(42L, 3) } returns
-                StoredPendingRewardedCreation(42L, 4, false)
+            coEvery { dataStore.prepareRewardedCreation(42L, 3, "study_plan_v1") } returns
+                StoredPendingRewardedCreation(42L, 4, false, "study_plan_v1")
             coEvery { dataStore.grantRewardedCreation(42L) } returns
-                StoredPendingRewardedCreation(42L, 4, true)
+                StoredPendingRewardedCreation(42L, 4, true, "study_plan_v1")
 
             assertEquals(
-                PendingRewardedCreation(42L, 4, false),
-                repository.prepareRewardedCreation(42L, currentBandalartCount = 2),
+                PendingRewardedCreation(42L, 4, false, BandalartTemplateId.STUDY_PLAN_V1),
+                repository.prepareRewardedCreation(
+                    requestId = 42L,
+                    currentBandalartCount = 2,
+                    templateId = BandalartTemplateId.STUDY_PLAN_V1,
+                ),
             )
             assertEquals(
-                PendingRewardedCreation(42L, 4, true),
+                PendingRewardedCreation(42L, 4, true, BandalartTemplateId.STUDY_PLAN_V1),
                 repository.grantRewardedCreation(42L),
             )
         }

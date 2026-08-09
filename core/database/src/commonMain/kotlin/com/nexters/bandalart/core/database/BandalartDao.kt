@@ -26,6 +26,7 @@ import androidx.room.Update
 import com.nexters.bandalart.core.database.entity.BandalartCellDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartCellWithChildrenDto
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
+import com.nexters.bandalart.core.database.entity.CreateBandalartDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartEmojiDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartMainCellDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartSubCellDto
@@ -56,15 +57,17 @@ interface BandalartDao {
         }
     }
 
-    /** 빈 반다라트 생성 (메인 셀 1개, 서브 셀 4개, 각 서브 셀당 하위 셀 5개) */
+    /** 반다라트 생성 (메인 셀 1개, 서브 셀 4개, 각 서브 셀당 하위 셀 5개) */
     @Transaction
-    suspend fun createEmptyBandalart(): Long {
+    suspend fun createBandalartTree(template: CreateBandalartDto? = null): Long {
         // 1. 기본 반다라트 생성
         val bandalartId =
             createBandalart(
                 BandalartDBEntity(
                     mainColor = "#3FFFBA",
                     subColor = "#111827",
+                    profileEmoji = template?.profileEmoji,
+                    title = template?.title,
                 ),
             )
 
@@ -73,26 +76,29 @@ interface BandalartDao {
             insertCell(
                 BandalartCellDBEntity(
                     bandalartId = bandalartId,
-                    title = "",
+                    title = template?.title.orEmpty(),
                 ),
             )
 
         // 3. 4개의 서브 셀 생성
-        repeat(4) {
+        repeat(4) { subGoalIndex ->
+            val subGoal = template?.subGoals?.getOrNull(subGoalIndex)
             val subCellId =
                 insertCell(
                     BandalartCellDBEntity(
                         bandalartId = bandalartId,
                         parentId = mainCellId,
+                        title = subGoal?.title,
                     ),
                 )
 
             // 4. 각 서브 셀마다 5개의 태스크 셀 생성
-            repeat(5) {
+            repeat(5) { taskIndex ->
                 insertCell(
                     BandalartCellDBEntity(
                         bandalartId = bandalartId,
                         parentId = subCellId,
+                        title = subGoal?.tasks?.getOrNull(taskIndex),
                     ),
                 )
             }
@@ -100,6 +106,10 @@ interface BandalartDao {
 
         return bandalartId
     }
+
+    /** 기존 빈 생성 호출을 위한 호환 경계 */
+    @Transaction
+    suspend fun createEmptyBandalart(): Long = createBandalartTree()
 
     // Read - 반다라트
     @Query("SELECT * FROM bandalarts WHERE id = :bandalartId")

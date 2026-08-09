@@ -44,6 +44,7 @@ import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.mapper.toUiModel
@@ -103,6 +104,7 @@ class HomePresenter(
         var updateVersionCode by remember { mutableStateOf<Int?>(null) }
         var rewardedAdRequestId by rememberRetained { mutableStateOf<Long?>(null) }
         var rewardedRecoveryChecked by rememberRetained { mutableStateOf(false) }
+        var pendingCreationTemplateId by rememberRetained { mutableStateOf<BandalartTemplateId?>(null) }
         var effect by remember { mutableStateOf<HomeScreen.Effect?>(null) }
         var requestedCompletionId by remember { mutableStateOf<Long?>(null) }
         val togglingTaskCellIds = remember { mutableSetOf<Long>() }
@@ -248,10 +250,10 @@ class HomePresenter(
             }
         }
 
-        suspend fun createBandalart(): Boolean {
+        suspend fun createBandalart(templateId: BandalartTemplateId? = null): Boolean {
             val selectionRequest = beginSelectionRequest()
             isExplicitSelectionTargetPending = true
-            val bandalart = bandalartRepository.createBandalart()
+            val bandalart = bandalartRepository.createBandalart(templateId)
             Snapshot.withMutableSnapshot {
                 if (bandalart != null && selectionLoadGeneration[0] == selectionRequest) {
                     explicitSelectionTargetId = bandalart.id
@@ -265,15 +267,17 @@ class HomePresenter(
             return true
         }
 
-        suspend fun requestCreateBandalart() {
+        suspend fun requestCreateBandalart(templateId: BandalartTemplateId? = null) {
             if (!rewardedRecoveryChecked) return
             if (!rewardedCreateCoordinator.beginSlotCheck()) return
+            pendingCreationTemplateId = templateId
             val maxSlots =
                 runRewardedOperation {
                     bandalartSlotRepository.getMaxBandalartSlots(bandalartList.size)
                 }.getOrElse { exception ->
                     Napier.e("Failed to resolve bandalart slots", exception, tag = "RewardedAd")
                     rewardedCreateCoordinator.slotCheckFailed()
+                    pendingCreationTemplateId = null
                     emitEffect(HomeScreen.Effect.ShowSlotErrorSnackbar)
                     return
                 }
@@ -285,9 +289,10 @@ class HomePresenter(
             ) {
                 var created = false
                 try {
-                    created = createBandalart()
+                    created = createBandalart(templateId)
                 } finally {
                     rewardedCreateCoordinator.creationFinished(created, bandalartList.size)
+                    pendingCreationTemplateId = null
                 }
             } else {
                 dialog = HomeScreen.DialogState.RewardedCreate
@@ -301,12 +306,17 @@ class HomePresenter(
             scope.launch(start = CoroutineStart.UNDISPATCHED) {
                 withContext(NonCancellable) {
                     runRewardedOperation {
-                        bandalartSlotRepository.prepareRewardedCreation(requestId, bandalartList.size)
+                        bandalartSlotRepository.prepareRewardedCreation(
+                            requestId = requestId,
+                            currentBandalartCount = bandalartList.size,
+                            templateId = pendingCreationTemplateId,
+                        )
                     }.onSuccess {
                         rewardedAdRequestId = requestId
                     }.onFailure { exception ->
                         Napier.e("Failed to persist rewarded request", exception, tag = "RewardedAd")
                         rewardedCreateCoordinator.adPreparationFailed(requestId)
+                        pendingCreationTemplateId = null
                         emitEffect(HomeScreen.Effect.ShowSlotErrorSnackbar)
                     }
                 }
@@ -321,6 +331,7 @@ class HomePresenter(
                 RewardedCompletion.IGNORED -> Unit
                 RewardedCompletion.DISMISSED -> {
                     rewardedAdRequestId = null
+                    pendingCreationTemplateId = null
                     scope.launch(start = CoroutineStart.UNDISPATCHED) {
                         withContext(NonCancellable) {
                             bandalartSlotRepository.clearPendingRewardedCreation(requestId)
@@ -347,13 +358,14 @@ class HomePresenter(
                                 if (pending != null) {
                                     expectedCount = pending.targetSlots
                                     created =
-                                        runRewardedOperation { createBandalart() }
+                                        runRewardedOperation { createBandalart(pending.templateId) }
                                             .onFailure { exception ->
                                                 Napier.e("Failed to create rewarded bandalart", exception, tag = "RewardedAd")
                                             }.getOrDefault(false)
                                 }
                             }
                         } finally {
+                            pendingCreationTemplateId = null
                             rewardedCreateCoordinator.grantFinished(
                                 wasCreated = created,
                                 expectedCount = expectedCount,
@@ -638,7 +650,7 @@ class HomePresenter(
                         var created = false
                         try {
                             created =
-                                runRewardedOperation { createBandalart() }
+                                runRewardedOperation { createBandalart(pendingRewardedCreation.templateId) }
                                     .onFailure { exception ->
                                         Napier.e("Failed to recover rewarded bandalart", exception, tag = "RewardedAd")
                                     }.getOrDefault(false)
@@ -782,6 +794,17 @@ class HomePresenter(
                 }
 
                 HomeScreen.Event.AddBandalart -> scope.launch { requestCreateBandalart() }
+                HomeScreen.Event.OpenBandalartCreationOptions -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.BandalartList
+                    currentSheet?.let { bottomSheet = it.copy(isCreationOptionsVisible = true) }
+                }
+                HomeScreen.Event.CloseBandalartCreationOptions -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.BandalartList
+                    currentSheet?.let { bottomSheet = it.copy(isCreationOptionsVisible = false) }
+                }
+                is HomeScreen.Event.CreateBandalartFromTemplate -> {
+                    scope.launch { requestCreateBandalart(event.templateId) }
+                }
                 HomeScreen.Event.ConfirmRewardedCreate -> confirmRewardedCreate()
                 is HomeScreen.Event.RewardedAdFinished -> {
                     finishRewardedAd(event.requestId, event.result)
@@ -829,6 +852,7 @@ class HomePresenter(
                 HomeScreen.Event.DismissDialog -> {
                     if (dialog == HomeScreen.DialogState.RewardedCreate) {
                         rewardedCreateCoordinator.dismissDialog()
+                        pendingCreationTemplateId = null
                     }
                     dialog = null
                 }

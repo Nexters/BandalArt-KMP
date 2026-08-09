@@ -6,6 +6,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
 
 /** 반다라트 API */
@@ -13,7 +14,7 @@ interface BandalartRepository {
     /**
      * 반다라트 생성
      */
-    suspend fun createBandalart(): BandalartEntity?
+    suspend fun createBandalart(templateId: BandalartTemplateId? = null): BandalartEntity?
 
     /**
      * 반다라트 목록 조회
@@ -123,7 +124,10 @@ interface BandalartRepository {
      * @param bandalartId 반다라트 고유 id
      * @param isCompleted 반다라트 완료 여부
      */
-    suspend fun upsertBandalartId(bandalartId: Long, isCompleted: Boolean)
+    suspend fun upsertBandalartId(
+        bandalartId: Long,
+        isCompleted: Boolean
+    )
 
     /**
      * 이번에 목표를 달성한 반다라트 인지 여부 확인

@@ -20,6 +20,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
+import com.nexters.bandalart.core.database.entity.CreateBandalartDto
+import com.nexters.bandalart.core.database.entity.CreateBandalartSubGoalDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartMainCellDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartSubCellDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartTaskCellDto
@@ -92,7 +94,88 @@ class BandalartDaoTest {
                     assertEquals(5, taskCells.size)
                 }
             }
+
+        @Test
+        @DisplayName("부분 템플릿도 25칸 구조를 유지하며 새 반다라트로 생성되어야 한다")
+        fun templateCreatesCompleteGridWithoutFillingEveryCell() =
+            runTest {
+                val bandalartId =
+                    bandalartDao.createBandalartTree(
+                        CreateBandalartDto(
+                            title = "운동 습관",
+                            profileEmoji = "💪",
+                            subGoals =
+                                listOf(
+                                    CreateBandalartSubGoalDto(
+                                        title = "운동 계획",
+                                        tasks = listOf("주간 횟수 정하기", "운동 시간 확보"),
+                                    ),
+                                ),
+                        ),
+                    )
+
+                val bandalart = bandalartDao.getBandalart(bandalartId)
+                val mainCell = bandalartDao.getBandalartMainCell(bandalartId)
+                val firstSubTasks = bandalartDao.getChildCells(mainCell.children.first().id!!)
+
+                assertEquals("운동 습관", bandalart.title)
+                assertEquals("💪", bandalart.profileEmoji)
+                assertEquals("운동 습관", mainCell.cell.title)
+                assertEquals(4, mainCell.children.size)
+                assertEquals("운동 계획", mainCell.children.first().title)
+                assertEquals(5, firstSubTasks.size)
+                assertEquals(listOf("주간 횟수 정하기", "운동 시간 확보"), firstSubTasks.take(2).map { it.title })
+                assertTrue(firstSubTasks.drop(2).all { it.title == null })
+                assertEquals(25, bandalartDao.getAllCellsInBandalart(bandalartId).size)
+            }
+
+        @Test
+        @DisplayName("템플릿 셀 삽입에 실패하면 반다라트와 셀을 모두 롤백해야 한다")
+        fun templateCreationRollsBackTheWholeTreeWhenACellInsertFails() =
+            runTest {
+                bandalartDao.createEmptyBandalart()
+                val initialBandalartCount = rowCount("bandalarts")
+                val initialCellCount = rowCount("bandalart_cells")
+                db.openHelper.writableDatabase.execSQL(
+                    """
+                    CREATE TRIGGER fail_template_cell_insert
+                    BEFORE INSERT ON bandalart_cells
+                    WHEN NEW.title = '강제 실패'
+                    BEGIN
+                        SELECT RAISE(ABORT, 'forced template insert failure');
+                    END
+                    """.trimIndent(),
+                )
+
+                val failure =
+                    runCatching {
+                        bandalartDao.createBandalartTree(
+                            CreateBandalartDto(
+                                title = "롤백 검증",
+                                subGoals =
+                                    listOf(
+                                        CreateBandalartSubGoalDto(
+                                            title = "첫 목표",
+                                            tasks = listOf("정상 셀", "강제 실패"),
+                                        ),
+                                    ),
+                            ),
+                        )
+                    }.exceptionOrNull()
+
+                assertNotNull(failure)
+                assertEquals(initialBandalartCount, rowCount("bandalarts"))
+                assertEquals(initialCellCount, rowCount("bandalart_cells"))
+            }
     }
+
+    private fun rowCount(tableName: String): Long =
+        db.openHelper.writableDatabase
+            .query("SELECT COUNT(*) FROM $tableName")
+            .use { cursor ->
+                cursor.moveToFirst()
+                cursor.getLong(0)
+            }
 
     @Nested
     @DisplayName("반다라트 셀 업데이트 테스트")

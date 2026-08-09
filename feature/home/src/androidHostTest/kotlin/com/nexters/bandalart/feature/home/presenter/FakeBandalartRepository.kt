@@ -23,6 +23,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -52,6 +53,7 @@ internal class FakeBandalartRepository(
 
     var createCalls: Int = 0
         private set
+    val createdTemplateIds = mutableListOf<BandalartTemplateId?>()
 
     val completionUpdates = mutableListOf<Pair<Long, Boolean>>()
     val deletedBandalartIds = mutableListOf<Long>()
@@ -67,8 +69,9 @@ internal class FakeBandalartRepository(
     var taskCellUpdateCalls: Int = 0
         private set
 
-    override suspend fun createBandalart(): BandalartEntity? {
+    override suspend fun createBandalart(templateId: BandalartTemplateId?): BandalartEntity? {
         createCalls += 1
+        createdTemplateIds += templateId
         return createdBandalart?.also { bandalart ->
             details[bandalart.id] = bandalart
             if (publishCreatedBandalartImmediately) {

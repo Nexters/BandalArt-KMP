@@ -20,6 +20,7 @@ import app.cash.turbine.ReceiveTurbine
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.repository.PendingRewardedCreation
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -29,6 +30,27 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class HomePresenterRewardedAdTest {
+    @Test
+    fun templateUsesExistingFreeSlotGateAndCreatesSelectedTemplate() =
+        runTest {
+            val repository = repository()
+            val slotRepository = FakeBandalartSlotRepository(maxSlots = 4)
+
+            presenter(repository, slotRepository).test {
+                var state = awaitLoaded()
+                state.eventSink(
+                    HomeScreen.Event.CreateBandalartFromTemplate(
+                        BandalartTemplateId.STUDY_PLAN_V1,
+                    ),
+                )
+                awaitCreated()
+
+                assertEquals(listOf(BandalartTemplateId.STUDY_PLAN_V1), repository.createdTemplateIds)
+                assertEquals(0, slotRepository.expandCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     fun slotLookupFailureDoesNotBypassGate() =
         runTest {
@@ -124,6 +146,39 @@ class HomePresenterRewardedAdTest {
         }
 
     @Test
+    fun rewardedCreationPersistsSelectedTemplateUntilGrant() =
+        runTest {
+            val repository = repository()
+            val slotRepository = FakeBandalartSlotRepository(maxSlots = 3)
+
+            presenter(repository, slotRepository).test {
+                var state = awaitLoaded()
+                state.eventSink(
+                    HomeScreen.Event.CreateBandalartFromTemplate(
+                        BandalartTemplateId.JOB_PREPARATION_V1,
+                    ),
+                )
+                state = awaitDialog()
+                state.eventSink(HomeScreen.Event.ConfirmRewardedCreate)
+                val requestId = awaitRewardedAdRequest()
+
+                assertEquals(
+                    BandalartTemplateId.JOB_PREPARATION_V1,
+                    slotRepository.pendingRewardedCreation?.templateId,
+                )
+                state.eventSink(
+                    HomeScreen.Event.RewardedAdFinished(
+                        requestId = requestId,
+                        result = RewardedAdResult.REWARDED,
+                    ),
+                )
+                awaitCreated()
+
+                assertEquals(listOf(BandalartTemplateId.JOB_PREPARATION_V1), repository.createdTemplateIds)
+            }
+        }
+
+    @Test
     fun loadOrShowFailureFailsOpenButDismissDoesNotCreate() =
         runTest {
             val failedRepository = repository()
@@ -131,7 +186,11 @@ class HomePresenterRewardedAdTest {
 
             presenter(failedRepository, failedSlots).test {
                 var state = awaitLoaded()
-                state.eventSink(HomeScreen.Event.AddBandalart)
+                state.eventSink(
+                    HomeScreen.Event.CreateBandalartFromTemplate(
+                        BandalartTemplateId.MONEY_HABIT_V1,
+                    ),
+                )
                 state = awaitDialog()
                 state.eventSink(HomeScreen.Event.ConfirmRewardedCreate)
                 val requestId = awaitRewardedAdRequest()
@@ -146,6 +205,7 @@ class HomePresenterRewardedAdTest {
 
                 assertEquals(1, failedSlots.expandCalls)
                 assertEquals(1, failedRepository.createCalls)
+                assertEquals(listOf(BandalartTemplateId.MONEY_HABIT_V1), failedRepository.createdTemplateIds)
             }
 
             val dismissedRepository = repository()
@@ -234,6 +294,7 @@ class HomePresenterRewardedAdTest {
                             requestId = 42L,
                             targetSlots = 4,
                             isGranted = true,
+                            templateId = BandalartTemplateId.TRAVEL_PLAN_V1,
                         ),
                 )
 
@@ -241,6 +302,33 @@ class HomePresenterRewardedAdTest {
                 awaitCreated()
 
                 assertEquals(1, repository.createCalls)
+                assertEquals(listOf(BandalartTemplateId.TRAVEL_PLAN_V1), repository.createdTemplateIds)
+                assertNull(slotRepository.pendingRewardedCreation)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun legacyGrantedPendingCreationWithoutTemplateRecoversAsBlankBandalart() =
+        runTest {
+            val repository = repository()
+            val slotRepository =
+                FakeBandalartSlotRepository(
+                    maxSlots = 4,
+                    initialPendingRewardedCreation =
+                        PendingRewardedCreation(
+                            requestId = 43L,
+                            targetSlots = 4,
+                            isGranted = true,
+                            templateId = null,
+                        ),
+                )
+
+            presenter(repository, slotRepository).test {
+                awaitCreated()
+
+                assertEquals(1, repository.createCalls)
+                assertEquals(listOf(null), repository.createdTemplateIds)
                 assertNull(slotRepository.pendingRewardedCreation)
                 cancelAndIgnoreRemainingEvents()
             }

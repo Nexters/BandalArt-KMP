@@ -22,11 +22,15 @@ import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.database.entity.BandalartCellDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartCellWithChildrenDto
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
+import com.nexters.bandalart.core.database.entity.CreateBandalartDto
+import com.nexters.bandalart.core.database.entity.CreateBandalartSubGoalDto
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -50,6 +54,35 @@ class DefaultBandalartRepositoryTest {
         mockBandalartDataStore = mockk()
         bandalartRepository = DefaultBandalartRepository(mockBandalartDataStore, mockBandalartDao)
     }
+
+    @Test
+    @DisplayName("템플릿 ID를 원자 생성용 DB draft로 변환해야 한다")
+    fun createBandalartFromTemplate() =
+        runTest {
+            val template = BandalartTemplateCatalog.find(BandalartTemplateId.STUDY_PLAN_V1)
+            val expectedDto =
+                CreateBandalartDto(
+                    title = template.title,
+                    profileEmoji = template.profileEmoji,
+                    subGoals =
+                        template.subGoals.map { subGoal ->
+                            CreateBandalartSubGoalDto(subGoal.title, subGoal.tasks)
+                        },
+                )
+            val stored =
+                BandalartDBEntity(
+                    id = 7L,
+                    title = template.title,
+                    profileEmoji = template.profileEmoji,
+                )
+            coEvery { mockBandalartDao.createBandalartTree(expectedDto) } returns 7L
+            coEvery { mockBandalartDao.getBandalart(7L) } returns stored
+
+            val result = bandalartRepository.createBandalart(BandalartTemplateId.STUDY_PLAN_V1)
+
+            assertEquals(stored.toEntity(), result)
+            coVerify(exactly = 1) { mockBandalartDao.createBandalartTree(expectedDto) }
+        }
 
     @Nested
     @DisplayName("반다라트 셀 업데이트 테스트")

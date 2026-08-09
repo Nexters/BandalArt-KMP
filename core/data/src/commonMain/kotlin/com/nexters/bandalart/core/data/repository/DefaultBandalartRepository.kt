@@ -19,6 +19,8 @@ package com.nexters.bandalart.core.data.repository
 import com.nexters.bandalart.core.data.mapper.toDto
 import com.nexters.bandalart.core.data.mapper.toEntity
 import com.nexters.bandalart.core.database.BandalartDao
+import com.nexters.bandalart.core.database.entity.CreateBandalartDto
+import com.nexters.bandalart.core.database.entity.CreateBandalartSubGoalDto
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
@@ -29,6 +31,8 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -37,8 +41,9 @@ class DefaultBandalartRepository(
     private val bandalartDao: BandalartDao,
     private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
 ) : BandalartRepository {
-    override suspend fun createBandalart(): BandalartEntity {
-        val bandalartId = bandalartDao.createEmptyBandalart()
+    override suspend fun createBandalart(templateId: BandalartTemplateId?): BandalartEntity {
+        val template = templateId?.let(BandalartTemplateCatalog::find)
+        val bandalartId = bandalartDao.createBandalartTree(template?.toCreateDto())
         return bandalartDao.getBandalart(bandalartId).toEntity().also {
             deadlineReminderReconciler.reconcileAll()
         }
@@ -127,3 +132,16 @@ class DefaultBandalartRepository(
         bandalartDataStore.deleteBandalartId(bandalartId)
     }
 }
+
+private fun com.nexters.bandalart.core.domain.template.BandalartTemplate.toCreateDto() =
+    CreateBandalartDto(
+        title = title,
+        profileEmoji = profileEmoji,
+        subGoals =
+            subGoals.map { subGoal ->
+                CreateBandalartSubGoalDto(
+                    title = subGoal.title,
+                    tasks = subGoal.tasks,
+                )
+            },
+    )
