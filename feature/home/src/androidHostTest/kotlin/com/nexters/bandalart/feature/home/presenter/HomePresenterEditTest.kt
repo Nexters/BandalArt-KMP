@@ -64,6 +64,7 @@ class HomePresenterEditTest {
                 assertEquals(created.id, repository.recentBandalartId)
                 assertTrue(repository.completionUpdates.contains(created.id to false))
                 assertNull(state.bottomSheet)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -213,7 +214,7 @@ class HomePresenterEditTest {
                     state = awaitItem()
                 } while (state.dialog !is HomeScreen.DialogState.CellDelete)
 
-                val dialog = state.dialog as HomeScreen.DialogState.CellDelete
+                val dialog = state.dialog
                 assertEquals(taskCell.id, dialog.cellId)
                 assertEquals(CellType.TASK, dialog.cellType)
                 assertEquals(taskCell.title, dialog.cellTitle)
@@ -259,6 +260,7 @@ class HomePresenterEditTest {
                 assertFalse(state.isDropDownMenuOpened)
                 assertNull(state.dialog)
                 assertNull(state.bottomSheet)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

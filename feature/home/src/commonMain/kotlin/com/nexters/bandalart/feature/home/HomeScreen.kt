@@ -135,6 +135,14 @@ internal fun Home(
         },
     )
 
+    DeadlineReminderPermissionEffect(
+        requestId = state.deadlinePermissionRequestId,
+        onResult = { state.eventSink(HomeScreen.Event.DeadlineReminderPermissionResult) },
+    )
+    DeadlineReminderForegroundEffect {
+        state.eventSink(HomeScreen.Event.DeadlineReminderForegrounded)
+    }
+
     HandleHomeEffects(
         state = state,
         homeGraphicsLayer = homeGraphicsLayer,

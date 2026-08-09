@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
@@ -32,6 +33,13 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
@@ -55,6 +63,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.yield
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -66,14 +75,24 @@ class HomePresenter(
     private val bandalartSlotRepository: BandalartSlotRepository,
     private val inAppUpdateRepository: InAppUpdateRepository,
     private val settingsRepository: SettingsRepository,
+    private val deadlineNotificationAuthorization: DeadlineNotificationAuthorization =
+        NoOpDeadlineNotificationAuthorization,
+    private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
+    private val deadlineNotificationLaunchTarget: DeadlineNotificationLaunchTarget =
+        BufferedDeadlineNotificationLaunchTarget(),
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
         var bandalartList by remember { mutableStateOf(persistentListOf<BandalartUiModel>()) }
-        var bandalartData by remember { mutableStateOf<BandalartUiModel?>(null) }
-        var bandalartCellData by remember { mutableStateOf<BandalartCellEntity?>(null) }
+        var loadedBandalart by remember { mutableStateOf<LoadedBandalart?>(null) }
+        val bandalartData = loadedBandalart?.bandalartData
+        val bandalartCellData = loadedBandalart?.bandalartCellData
+        val isBandalartCompleted = loadedBandalart?.isCompleted ?: false
+        var newlyCompletedTargetId by remember { mutableStateOf<Long?>(null) }
+        var explicitSelectionTargetId by remember { mutableStateOf<Long?>(null) }
+        var isExplicitSelectionTargetPending by remember { mutableStateOf(false) }
+        var bandalartListRevision by remember { mutableStateOf(0L) }
         var isLoading by remember { mutableStateOf(true) }
-        var isBandalartCompleted by remember { mutableStateOf(false) }
         var isCreatingEmptyBandalart by remember { mutableStateOf(false) }
         val rewardedCreateCoordinator = rememberRetained { RewardedCreateCoordinator() }
         var isUpdatingBandalartEmoji by remember { mutableStateOf(false) }
@@ -90,8 +109,18 @@ class HomePresenter(
         val pendingEffects = remember { ArrayDeque<HomeScreen.Effect>() }
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
+        val deadlineReminderEnabled by settingsRepository.deadlineReminderEnabled.collectAsState(initial = false)
+        val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
+        val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
+        var deadlineNotificationAuthorizationStatus by remember {
+            mutableStateOf(DeadlineNotificationAuthorizationStatus.UNSUPPORTED)
+        }
+        var deadlinePermissionRequestId by remember { mutableStateOf<Long?>(null) }
+        var nextDeadlinePermissionRequestId by remember { mutableStateOf(0L) }
         val scope = rememberCoroutineScope()
         val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
+        val selectionLoadGeneration = remember { longArrayOf(0L) }
+        val handledCompletionRevision = remember { longArrayOf(-1L) }
 
         fun recordRecentEmoji(emoji: String) {
             val previousJob = recentEmojiSaveJobs.lastOrNull()
@@ -120,9 +149,10 @@ class HomePresenter(
         suspend fun loadBandalart(
             bandalartId: Long,
             isCompleted: Boolean = false,
+            canCommit: () -> Boolean = { true },
         ) {
             isLoading = true
-            bandalartData = bandalartRepository.getBandalart(bandalartId).toUiModel()
+            val loadedBandalartData = bandalartRepository.getBandalart(bandalartId).toUiModel()
 
             val mainCell = bandalartRepository.getBandalartMainCell(bandalartId)
             val subCells = bandalartRepository.getChildCells(mainCell?.id ?: 0L)
@@ -151,7 +181,7 @@ class HomePresenter(
                     )
                 }
 
-            bandalartCellData =
+            val loadedBandalartCellData =
                 BandalartCellEntity(
                     id = mainCell?.id ?: 0L,
                     title = mainCell?.title,
@@ -161,27 +191,69 @@ class HomePresenter(
                     parentId = mainCell?.parentId,
                     children = children,
                 )
-            isBandalartCompleted = isCompleted
+            if (!canCommit()) return
+            loadedBandalart =
+                LoadedBandalart(
+                    bandalartData = loadedBandalartData,
+                    bandalartCellData = loadedBandalartCellData,
+                    isCompleted = isCompleted,
+                )
+            yield()
             isLoading = false
+        }
+
+        fun beginSelectionRequest(): Long = ++selectionLoadGeneration[0]
+
+        suspend fun selectBandalart(
+            requestGeneration: Long,
+            bandalartId: Long,
+            isCompleted: Boolean = false,
+            persistRecent: Boolean = true,
+        ): Boolean {
+            if (selectionLoadGeneration[0] != requestGeneration) return false
+            if (persistRecent) {
+                bandalartRepository.setRecentBandalartId(bandalartId)
+            }
+            if (selectionLoadGeneration[0] != requestGeneration) return false
+            loadBandalart(
+                bandalartId = bandalartId,
+                isCompleted = isCompleted,
+                canCommit = { selectionLoadGeneration[0] == requestGeneration },
+            )
+            return selectionLoadGeneration[0] == requestGeneration
         }
 
         suspend fun createInitialBandalart() {
             if (isCreatingEmptyBandalart) return
 
             isCreatingEmptyBandalart = true
-            bandalartRepository.createBandalart()?.let { bandalart ->
-                bandalartRepository.setRecentBandalartId(bandalart.id)
+            val selectionRequest = beginSelectionRequest()
+            isExplicitSelectionTargetPending = true
+            val bandalart = bandalartRepository.createBandalart()
+            Snapshot.withMutableSnapshot {
+                if (bandalart != null && selectionLoadGeneration[0] == selectionRequest) {
+                    explicitSelectionTargetId = bandalart.id
+                }
+                isExplicitSelectionTargetPending = false
+            }
+            bandalart?.let {
                 bandalartRepository.upsertBandalartId(bandalart.id, bandalart.isCompleted)
-                loadBandalart(bandalart.id)
             }
         }
 
         suspend fun createBandalart(): Boolean {
-            val bandalart = bandalartRepository.createBandalart() ?: return false
+            val selectionRequest = beginSelectionRequest()
+            isExplicitSelectionTargetPending = true
+            val bandalart = bandalartRepository.createBandalart()
+            Snapshot.withMutableSnapshot {
+                if (bandalart != null && selectionLoadGeneration[0] == selectionRequest) {
+                    explicitSelectionTargetId = bandalart.id
+                }
+                isExplicitSelectionTargetPending = false
+            }
+            bandalart ?: return false
             bottomSheet = null
-            bandalartRepository.setRecentBandalartId(bandalart.id)
             bandalartRepository.upsertBandalartId(bandalart.id, bandalart.isCompleted)
-            loadBandalart(bandalart.id)
             emitEffect(HomeScreen.Effect.ShowCreateSnackbar)
             return true
         }
@@ -465,7 +537,11 @@ class HomePresenter(
                             ),
                     )
                 }.onSuccess {
-                    bandalartCellData = bandalartCellData?.completeTask(currentCell.id)
+                    val updatedCellData = bandalartCellData.completeTask(currentCell.id)
+                    loadedBandalart =
+                        loadedBandalart?.copy(
+                            bandalartCellData = updatedCellData,
+                        )
                     emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
                 }.onFailure { exception ->
                     if (exception is CancellationException) throw exception
@@ -507,8 +583,14 @@ class HomePresenter(
         LaunchedEffect(Unit) {
             bandalartRepository.getBandalartList().collect { entities ->
                 val currentList = entities.map { it.toUiModel() }
-                bandalartList = currentList.toPersistentList()
-
+                val previousList = bandalartRepository.getPrevBandalartList()
+                val completedTargetId =
+                    currentList
+                        .filter { bandalart ->
+                            val previous = previousList.find { it.first == bandalart.id }
+                            previous != null && !previous.second && bandalart.isCompleted
+                        }.firstOrNull()
+                        ?.id
                 val pendingRewardedCreation =
                     runRewardedOperation { bandalartSlotRepository.getPendingRewardedCreation() }
                         .onFailure { exception ->
@@ -540,7 +622,7 @@ class HomePresenter(
                             rewardedCreateCoordinator.grantFinished(
                                 wasCreated = created,
                                 expectedCount = pendingRewardedCreation.targetSlots,
-                                currentCount = bandalartList.size,
+                                currentCount = currentList.size,
                             )
                         }
                     }
@@ -549,27 +631,13 @@ class HomePresenter(
                 }
                 rewardedRecoveryChecked = true
 
-                val previousList = bandalartRepository.getPrevBandalartList()
-                val newlyCompletedIds =
-                    currentList
-                        .filter { bandalart ->
-                            val previous = previousList.find { it.first == bandalart.id }
-                            previous != null && !previous.second && bandalart.isCompleted
-                        }.map { it.id }
-
-                if (newlyCompletedIds.isNotEmpty()) {
-                    loadBandalart(
-                        bandalartId = newlyCompletedIds.first(),
-                        isCompleted = true,
-                    )
-                    return@collect
-                }
-
-                currentList.forEach { bandalart ->
-                    bandalartRepository.upsertBandalartId(
-                        bandalartId = bandalart.id,
-                        isCompleted = bandalart.isCompleted,
-                    )
+                if (completedTargetId == null) {
+                    currentList.forEach { bandalart ->
+                        bandalartRepository.upsertBandalartId(
+                            bandalartId = bandalart.id,
+                            isCompleted = bandalart.isCompleted,
+                        )
+                    }
                 }
 
                 if (currentList.isEmpty()) {
@@ -578,12 +646,70 @@ class HomePresenter(
                 }
 
                 isCreatingEmptyBandalart = false
-                val recentBandalartId = bandalartRepository.getRecentBandalartId()
-                val selectedId =
-                    recentBandalartId.takeIf { recentId ->
-                        currentList.any { it.id == recentId }
-                    } ?: currentList.first().id
-                loadBandalart(selectedId)
+                Snapshot.withMutableSnapshot {
+                    newlyCompletedTargetId = completedTargetId
+                    bandalartList = currentList.toPersistentList()
+                    bandalartListRevision += 1
+                }
+            }
+        }
+
+        LaunchedEffect(
+            pendingDeadlineLaunchId,
+            isExplicitSelectionTargetPending,
+            explicitSelectionTargetId,
+            bandalartListRevision,
+        ) {
+            if (bandalartList.isEmpty()) return@LaunchedEffect
+            val targetId = pendingDeadlineLaunchId
+            if (targetId != null) {
+                val selectionRequest = beginSelectionRequest()
+                explicitSelectionTargetId = null
+                isExplicitSelectionTargetPending = false
+                if (bandalartList.none { it.id == targetId }) {
+                    deadlineNotificationLaunchTarget.acknowledge(targetId)
+                    return@LaunchedEffect
+                }
+                val committed = selectBandalart(selectionRequest, targetId)
+                if (!committed) return@LaunchedEffect
+                handledCompletionRevision[0] = bandalartListRevision
+                bottomSheet = null
+                deadlineNotificationLaunchTarget.acknowledge(targetId)
+                return@LaunchedEffect
+            }
+            if (isExplicitSelectionTargetPending) return@LaunchedEffect
+            val explicitTargetId = explicitSelectionTargetId
+            if (explicitTargetId != null) {
+                val selectionRequest = beginSelectionRequest()
+                val committed = selectBandalart(selectionRequest, explicitTargetId)
+                if (committed) {
+                    explicitSelectionTargetId = null
+                    bottomSheet = null
+                }
+                return@LaunchedEffect
+            }
+            val selectionRequest = beginSelectionRequest()
+            val completedTargetId =
+                newlyCompletedTargetId?.takeIf { completedId ->
+                    handledCompletionRevision[0] != bandalartListRevision &&
+                        bandalartList.any { it.id == completedId }
+                }
+            val currentBandalartId = bandalartData?.id
+            val currentSelectionId =
+                currentBandalartId?.takeIf { currentId -> bandalartList.any { it.id == currentId } }
+            val recentBandalartId = bandalartRepository.getRecentBandalartId()
+            val selectedId =
+                completedTargetId ?: currentSelectionId ?: recentBandalartId.takeIf { recentId ->
+                    bandalartList.any { it.id == recentId }
+                } ?: bandalartList.first().id
+            selectBandalart(
+                requestGeneration = selectionRequest,
+                bandalartId = selectedId,
+                isCompleted = selectedId == completedTargetId,
+                persistRecent = selectedId != currentSelectionId,
+            )
+            if (selectedId == completedTargetId) {
+                handledCompletionRevision[0] = bandalartListRevision
             }
         }
 
@@ -619,15 +745,16 @@ class HomePresenter(
             themeMode = themeMode,
             recentEmojis = recentEmojis.toPersistentList(),
             rewardedAdRequestId = rewardedAdRequestId,
+            deadlineReminderEnabled = deadlineReminderEnabled,
+            deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
+            deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
+            deadlinePermissionRequestId = deadlinePermissionRequestId,
             effect = effect,
         ) { event ->
             when (event) {
                 is HomeScreen.Event.SelectBandalart -> {
-                    scope.launch {
-                        bandalartRepository.setRecentBandalartId(event.bandalartId)
-                        loadBandalart(event.bandalartId)
-                        bottomSheet = null
-                    }
+                    beginSelectionRequest()
+                    explicitSelectionTargetId = event.bandalartId
                 }
 
                 HomeScreen.Event.AddBandalart -> scope.launch { requestCreateBandalart() }
@@ -638,6 +765,9 @@ class HomePresenter(
                 HomeScreen.Event.OpenBandalartList -> openBandalartList()
                 HomeScreen.Event.OpenSettings -> {
                     bottomSheet = HomeScreen.BottomSheetState.Settings
+                    scope.launch {
+                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
+                    }
                 }
                 HomeScreen.Event.OpenEmoji -> {
                     if (!isUpdatingBandalartEmoji) openEmoji()
@@ -746,6 +876,61 @@ class HomePresenter(
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }
                 }
 
+                is HomeScreen.Event.SetDeadlineReminderEnabled -> {
+                    if (!event.enabled) {
+                        scope.launch {
+                            settingsRepository.setDeadlineReminderEnabled(false)
+                            deadlineReminderReconciler.reconcileAll()
+                        }
+                    }
+                }
+
+                HomeScreen.Event.ConfirmDeadlineReminderPermission -> {
+                    scope.launch {
+                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
+                        when (deadlineNotificationAuthorizationStatus) {
+                            DeadlineNotificationAuthorizationStatus.GRANTED,
+                            DeadlineNotificationAuthorizationStatus.QUIET,
+                            -> {
+                                settingsRepository.setDeadlineReminderEnabled(true)
+                                deadlineReminderReconciler.reconcileAll()
+                            }
+
+                            DeadlineNotificationAuthorizationStatus.REQUESTABLE -> {
+                                nextDeadlinePermissionRequestId += 1
+                                deadlinePermissionRequestId = nextDeadlinePermissionRequestId
+                            }
+
+                            DeadlineNotificationAuthorizationStatus.BLOCKED -> {
+                                deadlineNotificationAuthorization.openSettings()
+                            }
+
+                            DeadlineNotificationAuthorizationStatus.UNSUPPORTED -> Unit
+                        }
+                    }
+                }
+
+                HomeScreen.Event.DeadlineReminderPermissionResult -> {
+                    deadlinePermissionRequestId = null
+                    scope.launch {
+                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
+                        val granted =
+                            deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.GRANTED ||
+                                deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.QUIET
+                        settingsRepository.setDeadlineReminderEnabled(granted)
+                        deadlineReminderReconciler.reconcileAll()
+                    }
+                }
+
+                HomeScreen.Event.DeadlineReminderForegrounded -> {
+                    scope.launch {
+                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
+                        if (deadlineReminderEnabled) {
+                            deadlineReminderReconciler.reconcileAll()
+                        }
+                    }
+                }
+
                 HomeScreen.Event.ContactSupport -> emitEffect(HomeScreen.Effect.OpenSupportMail)
                 HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
                 HomeScreen.Event.RequestSave -> {
@@ -758,7 +943,7 @@ class HomePresenter(
                     val request = imageRequest as? HomeScreen.ImageRequest.Complete
                     if (request != null) {
                         imageRequest = null
-                        isBandalartCompleted = false
+                        loadedBandalart = loadedBandalart?.copy(isCompleted = false)
                         navigator.goTo(
                             CompleteScreen(
                                 bandalartId = request.bandalartId,
@@ -802,6 +987,12 @@ class HomePresenter(
         const val MAX_DESCRIPTION_LENGTH = 1000
     }
 }
+
+private data class LoadedBandalart(
+    val bandalartData: BandalartUiModel,
+    val bandalartCellData: BandalartCellEntity,
+    val isCompleted: Boolean,
+)
 
 @Suppress("TooGenericExceptionCaught")
 private inline fun <T> runRewardedOperation(block: () -> T): Result<T> =

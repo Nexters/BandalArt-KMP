@@ -54,7 +54,7 @@ class HomePresenterTest {
                 }
 
                 assertEquals(2, state.bandalartList.size)
-                assertEquals(2L, state.bandalartData?.id)
+                assertEquals(2L, state.bandalartData.id)
                 assertEquals(mainCell.id, state.bandalartCellData?.id)
                 assertEquals(
                     subCell.id,
@@ -72,6 +72,7 @@ class HomePresenterTest {
                         ?.single()
                         ?.id,
                 )
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -91,7 +92,8 @@ class HomePresenterTest {
                     state = awaitItem()
                 }
 
-                assertEquals(1L, state.bandalartData?.id)
+                assertEquals(1L, state.bandalartData.id)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -115,6 +117,7 @@ class HomePresenterTest {
                 assertEquals(1, repository.createCalls)
                 assertEquals(created.id, repository.recentBandalartId)
                 assertTrue(repository.completionUpdates.contains(created.id to false))
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -141,6 +144,7 @@ class HomePresenterTest {
 
                 assertTrue(state.isBandalartCompleted)
                 assertTrue(repository.completionUpdates.isEmpty())
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -167,6 +171,7 @@ class HomePresenterTest {
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertFalse(state.isBandalartCompleted)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

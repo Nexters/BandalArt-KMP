@@ -34,13 +34,15 @@ internal class FakeBandalartRepository(
     private val createdBandalart: BandalartEntity? = null,
     private val publishCreatedBandalartImmediately: Boolean = true,
     details: Map<Long, BandalartEntity> = initialBandalarts.associateBy { it.id },
-    private val mainCells: Map<Long, BandalartCellEntity> = emptyMap(),
+    mainCells: Map<Long, BandalartCellEntity> = emptyMap(),
     private val childCells: Map<Long, List<BandalartCellEntity>> = emptyMap(),
     private val beforeTaskCellUpdate: suspend () -> Unit = {},
+    private val beforeBandalartLoad: suspend (Long) -> Unit = {},
     private val taskCellUpdateError: Throwable? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
+    private val mainCells = mainCells.toMutableMap()
     private var unpublishedCreatedBandalart: BandalartEntity? = null
 
     var recentBandalartId: Long = recentBandalartId
@@ -81,9 +83,24 @@ internal class FakeBandalartRepository(
         bandalartFlow.value = bandalartFlow.value + bandalart
     }
 
+    fun publishBandalartRevision(
+        bandalart: BandalartEntity,
+        mainCell: BandalartCellEntity? = null,
+    ) {
+        details[bandalart.id] = bandalart
+        if (mainCell != null) mainCells[bandalart.id] = mainCell
+        bandalartFlow.value =
+            bandalartFlow.value.map { current ->
+                if (current.id == bandalart.id) bandalart else current
+            }
+    }
+
     override fun getBandalartList(): Flow<List<BandalartEntity>> = bandalartFlow
 
-    override suspend fun getBandalart(bandalartId: Long): BandalartEntity = requireNotNull(details[bandalartId])
+    override suspend fun getBandalart(bandalartId: Long): BandalartEntity {
+        beforeBandalartLoad(bandalartId)
+        return requireNotNull(details[bandalartId])
+    }
 
     override suspend fun getBandalartMainCell(bandalartId: Long): BandalartCellEntity? = mainCells[bandalartId]
 

@@ -173,6 +173,18 @@
     <string name="server_error_dialog_message">Please try again.</string>
     <string name="server_error_retry_message">Retry</string>
 
+    <!-- deadline reminder -->
+    <string name="settings_deadline_reminder_section">Notifications</string>
+    <string name="settings_deadline_reminder">Deadline reminders</string>
+    <string name="settings_deadline_reminder_body">Get a reminder from 9 AM on the due date.</string>
+    <string name="settings_deadline_reminder_blocked">System notifications are off. Tap to open settings.</string>
+    <string name="settings_deadline_reminder_overflow">%1$d reminders for later dates are not scheduled yet.</string>
+    <string name="settings_deadline_reminder_degraded">Some reminders could not be scheduled. We’ll retry when you reopen the app.</string>
+    <string name="settings_deadline_reminder_dialog_title">Turn on deadline reminders?</string>
+    <string name="settings_deadline_reminder_dialog_body">Goal titles may appear on your lock screen. Reminders are delivered from 9 AM on the due date depending on device conditions.</string>
+    <string name="settings_deadline_reminder_confirm">Turn on</string>
+    <string name="settings_deadline_reminder_cancel">Cancel</string>
+
     <!-- in-app update -->
     <string name="update_ready_to_install">App update is ready to install.</string>
     <string name="update_action_restart">Restart</string>

@@ -20,6 +20,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.core)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.app.update)
             implementation(libs.app.update.ktx)

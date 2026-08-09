@@ -23,11 +23,12 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class FakeSettingsRepository(
     initialThemeMode: ThemeMode = ThemeMode.SYSTEM,
+    initialDeadlineReminderEnabled: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
 ) : SettingsRepository {
     private val themeModeState = MutableStateFlow(initialThemeMode)
     private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
-    private val deadlineReminderEnabledState = MutableStateFlow(false)
+    private val deadlineReminderEnabledState = MutableStateFlow(initialDeadlineReminderEnabled)
 
     override val themeMode = themeModeState.asStateFlow()
     override val recentEmojis = recentEmojisState.asStateFlow()

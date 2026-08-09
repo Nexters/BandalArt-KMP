@@ -18,6 +18,8 @@ package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartSlotRepository
+import com.nexters.bandalart.core.data.notification.DefaultDeadlineReminderReconciler
+import com.nexters.bandalart.core.data.repository.DefaultDeadlineReminderProjectionRepository
 import com.nexters.bandalart.core.data.repository.DefaultInAppUpdateRepository
 import com.nexters.bandalart.core.data.repository.DefaultOnboardingRepository
 import com.nexters.bandalart.core.data.repository.DefaultSettingsRepository
@@ -29,10 +31,21 @@ import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderPlanner
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTimeZoneProvider
+import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 
 @BindingContainer
 object RepositoryBindings {
@@ -41,7 +54,8 @@ object RepositoryBindings {
     fun provideBandalartRepository(
         bandalartDataStore: BandalartDataStore,
         bandalartDao: BandalartDao,
-    ): BandalartRepository = DefaultBandalartRepository(bandalartDataStore, bandalartDao)
+        deadlineReminderReconciler: DeadlineReminderReconciler,
+    ): BandalartRepository = DefaultBandalartRepository(bandalartDataStore, bandalartDao, deadlineReminderReconciler)
 
     @Provides
     @SingleIn(AppScope::class)
@@ -60,4 +74,42 @@ object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideSettingsRepository(bandalartDataStore: BandalartDataStore): SettingsRepository = DefaultSettingsRepository(bandalartDataStore)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideDeadlineReminderProjectionRepository(bandalartDao: BandalartDao): DeadlineReminderProjectionRepository =
+        DefaultDeadlineReminderProjectionRepository(bandalartDao)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideDeadlineReminderReconciler(
+        settingsRepository: SettingsRepository,
+        projectionRepository: DeadlineReminderProjectionRepository,
+        scheduler: DeadlineReminderScheduler,
+        authorization: DeadlineNotificationAuthorization,
+    ): DeadlineReminderReconciler =
+        DefaultDeadlineReminderReconciler(
+            settingsRepository = settingsRepository,
+            projectionRepository = projectionRepository,
+            planner =
+                DeadlineReminderPlanner(
+                    clock = SystemDeadlineReminderClock,
+                    timeZoneProvider = DeadlineReminderTimeZoneProvider(TimeZone::currentSystemDefault),
+                ),
+            scheduler = scheduler,
+            authorization = authorization,
+        )
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideDeadlineNotificationLaunchTarget(): DeadlineNotificationLaunchTarget = BufferedDeadlineNotificationLaunchTarget()
+}
+
+private object SystemDeadlineReminderClock : Clock {
+    override fun now(): Instant =
+        Instant.fromEpochMilliseconds(
+            kotlin.time.Clock.System
+                .now()
+                .toEpochMilliseconds(),
+        )
 }

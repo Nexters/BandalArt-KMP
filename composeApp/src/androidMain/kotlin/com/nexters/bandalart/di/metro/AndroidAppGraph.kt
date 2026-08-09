@@ -17,6 +17,7 @@
 package com.nexters.bandalart.di.metro
 
 import android.app.Application
+import android.content.Intent
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
@@ -24,6 +25,10 @@ import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorization
+import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
+import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
+import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
 
 private class AndroidPlatformBindings(
     application: Application,
@@ -35,6 +40,8 @@ private class AndroidPlatformBindings(
     override val appVersionProvider = AppVersionProvider(application)
     override val imageHandlerProvider = ImageHandlerProvider(application)
     override val supportMailLauncher = AndroidSupportMailLauncher(application)
+    override val deadlineReminderScheduler = AndroidDeadlineReminderScheduler(application)
+    override val deadlineNotificationAuthorization = AndroidDeadlineNotificationAuthorization(application)
 }
 
 fun createAndroidAppGraph(
@@ -42,6 +49,40 @@ fun createAndroidAppGraph(
     bannerAdHost: BannerAdHost,
     rewardedAdGateway: RewardedAdGateway,
 ): AppGraph = createAppGraph(AndroidPlatformBindings(application, bannerAdHost, rewardedAdGateway))
+
+fun installAndroidDeadlineReminderInfrastructure(
+    appGraph: AppGraph,
+    launchIntentFactory: (batchId: String, bandalartId: Long) -> Intent,
+) {
+    AndroidDeadlineReminderDependenciesRegistry.install(
+        object : AndroidDeadlineReminderDependencies {
+            override val deadlineReminderProjectionRepository
+                get() = appGraph.deadlineReminderProjectionRepository
+            override val settingsRepository
+                get() = appGraph.settingsRepository
+            override val deadlineNotificationAuthorization
+                get() = appGraph.deadlineNotificationAuthorization
+            override val deadlineReminderReconciler
+                get() = appGraph.deadlineReminderReconciler
+
+            override fun createDeadlineNotificationLaunchIntent(
+                batchId: String,
+                bandalartId: Long,
+            ): Intent = launchIntentFactory(batchId, bandalartId)
+        },
+    )
+}
+
+suspend fun reconcileAndroidDeadlineReminders(appGraph: AppGraph) {
+    appGraph.deadlineReminderReconciler.reconcileAll()
+}
+
+fun recordAndroidDeadlineNotificationLaunch(
+    appGraph: AppGraph,
+    bandalartId: Long,
+) {
+    appGraph.deadlineNotificationLaunchTarget.record(bandalartId)
+}
 
 suspend fun recordRewardedCreation(
     appGraph: AppGraph,

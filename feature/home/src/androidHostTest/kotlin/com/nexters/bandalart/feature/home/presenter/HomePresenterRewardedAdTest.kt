@@ -218,6 +218,7 @@ class HomePresenterRewardedAdTest {
                 assertEquals(1, repository.createCalls)
                 repository.publishCreatedBandalart()
                 awaitItem()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -241,6 +242,7 @@ class HomePresenterRewardedAdTest {
 
                 assertEquals(1, repository.createCalls)
                 assertNull(slotRepository.pendingRewardedCreation)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

@@ -175,6 +175,18 @@
     <!--  label -->
     <string name="skeleton_trans_animate_label">Hamburger Icon</string>
 
+    <!-- deadline reminder -->
+    <string name="settings_deadline_reminder_section">알림</string>
+    <string name="settings_deadline_reminder">마감일 알림</string>
+    <string name="settings_deadline_reminder_body">마감일 당일 오전 9시부터 알려드려요.</string>
+    <string name="settings_deadline_reminder_blocked">시스템 알림이 꺼져 있어요. 누르면 설정으로 이동해요.</string>
+    <string name="settings_deadline_reminder_overflow">먼 날짜 알림 %1$d개는 아직 예약되지 않았어요.</string>
+    <string name="settings_deadline_reminder_degraded">일부 알림을 예약하지 못했어요. 앱을 다시 열면 다시 시도해요.</string>
+    <string name="settings_deadline_reminder_dialog_title">마감일 알림을 켤까요?</string>
+    <string name="settings_deadline_reminder_dialog_body">목표 제목이 잠금 화면에 보일 수 있으며, 마감일 당일 오전 9시부터 기기 상태에 따라 알림이 전달돼요.</string>
+    <string name="settings_deadline_reminder_confirm">알림 켜기</string>
+    <string name="settings_deadline_reminder_cancel">취소</string>
+
     <!-- in-app update -->
     <string name="update_ready_to_install">앱의 업데이트 설치 준비가 완료되었습니다.</string>
     <string name="update_action_restart">재시작</string>

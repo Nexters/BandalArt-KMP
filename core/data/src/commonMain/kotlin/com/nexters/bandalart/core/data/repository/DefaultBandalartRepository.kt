@@ -26,6 +26,8 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,10 +35,13 @@ import kotlinx.coroutines.flow.map
 class DefaultBandalartRepository(
     private val bandalartDataStore: BandalartDataStore,
     private val bandalartDao: BandalartDao,
+    private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
 ) : BandalartRepository {
     override suspend fun createBandalart(): BandalartEntity {
         val bandalartId = bandalartDao.createEmptyBandalart()
-        return bandalartDao.getBandalart(bandalartId).toEntity()
+        return bandalartDao.getBandalart(bandalartId).toEntity().also {
+            deadlineReminderReconciler.reconcileAll()
+        }
     }
 
     override fun getBandalartList(): Flow<List<BandalartEntity>> =
@@ -51,6 +56,7 @@ class DefaultBandalartRepository(
         mainCell.id?.let { cellId ->
             bandalartDao.deleteCellOrReset(cellId)
         }
+        deadlineReminderReconciler.reconcileAll()
     }
 
     override suspend fun getBandalartMainCell(bandalartId: Long): BandalartCellEntity = bandalartDao.getBandalartMainCell(bandalartId).cell.toEntity()
@@ -66,6 +72,7 @@ class DefaultBandalartRepository(
         updateBandalartMainCellEntity: UpdateBandalartMainCellEntity,
     ) {
         bandalartDao.updateMainCellWithDto(cellId, updateBandalartMainCellEntity.toDto())
+        deadlineReminderReconciler.reconcileAll()
     }
 
     override suspend fun updateBandalartSubCell(
@@ -74,6 +81,7 @@ class DefaultBandalartRepository(
         updateBandalartSubCellEntity: UpdateBandalartSubCellEntity,
     ) {
         bandalartDao.updateSubCellWithDto(cellId, updateBandalartSubCellEntity.toDto())
+        deadlineReminderReconciler.reconcileAll()
     }
 
     override suspend fun updateBandalartTaskCell(
@@ -82,6 +90,7 @@ class DefaultBandalartRepository(
         updateBandalartTaskCellEntity: UpdateBandalartTaskCellEntity,
     ) {
         bandalartDao.updateTaskCellWithDto(cellId, updateBandalartTaskCellEntity.toDto())
+        deadlineReminderReconciler.reconcileAll()
     }
 
     override suspend fun updateBandalartEmoji(
@@ -94,6 +103,7 @@ class DefaultBandalartRepository(
 
     override suspend fun deleteBandalartCell(cellId: Long) {
         bandalartDao.deleteCellOrReset(cellId)
+        deadlineReminderReconciler.reconcileAll()
     }
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) {

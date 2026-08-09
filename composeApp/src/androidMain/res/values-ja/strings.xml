@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deadline_reminder_channel_name">締切日リマインダー</string>
+    <string name="deadline_reminder_channel_description">今日が締切の目標をお知らせします</string>
+    <string name="deadline_reminder_title">今日が締め切りの目標があります</string>
+    <string name="deadline_reminder_single_body">%1$sを完了する時間です。</string>
+    <string name="deadline_reminder_multiple_body">%1$d個の目標が今日締切です。</string>
+</resources>

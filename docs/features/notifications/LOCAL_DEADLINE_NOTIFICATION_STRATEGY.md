@@ -19,12 +19,16 @@
 
 - [x] main cell due date의 full-snapshot 삭제 의미, notification preference, reminder projection·parser·planner·batch와 scheduler/authorization/reconciler 계약을 로컬에서 구현했다.
 - [x] 공통 foundation 변경을 로컬 리뷰하고 관련 테스트를 통과시켰다.
-- [ ] 공통 foundation을 commit하고 PR을 생성해 CI 통과 후 `main`에 병합한다.
+- [x] 공통 foundation을 commit했다.
+- [x] 공통 foundation PR #250을 CI 통과 후 `main`에 병합했다.
 
 ### 예정 PR 3 — Android vertical slice
 
-- [ ] WorkManager scheduler·Worker·channel·permission adapter를 구현한다.
-- [ ] 시간 변경 reconcile과 cold/warm notification navigation을 구현·검증한다.
+- [x] WorkManager scheduler·Worker·channel·permission adapter를 로컬에서 구현했다.
+- [x] 시간 변경 reconcile과 cold/warm notification navigation을 로컬에서 구현했다. buffered target·Presenter 소비는 host test로 검증했고 실제 Activity 전달은 수동 검증 전이다.
+- [x] Android에서만 노출되는 설정 ON/OFF·권한·시스템 설정 동선을 로컬에서 구현했다. 권한 상태별 실제 OS 동선은 Internal 설치본 검증 전이다.
+- [x] Android vertical slice를 독립 리뷰하고 관련 host test·Detekt를 통과시켰다.
+- [ ] Android vertical slice를 commit하고 PR·CI·merge한다.
 - [ ] Android Internal 설치본에서 실제 권한과 전달을 검증한다.
 
 ### 예정 PR 4 — iOS vertical slice
@@ -33,9 +37,9 @@
 - [ ] AppDelegate delegate, launch-target bridge와 pending/delivered reconcile을 구현·검증한다.
 - [ ] TestFlight 설치본에서 실제 권한과 전달을 검증한다.
 
-### 예정 PR 5 — UX 활성화·배포 검증
+### 예정 PR 5 — 공통 UX 마무리·배포 검증
 
-- [ ] 설정 toggle·권한 상태·시스템 설정 action과 명시적 마감일 삭제 UX를 구현한다.
+- [ ] iOS 권한 연동 후 공통 설정 노출과 명시적 마감일 삭제 UX를 마무리한다.
 - [ ] 한국어·영어·일본어 문구와 접근성을 검증한다.
 - [ ] Android Internal과 iOS TestFlight의 전체 acceptance checklist를 완료한다.
 - [ ] #211 완료 조건 확인 뒤 umbrella issue를 닫는다.
@@ -166,7 +170,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 
 권한 prompt는 Presenter의 app-scoped service에서 임의로 띄우지 않는다. Android는 화면 lifecycle을 가진 Compose effect/Activity Result API가 담당하고 iOS는 설정 action이 호출한 permission adapter가 담당한다.
 
-- Android 13 이상은 `checkSelfPermission`, `shouldShowRequestPermissionRationale`과 `PackageManager`의 public `FLAG_PERMISSION_USER_SET`/`FLAG_PERMISSION_USER_FIXED`를 함께 사용한다. permission이 있으면 `Granted`, user flag가 없으면 fresh install 또는 swipe dismiss로 보고 `Requestable`, rationale이 true인 일반 거절도 설명 뒤 명시적 재요청이 가능한 `Requestable`, user-fixed 또는 user-set 상태에서 rationale이 false면 `Blocked`다. Activity Result의 false만으로 Blocked를 확정하지 않는다. API 32 이하는 앱 전체 알림과 channel 상태로 `Granted`/`Blocked`를 판정한다.
+- Android 13 이상은 `checkSelfPermission`과 `shouldShowRequestPermissionRationale`를 사용한다. self permission의 user-set/user-fixed flag는 일반 앱에 공개된 SDK API가 아니므로, 앱 내에는 rationale이 true인 1차 거절 여부만 제목과 분리해 저장한다. fresh install과 swipe dismiss는 `Requestable`, rationale이 true인 일반 거절도 `Requestable`, 이후 반복 거절에서 rationale이 false면 `Blocked`로 판정한다. Activity Result의 false만으로 Blocked를 확정하지 않는다. API 32 이하는 앱 전체 알림과 channel 상태로 `Granted`/`Blocked`를 판정한다.
 - Android `Requestable` 재토글은 rationale을 먼저 보여 준 뒤 사용자가 다시 동의한 경우에만 prompt를 요청한다. `Blocked` 재토글은 prompt 없이 시스템 설정을 연다.
 - iOS `notDetermined`는 `Requestable`, `authorized`는 `Granted`, `provisional`/`ephemeral` 또는 alert가 조용한 설정은 `Quiet`, `denied`는 `Blocked`로 매핑한다. sound/alert 설정은 설명 상태에 반영하되 authorization이 허용된 request 자체는 유지한다.
 - 설정 복귀 때 effective 상태를 다시 읽어 `Granted`/`Quiet`이면 reconcile하고 `Blocked`면 pending 상태를 정리한다.
@@ -202,7 +206,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 현재 앱에는 외부 navigation request 경계가 없고, `recentBandalartId` 저장만으로는 실행 중인 Home이 즉시 전환되지 않는다.
 
 - buffered `DeadlineNotificationLaunchTarget` 계약을 추가한다. Android는 AppGraph 수명 인스턴스를 사용하고 iOS는 AppDelegate가 graph보다 먼저 만든 bridge를 graph에 주입한다.
-- Android `onCreate`/`onNewIntent`와 Swift notification delegate는 primitive `bandalartId`를 target에 기록한다.
+- Android는 non-exported notification trampoline이 primitive `bandalartId`를 target에 기록한 뒤 explicit `MainActivity`를 열고, Swift notification delegate도 primitive `bandalartId`를 기록한다.
 - target은 Circuit navigator가 준비되기 전 cold-start 요청을 유지한다.
 - Home Presenter는 목록 로드 뒤 target board가 존재하는지 확인하고, 존재하면 recent ID 저장과 `loadBandalart()`를 실행한 뒤 요청을 acknowledge한다.
 - 삭제된 board면 요청을 소비하고 현재 Home을 유지한다.
@@ -232,7 +236,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 - 시간·시간대 reconcile receiver
 - notification publisher와 cold/warm navigation bridge
 - host/Robolectric/WorkManager 테스트
-- permission prompt를 포함한 실제 설정 UX 검증은 PR 5로 미루고 scheduler/Worker/navigation adapter를 직접 호출하는 자동 테스트까지만 완료
+- Android 설정 ON/OFF, 설명 confirmation, permission prompt, blocked settings 동선을 함께 활성화하고 Presenter/scheduler 경계는 host test로 검증. 실제 OS 권한 prompt/settings 복귀는 Internal 설치본에서 수동 검증
 
 ### PR 4 — iOS vertical slice
 
@@ -294,7 +298,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 
 ## 11. 출시·관측
 
-- 플랫폼 코드는 두 OS에 모두 준비될 때까지 설정 toggle을 노출하지 않는다.
+- Android는 vertical slice가 사용 가능한 상태로 검증되면 Android에서만 설정 toggle을 노출한다. iOS는 `Unsupported`를 유지해 거짓 기능을 노출하지 않는다.
 - Android Internal과 iOS TestFlight에서 알림 권한과 실제 전달을 각각 검증한 뒤 활성화한다.
 - scheduler/reconcile 실패는 개인정보가 없는 batch ID, platform status, error category만 기록한다. 목표 제목과 설명은 로그에 남기지 않는다.
 - 알림 content에는 목표 제목 또는 집계 count만 사용하고 description, 완료 이력은 포함하지 않는다.

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deadline_reminder_channel_name">Deadline reminders</string>
+    <string name="deadline_reminder_channel_description">Notifies you about goals due today</string>
+    <string name="deadline_reminder_title">You have goals due today</string>
+    <string name="deadline_reminder_single_body">Time to complete %1$s.</string>
+    <string name="deadline_reminder_multiple_body">%1$d goals are due today.</string>
+</resources>

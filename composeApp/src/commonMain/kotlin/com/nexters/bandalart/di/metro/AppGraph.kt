@@ -32,6 +32,11 @@ import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
+import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
@@ -46,6 +51,8 @@ interface PlatformBindings {
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway
+    val deadlineReminderScheduler: DeadlineReminderScheduler
+    val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
 }
 
 @DependencyGraph(
@@ -71,6 +78,11 @@ interface AppGraph {
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository
     val settingsRepository: SettingsRepository
+    val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
+    val deadlineReminderScheduler: DeadlineReminderScheduler
+    val deadlineReminderProjectionRepository: DeadlineReminderProjectionRepository
+    val deadlineReminderReconciler: DeadlineReminderReconciler
+    val deadlineNotificationLaunchTarget: DeadlineNotificationLaunchTarget
     val circuit: Circuit
 
     @DependencyGraph.Factory

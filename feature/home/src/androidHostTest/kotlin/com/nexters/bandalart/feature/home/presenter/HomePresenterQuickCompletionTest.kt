@@ -23,6 +23,8 @@ import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,6 +33,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomePresenterQuickCompletionTest {
     @Test
     fun validTaskIsCompletedWithPreservedContentAndOneShotEffect() =
@@ -82,6 +85,8 @@ class HomePresenterQuickCompletionTest {
 
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
+                advanceUntilIdle()
+                expectMostRecentItem()
                 val mainCell = requireNotNull(state.bandalartCellData)
                 val subCell = mainCell.children.single()
 
@@ -94,6 +99,7 @@ class HomePresenterQuickCompletionTest {
                 assertEquals(0, repository.taskCellUpdateCalls)
                 assertTrue(state.taskCell(completedTask.id).isCompleted)
                 expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -177,6 +183,8 @@ class HomePresenterQuickCompletionTest {
 
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
+                advanceUntilIdle()
+                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.CompleteTask(taskCell))
                 updateAttempted.await()
                 yield()
@@ -185,6 +193,7 @@ class HomePresenterQuickCompletionTest {
                 assertNull(repository.taskCellUpdate)
                 assertFalse(state.taskCell(taskCell.id).isCompleted)
                 expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
