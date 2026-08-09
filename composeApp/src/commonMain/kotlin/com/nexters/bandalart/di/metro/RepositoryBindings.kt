@@ -106,5 +106,10 @@ object RepositoryBindings {
 }
 
 private object SystemDeadlineReminderClock : Clock {
-    override fun now(): Instant = Instant.fromEpochMilliseconds(kotlin.time.Clock.System.now().toEpochMilliseconds())
+    override fun now(): Instant =
+        Instant.fromEpochMilliseconds(
+            kotlin.time.Clock.System
+                .now()
+                .toEpochMilliseconds(),
+        )
 }
