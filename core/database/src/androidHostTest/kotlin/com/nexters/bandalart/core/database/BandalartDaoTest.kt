@@ -130,6 +130,48 @@ class BandalartDaoTest {
             }
 
         @Test
+        @DisplayName("메인 셀 마감일에 null을 저장하면 기존 마감일만 제거되어야 한다")
+        fun mainCellDueDateCanBeCleared() =
+            runTest {
+                val bandalartId = bandalartDao.createEmptyBandalart()
+                val mainCell = bandalartDao.getBandalartMainCell(bandalartId).cell
+                bandalartDao.updateMainCellWithDto(
+                    cellId = mainCell.id!!,
+                    updateDto =
+                        UpdateBandalartMainCellDto(
+                            title = "유지할 제목",
+                            description = "유지할 설명",
+                            dueDate = "2026-08-31T00:00",
+                            profileEmoji = null,
+                            mainColor = "#3FFFBA",
+                            subColor = "#111827",
+                        ),
+                )
+
+                bandalartDao.updateMainCellWithDto(
+                    cellId = mainCell.id,
+                    updateDto =
+                        UpdateBandalartMainCellDto(
+                            title = null,
+                            description = null,
+                            dueDate = null,
+                            profileEmoji = null,
+                            mainColor = "#3FFFBA",
+                            subColor = "#111827",
+                        ),
+                )
+
+                val updatedMainCell = bandalartDao.getBandalartMainCell(bandalartId).cell
+                val updatedBandalart = bandalartDao.getBandalart(bandalartId)
+                assertEquals("유지할 제목", updatedMainCell.title)
+                assertEquals("유지할 설명", updatedMainCell.description)
+                assertEquals(null, updatedMainCell.dueDate)
+                assertEquals("유지할 제목", updatedBandalart.title)
+                assertEquals("유지할 설명", updatedBandalart.description)
+                assertEquals(null, updatedBandalart.dueDate)
+            }
+
+        @Test
         @DisplayName("서브 셀 업데이트 시 내용이 올바르게 변경되어야 한다")
         fun testUpdateSubCell() =
             runTest {
@@ -350,6 +392,19 @@ class BandalartDaoTest {
 
                     cancelAndIgnoreRemainingEvents()
                 }
+            }
+
+        @Test
+        @DisplayName("모든 반다라트의 main sub task 셀을 한 번에 조회할 수 있어야 한다")
+        fun allCellsCanBeProjectedGlobally() =
+            runTest {
+                val firstBandalartId = bandalartDao.createEmptyBandalart()
+                val secondBandalartId = bandalartDao.createEmptyBandalart()
+
+                val cells = bandalartDao.getAllCells()
+
+                assertEquals(50, cells.size)
+                assertEquals(setOf(firstBandalartId, secondBandalartId), cells.map { it.bandalartId }.toSet())
             }
     }
 }

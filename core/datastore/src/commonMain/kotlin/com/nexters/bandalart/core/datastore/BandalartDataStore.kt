@@ -39,6 +39,7 @@ class BandalartDataStore(
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
         private const val THEME_MODE = "theme_mode"
         private const val RECENT_EMOJIS = "recent_emojis"
+        private const val DEADLINE_REMINDER_ENABLED = "deadline_reminder_enabled"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
         private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
         private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
@@ -51,6 +52,7 @@ class BandalartDataStore(
     private val onboardingCompletedKey = booleanPreferencesKey(ONBOARDING_COMPLETED_ID)
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
     private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
+    private val deadlineReminderEnabledKey = booleanPreferencesKey(DEADLINE_REMINDER_ENABLED)
     private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
     private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
     private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
@@ -140,6 +142,15 @@ class BandalartDataStore(
                     ?.let { Json.decodeFromString<List<String>>(it) }
                     ?: emptyList()
             }
+
+    val deadlineReminderEnabled =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences -> preferences[deadlineReminderEnabledKey] ?: false }
 
     suspend fun setRecentBandalartId(recentBandalartId: Long) {
         dataStore.edit { preferences ->
@@ -251,6 +262,12 @@ class BandalartDataStore(
     suspend fun setThemeMode(themeMode: String) {
         dataStore.edit { preferences ->
             preferences[themeModeKey] = themeMode
+        }
+    }
+
+    suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[deadlineReminderEnabledKey] = enabled
         }
     }
 

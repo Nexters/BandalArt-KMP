@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.core.domain.repository
+package com.nexters.bandalart.core.domain.notification
 
-import com.nexters.bandalart.core.domain.entity.ThemeMode
-import kotlinx.coroutines.flow.Flow
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-interface SettingsRepository {
-    val themeMode: Flow<ThemeMode>
-    val recentEmojis: Flow<List<String>>
-    val deadlineReminderEnabled: Flow<Boolean>
-
-    suspend fun setThemeMode(themeMode: ThemeMode)
-
-    suspend fun addRecentEmoji(emoji: String)
-
-    suspend fun setDeadlineReminderEnabled(enabled: Boolean)
+class DeadlineReminderContractsTest {
+    @Test
+    fun noOpReconcilerReportsUnsupportedInsteadOfAHealthyPlatform() {
+        assertEquals(
+            DeadlineReminderSchedulingErrorCategory.UNSUPPORTED,
+            NoOpDeadlineReminderReconciler.schedulingHealth.value.lastErrorCategory,
+        )
+    }
 }

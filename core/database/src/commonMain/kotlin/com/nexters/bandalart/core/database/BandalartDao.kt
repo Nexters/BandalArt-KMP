@@ -124,6 +124,9 @@ interface BandalartDao {
     @Query("SELECT * FROM bandalart_cells WHERE bandalartId = :bandalartId")
     suspend fun getAllCellsInBandalart(bandalartId: Long): List<BandalartCellDBEntity>
 
+    @Query("SELECT * FROM bandalart_cells")
+    suspend fun getAllCells(): List<BandalartCellDBEntity>
+
     // Update - 반다라트
     /** 반다라트 정보 업데이트 */
     @Update
@@ -143,7 +146,7 @@ interface BandalartDao {
         val updatedBandalart = currentBandalart.copy(
             title = updateDto.title ?: currentBandalart.title,
             description = updateDto.description ?: currentBandalart.description,
-            dueDate = updateDto.dueDate ?: currentBandalart.dueDate,
+            dueDate = updateDto.dueDate,
             profileEmoji = updateDto.profileEmoji ?: currentBandalart.profileEmoji,
             mainColor = updateDto.mainColor,
             subColor = updateDto.subColor,
@@ -157,7 +160,7 @@ interface BandalartDao {
             originalCell.copy(
                 title = updateDto.title ?: originalCell.title,
                 description = updateDto.description ?: originalCell.description,
-                dueDate = updateDto.dueDate ?: originalCell.dueDate,
+                dueDate = updateDto.dueDate,
                 isCompleted = originalCell.isCompleted,
             ),
         )

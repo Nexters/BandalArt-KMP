@@ -50,6 +50,26 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("마감일 알림 설정 테스트")
+    inner class DeadlineReminderPreferenceTest {
+        @Test
+        @DisplayName("저장값이 없으면 마감일 알림은 꺼져 있어야 한다")
+        fun deadlineReminderIsDisabledByDefault() =
+            runTest {
+                assertFalse(bandalartDataStore.deadlineReminderEnabled.first())
+            }
+
+        @Test
+        @DisplayName("마감일 알림 사용 의사를 저장할 수 있어야 한다")
+        fun deadlineReminderSelectionIsStored() =
+            runTest {
+                bandalartDataStore.setDeadlineReminderEnabled(true)
+
+                assertTrue(bandalartDataStore.deadlineReminderEnabled.first())
+            }
+    }
+
+    @Nested
     @DisplayName("최근 반다라트 ID 관련 테스트")
     inner class RecentBandalartIdTest {
         @Test
