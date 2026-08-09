@@ -86,14 +86,45 @@
 - 기존 legacy Firebase refresh token과 추적된 service account key는 발급처에서 폐기 완료했다.
 - Git 이력 정리는 강제 push가 필요한 별도 작업으로 분리하고 명시적 승인 없이 수행하지 않는다.
 
-## 버전과 실패 처리
+## 버전 관리와 실패 처리
 
-- Android version은 `gradle/libs.versions.toml`을 단일 source로 사용하고 자동 변경하지 않는다.
-- iOS marketing version은 실제 source인 `iosApp/iosApp/Info.plist`를 사용한다. build number는 TestFlight의 같은 version 최신 build + 1로 runner에서만 변경하며 저장소에는 커밋하지 않는다.
-- 이미 사용된 versionCode/build number이면 source를 수정하지 않고 실패한다.
-- Android 테스트 광고 artifact는 Production으로 승격하지 않으며 운영 광고 빌드는 새 versionCode가 필요하다.
-- iOS 서명 profile의 bundle ID, Team ID, 배포 유형 또는 만료가 맞지 않으면 archive 전에 실패한다.
-- 업로드 성공 후 스토어 조회가 일시적으로 늦으면 제한된 횟수만 재확인하고 실패 로그를 남긴다.
+### SemVer와 업데이트 강제 여부
+
+제품 버전은 변경 범위만 표현하고 업데이트 강제 여부를 포함하지 않는다.
+
+- `MAJOR`: 호환되지 않는 데이터·동작 변경이나 제품 단위의 큰 전환
+- `MINOR`: 기존 사용자 흐름과 호환되는 기능 추가
+- `PATCH`: 버그 수정, 문구·레이아웃 같은 작은 UX 개선과 내부 변경
+
+강제 업데이트를 피하려고 신기능 release를 patch로 낮추는 등 버전 의미를 바꾸지 않는다. 반대로 긴급 patch도 필요하면 강제할 수 있다. Android 강제 여부는 Release CD의 `android_update_priority`만 결정하며 일반 배포는 `0`, 긴급 차단 release만 `4` 또는 `5`를 사용한다. 이미 게시한 Play release의 priority는 바꿀 수 없으므로 잘못 게시했다면 새 versionCode로 다시 배포한다.
+
+### Android
+
+- 단일 source는 `gradle/libs.versions.toml`의 `majorVersion`, `minorVersion`, `patchVersion`이다.
+- `versionName`은 `MAJOR.MINOR.PATCH`, `versionCode`는 `(MAJOR * 10000) + (MINOR * 100) + PATCH`로 계산한다. 예를 들어 `2.2.21`은 `20221`이다.
+- 계산 충돌을 막기 위해 `MINOR`와 `PATCH`는 각각 `0..99` 범위에서 관리한다.
+- 모든 AAB는 Play 전체 track의 기존 최댓값보다 큰 새 versionCode를 사용해야 한다.
+- workflow는 버전을 자동 증가시키거나 source를 커밋하지 않는다. 배포 PR에서 버전과 3개 locale release notes를 함께 변경한다.
+- Internal Testing의 테스트 광고 AAB를 Production으로 승격하지 않는다. 운영 광고 빌드는 새 versionCode로 별도 생성한다.
+
+### iOS
+
+- marketing version의 단일 source는 `iosApp/iosApp/Info.plist`의 `CFBundleShortVersionString`이다.
+- 저장소의 `CFBundleVersion`은 plist의 유효한 기본값일 뿐 CD build 번호의 seed가 아니다. TestFlight 배포 lane은 같은 marketing version의 ASC 최신 build를 조회해 빈 train이면 `1`, 기존 build가 있으면 `최신값 + 1`을 runner checkout에만 적용한다.
+- TestFlight build 번호는 배포할 때마다 저장소에 다시 커밋하지 않는다. 동시에 같은 다음 번호를 선택한 업로드가 충돌하면 source를 수정하거나 자동 재시도하지 않고 실패한다.
+- Android와 iOS 버전은 현재 자동 동기화되지 않는다. 같은 제품 버전으로 동시 출시하려면 두 source를 PR에서 명시적으로 같은 값으로 맞춘다.
+
+### 표준 배포 순서
+
+1. 변경 범위로 `MAJOR.MINOR.PATCH`를 결정한다. 강제 여부는 이 결정에 영향을 주지 않는다.
+2. 실제 version source와 배포 안내를 변경한다.
+   - Android Internal: `androidApp/src/main/play/release-notes/{ko-KR,en-US,ja-JP}/internal.txt`
+   - iOS TestFlight: `fastlane/metadata/ios/what_to_test.txt`
+3. PR CI를 통과시켜 `main`에 merge한다.
+4. `.github/workflows/release-cd.yml`의 Release CD에서 target을 선택한다. Android 일반 배포는 priority `0`, 긴급 차단만 `4` 또는 `5`를 선택한다.
+5. 업로드 후 Android는 exact versionCode·track·status·priority, iOS는 exact marketing version·build 존재를 스토어 API로 검증한다.
+
+Android versionCode가 이미 사용됐거나 iOS가 선택한 다음 build number가 동시 업로드와 충돌하면 source를 자동 수정하지 않고 배포를 실패시킨다. iOS 서명 profile의 bundle ID, Team ID, 배포 유형 또는 만료가 맞지 않아도 archive 전에 실패한다. 업로드 성공 후 스토어 조회가 일시적으로 늦으면 제한된 횟수만 재확인하고 실패 로그를 남긴다.
 
 ## 검증과 완료 조건
 
