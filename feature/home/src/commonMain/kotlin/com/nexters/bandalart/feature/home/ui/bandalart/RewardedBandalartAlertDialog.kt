@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -41,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.add_description
-import bandalart.core.designsystem.generated.resources.ic_add
+import bandalart.core.designsystem.generated.resources.ic_add_circle_outlined
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_cancel
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_confirm
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_message
@@ -67,11 +68,11 @@ fun RewardedBandalartAlertDialog(
                         .padding(top = 24.dp),
             ) {
                 Icon(
-                    imageVector = vectorResource(Res.drawable.ic_add),
+                    imageVector = vectorResource(Res.drawable.ic_add_circle_outlined),
                     contentDescription = stringResource(Res.string.add_description),
                     modifier =
                         Modifier
-                            .height(28.dp)
+                            .size(28.dp)
                             .align(Alignment.CenterHorizontally),
                     tint = MaterialTheme.colorScheme.primary,
                 )
