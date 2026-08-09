@@ -1,6 +1,8 @@
-Added deadline reminders.
+Please verify these updates in this Internal build.
 
-• Turn deadline reminders on or off in Settings.
-• Get a reminder on the due date for unfinished goals.
-• Tap a reminder to open its Bandalart.
-• This Internal build uses Google test ads for ad verification.
+• Turn deadline reminders on or off in Settings, and tap one to open its Bandalart.
+• Long-press a completed cell again to mark it incomplete.
+• Emoji categories now use clearer navigation icons and visible names.
+• The Home emoji is larger and modal bottom spacing is corrected.
+• The Home banner is reduced to a centered 320×50 format.
+• Google test ads are used for ad verification.
