@@ -444,9 +444,7 @@ class HomePresenterQuickCompletionTest {
             settingsRepository = FakeSettingsRepository(),
         )
 
-    private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(
-        bandalartId: Long = 1L,
-    ): HomeScreen.State {
+    private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long = 1L,): HomeScreen.State {
         var state = awaitItem()
         while (state.bandalartData?.id != bandalartId || state.isLoading) {
             state = awaitItem()

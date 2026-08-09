@@ -180,7 +180,11 @@ internal class FakeBandalartRepository(
                 description = updateBandalartTaskCellEntity.description,
                 dueDate = updateBandalartTaskCellEntity.dueDate,
                 isCompleted = updateBandalartTaskCellEntity.isCompleted ?: false,
-                parentId = childCells.values.flatten().firstOrNull { it.id == cellId }?.parentId,
+                parentId =
+                    childCells.values
+                        .flatten()
+                        .firstOrNull { it.id == cellId }
+                        ?.parentId,
             ),
         )
         afterTaskCellUpdate()
