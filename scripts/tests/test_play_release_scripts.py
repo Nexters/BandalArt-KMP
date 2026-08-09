@@ -15,7 +15,11 @@ class PlayVersionTest(unittest.TestCase):
             {
                 "track": "internal",
                 "releases": [
-                    {"status": "completed", "versionCodes": ["20217"]},
+                    {
+                        "status": "completed",
+                        "versionCodes": ["20217"],
+                        "inAppUpdatePriority": 4,
+                    },
                 ],
             },
             {
@@ -39,6 +43,7 @@ class PlayVersionTest(unittest.TestCase):
                 "internal",
                 20217,
                 "completed",
+                4,
             )
         )
         self.assertFalse(
@@ -47,6 +52,29 @@ class PlayVersionTest(unittest.TestCase):
                 "internal",
                 20218,
                 "completed",
+                4,
+            )
+        )
+
+    def test_rejects_exact_release_with_wrong_update_priority(self) -> None:
+        self.assertFalse(
+            play_next_version_code.expected_release_exists(
+                self.tracks,
+                "internal",
+                20217,
+                "completed",
+                0,
+            )
+        )
+
+    def test_treats_missing_update_priority_as_zero(self) -> None:
+        self.assertTrue(
+            play_next_version_code.expected_release_exists(
+                self.tracks,
+                "production",
+                20213,
+                "completed",
+                0,
             )
         )
 

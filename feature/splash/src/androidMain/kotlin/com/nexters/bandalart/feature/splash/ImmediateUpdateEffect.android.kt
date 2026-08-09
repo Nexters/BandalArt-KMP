@@ -17,7 +17,6 @@
 package com.nexters.bandalart.feature.splash
 
 import android.app.Activity
-import android.content.Context
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -36,7 +35,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.nexters.bandalart.core.common.utils.isImmediateUpdate
+import com.nexters.bandalart.core.common.utils.isMandatoryUpdate
 import io.github.aakira.napier.Napier
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -64,7 +63,7 @@ internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
             val appUpdateInfo = appUpdateManager.appUpdateInfo.await()
             val canStartImmediateUpdate =
                 appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    isValidImmediateUpdate(context, appUpdateInfo.availableVersionCode()) &&
+                    isMandatoryUpdate(appUpdateInfo.updatePriority()) &&
                     appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
 
             if (canStartImmediateUpdate) {
@@ -77,21 +76,6 @@ internal actual fun ImmediateUpdateEffect(onComplete: () -> Unit) {
             currentOnComplete()
         }
     }
-}
-
-private fun isValidImmediateUpdate(
-    context: Context,
-    availableVersionCode: Int,
-): Boolean {
-    val currentVersionCode =
-        context.packageManager
-            .getPackageInfo(context.packageName, 0)
-            .longVersionCode
-            .toInt()
-    return isImmediateUpdate(
-        currentVersionCode = currentVersionCode,
-        availableVersionCode = availableVersionCode,
-    )
 }
 
 private fun AppUpdateManager.startImmediateUpdate(

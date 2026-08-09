@@ -16,14 +16,6 @@
 
 package com.nexters.bandalart.core.common.utils
 
-fun isImmediateUpdate(
-    currentVersionCode: Int,
-    availableVersionCode: Int,
-): Boolean {
-    val availableMajor = availableVersionCode / 10_000
-    val availableMinor = (availableVersionCode % 10_000) / 100
-    val currentMajor = currentVersionCode / 10_000
-    val currentMinor = (currentVersionCode % 10_000) / 100
+const val MANDATORY_UPDATE_PRIORITY_THRESHOLD = 4
 
-    return availableMajor > currentMajor || availableMinor > currentMinor
-}
+fun isMandatoryUpdate(updatePriority: Int): Boolean = updatePriority >= MANDATORY_UPDATE_PRIORITY_THRESHOLD

@@ -24,6 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expect-version-code", type=int)
     parser.add_argument("--verify-track")
     parser.add_argument("--verify-status", default="completed")
+    parser.add_argument("--expect-update-priority", type=int)
     parser.add_argument("--retries", type=int, default=1)
     return parser.parse_args()
 
@@ -71,13 +72,22 @@ def expected_release_exists(
     track_name: str,
     version_code: int,
     status: str,
+    update_priority: Optional[int] = None,
 ) -> bool:
     for track in tracks:
         if track.get("track") != track_name:
             continue
         for release in track.get("releases", []):
             codes = {int(code) for code in release.get("versionCodes", []) or []}
-            if version_code in codes and release.get("status") == status:
+            actual_priority = int(release.get("inAppUpdatePriority", 0))
+            priority_matches = (
+                update_priority is None or actual_priority == update_priority
+            )
+            if (
+                version_code in codes
+                and release.get("status") == status
+                and priority_matches
+            ):
                 return True
     return False
 
@@ -86,6 +96,12 @@ def main() -> int:
     args = parse_args()
     if args.verify_track and args.expect_version_code is None:
         print("error: --verify-track requires --expect-version-code", file=sys.stderr)
+        return 2
+    if args.expect_update_priority is not None and not 0 <= args.expect_update_priority <= 5:
+        print("error: --expect-update-priority must be between 0 and 5", file=sys.stderr)
+        return 2
+    if args.expect_update_priority is not None and not args.verify_track:
+        print("error: --expect-update-priority requires --verify-track", file=sys.stderr)
         return 2
     if args.retries < 1:
         print("error: --retries must be at least 1", file=sys.stderr)
@@ -133,6 +149,7 @@ def main() -> int:
             args.verify_track,
             args.expect_version_code,
             args.verify_status,
+            args.expect_update_priority,
         ):
             break
         if attempt + 1 < args.retries:
@@ -141,7 +158,8 @@ def main() -> int:
         print(
             "error: expected release was not found on "
             f"{args.verify_track}: versionCode={args.expect_version_code}, "
-            f"status={args.verify_status}",
+            f"status={args.verify_status}, "
+            f"updatePriority={args.expect_update_priority}",
             file=sys.stderr,
         )
         return 1
@@ -163,7 +181,8 @@ def main() -> int:
         print(f"EXPECTED_VERSION_CODE={args.expect_version_code}")
     if args.verify_track:
         print(
-            f"VERIFIED={args.verify_track}:{args.expect_version_code}:{args.verify_status}"
+            f"VERIFIED={args.verify_track}:{args.expect_version_code}:"
+            f"{args.verify_status}:priority={args.expect_update_priority}"
         )
     return 0
 

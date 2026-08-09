@@ -17,6 +17,18 @@ on:
                 required: true
                 default: false
                 type: boolean
+            android_update_priority:
+                description: Android in-app update priority (0=normal, 4-5=mandatory)
+                required: true
+                default: '0'
+                type: choice
+                options:
+                    - '0'
+                    - '1'
+                    - '2'
+                    - '3'
+                    - '4'
+                    - '5'
 
 concurrency:
     group: release-cd
@@ -40,9 +52,14 @@ jobs:
                 env:
                     RELEASE_REF: ${{ github.ref }}
                     RELEASE_CONFIRMED: ${{ inputs.confirm_release }}
+                    ANDROID_UPDATE_PRIORITY: ${{ inputs.android_update_priority }}
                 run: |
                     test "$RELEASE_REF" = "refs/heads/main"
                     test "$RELEASE_CONFIRMED" = "true"
+                    case "$ANDROID_UPDATE_PRIORITY" in
+                        0|1|2|3|4|5) ;;
+                        *) exit 1 ;;
+                    esac
 
     android:
         name: Play Internal Testing
@@ -125,6 +142,7 @@ jobs:
                     PLAY_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/playstore/service-account-key.json
                     ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/bandalart-upload.jks
                     BUNDLETOOL_JAR: ${{ runner.temp }}/bundletool-all-1.18.3.jar
+                    ANDROID_UPDATE_PRIORITY: ${{ inputs.android_update_priority }}
                 run: bundle exec fastlane android internal
 
             -   name: Remove Android credentials

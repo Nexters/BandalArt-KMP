@@ -17,7 +17,6 @@
 package com.nexters.bandalart.feature.home
 
 import android.app.Activity
-import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.SnackbarDuration
@@ -47,7 +46,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.nexters.bandalart.core.common.utils.isImmediateUpdate
+import com.nexters.bandalart.core.common.utils.isMandatoryUpdate
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -130,7 +129,7 @@ internal fun FlexibleUpdateEffect(
 
                     appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) &&
-                        !isImmediateUpdate(context, appUpdateInfo.availableVersionCode()) -> {
+                        !isMandatoryUpdate(appUpdateInfo.updatePriority()) -> {
                         currentOnUpdateAvailable(appUpdateInfo.availableVersionCode())
                     }
                 }
@@ -148,7 +147,7 @@ internal fun FlexibleUpdateEffect(
                 appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     appUpdateInfo.availableVersionCode() == requestedVersionCode &&
                     appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) &&
-                    !isImmediateUpdate(context, requestedVersionCode)
+                    !isMandatoryUpdate(appUpdateInfo.updatePriority())
 
             if (canStartUpdate) {
                 updateManager.startUpdateFlowForResult(
@@ -161,21 +160,6 @@ internal fun FlexibleUpdateEffect(
             Napier.e("Failed to start flexible update", exception, tag = "InAppUpdate")
         }
     }
-}
-
-private fun isImmediateUpdate(
-    context: Context,
-    availableVersionCode: Int,
-): Boolean {
-    val currentVersionCode =
-        context.packageManager
-            .getPackageInfo(context.packageName, 0)
-            .longVersionCode
-            .toInt()
-    return isImmediateUpdate(
-        currentVersionCode = currentVersionCode,
-        availableVersionCode = availableVersionCode,
-    )
 }
 
 @Suppress("TooGenericExceptionCaught")

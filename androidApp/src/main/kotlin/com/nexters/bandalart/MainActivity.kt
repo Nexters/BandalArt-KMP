@@ -32,7 +32,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.nexters.bandalart.core.common.utils.isImmediateUpdate
+import com.nexters.bandalart.core.common.utils.isMandatoryUpdate
 import io.github.aakira.napier.Napier
 
 class MainActivity : ComponentActivity() {
@@ -89,10 +89,7 @@ class MainActivity : ComponentActivity() {
 
                     appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                        isImmediateUpdate(
-                            currentVersionCode = currentVersionCode(),
-                            availableVersionCode = appUpdateInfo.availableVersionCode(),
-                        ) -> {
+                        isMandatoryUpdate(appUpdateInfo.updatePriority()) -> {
                         startImmediateUpdate(appUpdateInfo)
                     }
                 }
@@ -126,10 +123,4 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
-
-    private fun currentVersionCode(): Int =
-        packageManager
-            .getPackageInfo(packageName, 0)
-            .longVersionCode
-            .toInt()
 }
