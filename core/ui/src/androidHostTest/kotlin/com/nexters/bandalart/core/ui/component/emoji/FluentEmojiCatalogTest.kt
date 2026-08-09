@@ -16,6 +16,18 @@
 
 package com.nexters.bandalart.core.ui.component.emoji
 
+import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_activities
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_all
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_flags
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_food
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_nature
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_objects
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_people
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_recent
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_smileys
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_symbols
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_travel
 import com.nexters.bandalart.core.common.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -157,10 +169,27 @@ class FluentEmojiCatalogTest {
     }
 
     @Test
-    fun everyCategoryTabUsesAnEmojiFromTheBundledFluentCatalog() {
-        assertTrue(
-            visibleFluentEmojiCategoryTabs(hasRecentEmojis = true)
-                .all { FluentEmojiCatalog.resourceKeyFor(it.iconUnicode) != null },
+    fun everyCategoryTabUsesItsOwnNavigationVectorResource() {
+        val tabs = visibleFluentEmojiCategoryTabs(hasRecentEmojis = true)
+        val expectedResources =
+            listOf(
+                Res.drawable.emoji_category_nav_all,
+                Res.drawable.emoji_category_nav_recent,
+                Res.drawable.emoji_category_nav_smileys,
+                Res.drawable.emoji_category_nav_people,
+                Res.drawable.emoji_category_nav_nature,
+                Res.drawable.emoji_category_nav_food,
+                Res.drawable.emoji_category_nav_travel,
+                Res.drawable.emoji_category_nav_activities,
+                Res.drawable.emoji_category_nav_objects,
+                Res.drawable.emoji_category_nav_symbols,
+                Res.drawable.emoji_category_nav_flags,
+            )
+
+        assertEquals(expectedResources, tabs.map { it.iconResource })
+        assertEquals(
+            tabs.size,
+            tabs.map { it.iconResource }.distinct().size,
         )
     }
 }

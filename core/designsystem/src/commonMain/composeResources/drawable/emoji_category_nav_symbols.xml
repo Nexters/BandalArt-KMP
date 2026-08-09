@@ -1,0 +1,13 @@
+<!--
+  Adapted from the Google Material Symbol "tag" 24px Outlined SVG to Android/Compose vector XML.
+  Copyright Google LLC. Licensed under the Apache License 2.0.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path android:fillColor="#FF000000" android:pathData="m240,-160 40,-160H120l20,-80h160l40,-160H180l20,-80h160l40,-160h80l-40,160h160l40,-160h80l-40,160h160l-20,80H660l-40,160h160l-20,80H600l-40,160h-80l40,-160H360l-40,160h-80Zm140,-240h160l40,-160H420l-40,160Z" />
+  </group>
+</vector>

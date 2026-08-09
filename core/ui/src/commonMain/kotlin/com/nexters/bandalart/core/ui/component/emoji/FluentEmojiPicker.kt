@@ -31,30 +31,47 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_activities
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_all
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_flags
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_food
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_nature
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_objects
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_people
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_recent
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_smileys
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_symbols
+import bandalart.core.designsystem.generated.resources.emoji_category_nav_travel
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_activities
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_all
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_flags
@@ -67,7 +84,10 @@ import bandalart.core.designsystem.generated.resources.emoji_picker_category_smi
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_symbols
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_travel
 import com.nexters.bandalart.core.common.getLocale
+import kotlinx.coroutines.flow.first
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 private const val PICKER_COLUMN_COUNT = 6
 private const val PICKER_VISIBLE_ROW_COUNT = 4
@@ -76,25 +96,52 @@ private val CATEGORY_TAB_SPACING = 4.dp
 
 internal data class FluentEmojiCategoryTab(
     val category: FluentEmojiCategory?,
-    val iconUnicode: String,
+    val iconResource: DrawableResource,
 )
 
 private val fluentEmojiCategoryTabs =
     listOf(
-        FluentEmojiCategoryTab(category = null, iconUnicode = "✨"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.RECENT, iconUnicode = "⏰"),
+        FluentEmojiCategoryTab(category = null, iconResource = Res.drawable.emoji_category_nav_all),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.RECENT,
+            iconResource = Res.drawable.emoji_category_nav_recent,
+        ),
         FluentEmojiCategoryTab(
             category = FluentEmojiCategory.SMILEYS_AND_EMOTION,
-            iconUnicode = "😍",
+            iconResource = Res.drawable.emoji_category_nav_smileys,
         ),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.PEOPLE_AND_BODY, iconUnicode = "💪"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.ANIMALS_AND_NATURE, iconUnicode = "🐻"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.FOOD_AND_DRINK, iconUnicode = "🍉"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.TRAVEL_AND_PLACES, iconUnicode = "🚀"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.ACTIVITIES, iconUnicode = "🎯"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.OBJECTS, iconUnicode = "📚"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.SYMBOLS, iconUnicode = "✔️"),
-        FluentEmojiCategoryTab(category = FluentEmojiCategory.FLAGS, iconUnicode = "🏁"),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.PEOPLE_AND_BODY,
+            iconResource = Res.drawable.emoji_category_nav_people,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.ANIMALS_AND_NATURE,
+            iconResource = Res.drawable.emoji_category_nav_nature,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.FOOD_AND_DRINK,
+            iconResource = Res.drawable.emoji_category_nav_food,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.TRAVEL_AND_PLACES,
+            iconResource = Res.drawable.emoji_category_nav_travel,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.ACTIVITIES,
+            iconResource = Res.drawable.emoji_category_nav_activities,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.OBJECTS,
+            iconResource = Res.drawable.emoji_category_nav_objects,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.SYMBOLS,
+            iconResource = Res.drawable.emoji_category_nav_symbols,
+        ),
+        FluentEmojiCategoryTab(
+            category = FluentEmojiCategory.FLAGS,
+            iconResource = Res.drawable.emoji_category_nav_flags,
+        ),
     )
 
 internal fun visibleFluentEmojiCategoryTabs(hasRecentEmojis: Boolean): List<FluentEmojiCategoryTab> =
@@ -184,11 +231,22 @@ fun FluentEmojiPicker(
                 horizontalPadding * 2 -
                 PICKER_CELL_SPACING * (PICKER_COLUMN_COUNT - 1)) / PICKER_COLUMN_COUNT
         val gridHeight =
-            topPadding +
-                cellSize * PICKER_VISIBLE_ROW_COUNT +
+            cellSize * PICKER_VISIBLE_ROW_COUNT +
                 PICKER_CELL_SPACING * (PICKER_VISIBLE_ROW_COUNT - 1)
 
         Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = categoryLabel(selectedCategory),
+                modifier =
+                    Modifier.padding(
+                        start = horizontalPadding,
+                        top = topPadding,
+                        end = horizontalPadding,
+                        bottom = 8.dp,
+                    ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelLarge,
+            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(PICKER_COLUMN_COUNT),
                 state = gridState,
@@ -199,7 +257,7 @@ fun FluentEmojiPicker(
                 contentPadding =
                     PaddingValues(
                         start = horizontalPadding,
-                        top = topPadding,
+                        top = 0.dp,
                         end = horizontalPadding,
                         bottom = 0.dp,
                     ),
@@ -245,8 +303,28 @@ private fun EmojiCategoryRow(
     modifier: Modifier = Modifier,
 ) {
     val tabs = remember(hasRecentEmojis) { visibleFluentEmojiCategoryTabs(hasRecentEmojis) }
+    val categoryRowState = rememberLazyListState()
+    val selectedIndex = tabs.indexOfFirst { it.category == selectedCategory }
+
+    LaunchedEffect(selectedIndex, tabs) {
+        if (selectedIndex < 0) return@LaunchedEffect
+
+        val layoutInfo =
+            snapshotFlow { categoryRowState.layoutInfo }
+                .first { it.totalItemsCount == tabs.size }
+        val selectedItem = layoutInfo.visibleItemsInfo.firstOrNull { it.index == selectedIndex }
+        val selectedItemIsFullyVisible =
+            selectedItem != null &&
+                selectedItem.offset >= layoutInfo.viewportStartOffset &&
+                selectedItem.offset + selectedItem.size <= layoutInfo.viewportEndOffset
+
+        if (!selectedItemIsFullyVisible) {
+            categoryRowState.animateScrollToItem(selectedIndex)
+        }
+    }
 
     LazyRow(
+        state = categoryRowState,
         modifier =
             modifier
                 .fillMaxWidth()
@@ -261,7 +339,7 @@ private fun EmojiCategoryRow(
             val selected = selectedCategory == tab.category
             val label = categoryLabel(tab.category)
 
-            Surface(
+            Box(
                 modifier =
                     Modifier
                         .size(48.dp)
@@ -272,29 +350,29 @@ private fun EmojiCategoryRow(
                         ).semantics(mergeDescendants = true) {
                             contentDescription = label
                         },
-                shape = RoundedCornerShape(12.dp),
-                color =
-                    if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                border =
-                    if (selected) {
-                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                    } else {
-                        null
-                    },
+                contentAlignment = Alignment.Center,
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
+                Surface(
+                    modifier = Modifier.size(36.dp),
+                    shape = CircleShape,
+                    color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
                 ) {
-                    BandalartEmoji(
-                        unicode = tab.iconUnicode,
-                        contentDescription = null,
-                        size = 24.dp,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = vectorResource(tab.iconResource),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint =
+                                if (selected) {
+                                    MaterialTheme.colorScheme.onPrimary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                        )
+                    }
                 }
             }
         }
