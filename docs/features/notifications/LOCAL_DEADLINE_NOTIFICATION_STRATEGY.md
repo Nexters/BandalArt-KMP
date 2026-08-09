@@ -7,7 +7,7 @@
 
 ## 현재 진행률 체크리스트
 
-2026-08-09 기준 로컬 구현, `main` 병합, 실제 스토어 출하를 분리해 기록한다. Android 구현은 PR #249~#251로 `main`에 병합됐지만 아직 Android Internal 설치본에는 포함되지 않았다. iOS 구현과 TestFlight 검증도 아직이다.
+2026-08-10 기준 로컬 구현, `main` 병합, 실제 스토어 출하를 분리해 기록한다. Android 구현은 PR #249~#251로 `main`에 병합됐지만 아직 Android Internal 설치본에는 포함되지 않았다. iOS vertical slice는 별도 worktree에서 로컬 구현·Kotlin/Native compile과 Presenter host test까지 완료했으며 아직 commit·PR·TestFlight 검증 전이다.
 
 ### PR #249 — 조사·전략
 
@@ -33,13 +33,13 @@
 
 ### 예정 PR 4 — iOS vertical slice
 
-- [ ] UserNotifications scheduler·authorization adapter를 구현한다.
-- [ ] AppDelegate delegate, launch-target bridge와 pending/delivered reconcile을 구현·검증한다.
+- [x] UserNotifications scheduler·authorization adapter를 로컬 구현하고 Kotlin/Native iOS simulator compile을 통과시켰다.
+- [x] AppDelegate delegate, graph 이전 buffered launch-target bridge, pending/delivered namespace reconcile과 foreground/time-change 신호를 로컬 구현했다. Swift 포함 Xcode build는 Firebase SPM artifact 압축 해제 중 디스크 부족으로 source compile 전에 중단됐다.
 - [ ] TestFlight 설치본에서 실제 권한과 전달을 검증한다.
 
 ### 예정 PR 5 — 공통 UX 마무리·배포 검증
 
-- [ ] iOS 권한 연동 후 공통 설정 노출과 명시적 마감일 삭제 UX를 마무리한다.
+- [ ] 로컬 구현된 iOS 권한·공통 설정 노출을 설치본에서 검증하고 명시적 마감일 삭제 UX를 마무리한다.
 - [ ] 한국어·영어·일본어 문구와 접근성을 검증한다.
 - [ ] Android Internal과 iOS TestFlight의 전체 acceptance checklist를 완료한다.
 - [ ] #211 완료 조건 확인 뒤 umbrella issue를 닫는다.
@@ -244,7 +244,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 - Swift AppDelegate delegate와 KMP launch-target bridge
 - pending/delivered replace/cancel, foreground/time-change reconcile
 - iOS compile과 scheduler/delegate bridge 계약 검증. 실제 permission prompt와 전달 수동 검증은 PR 5로 미룸
-- 공통 설정 toggle은 아직 노출하지 않음
+- 공통 설정 toggle은 실제 iOS authorization adapter 상태를 사용해 노출하고, 실제 permission prompt/settings 복귀는 설치본에서 검증
 
 ### PR 5 — UX 활성화와 배포 검증
 
@@ -298,7 +298,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 
 ## 11. 출시·관측
 
-- Android는 vertical slice가 사용 가능한 상태로 검증되면 Android에서만 설정 toggle을 노출한다. iOS는 `Unsupported`를 유지해 거짓 기능을 노출하지 않는다.
+- 각 플랫폼은 실제 scheduler·authorization adapter가 연결된 뒤에만 공통 설정 toggle을 노출한다. Android는 `main`에 연결됐고 iOS는 로컬 vertical slice에서 `Unsupported`를 실제 상태로 교체했지만, iOS 설정 동선은 TestFlight 검증 전이다.
 - Android Internal과 iOS TestFlight에서 알림 권한과 실제 전달을 각각 검증한 뒤 활성화한다.
 - scheduler/reconcile 실패는 개인정보가 없는 batch ID, platform status, error category만 기록한다. 목표 제목과 설명은 로그에 남기지 않는다.
 - 알림 content에는 목표 제목 또는 집계 count만 사용하고 description, 완료 이력은 포함하지 않는다.
