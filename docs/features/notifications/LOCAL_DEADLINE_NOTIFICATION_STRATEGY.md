@@ -7,7 +7,7 @@
 
 ## 현재 진행률 체크리스트
 
-2026-08-09 기준 로컬 구현 완료와 실제 출하 완료를 분리해 기록한다. PR #249를 제외한 `예정 PR`은 구현 전략의 분할 단위이며 아직 생성된 GitHub PR이 아니다. 알림 기능은 아직 Android Internal이나 iOS TestFlight에 포함되지 않았다.
+2026-08-09 기준 로컬 구현, `main` 병합, 실제 스토어 출하를 분리해 기록한다. Android 구현은 PR #249~#251로 `main`에 병합됐지만 아직 Android Internal 설치본에는 포함되지 않았다. iOS 구현과 TestFlight 검증도 아직이다.
 
 ### PR #249 — 조사·전략
 
@@ -28,7 +28,7 @@
 - [x] 시간 변경 reconcile과 cold/warm notification navigation을 로컬에서 구현했다. buffered target·Presenter 소비는 host test로 검증했고 실제 Activity 전달은 수동 검증 전이다.
 - [x] Android에서만 노출되는 설정 ON/OFF·권한·시스템 설정 동선을 로컬에서 구현했다. 권한 상태별 실제 OS 동선은 Internal 설치본 검증 전이다.
 - [x] Android vertical slice를 독립 리뷰하고 관련 host test·Detekt를 통과시켰다.
-- [ ] Android vertical slice를 commit하고 PR·CI·merge한다.
+- [x] Android vertical slice를 commit하고 PR #251의 CI 통과 후 `main`에 병합했다.
 - [ ] Android Internal 설치본에서 실제 권한과 전달을 검증한다.
 
 ### 예정 PR 4 — iOS vertical slice
