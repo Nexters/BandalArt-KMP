@@ -34,6 +34,7 @@
     <string name="home_main_cell">메인목표</string>
     <string name="home_sub_cell">서브목표</string>
     <string name="home_complete_task_long_click">목표 완료</string>
+    <string name="home_uncomplete_task_long_click">목표 완료 취소</string>
     <string name="please_input_main_goal">메인 목표를 먼저 입력해주세요.</string>
     <string name="please_input_sub_goal">서브 목표를 먼저 입력해주세요.</string>
 

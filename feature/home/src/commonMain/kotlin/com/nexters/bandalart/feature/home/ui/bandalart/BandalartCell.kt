@@ -43,6 +43,7 @@ import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.complete_description
 import bandalart.core.designsystem.generated.resources.home_main_cell
 import bandalart.core.designsystem.generated.resources.home_complete_task_long_click
+import bandalart.core.designsystem.generated.resources.home_uncomplete_task_long_click
 import bandalart.core.designsystem.generated.resources.home_sub_cell
 import bandalart.core.designsystem.generated.resources.ic_cell_check
 import com.nexters.bandalart.core.common.extension.toColor
@@ -88,16 +89,21 @@ fun BandalartCell(
     val onLongClick =
         if (
             cellType == CellType.TASK &&
-            !cellData.title.isNullOrBlank() &&
-            !cellData.isCompleted
+            !cellData.title.isNullOrBlank()
         ) {
-            { onHomeUiAction(HomeScreen.Event.CompleteTask(cellData)) }
+            { onHomeUiAction(HomeScreen.Event.ToggleTaskCompletion(cellData)) }
         } else {
             null
         }
     val onLongClickLabel =
         if (onLongClick != null) {
-            stringResource(Res.string.home_complete_task_long_click)
+            stringResource(
+                if (cellData.isCompleted) {
+                    Res.string.home_uncomplete_task_long_click
+                } else {
+                    Res.string.home_complete_task_long_click
+                },
+            )
         } else {
             null
         }
