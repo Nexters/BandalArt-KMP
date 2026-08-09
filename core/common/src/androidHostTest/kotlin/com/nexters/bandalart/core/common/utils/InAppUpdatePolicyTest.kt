@@ -22,44 +22,23 @@ import org.junit.jupiter.api.Test
 
 class InAppUpdatePolicyTest {
     @Test
-    fun patchUpdateUsesFlexibleFlow() {
-        assertFalse(
-            isImmediateUpdate(
-                currentVersionCode = 20206,
-                availableVersionCode = 20299,
-            ),
-        )
+    fun priorityBelowFourUsesFlexibleFlow() {
+        assertFalse(isMandatoryUpdate(updatePriority = 0))
+        assertFalse(isMandatoryUpdate(updatePriority = 3))
     }
 
     @Test
-    fun minorAndMajorUpdatesUseImmediateFlow() {
-        assertTrue(
-            isImmediateUpdate(
-                currentVersionCode = 20206,
-                availableVersionCode = 20300,
-            ),
-        )
-        assertTrue(
-            isImmediateUpdate(
-                currentVersionCode = 20206,
-                availableVersionCode = 30000,
-            ),
-        )
+    fun priorityFourOrHigherUsesImmediateFlow() {
+        assertTrue(isMandatoryUpdate(updatePriority = 4))
+        assertTrue(isMandatoryUpdate(updatePriority = 5))
     }
 
     @Test
-    fun sameOrOlderVersionDoesNotStartImmediateFlow() {
-        assertFalse(
-            isImmediateUpdate(
-                currentVersionCode = 20206,
-                availableVersionCode = 20206,
-            ),
-        )
-        assertFalse(
-            isImmediateUpdate(
-                currentVersionCode = 20206,
-                availableVersionCode = 20199,
-            ),
-        )
+    fun semanticVersionDoesNotAffectMandatoryPolicy() {
+        val minorFeaturePriority = 0
+        val patchHotfixPriority = 4
+
+        assertFalse(isMandatoryUpdate(updatePriority = minorFeaturePriority))
+        assertTrue(isMandatoryUpdate(updatePriority = patchHotfixPriority))
     }
 }

@@ -55,7 +55,13 @@ def android_version
   [name, code]
 end
 
-def play_version_check!(version_code, post_upload: false)
+def android_update_priority
+  raw_priority = required_env!("ANDROID_UPDATE_PRIORITY")
+  UI.user_error!("ANDROID_UPDATE_PRIORITY must be an integer from 0 to 5") unless raw_priority.match?(/\A[0-5]\z/)
+  raw_priority.to_i
+end
+
+def play_version_check!(version_code, update_priority:, post_upload: false)
   command = [
     "uv",
     "run",
@@ -70,6 +76,8 @@ def play_version_check!(version_code, post_upload: false)
       "internal",
       "--verify-status",
       "completed",
+      "--expect-update-priority",
+      update_priority.to_s,
       "--retries",
       "6",
     ]
@@ -177,16 +185,18 @@ platform :android do
     UI.user_error!("bundletool is missing") unless File.file?(bundletool_path)
 
     version_name, version_code = android_version
+    update_priority = android_update_priority
     source_sha = capture_command!("git", "rev-parse", "HEAD").strip
     UI.message("SOURCE_SHA=#{source_sha}")
     UI.message("PACKAGE=#{ANDROID_PACKAGE}")
     UI.message("Android release #{version_name} (#{version_code}) -> Play Internal Testing")
+    UI.message("IN_APP_UPDATE_PRIORITY=#{update_priority}")
     %w[ko-KR en-US ja-JP].each do |locale|
       notes_path = File.join(REPO_ROOT, "androidApp/src/main/play/release-notes", locale, "internal.txt")
       UI.message("RELEASE_NOTES[#{locale}]=#{File.read(notes_path).strip}")
     end
     UI.message("TASKS=clean :androidApp:bundleRelease -> :androidApp:publishReleaseBundle")
-    play_version_check!(version_code)
+    play_version_check!(version_code, update_priority: update_priority)
 
     gradle(
       task: "clean :androidApp:bundleRelease",
@@ -219,15 +229,15 @@ platform :android do
     checksum = Digest::SHA256.file(verified_aab).hexdigest
 
     verify_ci_source!
-    play_version_check!(version_code)
+    play_version_check!(version_code, update_priority: update_priority)
     gradle(
       task: ":androidApp:publishReleaseBundle",
       project_dir: REPO_ROOT,
       properties: { "bandalart.useTestAds" => "true" },
-      flags: "--artifact-dir #{Shellwords.escape(artifact_dir)} --no-configuration-cache --stacktrace",
+      flags: "--artifact-dir #{Shellwords.escape(artifact_dir)} --update-priority #{update_priority} --no-configuration-cache --stacktrace",
     )
     UI.user_error!("Uploaded AAB changed after validation") unless Digest::SHA256.file(verified_aab).hexdigest == checksum
-    play_version_check!(version_code, post_upload: true)
+    play_version_check!(version_code, update_priority: update_priority, post_upload: true)
     append_github_summary(
       [
         "## Android Play Internal Testing",
@@ -235,6 +245,7 @@ platform :android do
         "- Package: `#{ANDROID_PACKAGE}`",
         "- Version: `#{version_name} (#{version_code})`",
         "- Track/status: `internal / completed`",
+        "- In-app update priority: `#{update_priority}`",
         "- Result: verified upload",
       ],
     )

@@ -90,6 +90,7 @@ play {
     }
     track.set("internal")
     releaseStatus.set(ReleaseStatus.COMPLETED)
+    updatePriority.set(0)
     defaultToAppBundles.set(true)
 }
 
