@@ -1,6 +1,6 @@
-Please verify these updates in this Internal build.
+Please verify the update policy in this Internal build.
 
-• Create a Bandalart instantly from five templates: job search, fitness habits, money habits, study plans, and travel preparation.
-• Cells created from a template remain fully editable, just like any other Bandalart.
-• Removed the ripple from emoji category tabs for a cleaner selected state.
+• App versions and mandatory update policy are now independent.
+• Regular releases (priority 0) are optional; urgent releases (priority 4+) are mandatory.
+• Updating from 2.2.21 to 2.2.22 must not block normal app use.
 • Google test ads are used for ad verification.
