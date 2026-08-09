@@ -16,17 +16,8 @@
 
 package com.nexters.bandalart.core.domain.repository
 
-import com.nexters.bandalart.core.domain.entity.ThemeMode
-import kotlinx.coroutines.flow.Flow
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderCandidate
 
-interface SettingsRepository {
-    val themeMode: Flow<ThemeMode>
-    val recentEmojis: Flow<List<String>>
-    val deadlineReminderEnabled: Flow<Boolean>
-
-    suspend fun setThemeMode(themeMode: ThemeMode)
-
-    suspend fun addRecentEmoji(emoji: String)
-
-    suspend fun setDeadlineReminderEnabled(enabled: Boolean)
+interface DeadlineReminderProjectionRepository {
+    suspend fun getCandidates(): List<DeadlineReminderCandidate>
 }

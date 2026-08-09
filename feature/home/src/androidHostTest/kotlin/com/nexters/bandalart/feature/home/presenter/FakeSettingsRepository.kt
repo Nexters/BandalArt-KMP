@@ -27,9 +27,11 @@ class FakeSettingsRepository(
 ) : SettingsRepository {
     private val themeModeState = MutableStateFlow(initialThemeMode)
     private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
+    private val deadlineReminderEnabledState = MutableStateFlow(false)
 
     override val themeMode = themeModeState.asStateFlow()
     override val recentEmojis = recentEmojisState.asStateFlow()
+    override val deadlineReminderEnabled = deadlineReminderEnabledState.asStateFlow()
 
     val savedThemeModes = mutableListOf<ThemeMode>()
     val savedRecentEmojis = mutableListOf<String>()
@@ -45,5 +47,9 @@ class FakeSettingsRepository(
         recentEmojisState.value =
             (listOf(emoji) + recentEmojisState.value.filterNot { it == emoji })
                 .take(12)
+    }
+
+    override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
+        deadlineReminderEnabledState.value = enabled
     }
 }

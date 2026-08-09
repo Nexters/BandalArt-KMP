@@ -36,6 +36,7 @@ class SettingsRepositoryTest {
         runTest {
             every { dataStore.themeMode } returns flowOf("unexpected")
             every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(false)
 
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -47,6 +48,7 @@ class SettingsRepositoryTest {
         runTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(false)
             coEvery { dataStore.setThemeMode(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -60,6 +62,7 @@ class SettingsRepositoryTest {
         runTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(listOf("🎯", "🚀"))
+            every { dataStore.deadlineReminderEnabled } returns flowOf(false)
             coEvery { dataStore.addRecentEmoji(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -67,5 +70,20 @@ class SettingsRepositoryTest {
             repository.addRecentEmoji("🎯")
 
             coVerify(exactly = 1) { dataStore.addRecentEmoji("🎯") }
+        }
+
+    @Test
+    fun deadlineReminderPreferenceIsExposedAndStored() =
+        runTest {
+            every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(true)
+            coEvery { dataStore.setDeadlineReminderEnabled(any()) } returns Unit
+            val repository = DefaultSettingsRepository(dataStore)
+
+            assertEquals(true, repository.deadlineReminderEnabled.first())
+            repository.setDeadlineReminderEnabled(false)
+
+            coVerify(exactly = 1) { dataStore.setDeadlineReminderEnabled(false) }
         }
 }
