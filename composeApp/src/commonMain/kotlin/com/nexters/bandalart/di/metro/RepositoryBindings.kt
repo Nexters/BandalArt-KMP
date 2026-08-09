@@ -43,8 +43,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import kotlin.time.Clock
 
 @BindingContainer
 object RepositoryBindings {
@@ -92,7 +93,7 @@ object RepositoryBindings {
             projectionRepository = projectionRepository,
             planner =
                 DeadlineReminderPlanner(
-                    clock = Clock.System,
+                    clock = SystemDeadlineReminderClock,
                     timeZoneProvider = DeadlineReminderTimeZoneProvider(TimeZone::currentSystemDefault),
                 ),
             scheduler = scheduler,
@@ -102,4 +103,8 @@ object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDeadlineNotificationLaunchTarget(): DeadlineNotificationLaunchTarget = BufferedDeadlineNotificationLaunchTarget()
+}
+
+private object SystemDeadlineReminderClock : Clock {
+    override fun now(): Instant = Instant.fromEpochMilliseconds(kotlin.time.Clock.System.now().toEpochMilliseconds())
 }
