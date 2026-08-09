@@ -125,6 +125,8 @@ sequenceDiagram
 
 ## 배포 priority 계약
 
+플랫폼별 version source, SemVer 선택 기준과 전체 배포 절차는 [Fastlane CD 복구 전략의 버전 관리](../../releases/automation/FASTLANE_CD_RECOVERY_STRATEGY.md#버전-관리와-실패-처리)를 canonical 운영 규칙으로 따른다.
+
 - Release CD의 Android 입력은 `0..5` 중 하나를 명시한다.
 - 기본값은 `0`이며 일반 기능·patch 배포 모두 선택 업데이트다.
 - 긴급 차단이 필요한 release만 `4` 또는 `5`를 명시한다.
