@@ -17,6 +17,7 @@
 package com.nexters.bandalart.core.ui.component.emoji
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -338,6 +339,7 @@ private fun EmojiCategoryRow(
         ) { tab ->
             val selected = selectedCategory == tab.category
             val label = categoryLabel(tab.category)
+            val interactionSource = remember { MutableInteractionSource() }
 
             Box(
                 modifier =
@@ -345,6 +347,8 @@ private fun EmojiCategoryRow(
                         .size(48.dp)
                         .selectable(
                             selected = selected,
+                            interactionSource = interactionSource,
+                            indication = null,
                             role = Role.Tab,
                             onClick = { onCategorySelect(tab.category) },
                         ).semantics(mergeDescendants = true) {
