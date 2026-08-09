@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.policy.resolveMaxBandalartSlots
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.PendingRewardedCreation
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 
 class DefaultBandalartSlotRepository(
     private val bandalartDataStore: BandalartDataStore,
@@ -37,11 +38,13 @@ class DefaultBandalartSlotRepository(
     override suspend fun prepareRewardedCreation(
         requestId: Long,
         currentBandalartCount: Int,
+        templateId: BandalartTemplateId?,
     ): PendingRewardedCreation =
         bandalartDataStore
             .prepareRewardedCreation(
                 requestId = requestId,
                 minimumSlots = resolveMaxBandalartSlots(currentBandalartCount),
+                templateId = templateId?.storedValue,
             ).toDomain()
 
     override suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation? =
@@ -59,4 +62,5 @@ private fun com.nexters.bandalart.core.datastore.StoredPendingRewardedCreation.t
         requestId = requestId,
         targetSlots = targetSlots,
         isGranted = isGranted,
+        templateId = BandalartTemplateId.fromStoredValue(templateId),
     )

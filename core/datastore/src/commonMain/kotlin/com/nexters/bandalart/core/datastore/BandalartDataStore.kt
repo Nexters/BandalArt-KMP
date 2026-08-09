@@ -44,6 +44,7 @@ class BandalartDataStore(
         private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
         private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
         private const val PENDING_REWARDED_GRANTED = "pending_rewarded_granted"
+        private const val PENDING_REWARDED_TEMPLATE_ID = "pending_rewarded_template_id"
         private const val MAX_RECENT_EMOJIS = 12
     }
 
@@ -57,6 +58,7 @@ class BandalartDataStore(
     private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
     private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
     private val pendingRewardedGrantedKey = booleanPreferencesKey(PENDING_REWARDED_GRANTED)
+    private val pendingRewardedTemplateIdKey = stringPreferencesKey(PENDING_REWARDED_TEMPLATE_ID)
 
     suspend fun resolveMaxBandalartSlots(minimumSlots: Int): Int {
         var resolvedSlots = minimumSlots
@@ -79,14 +81,20 @@ class BandalartDataStore(
     suspend fun prepareRewardedCreation(
         requestId: Long,
         minimumSlots: Int,
+        templateId: String? = null,
     ): StoredPendingRewardedCreation {
-        var pending = StoredPendingRewardedCreation(requestId, minimumSlots + 1, false)
+        var pending = StoredPendingRewardedCreation(requestId, minimumSlots + 1, false, templateId)
         dataStore.edit { preferences ->
             val resolvedSlots = maxOf(preferences[maxBandalartSlotsKey] ?: 0, minimumSlots)
-            pending = StoredPendingRewardedCreation(requestId, resolvedSlots + 1, false)
+            pending = StoredPendingRewardedCreation(requestId, resolvedSlots + 1, false, templateId)
             preferences[pendingRewardedRequestIdKey] = pending.requestId
             preferences[pendingRewardedTargetSlotsKey] = pending.targetSlots
             preferences[pendingRewardedGrantedKey] = false
+            if (templateId == null) {
+                preferences.remove(pendingRewardedTemplateIdKey)
+            } else {
+                preferences[pendingRewardedTemplateIdKey] = templateId
+            }
         }
         return pending
     }
@@ -118,6 +126,7 @@ class BandalartDataStore(
             preferences.remove(pendingRewardedRequestIdKey)
             preferences.remove(pendingRewardedTargetSlotsKey)
             preferences.remove(pendingRewardedGrantedKey)
+            preferences.remove(pendingRewardedTemplateIdKey)
         }
     }
 
@@ -174,6 +183,7 @@ class BandalartDataStore(
             requestId = requestId,
             targetSlots = targetSlots,
             isGranted = this[pendingRewardedGrantedKey] ?: false,
+            templateId = this[pendingRewardedTemplateIdKey],
         )
     }
 
@@ -289,4 +299,5 @@ data class StoredPendingRewardedCreation(
     val requestId: Long,
     val targetSlots: Int,
     val isGranted: Boolean,
+    val templateId: String? = null,
 )

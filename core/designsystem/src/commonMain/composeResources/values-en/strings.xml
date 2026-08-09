@@ -186,6 +186,14 @@
     <string name="settings_deadline_reminder_confirm">Turn on</string>
     <string name="settings_deadline_reminder_cancel">Cancel</string>
 
+    <!-- template catalog -->
+    <string name="bandalart_create_title">Create a Bandalart</string>
+    <string name="bandalart_create_direct_title">Start from scratch</string>
+    <string name="bandalart_create_direct_summary">Fill in a blank Bandalart your way</string>
+    <string name="bandalart_create_template_section">Quick start with a template</string>
+    <string name="bandalart_create_template_request">Request a template</string>
+    <string name="back_description">Go back</string>
+
     <!-- in-app update -->
     <string name="update_ready_to_install">App update is ready to install.</string>
     <string name="update_action_restart">Restart</string>

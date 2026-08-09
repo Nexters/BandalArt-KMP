@@ -138,15 +138,42 @@ class BandalartDataStoreTest {
                     bandalartDataStore.prepareRewardedCreation(
                         requestId = 42L,
                         minimumSlots = 3,
+                        templateId = "study_plan_v1",
                     )
 
-                assertEquals(StoredPendingRewardedCreation(42L, 4, false), pending)
-                assertEquals(StoredPendingRewardedCreation(42L, 4, true), bandalartDataStore.grantRewardedCreation(42L))
+                assertEquals(StoredPendingRewardedCreation(42L, 4, false, "study_plan_v1"), pending)
+                assertEquals(
+                    StoredPendingRewardedCreation(42L, 4, true, "study_plan_v1"),
+                    bandalartDataStore.grantRewardedCreation(42L),
+                )
                 assertEquals(4, bandalartDataStore.resolveMaxBandalartSlots(minimumSlots = 3))
-                assertEquals(StoredPendingRewardedCreation(42L, 4, true), bandalartDataStore.getPendingRewardedCreation())
+                assertEquals(
+                    StoredPendingRewardedCreation(42L, 4, true, "study_plan_v1"),
+                    bandalartDataStore.getPendingRewardedCreation(),
+                )
 
                 bandalartDataStore.clearPendingRewardedCreation(42L)
                 assertEquals(null, bandalartDataStore.getPendingRewardedCreation())
+            }
+
+        @Test
+        @DisplayName("템플릿 키가 없는 구버전 보상 요청은 빈 생성으로 복구해야 한다")
+        fun legacyRewardedCreationWithoutTemplateRemainsCompatible() =
+            runTest {
+                bandalartDataStore.prepareRewardedCreation(
+                    requestId = 43L,
+                    minimumSlots = 3,
+                )
+
+                assertEquals(
+                    StoredPendingRewardedCreation(
+                        requestId = 43L,
+                        targetSlots = 4,
+                        isGranted = true,
+                        templateId = null,
+                    ),
+                    bandalartDataStore.grantRewardedCreation(43L),
+                )
             }
 
         @Test

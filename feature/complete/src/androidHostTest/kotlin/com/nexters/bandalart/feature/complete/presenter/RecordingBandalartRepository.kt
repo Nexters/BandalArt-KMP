@@ -23,6 +23,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -47,7 +48,7 @@ internal class RecordingBandalartRepository : BandalartRepository {
         completionRecorded.complete(Unit)
     }
 
-    override suspend fun createBandalart(): BandalartEntity? = error("Not used")
+    override suspend fun createBandalart(templateId: BandalartTemplateId?): BandalartEntity? = error("Not used")
 
     override fun getBandalartList(): Flow<List<BandalartEntity>> = emptyFlow()
 

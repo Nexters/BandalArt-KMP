@@ -65,6 +65,7 @@
 ### Home, Settings, Updates
 
 - [태스크 셀 햅틱 완료](features/home/TASK_CELL_HAPTIC_COMPLETION_STRATEGY.md)
+- [반다라트 템플릿 catalog v1](features/templates/BANDALART_TEMPLATE_CATALOG_V1_STRATEGY.md)
 - [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
 - [마감일 기반 로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
 - [이메일 문의](features/settings/EMAIL_INQUIRY_STRATEGY.md)

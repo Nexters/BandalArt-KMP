@@ -188,6 +188,14 @@
     <string name="settings_deadline_reminder_confirm">알림 켜기</string>
     <string name="settings_deadline_reminder_cancel">취소</string>
 
+    <!-- template catalog -->
+    <string name="bandalart_create_title">새 반다라트 만들기</string>
+    <string name="bandalart_create_direct_title">직접 만들기</string>
+    <string name="bandalart_create_direct_summary">빈 반다라트부터 자유롭게 채워요</string>
+    <string name="bandalart_create_template_section">템플릿으로 빠르게 시작</string>
+    <string name="bandalart_create_template_request">원하는 템플릿 요청하기</string>
+    <string name="back_description">뒤로 가기</string>
+
     <!-- in-app update -->
     <string name="update_ready_to_install">앱의 업데이트 설치 준비가 완료되었습니다.</string>
     <string name="update_action_restart">재시작</string>

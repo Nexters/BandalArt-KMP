@@ -187,6 +187,14 @@
     <string name="settings_deadline_reminder_confirm">オンにする</string>
     <string name="settings_deadline_reminder_cancel">キャンセル</string>
 
+    <!-- template catalog -->
+    <string name="bandalart_create_title">新しいバンダラート</string>
+    <string name="bandalart_create_direct_title">自分で作る</string>
+    <string name="bandalart_create_direct_summary">空のバンダラートを自由に埋めます</string>
+    <string name="bandalart_create_template_section">テンプレートですぐに始める</string>
+    <string name="bandalart_create_template_request">テンプレートをリクエスト</string>
+    <string name="back_description">戻る</string>
+
     <!-- in-app update -->
     <string name="update_ready_to_install">アプリのアップデートのインストール準備が完了しました。</string>
     <string name="update_action_restart">再起動</string>

@@ -59,6 +59,7 @@ internal fun HomeBottomSheets(
             BandalartListBottomSheet(
                 bandalartList = updateBandalartListTitles(state.bandalartList).toImmutableList(),
                 currentBandalartId = bottomSheet.currentBandalartId,
+                isCreationOptionsVisible = bottomSheet.isCreationOptionsVisible,
                 onHomeUiAction = eventSink,
             )
         }

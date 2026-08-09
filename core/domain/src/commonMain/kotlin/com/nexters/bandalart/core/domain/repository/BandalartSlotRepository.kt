@@ -16,6 +16,8 @@
 
 package com.nexters.bandalart.core.domain.repository
 
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
+
 interface BandalartSlotRepository {
     suspend fun getMaxBandalartSlots(currentBandalartCount: Int): Int
 
@@ -24,6 +26,7 @@ interface BandalartSlotRepository {
     suspend fun prepareRewardedCreation(
         requestId: Long,
         currentBandalartCount: Int,
+        templateId: BandalartTemplateId? = null,
     ): PendingRewardedCreation
 
     suspend fun grantRewardedCreation(requestId: Long): PendingRewardedCreation?
@@ -37,4 +40,5 @@ data class PendingRewardedCreation(
     val requestId: Long,
     val targetSlots: Int,
     val isGranted: Boolean,
+    val templateId: BandalartTemplateId? = null,
 )
