@@ -85,4 +85,4 @@ catalog는 앱 바이너리에 포함된 버전 관리형 Kotlin 데이터로 �
 - [x] 광고 대기·grant·process recovery 동안 template ID가 보존된다.
 - [x] 문의 row가 기존 support mail 흐름을 연다.
 - [x] 관련 host tests, Android compile, iOS simulator Kotlin compile과 정적 검사가 통과한다.
-- [ ] PR을 생성하되 사용자 검토 전 merge하지 않는다.
+- [x] PR을 생성하고 CI와 사용자 검토를 거쳐 merge한다.
