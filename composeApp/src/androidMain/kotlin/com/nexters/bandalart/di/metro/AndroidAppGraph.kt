@@ -25,10 +25,14 @@ import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
 import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorization
 import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
+import kotlinx.coroutines.flow.Flow
 
 private class AndroidPlatformBindings(
     application: Application,
@@ -98,6 +102,43 @@ fun recordAndroidDeadlineNotificationLaunch(
 ) {
     appGraph.deadlineNotificationLaunchTarget.record(bandalartId)
 }
+
+fun recordAndroidWidgetLaunch(
+    appGraph: AppGraph,
+    bandalartId: Long,
+) {
+    appGraph.bandalartWidgetLaunchTarget.record(bandalartId)
+}
+
+fun observeAndroidWidgetBandalarts(appGraph: AppGraph): Flow<List<BandalartEntity>> = appGraph.bandalartRepository.getBandalartList()
+
+suspend fun getAndroidWidgetSubGoals(
+    appGraph: AppGraph,
+    bandalartId: Long,
+): List<BandalartCellEntity> {
+    val mainCell = appGraph.bandalartRepository.getBandalartMainCell(bandalartId) ?: return emptyList()
+    return appGraph.bandalartRepository.getChildCells(mainCell.id)
+}
+
+suspend fun getAndroidWidgetSnapshot(
+    appGraph: AppGraph,
+    bandalartId: Long,
+    subGoalId: Long?,
+): BandalartWidgetSnapshot? = appGraph.bandalartWidgetRepository.getSnapshot(bandalartId, subGoalId)
+
+suspend fun setAndroidWidgetTaskCompleted(
+    appGraph: AppGraph,
+    bandalartId: Long,
+    subGoalId: Long,
+    taskId: Long,
+    completed: Boolean,
+): BandalartWidgetSnapshot? =
+    appGraph.bandalartWidgetRepository.setTaskCompleted(
+        bandalartId = bandalartId,
+        subGoalId = subGoalId,
+        taskId = taskId,
+        completed = completed,
+    )
 
 suspend fun recordRewardedCreation(
     appGraph: AppGraph,

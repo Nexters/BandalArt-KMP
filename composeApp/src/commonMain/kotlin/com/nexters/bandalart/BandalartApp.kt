@@ -28,6 +28,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -58,6 +59,14 @@ fun BandalartApp(appGraph: AppGraph) {
                 val snackbarHostState = remember { SnackbarHostState() }
                 val backStack = rememberSaveableBackStack(root = SplashScreen)
                 val navigator = rememberBandalartNavigator(backStack)
+                val pendingWidgetLaunchId by
+                    appGraph.bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
+                val currentScreen = backStack.topRecord?.screen ?: SplashScreen
+                LaunchedEffect(pendingWidgetLaunchId, currentScreen) {
+                    widgetLaunchDestination(currentScreen, pendingWidgetLaunchId)?.let { destination ->
+                        navigator.resetRoot(destination)
+                    }
+                }
                 val showSnackbar: suspend (String) -> Boolean = { message ->
                     snackbarHostState.showSnackbar(
                         message = message,

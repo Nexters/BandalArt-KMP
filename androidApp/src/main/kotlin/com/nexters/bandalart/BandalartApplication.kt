@@ -18,6 +18,7 @@ package com.nexters.bandalart
 
 import android.app.Application
 import android.content.Intent
+import androidx.glance.appwidget.updateAll
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
@@ -27,15 +28,24 @@ import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
+import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
 import com.nexters.bandalart.di.metro.recordRewardedCreation
+import com.nexters.bandalart.widget.BandalartGlanceWidget
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.easyhooon.ding.Ding
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class BandalartApplication : Application() {
     lateinit var appGraph: AppGraph
         private set
     private val adsInitializer by lazy { AdsInitializer(applicationContext) }
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
@@ -82,5 +92,22 @@ class BandalartApplication : Application() {
 
         multiplatform.network.cmptoast.AppContext
             .apply { set(applicationContext) }
+
+        observeBandalartChangesForWidgets()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun observeBandalartChangesForWidgets() {
+        applicationScope.launch {
+            observeAndroidWidgetBandalarts(appGraph).collect {
+                try {
+                    BandalartGlanceWidget().updateAll(this@BandalartApplication)
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (exception: Exception) {
+                    Napier.e("Failed to refresh widgets after an app edit", exception, tag = "BandalartWidget")
+                }
+            }
+        }
     }
 }

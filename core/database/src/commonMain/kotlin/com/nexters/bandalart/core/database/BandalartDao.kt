@@ -26,6 +26,7 @@ import androidx.room.Update
 import com.nexters.bandalart.core.database.entity.BandalartCellDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartCellWithChildrenDto
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
+import com.nexters.bandalart.core.database.entity.BandalartWidgetSnapshotDto
 import com.nexters.bandalart.core.database.entity.CreateBandalartDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartEmojiDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartMainCellDto
@@ -115,6 +116,9 @@ interface BandalartDao {
     @Query("SELECT * FROM bandalarts WHERE id = :bandalartId")
     suspend fun getBandalart(bandalartId: Long): BandalartDBEntity
 
+    @Query("SELECT * FROM bandalarts WHERE id = :bandalartId")
+    suspend fun findBandalart(bandalartId: Long): BandalartDBEntity?
+
     /** 모든 반다라트 목록 조회 */
     @Query("SELECT * FROM bandalarts")
     fun getBandalartList(): Flow<List<BandalartDBEntity>>
@@ -126,9 +130,16 @@ interface BandalartDao {
     @Query("SELECT * FROM bandalart_cells WHERE bandalartId = :bandalartId AND parentId IS NULL")
     suspend fun getBandalartMainCell(bandalartId: Long): BandalartCellWithChildrenDto
 
+    @Transaction
+    @Query("SELECT * FROM bandalart_cells WHERE bandalartId = :bandalartId AND parentId IS NULL")
+    suspend fun findBandalartMainCell(bandalartId: Long): BandalartCellWithChildrenDto?
+
     /** 특정 셀 조회 */
     @Query("SELECT * FROM bandalart_cells WHERE id = :cellId")
     suspend fun getCell(cellId: Long): BandalartCellDBEntity
+
+    @Query("SELECT * FROM bandalart_cells WHERE id = :cellId")
+    suspend fun findCell(cellId: Long): BandalartCellDBEntity?
 
     /** 특정 셀과 그 자식 셀들 조회 */
     @Transaction
@@ -144,6 +155,45 @@ interface BandalartDao {
 
     @Query("SELECT * FROM bandalart_cells")
     suspend fun getAllCells(): List<BandalartCellDBEntity>
+
+    @Transaction
+    suspend fun findWidgetSnapshot(
+        bandalartId: Long,
+        subGoalId: Long?,
+    ): BandalartWidgetSnapshotDto? {
+        val bandalart = findBandalart(bandalartId) ?: return null
+        val mainCell = findBandalartMainCell(bandalartId)?.cell ?: return null
+        if (mainCell.id == null || mainCell.bandalartId != bandalartId || mainCell.parentId != null) return null
+
+        if (subGoalId == null) {
+            return BandalartWidgetSnapshotDto(
+                bandalart = bandalart,
+                subGoal = null,
+                tasks = emptyList(),
+            )
+        }
+
+        val subGoal = findCell(subGoalId) ?: return null
+        if (
+            subGoal.bandalartId != bandalartId ||
+            subGoal.parentId != mainCell.id ||
+            subGoal.title.isNullOrBlank()
+        ) {
+            return null
+        }
+        val tasks =
+            getChildCells(subGoalId).filter { task ->
+                task.id != null &&
+                    task.bandalartId == bandalartId &&
+                    task.parentId == subGoalId &&
+                    !task.title.isNullOrBlank()
+            }
+        return BandalartWidgetSnapshotDto(
+            bandalart = bandalart,
+            subGoal = subGoal,
+            tasks = tasks,
+        )
+    }
 
     // Update - 반다라트
 
@@ -225,6 +275,35 @@ interface BandalartDao {
         updateCell(updatedCell)
         // 태스크 셀이 업데이트되면 전체 완료 상태 업데이트
         updateCompletionStatus(updatedCell.bandalartId)
+    }
+
+    @Transaction
+    suspend fun setTaskCompletedIfOwned(
+        bandalartId: Long,
+        subGoalId: Long,
+        taskId: Long,
+        completed: Boolean,
+    ): Boolean {
+        if (findBandalart(bandalartId) == null) return false
+
+        val mainCell = findBandalartMainCell(bandalartId)?.cell ?: return false
+        val subGoal = findCell(subGoalId) ?: return false
+        val task = findCell(taskId) ?: return false
+        val isOwnedTask =
+            mainCell.id != null &&
+                mainCell.bandalartId == bandalartId &&
+                mainCell.parentId == null &&
+                subGoal.bandalartId == bandalartId &&
+                subGoal.parentId == mainCell.id &&
+                !subGoal.title.isNullOrBlank() &&
+                task.bandalartId == bandalartId &&
+                task.parentId == subGoal.id &&
+                !task.title.isNullOrBlank()
+        if (!isOwnedTask) return false
+
+        updateCell(task.copy(isCompleted = completed))
+        updateCompletionStatus(bandalartId)
+        return true
     }
 
     /** 셀의 이모지 업데이트 */

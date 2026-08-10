@@ -98,6 +98,22 @@ class DefaultBandalartRepository(
         deadlineReminderReconciler.reconcileAll()
     }
 
+    override suspend fun setTaskCompleted(
+        bandalartId: Long,
+        subGoalId: Long,
+        taskId: Long,
+        completed: Boolean,
+    ): Boolean =
+        bandalartDao
+            .setTaskCompletedIfOwned(
+                bandalartId = bandalartId,
+                subGoalId = subGoalId,
+                taskId = taskId,
+                completed = completed,
+            ).also { wasUpdated ->
+                if (wasUpdated) deadlineReminderReconciler.reconcileAll()
+            }
+
     override suspend fun updateBandalartEmoji(
         bandalartId: Long,
         cellId: Long,

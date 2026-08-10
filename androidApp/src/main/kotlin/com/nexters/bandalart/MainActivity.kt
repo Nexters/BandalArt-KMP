@@ -17,6 +17,7 @@
 package com.nexters.bandalart
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,6 +35,8 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.nexters.bandalart.core.common.utils.isMandatoryUpdate
 import io.github.aakira.napier.Napier
+import com.nexters.bandalart.widget.BandalartWidgetLaunchRequest
+import com.nexters.bandalart.di.metro.recordAndroidWidgetLaunch
 
 class MainActivity : ComponentActivity() {
     private lateinit var appUpdateManager: AppUpdateManager
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        recordWidgetLaunch(intent)
         appUpdateManager = AppUpdateManagerFactory.create(this)
         skipNextResumeForSplash = savedInstanceState == null
         updateResultLauncher =
@@ -60,6 +64,26 @@ class MainActivity : ComponentActivity() {
                 appGraph = (application as BandalartApplication).appGraph,
             )
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        recordWidgetLaunch(intent)
+    }
+
+    private fun recordWidgetLaunch(intent: Intent?) {
+        val request =
+            BandalartWidgetLaunchRequest.from(
+                action = intent?.action,
+                bandalartId =
+                    intent?.getLongExtra(BandalartWidgetLaunchRequest.EXTRA_BANDALART_ID, -1L)
+                        ?: -1L,
+            ) ?: return
+        recordAndroidWidgetLaunch(
+            appGraph = (application as BandalartApplication).appGraph,
+            bandalartId = request.bandalartId,
+        )
     }
 
     override fun onResume() {

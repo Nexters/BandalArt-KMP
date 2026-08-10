@@ -3,4 +3,9 @@
     <!--  AppName-->
     <string name="app_name">반다라트</string>
     <string name="app_name_dev">반다라트.dev</string>
+    <string name="bandalart_widget_name">반다라트 목표</string>
+    <string name="bandalart_widget_description">선택한 반다라트 목표와 할 일을 홈 화면에서 확인합니다.</string>
+    <string name="bandalart_widget_loading">반다라트를 불러오는 중…</string>
+    <string name="bandalart_widget_preview_title">나의 핵심 목표</string>
+    <string name="bandalart_widget_preview_ratio">42%%</string>
 </resources>

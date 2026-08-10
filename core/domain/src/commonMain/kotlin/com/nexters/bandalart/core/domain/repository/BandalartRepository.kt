@@ -86,6 +86,18 @@ interface BandalartRepository {
     )
 
     /**
+     * 소유 관계가 일치하는 태스크의 완료 상태만 설정한다.
+     *
+     * @return 태스크가 검증되어 완료 상태가 저장된 경우 true
+     */
+    suspend fun setTaskCompleted(
+        bandalartId: Long,
+        subGoalId: Long,
+        taskId: Long,
+        completed: Boolean,
+    ): Boolean
+
+    /**
      * 반다라트 이모지 수정
      *
      * @param bandalartId 빈디라트 고유 id

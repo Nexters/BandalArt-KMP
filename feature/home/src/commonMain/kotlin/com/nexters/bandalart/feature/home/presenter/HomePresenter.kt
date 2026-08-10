@@ -45,6 +45,8 @@ import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
+import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.mapper.toUiModel
@@ -81,6 +83,8 @@ class HomePresenter(
     private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
     private val deadlineNotificationLaunchTarget: DeadlineNotificationLaunchTarget =
         BufferedDeadlineNotificationLaunchTarget(),
+    private val bandalartWidgetLaunchTarget: BandalartWidgetLaunchTarget =
+        BufferedBandalartWidgetLaunchTarget(),
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
@@ -114,6 +118,7 @@ class HomePresenter(
         val deadlineReminderEnabled by settingsRepository.deadlineReminderEnabled.collectAsState(initial = false)
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
+        val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
         var deadlineNotificationAuthorizationStatus by remember {
             mutableStateOf(DeadlineNotificationAuthorizationStatus.UNSUPPORTED)
         }
@@ -692,6 +697,7 @@ class HomePresenter(
 
         LaunchedEffect(
             pendingDeadlineLaunchId,
+            pendingWidgetLaunchId,
             isExplicitSelectionTargetPending,
             explicitSelectionTargetId,
             bandalartListRevision,
@@ -711,6 +717,22 @@ class HomePresenter(
                 handledCompletionRevision[0] = bandalartListRevision
                 bottomSheet = null
                 deadlineNotificationLaunchTarget.acknowledge(targetId)
+                return@LaunchedEffect
+            }
+            val widgetTargetId = pendingWidgetLaunchId
+            if (widgetTargetId != null) {
+                val selectionRequest = beginSelectionRequest()
+                explicitSelectionTargetId = null
+                isExplicitSelectionTargetPending = false
+                if (bandalartList.none { it.id == widgetTargetId }) {
+                    bandalartWidgetLaunchTarget.acknowledge(widgetTargetId)
+                    return@LaunchedEffect
+                }
+                val committed = selectBandalart(selectionRequest, widgetTargetId)
+                if (!committed) return@LaunchedEffect
+                handledCompletionRevision[0] = bandalartListRevision
+                bottomSheet = null
+                bandalartWidgetLaunchTarget.acknowledge(widgetTargetId)
                 return@LaunchedEffect
             }
             if (isExplicitSelectionTargetPending) return@LaunchedEffect
