@@ -341,6 +341,7 @@ platform :ios do
       project: project_path,
       scheme: "iosApp",
       configuration: "Release",
+      xcargs: "SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) BANDALART_TEST_ADS'",
       clean: true,
       export_method: "app-store",
       output_directory: output_directory,

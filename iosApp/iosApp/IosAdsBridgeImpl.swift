@@ -19,7 +19,7 @@ import GoogleMobileAds
 import UIKit
 
 private enum AdUnitID {
-#if DEBUG
+#if DEBUG || BANDALART_TEST_ADS
     static let banner = "ca-app-pub-3940256099942544/2435281174"
     static let rewarded = "ca-app-pub-3940256099942544/1712485313"
 #else
