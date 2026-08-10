@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 
 class BandalartWidgetLaunchTargetTest {
     @Test
-    fun `buffers the latest valid target until matching acknowledgement`() {
+    fun buffersLatestValidTargetUntilMatchingAcknowledgement() {
         val target = BufferedBandalartWidgetLaunchTarget()
 
         target.record(0L)
