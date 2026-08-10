@@ -261,7 +261,12 @@ class BandalartWidgetRepositoryTest {
     fun resetSubGoalSelectionReturnsNull() =
         runTest {
             val bandalartId = createBandalart()
-            val subGoalId = dao.getBandalartMainCell(bandalartId).children.first().id!!
+            val subGoalId =
+                dao
+                    .getBandalartMainCell(bandalartId)
+                    .children
+                    .first()
+                    .id!!
             bandalartRepository.deleteBandalartCell(subGoalId)
 
             assertNull(repository.getSnapshot(bandalartId, subGoalId))
@@ -271,7 +276,12 @@ class BandalartWidgetRepositoryTest {
     fun taskUnderResetSubGoalCannotBeCompleted() =
         runTest {
             val bandalartId = createBandalart()
-            val subGoalId = dao.getBandalartMainCell(bandalartId).children.first().id!!
+            val subGoalId =
+                dao
+                    .getBandalartMainCell(bandalartId)
+                    .children
+                    .first()
+                    .id!!
             val taskId = dao.getChildCells(subGoalId).first().id!!
             bandalartRepository.deleteBandalartCell(subGoalId)
             bandalartRepository.updateBandalartTaskCell(

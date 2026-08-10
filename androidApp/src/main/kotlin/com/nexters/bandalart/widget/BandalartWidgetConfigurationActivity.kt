@@ -103,7 +103,12 @@ class BandalartWidgetConfigurationActivity : ComponentActivity() {
     private fun loadConfiguration() {
         lifecycleScope.launch {
             val glanceId = GlanceAppWidgetManager(this@BandalartWidgetConfigurationActivity).getGlanceIdBy(appWidgetId)
-            val preferences = getAppWidgetState(this@BandalartWidgetConfigurationActivity, PreferencesGlanceStateDefinition, glanceId)
+            val preferences =
+                getAppWidgetState(
+                    this@BandalartWidgetConfigurationActivity,
+                    PreferencesGlanceStateDefinition,
+                    glanceId,
+                )
             val selection = preferences.toWidgetSelection()
             val bandalarts = observeAndroidWidgetBandalarts(appGraph).first()
             val selectedBandalartId = selection?.bandalartId?.takeIf { id -> bandalarts.any { it.id == id } }

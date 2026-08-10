@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test
 
 class WidgetLaunchNavigationTest {
     @Test
-    fun `warm complete screen routes a pending widget target to home`() {
+    fun warmCompleteScreenRoutesPendingWidgetTargetToHome() {
         assertEquals(HomeScreen, widgetLaunchDestination(CompleteScreen(1L, "목표", "🎯", "uri"), 1L))
     }
 
     @Test
-    fun `cold splash and absent targets do not bypass normal gating`() {
+    fun coldSplashAndAbsentTargetsDoNotBypassNormalGating() {
         assertNull(widgetLaunchDestination(SplashScreen, 1L))
         assertNull(widgetLaunchDestination(CompleteScreen(1L, "목표", "🎯", "uri"), null))
     }

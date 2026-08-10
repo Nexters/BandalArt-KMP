@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,8 +30,8 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalSize
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
@@ -39,6 +40,7 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.background
+import androidx.glance.color.ColorProvider
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
@@ -52,7 +54,6 @@ import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import com.nexters.bandalart.BandalartApplication
 import com.nexters.bandalart.MainActivity
 import com.nexters.bandalart.R
@@ -77,7 +78,7 @@ class BandalartGlanceWidget : GlanceAppWidget() {
         val preferences = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
         val selection = preferences.toWidgetSelection()
         val appGraph = (context.applicationContext as BandalartApplication).appGraph
-        val appWidgetId = (id as? AppWidgetId)?.appWidgetId ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
         val snapshot =
             selection?.let {
                 getAndroidWidgetSnapshot(
@@ -326,77 +327,81 @@ private fun reconfigureWidgetAction(
     },
 )
 
+private val WidgetPrimaryTextColor = ColorProvider(day = Color(0xFF111827), night = Color(0xFFF9FAFB))
+private val WidgetSecondaryTextColor = ColorProvider(day = Color(0xFF6B7280), night = Color(0xFFB4BAC4))
+private val WidgetAccentColor = ColorProvider(day = Color(0xFF6C5CE7), night = Color(0xFFAFA5FF))
+
 private val LabelTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_secondary),
+        color = WidgetSecondaryTextColor,
         fontSize = 11.sp,
         fontWeight = FontWeight.Bold,
     )
 private val TitleTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 16.sp,
         fontWeight = FontWeight.Bold,
     )
 private val CompactTitleTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
     )
 private val SubGoalTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 13.sp,
         fontWeight = FontWeight.Bold,
     )
 private val CompactSubGoalTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
     )
 private val BodyTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 12.sp,
     )
 private val CompactBodyTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_primary),
+        color = WidgetPrimaryTextColor,
         fontSize = 11.sp,
     )
 private val CaptionTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_secondary),
+        color = WidgetSecondaryTextColor,
         fontSize = 11.sp,
     )
 private val CompactRatioTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_accent),
+        color = WidgetAccentColor,
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
     )
 private val MarkTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_accent),
+        color = WidgetAccentColor,
         fontSize = 13.sp,
         fontWeight = FontWeight.Bold,
     )
 private val CompletedMarkTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_secondary),
+        color = WidgetSecondaryTextColor,
         fontSize = 13.sp,
         fontWeight = FontWeight.Bold,
     )
 private val CompletedTaskTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_secondary),
+        color = WidgetSecondaryTextColor,
         fontSize = 12.sp,
     )
 private val CompactCompletedTaskTextStyle =
     TextStyle(
-        color = ColorProvider(R.color.widget_text_secondary),
+        color = WidgetSecondaryTextColor,
         fontSize = 11.sp,
     )
 
