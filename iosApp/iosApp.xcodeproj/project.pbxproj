@@ -10,14 +10,40 @@
 		847E3CF02D6DAD8300588455 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 847E3CEE2D6DAD8300588455 /* InfoPlist.strings */; };
 		84E46B3E2D7ADDDB007026FD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 84E46B3D2D7ADDDB007026FD /* FirebaseAnalytics */; };
 		84E46B402D7ADDDB007026FD /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 84E46B3F2D7ADDDB007026FD /* FirebaseCrashlytics */; };
+		F300000D2F3000000000000D /* BandalartWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000012F30000000000001 /* BandalartWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F2AD00012E4A000100000001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = F2AD00032E4A000100000001 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F300000E2F3000000000000E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 226F384E2D5A407D00A1512E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F30000042F30000000000004;
+			remoteInfo = BandalartWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F300000C2F3000000000000C /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F300000D2F3000000000000D /* BandalartWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		226F38562D5A407D00A1512E /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		847E3CEF2D6DAD8300588455 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		847E3CF12D6DAE2500588455 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		847E3CF22D6DAE2900588455 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F30000012F30000000000001 /* BandalartWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BandalartWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -28,6 +54,14 @@
 			);
 			target = 226F38552D5A407D00A1512E /* iosApp */;
 		};
+		F30000032F30000000000003 /* Exceptions for "BandalartWidget" folder in "BandalartWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BandalartWidget.entitlements,
+				Info.plist,
+			);
+			target = F30000042F30000000000004 /* BandalartWidget */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -37,6 +71,14 @@
 				2263E11D2D605A1F00824B0E /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
+			sourceTree = "<group>";
+		};
+		F30000022F30000000000002 /* BandalartWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F30000032F30000000000003 /* Exceptions for "BandalartWidget" folder in "BandalartWidget" target */,
+			);
+			path = BandalartWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +94,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F30000062F30000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -60,6 +109,7 @@
 			children = (
 				847E3CEE2D6DAD8300588455 /* InfoPlist.strings */,
 				226F38582D5A407D00A1512E /* iosApp */,
+				F30000022F30000000000002 /* BandalartWidget */,
 				226F38572D5A407D00A1512E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				226F38562D5A407D00A1512E /* iosApp.app */,
+				F30000012F30000000000001 /* BandalartWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,10 +135,12 @@
 				226F38532D5A407D00A1512E /* Frameworks */,
 				226F38542D5A407D00A1512E /* Resources */,
 				F1BDA0012E4A000100000001 /* Upload Crashlytics Symbols */,
+				F300000C2F3000000000000C /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F300000F2F3000000000000F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				226F38582D5A407D00A1512E /* iosApp */,
@@ -102,6 +155,29 @@
 			productReference = 226F38562D5A407D00A1512E /* iosApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F30000042F30000000000004 /* BandalartWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F30000092F30000000000009 /* Build configuration list for PBXNativeTarget "BandalartWidget" */;
+			buildPhases = (
+				F30000082F30000000000008 /* Build IosWidgetShared Framework */,
+				F30000052F30000000000005 /* Sources */,
+				F30000062F30000000000006 /* Frameworks */,
+				F30000072F30000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F30000022F30000000000002 /* BandalartWidget */,
+			);
+			name = BandalartWidget;
+			packageProductDependencies = (
+			);
+			productName = BandalartWidget;
+			productReference = F30000012F30000000000001 /* BandalartWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -114,6 +190,9 @@
 				TargetAttributes = {
 					226F38552D5A407D00A1512E = {
 						CreatedOnToolsVersion = 16.2;
+					};
+					F30000042F30000000000004 = {
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
@@ -138,6 +217,7 @@
 			projectRoot = "";
 			targets = (
 				226F38552D5A407D00A1512E /* iosApp */,
+				F30000042F30000000000004 /* BandalartWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -148,6 +228,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				847E3CF02D6DAD8300588455 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F30000072F30000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +283,24 @@
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
 			showEnvVarsInLog = 0;
 		};
+		F30000082F30000000000008 /* Build IosWidgetShared Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build IosWidgetShared Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :iosWidgetShared:embedAndSignAppleFrameworkForXcode\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -206,7 +311,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F30000052F30000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F300000F2F3000000000000F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F30000042F30000000000004 /* BandalartWidget */;
+			targetProxy = F300000E2F3000000000000E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		847E3CEE2D6DAD8300588455 /* InfoPlist.strings */ = {
@@ -343,7 +463,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -389,7 +509,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -430,6 +550,67 @@
 			};
 			name = Release;
 		};
+		F300000A2F3000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = BandalartWidget/BandalartWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8R5768RCRA;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BandalartWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nexters.bandalart.iosApp.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F300000B2F3000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = BandalartWidget/BandalartWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8R5768RCRA;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BandalartWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nexters.bandalart.iosApp.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -447,6 +628,15 @@
 			buildConfigurations = (
 				226F387C2D5A407F00A1512E /* Debug */,
 				226F387D2D5A407F00A1512E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F30000092F30000000000009 /* Build configuration list for PBXNativeTarget "BandalartWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F300000A2F3000000000000A /* Debug */,
+				F300000B2F3000000000000B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

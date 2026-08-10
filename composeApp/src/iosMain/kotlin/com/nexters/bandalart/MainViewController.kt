@@ -20,15 +20,21 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.nexters.bandalart.ads.IosAdsBridge
 import com.nexters.bandalart.di.metro.createIosAppGraph
 import com.nexters.bandalart.notification.DeadlineNotificationLaunchBridge
+import com.nexters.bandalart.widget.IosWidgetLaunchBridge
+import com.nexters.bandalart.widget.IosWidgetRuntimeBridge
 import platform.UIKit.UIViewController
 
 @Suppress("FunctionName")
 fun MainViewController(
     notificationLaunchBridge: DeadlineNotificationLaunchBridge,
     adsBridge: IosAdsBridge,
+    widgetLaunchBridge: IosWidgetLaunchBridge,
+    widgetRuntimeBridge: IosWidgetRuntimeBridge,
 ): UIViewController {
     val appGraph = createIosAppGraph(adsBridge)
     notificationLaunchBridge.attach(appGraph.deadlineNotificationLaunchTarget)
+    widgetLaunchBridge.attach(appGraph.bandalartWidgetLaunchTarget)
+    widgetRuntimeBridge.attach(appGraph)
 
     return ComposeUIViewController {
         BandalartApp(appGraph = appGraph)

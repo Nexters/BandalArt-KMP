@@ -12,11 +12,15 @@ import ComposeApp
 struct ComposeView: UIViewControllerRepresentable {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let adsBridge: IosAdsBridge
+    let widgetLaunchBridge: IosWidgetLaunchBridge
+    let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.MainViewController(
             notificationLaunchBridge: notificationLaunchBridge,
-            adsBridge: adsBridge
+            adsBridge: adsBridge,
+            widgetLaunchBridge: widgetLaunchBridge,
+            widgetRuntimeBridge: widgetRuntimeBridge
         )
     }
 
@@ -26,11 +30,15 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let adsBridge: IosAdsBridge
+    let widgetLaunchBridge: IosWidgetLaunchBridge
+    let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
     var body: some View {
         ComposeView(
             notificationLaunchBridge: notificationLaunchBridge,
-            adsBridge: adsBridge
+            adsBridge: adsBridge,
+            widgetLaunchBridge: widgetLaunchBridge,
+            widgetRuntimeBridge: widgetRuntimeBridge
         )
                 .ignoresSafeArea(edges: .all)
                 .ignoresSafeArea(.keyboard) // Compose has own keyboard handler

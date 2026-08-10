@@ -16,6 +16,8 @@ default_platform(:android)
 REPO_ROOT = File.expand_path("..", __dir__)
 ANDROID_PACKAGE = "com.nexters.bandalart"
 IOS_BUNDLE_ID = "com.nexters.bandalart.iosApp"
+IOS_WIDGET_BUNDLE_ID = "com.nexters.bandalart.iosApp.widget"
+IOS_APP_GROUP_ID = "group.com.nexters.bandalart"
 IOS_TEAM_ID = "8R5768RCRA"
 IOS_APP_ID = "6743101965"
 
@@ -98,7 +100,7 @@ rescue Bandalart::PlistFile::Error => error
   UI.user_error!(error.message)
 end
 
-def verify_profile!(profile)
+def verify_profile!(profile, bundle_identifier: IOS_BUNDLE_ID, required_app_group: nil)
   name = profile["Name"]
   uuid = profile["UUID"]
   expires_at = Bandalart::ProvisioningProfile.expiration_time(profile)
@@ -108,8 +110,12 @@ def verify_profile!(profile)
   UI.user_error!("Provisioning profile is missing Name or UUID") if name.to_s.empty? || uuid.to_s.empty?
   UI.user_error!("Provisioning profile is expired") unless expires_at && expires_at > Time.now
   UI.user_error!("Provisioning profile Team ID mismatch") unless team_ids.include?(IOS_TEAM_ID)
-  expected_identifier = "#{IOS_TEAM_ID}.#{IOS_BUNDLE_ID}"
+  expected_identifier = "#{IOS_TEAM_ID}.#{bundle_identifier}"
   UI.user_error!("Provisioning profile bundle ID mismatch") unless application_identifier == expected_identifier
+  if required_app_group
+    app_groups = profile.dig("Entitlements", "com.apple.security.application-groups") || []
+    UI.user_error!("Provisioning profile App Group mismatch") unless app_groups.include?(required_app_group)
+  end
   UI.user_error!("Development provisioning profile cannot be used for TestFlight") if profile.dig("Entitlements", "get-task-allow") == true
   UI.user_error!("Ad Hoc provisioning profile cannot be used for TestFlight") if profile.key?("ProvisionedDevices")
   UI.user_error!("Enterprise provisioning profile cannot be used for TestFlight") if profile["ProvisionsAllDevices"] == true
@@ -130,7 +136,20 @@ def verify_ipa!(ipa_path, version, build_number)
     UI.user_error!("IPA build number mismatch") unless info["CFBundleVersion"].to_s == build_number.to_s
 
     embedded_profile = provisioning_profile(File.join(app_path, "embedded.mobileprovision"))
-    verify_profile!(embedded_profile)
+    verify_profile!(embedded_profile, required_app_group: IOS_APP_GROUP_ID)
+
+    widget_path = Dir[File.join(app_path, "PlugIns", "*.appex")].first
+    UI.user_error!("IPA does not contain the widget extension") unless widget_path
+    widget_info = plist_file(File.join(widget_path, "Info.plist"))
+    UI.user_error!("Widget bundle identifier mismatch") unless widget_info["CFBundleIdentifier"] == IOS_WIDGET_BUNDLE_ID
+    UI.user_error!("Widget marketing version mismatch") unless widget_info["CFBundleShortVersionString"] == version
+    UI.user_error!("Widget build number mismatch") unless widget_info["CFBundleVersion"].to_s == build_number.to_s
+    widget_profile = provisioning_profile(File.join(widget_path, "embedded.mobileprovision"))
+    verify_profile!(
+      widget_profile,
+      bundle_identifier: IOS_WIDGET_BUNDLE_ID,
+      required_app_group: IOS_APP_GROUP_ID,
+    )
 
     _codesign_out, codesign_err, codesign_status = Open3.capture3(
       "/usr/bin/codesign",
@@ -277,14 +296,17 @@ platform :ios do
   lane :beta do
     keychain_created = false
     installed_profile_path = nil
+    installed_widget_profile_path = nil
     verify_ci_source!
     certificate_path = required_env!("IOS_CERTIFICATE_PATH")
     certificate_password = required_env!("IOS_DISTRIBUTION_CERTIFICATE_PASSWORD")
     profile_path = required_env!("IOS_PROVISIONING_PROFILE_PATH")
+    widget_profile_path = required_env!("IOS_WIDGET_PROVISIONING_PROFILE_PATH")
     key_id = required_env!("APP_STORE_CONNECT_KEY_ID")
     key_content = required_env!("APP_STORE_CONNECT_KEY_P8_BASE64")
     UI.user_error!("iOS distribution certificate is missing") unless File.file?(certificate_path)
     UI.user_error!("iOS provisioning profile is missing") unless File.file?(profile_path)
+    UI.user_error!("iOS widget provisioning profile is missing") unless File.file?(widget_profile_path)
 
     info_plist = File.join(REPO_ROOT, "iosApp/iosApp/Info.plist")
     version = get_info_plist_value(path: info_plist, key: "CFBundleShortVersionString")
@@ -303,7 +325,14 @@ platform :ios do
     UI.message("iOS release #{version} (#{build_number}) -> TestFlight")
 
     profile = provisioning_profile(profile_path)
-    profile_name = verify_profile!(profile)
+    profile_name = verify_profile!(profile, required_app_group: IOS_APP_GROUP_ID)
+    widget_profile = provisioning_profile(widget_profile_path)
+    widget_profile_name =
+      verify_profile!(
+        widget_profile,
+        bundle_identifier: IOS_WIDGET_BUNDLE_ID,
+        required_app_group: IOS_APP_GROUP_ID,
+      )
     keychain_name = "bandalart-ci"
     keychain_password = SecureRandom.hex(24)
     create_keychain(
@@ -323,6 +352,7 @@ platform :ios do
       log_output: false,
     )
     installed_profile_path = install_provisioning_profile(path: profile_path)
+    installed_widget_profile_path = install_provisioning_profile(path: widget_profile_path)
     project_path = File.join(REPO_ROOT, "iosApp/iosApp.xcodeproj")
     update_code_signing_settings(
       use_automatic_signing: false,
@@ -334,6 +364,16 @@ platform :ios do
       profile_name: profile_name,
       bundle_identifier: IOS_BUNDLE_ID,
     )
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: project_path,
+      team_id: IOS_TEAM_ID,
+      targets: ["BandalartWidget"],
+      build_configurations: ["Release"],
+      code_sign_identity: "Apple Distribution",
+      profile_name: widget_profile_name,
+      bundle_identifier: IOS_WIDGET_BUNDLE_ID,
+    )
 
     output_directory = File.join(REPO_ROOT, "build/ios-release")
     FileUtils.rm_rf(output_directory)
@@ -341,7 +381,7 @@ platform :ios do
       project: project_path,
       scheme: "iosApp",
       configuration: "Release",
-      xcargs: "SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) BANDALART_TEST_ADS'",
+      xcargs: "SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) BANDALART_TEST_ADS' CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{version}",
       clean: true,
       export_method: "app-store",
       output_directory: output_directory,
@@ -353,7 +393,10 @@ platform :ios do
         method: "app-store",
         signingStyle: "manual",
         teamID: IOS_TEAM_ID,
-        provisioningProfiles: { IOS_BUNDLE_ID => profile_name },
+        provisioningProfiles: {
+          IOS_BUNDLE_ID => profile_name,
+          IOS_WIDGET_BUNDLE_ID => widget_profile_name,
+        },
         manageAppVersionAndBuildNumber: false,
       },
     )
@@ -393,6 +436,7 @@ platform :ios do
     UI.success("TestFlight upload verified: #{version} (#{build_number})")
   ensure
     FileUtils.rm_f(installed_profile_path) if installed_profile_path
+    FileUtils.rm_f(installed_widget_profile_path) if installed_widget_profile_path
     delete_keychain(name: "bandalart-ci") if keychain_created
   end
 end

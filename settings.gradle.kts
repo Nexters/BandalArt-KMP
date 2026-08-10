@@ -37,6 +37,7 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":androidApp")
 include(":baselineprofile")
+include(":iosWidgetShared")
 
 include(":core:common")
 include(":core:data")
