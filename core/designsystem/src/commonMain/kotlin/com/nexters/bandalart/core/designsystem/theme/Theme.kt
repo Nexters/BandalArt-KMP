@@ -54,7 +54,7 @@ fun BandalartTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = bandalartTypography(),
             content = content,
         )
     }
