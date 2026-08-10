@@ -41,5 +41,4 @@ private class IosPlatformBindings(
     override val deadlineNotificationAuthorization = IosDeadlineNotificationAuthorization()
 }
 
-internal fun createIosAppGraph(adsBridge: IosAdsBridge): AppGraph =
-    createAppGraph(IosPlatformBindings(adsBridge))
+internal fun createIosAppGraph(adsBridge: IosAdsBridge): AppGraph = createAppGraph(IosPlatformBindings(adsBridge))
