@@ -1,6 +1,8 @@
-Please verify the update policy in this Internal build.
+We've made BandalArt easier to use.
 
-• App versions and mandatory update policy are now independent.
-• Regular releases (priority 0) are optional; urgent releases (priority 4+) are mandatory.
-• Updating from 2.2.21 to 2.2.22 must not block normal app use.
-• Google test ads are used for ad verification.
+• Start a new BandalArt quickly with five goal templates.
+• Get a due-date reminder and open the related BandalArt directly.
+• Choose from 300 emojis by category or recent use.
+• Long-press a task cell to complete or reopen it, with vibration feedback.
+• Ads now appear at the bottom of Home. After using all free slots, you can watch an ad to add one.
+• Refined spacing and icons, and improved stability.
