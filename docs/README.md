@@ -101,3 +101,8 @@
 ## Project
 
 - [문서 정보 구조 정리 전략](project/DOCS_INFORMATION_ARCHITECTURE_STRATEGY.md)
+
+## Legal
+
+- [Android·iOS 광고 반영 개인정보처리방침 초안](legal/PRIVACY_POLICY_ANDROID_AD_UPDATE.md)
+- [한·영·일 개인정보처리방침 개정 초안](legal/PRIVACY_POLICY_DRAFT.md)
