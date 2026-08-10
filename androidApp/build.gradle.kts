@@ -111,7 +111,9 @@ dependencies {
     implementation(libs.cmptoast)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.napier)
-    debugImplementation(libs.ding)
+    debugImplementation(libs.ding) {
+        exclude(group = "com.google.firebase", module = "firebase-bom")
+    }
     "releaseImplementation"(libs.ding.noop)
     testImplementation(libs.bundles.android.unit.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
