@@ -88,7 +88,10 @@ class AndroidRewardedAdGateway(
         }
 
         val adRequest =
-            AdRequest.Builder(application.getString(R.string.admob_rewarded_ad_unit_id)).build()
+            AdRequest
+                .Builder(application.getString(R.string.admob_rewarded_ad_unit_id))
+                .setGoogleExtrasBundle(nonPersonalizedAdExtras())
+                .build()
         val preloadedAd = RewardedAdPreloader.pollAd(adRequest.adUnitId)
         if (preloadedAd != null) {
             showWhenActivityAvailable(requestId, preloadedAd, result)

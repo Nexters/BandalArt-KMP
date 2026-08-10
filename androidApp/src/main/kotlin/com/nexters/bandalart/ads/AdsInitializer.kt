@@ -43,6 +43,7 @@ class AdsInitializer(
 
         scope.launch {
             runCatching {
+                MobileAds.putPublisherFirstPartyIdEnabled(false)
                 MobileAds.initialize(
                     context,
                     InitializationConfig.Builder(context.getString(R.string.admob_app_id)).build(),
@@ -51,7 +52,12 @@ class AdsInitializer(
                     runCatching {
                         RewardedAdPreloader.start(
                             adUnitId,
-                            PreloadConfiguration(AdRequest.Builder(adUnitId).build()),
+                            PreloadConfiguration(
+                                AdRequest
+                                    .Builder(adUnitId)
+                                    .setGoogleExtrasBundle(nonPersonalizedAdExtras())
+                                    .build(),
+                            ),
                         )
                     }.onFailure { exception ->
                         Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
