@@ -24,21 +24,21 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v7
                 with:
                     fetch-depth: 0
 
             -   name: Setup JDK 21
-                uses: actions/setup-java@v4
+                uses: actions/setup-java@v5
                 with:
                     distribution: zulu
                     java-version: 21
 
             -   name: Setup Android SDK
-                uses: android-actions/setup-android@v3
+                uses: android-actions/setup-android@v4
 
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@v4
+                uses: gradle/actions/setup-gradle@v6
 
             -   name: Generate build properties
                 env:
@@ -64,19 +64,19 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v7
 
             -   name: Setup JDK 21
-                uses: actions/setup-java@v4
+                uses: actions/setup-java@v5
                 with:
                     distribution: zulu
                     java-version: 21
 
             -   name: Setup Android SDK
-                uses: android-actions/setup-android@v3
+                uses: android-actions/setup-android@v4
 
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@v4
+                uses: gradle/actions/setup-gradle@v6
 
             -   name: Generate build properties
                 env:
@@ -102,19 +102,19 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v7
 
             -   name: Setup JDK 21
-                uses: actions/setup-java@v4
+                uses: actions/setup-java@v5
                 with:
                     distribution: zulu
                     java-version: 21
 
             -   name: Setup Android SDK
-                uses: android-actions/setup-android@v3
+                uses: android-actions/setup-android@v4
 
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@v4
+                uses: gradle/actions/setup-gradle@v6
 
             -   name: Generate build properties
                 env:
@@ -140,19 +140,19 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v7
 
             -   name: Setup JDK 21
-                uses: actions/setup-java@v4
+                uses: actions/setup-java@v5
                 with:
                     distribution: zulu
                     java-version: 21
 
             -   name: Setup Android SDK
-                uses: android-actions/setup-android@v3
+                uses: android-actions/setup-android@v4
 
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@v4
+                uses: gradle/actions/setup-gradle@v6
 
             -   name: Generate build properties
                 env:
