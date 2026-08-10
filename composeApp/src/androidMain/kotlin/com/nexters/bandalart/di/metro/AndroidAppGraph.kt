@@ -53,6 +53,12 @@ fun createAndroidAppGraph(
 fun installAndroidDeadlineReminderInfrastructure(
     appGraph: AppGraph,
     launchIntentFactory: (batchId: String, bandalartId: Long) -> Intent,
+    notificationCapture: (
+        notificationId: Int,
+        title: String,
+        body: String,
+        data: Map<String, String>,
+    ) -> Unit,
 ) {
     AndroidDeadlineReminderDependenciesRegistry.install(
         object : AndroidDeadlineReminderDependencies {
@@ -69,6 +75,15 @@ fun installAndroidDeadlineReminderInfrastructure(
                 batchId: String,
                 bandalartId: Long,
             ): Intent = launchIntentFactory(batchId, bandalartId)
+
+            override fun captureDeadlineNotification(
+                notificationId: Int,
+                title: String,
+                body: String,
+                data: Map<String, String>,
+            ) {
+                notificationCapture(notificationId, title, body, data)
+            }
         },
     )
 }

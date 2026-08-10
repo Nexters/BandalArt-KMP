@@ -47,6 +47,13 @@ interface AndroidDeadlineReminderDependencies {
         batchId: String,
         bandalartId: Long,
     ): Intent
+
+    fun captureDeadlineNotification(
+        notificationId: Int,
+        title: String,
+        body: String,
+        data: Map<String, String>,
+    )
 }
 
 object AndroidDeadlineReminderDependenciesRegistry {
@@ -101,6 +108,7 @@ class DeadlineReminderWorker(
         publishNotification(
             batchId = batchId,
             bandalartId = bandalartId,
+            dueDate = dueDate,
             items = items,
             dependencies = dependencies,
         )
@@ -110,6 +118,7 @@ class DeadlineReminderWorker(
     private fun publishNotification(
         batchId: String,
         bandalartId: Long,
+        dueDate: LocalDate,
         items: List<String>,
         dependencies: AndroidDeadlineReminderDependencies,
     ) {
@@ -136,6 +145,7 @@ class DeadlineReminderWorker(
                 launchIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
+        val title = applicationContext.getString(R.string.deadline_reminder_title)
         val content =
             if (items.size == 1) {
                 applicationContext.getString(R.string.deadline_reminder_single_body, items.single())
@@ -146,13 +156,27 @@ class DeadlineReminderWorker(
             NotificationCompat
                 .Builder(applicationContext, DeadlineReminderWork.CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle(applicationContext.getString(R.string.deadline_reminder_title))
+                .setContentTitle(title)
                 .setContentText(content)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .build()
         notificationManager.notify(batchId, DeadlineReminderWork.NOTIFICATION_ID, notification)
+        dependencies.captureDeadlineNotification(
+            notificationId = DeadlineReminderWork.NOTIFICATION_ID,
+            title = title,
+            body = content,
+            data =
+                mapOf(
+                    DeadlineReminderWork.KEY_BATCH_ID to batchId,
+                    DeadlineReminderWork.KEY_BANDALART_ID to bandalartId.toString(),
+                    DeadlineReminderWork.KEY_DUE_DATE to dueDate.toString(),
+                    "item_count" to items.size.toString(),
+                    "action" to ACTION_OPEN_DEADLINE,
+                    "data_uri" to deadlineNotificationDataUri(batchId).toString(),
+                ),
+        )
     }
 
     companion object {

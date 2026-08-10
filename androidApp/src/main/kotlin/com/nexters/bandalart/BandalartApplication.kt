@@ -30,6 +30,7 @@ import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructu
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import io.github.easyhooon.ding.Ding
 
 class BandalartApplication : Application() {
     lateinit var appGraph: AppGraph
@@ -47,9 +48,22 @@ class BandalartApplication : Application() {
                 bannerAdHost = bannerAdHost,
                 rewardedAdGateway = rewardedAdGateway,
             )
-        installAndroidDeadlineReminderInfrastructure(appGraph) { _, _ ->
-            Intent(this, DeadlineNotificationTrampolineActivity::class.java)
-        }
+        installAndroidDeadlineReminderInfrastructure(
+            appGraph = appGraph,
+            launchIntentFactory = { _, _ ->
+                Intent(this, DeadlineNotificationTrampolineActivity::class.java)
+            },
+            notificationCapture = { notificationId, title, body, data ->
+                Ding.captureNotification(
+                    context = this,
+                    source = "deadline-reminder",
+                    notificationId = notificationId,
+                    title = title,
+                    body = body,
+                    data = data,
+                )
+            },
+        )
         rewardedAdGateway.delegate =
             AndroidRewardedAdGateway(
                 application = this,
