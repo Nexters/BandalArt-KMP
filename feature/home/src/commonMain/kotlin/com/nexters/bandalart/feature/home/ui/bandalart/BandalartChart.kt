@@ -74,7 +74,7 @@ fun BandalartChart(
                             Modifier
                                 .layoutId(stringResource(Res.string.home_layout_id, index + 1))
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(color = MaterialTheme.colorScheme.outlineVariant),
+                                .background(color = MaterialTheme.colorScheme.surfaceContainer),
                     ) {
                         BandalartCellGrid(
                             bandalartData = bandalartData,

@@ -22,6 +22,7 @@ private val DarkColorScheme =
         onPrimary = Gray900,
         outline = DarkOutline,
         outlineVariant = DarkOutlineVariant,
+        surfaceContainer = DarkOutlineVariant,
     )
 
 private val LightColorScheme =
@@ -36,6 +37,7 @@ private val LightColorScheme =
         onPrimary = Color.White,
         outline = Gray300,
         outlineVariant = Gray100,
+        surfaceContainer = Gray200,
     )
 
 @Composable
