@@ -235,6 +235,7 @@ jobs:
                     bundle exec ruby fastlane/test/plist_file_test.rb
                     bundle exec ruby fastlane/test/provisioning_profile_test.rb
                     bundle exec ruby fastlane/test/signing_configuration_test.rb
+                    bundle exec ruby fastlane/test/testflight_test_ads_test.rb
                     bundle exec ruby fastlane/test/android_update_priority_test.rb
                     python3 -m unittest scripts.tests.test_play_release_scripts
                     bundle exec fastlane lanes

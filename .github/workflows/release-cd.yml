@@ -13,7 +13,7 @@ on:
                     - android
                     - ios
             confirm_release:
-                description: I confirm main deployment to Play Internal/TestFlight (Android uses test Rewarded and Banner ads)
+                description: I confirm main deployment to Play Internal/TestFlight (both use test Rewarded and Banner ads)
                 required: true
                 default: false
                 type: boolean
