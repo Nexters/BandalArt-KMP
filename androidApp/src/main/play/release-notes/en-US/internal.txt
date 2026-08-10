@@ -1,1 +1,1 @@
-• Fixed an issue where the test banner did not appear at the bottom of Home.
+• Improved the background contrast of BandalArt subcell groups in light mode.
