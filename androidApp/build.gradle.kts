@@ -111,6 +111,11 @@ dependencies {
     implementation(libs.cmptoast)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.napier)
+    debugImplementation(platform(libs.firebase.bom))
+    debugImplementation(libs.ding) {
+        exclude(group = "com.google.firebase", module = "firebase-bom")
+    }
+    "releaseImplementation"(libs.ding.noop)
     testImplementation(libs.bundles.android.unit.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
     "baselineProfile"(project(":baselineprofile"))
