@@ -50,7 +50,7 @@
 - Android 버전을 `2.2.18 (20218)`로 올린다. Play 전체 track의 현재 최대 versionCode는 `20217`이다.
 - `-Pbandalart.useTestAds=true`가 release Rewarded와 Banner ID를 각각 Google 공식 테스트 ID로 바꿔야 한다.
 - clean bundle과 publish task 모두 같은 property를 전달한다.
-- AAB 검증 시 Rewarded 테스트 ID `ca-app-pub-3940256099942544/5224354917`와 Banner 테스트 ID `ca-app-pub-3940256099942544/9214589741`의 존재를 확인하고 두 production ad unit ID가 있으면 업로드하지 않는다.
+- AAB 검증 시 Rewarded 테스트 ID `ca-app-pub-3940256099942544/5224354917`와 Fixed Size Banner 테스트 ID `ca-app-pub-3940256099942544/6300978111`의 존재를 확인하고 두 production ad unit ID가 있으면 업로드하지 않는다.
 - 이 테스트 광고 artifact는 production으로 promote하지 않는다. production 광고 ID를 쓰는 다음 배포는 새 versionCode로 다시 빌드한다.
 
 ## 검증
