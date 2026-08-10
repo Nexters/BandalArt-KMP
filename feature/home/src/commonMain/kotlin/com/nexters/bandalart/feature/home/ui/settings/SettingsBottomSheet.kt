@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +43,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -59,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
+import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder
@@ -83,6 +82,7 @@ import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,25 +100,18 @@ internal fun SettingsBottomSheet(
     var showDeadlineReminderConfirmation by remember { mutableStateOf(false) }
 
     if (showDeadlineReminderConfirmation) {
-        AlertDialog(
-            onDismissRequest = { showDeadlineReminderConfirmation = false },
-            title = { Text(stringResource(Res.string.settings_deadline_reminder_dialog_title)) },
-            text = { Text(stringResource(Res.string.settings_deadline_reminder_dialog_body)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeadlineReminderConfirmation = false
-                        onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
-                    },
-                ) {
-                    Text(stringResource(Res.string.settings_deadline_reminder_confirm))
-                }
+        BandalartActionAlertDialog(
+            icon = Res.drawable.ic_notifications_outlined,
+            iconContentDescription = stringResource(Res.string.settings_deadline_reminder),
+            title = stringResource(Res.string.settings_deadline_reminder_dialog_title),
+            message = stringResource(Res.string.settings_deadline_reminder_dialog_body),
+            confirmLabel = stringResource(Res.string.settings_deadline_reminder_confirm),
+            cancelLabel = stringResource(Res.string.settings_deadline_reminder_cancel),
+            onConfirmClick = {
+                showDeadlineReminderConfirmation = false
+                onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
             },
-            dismissButton = {
-                TextButton(onClick = { showDeadlineReminderConfirmation = false }) {
-                    Text(stringResource(Res.string.settings_deadline_reminder_cancel))
-                }
-            },
+            onCancelClick = { showDeadlineReminderConfirmation = false },
         )
     }
 

@@ -16,30 +16,8 @@
 
 package com.nexters.bandalart.feature.home.ui.bandalart
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.ic_add_circle_outlined
@@ -48,7 +26,6 @@ import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_co
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_message
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_title
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun RewardedBandalartAlertDialog(
@@ -56,108 +33,15 @@ fun RewardedBandalartAlertDialog(
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Dialog(onDismissRequest = onCancelClick) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-        ) {
-            Column(
-                modifier =
-                    modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-            ) {
-                Icon(
-                    imageVector = vectorResource(Res.drawable.ic_add_circle_outlined),
-                    contentDescription = stringResource(Res.string.add_description),
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterHorizontally),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-                Text(
-                    text = stringResource(Res.string.rewarded_create_dialog_title),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.W700,
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 24.dp),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 30.sp,
-                    letterSpacing = (-0.4).sp,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(Res.string.rewarded_create_dialog_message),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.W500,
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 24.dp),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 21.sp,
-                    letterSpacing = (-0.28).sp,
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Button(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .height(56.dp),
-                        onClick = onCancelClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.rewarded_create_dialog_cancel),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W600,
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(9.dp))
-                    Button(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .height(56.dp),
-                        onClick = onConfirmClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.rewarded_create_dialog_confirm),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W600,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-        }
-    }
+    BandalartActionAlertDialog(
+        icon = Res.drawable.ic_add_circle_outlined,
+        iconContentDescription = stringResource(Res.string.add_description),
+        title = stringResource(Res.string.rewarded_create_dialog_title),
+        message = stringResource(Res.string.rewarded_create_dialog_message),
+        confirmLabel = stringResource(Res.string.rewarded_create_dialog_confirm),
+        cancelLabel = stringResource(Res.string.rewarded_create_dialog_cancel),
+        onConfirmClick = onConfirmClick,
+        onCancelClick = onCancelClick,
+        modifier = modifier,
+    )
 }
