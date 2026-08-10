@@ -1,8 +1,1 @@
-We've made BandalArt easier to use.
-
-• Start a new BandalArt quickly with five goal templates.
-• Get a due-date reminder and open the related BandalArt directly.
-• Choose from 300 emojis by category or recent use.
-• Long-press a task cell to complete or reopen it, with vibration feedback.
-• Ads now appear at the bottom of Home. After using all free slots, you can watch an ad to add one.
-• Refined spacing and icons, and improved stability.
+• Fixed an issue where the test banner did not appear at the bottom of Home.

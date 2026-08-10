@@ -80,6 +80,17 @@ class PlayVersionTest(unittest.TestCase):
 
 
 class ValidateAabTest(unittest.TestCase):
+    def test_uses_fixed_size_banner_test_unit(self) -> None:
+        fixed_size_banner_id = "ca-app-pub-3940256099942544/6300978111"
+        anchored_adaptive_banner_id = "ca-app-pub-3940256099942544/9214589741"
+        build_gradle = (
+            Path(__file__).resolve().parents[2] / "androidApp/build.gradle.kts"
+        ).read_text(encoding="utf-8")
+
+        self.assertEqual(fixed_size_banner_id.encode(), validate_play_aab.TEST_BANNER_ID)
+        self.assertIn(fixed_size_banner_id, build_gradle)
+        self.assertNotIn(anchored_adaptive_banner_id, build_gradle)
+
     def test_validates_exact_production_package(self) -> None:
         validate_play_aab.verify_manifest_xml(
             '<manifest xmlns:android="http://schemas.android.com/apk/res/android" '
