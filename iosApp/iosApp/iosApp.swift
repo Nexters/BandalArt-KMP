@@ -16,12 +16,14 @@ private let deadlineBandalartIdKey = "deadline_bandalart_id"
 
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
+    let adsBridge = IosAdsBridgeImpl()
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
+        adsBridge.start()
         UNUserNotificationCenter.current().delegate = self
         return true
     }
@@ -74,7 +76,10 @@ struct iosApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(notificationLaunchBridge: appDelegate.notificationLaunchBridge)
+            ContentView(
+                notificationLaunchBridge: appDelegate.notificationLaunchBridge,
+                adsBridge: appDelegate.adsBridge
+            )
         }
     }
 }
