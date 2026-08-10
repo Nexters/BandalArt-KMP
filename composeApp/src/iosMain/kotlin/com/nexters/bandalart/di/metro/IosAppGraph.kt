@@ -16,26 +16,30 @@
 
 package com.nexters.bandalart.di.metro
 
+import com.nexters.bandalart.ads.IosAdsBridge
+import com.nexters.bandalart.ads.IosBannerAdHost
+import com.nexters.bandalart.ads.IosRewardedAdGateway
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.IosSupportMailLauncher
-import com.nexters.bandalart.core.common.NoOpBannerAdHost
-import com.nexters.bandalart.core.common.NoOpRewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.notification.IosDeadlineNotificationAuthorization
 import com.nexters.bandalart.notification.IosDeadlineReminderScheduler
 
-private object IosPlatformBindings : PlatformBindings {
+private class IosPlatformBindings(
+    adsBridge: IosAdsBridge,
+) : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory()
     override val dataStoreFactory = BandalartDataStoreFactory()
     override val appVersionProvider = AppVersionProvider()
-    override val bannerAdHost = NoOpBannerAdHost
+    override val bannerAdHost = IosBannerAdHost(adsBridge)
     override val imageHandlerProvider = ImageHandlerProvider()
     override val supportMailLauncher = IosSupportMailLauncher()
-    override val rewardedAdGateway = NoOpRewardedAdGateway
+    override val rewardedAdGateway = IosRewardedAdGateway(adsBridge)
     override val deadlineReminderScheduler = IosDeadlineReminderScheduler()
     override val deadlineNotificationAuthorization = IosDeadlineNotificationAuthorization()
 }
 
-internal fun createIosAppGraph(): AppGraph = createAppGraph(IosPlatformBindings)
+internal fun createIosAppGraph(adsBridge: IosAdsBridge): AppGraph =
+    createAppGraph(IosPlatformBindings(adsBridge))
