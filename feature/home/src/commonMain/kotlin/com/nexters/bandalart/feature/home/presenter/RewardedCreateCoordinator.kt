@@ -23,6 +23,7 @@ internal class RewardedCreateCoordinator {
     private var state = State.IDLE
     private var activeRequestId: Long? = null
     private var expectedCreatedCount: Int? = null
+    private var latestObservedCount: Int? = null
 
     fun beginSlotCheck(): Boolean {
         if (state != State.IDLE) return false
@@ -36,7 +37,8 @@ internal class RewardedCreateCoordinator {
     ): Boolean {
         check(state == State.CHECKING_SLOTS)
         state = if (canCreate) State.CREATING else State.AWAITING_CONFIRMATION
-        if (canCreate) expectedCreatedCount = currentCount + 1
+        expectedCreatedCount = if (canCreate) currentCount + 1 else null
+        latestObservedCount = if (canCreate) currentCount else null
         return canCreate
     }
 
@@ -72,6 +74,7 @@ internal class RewardedCreateCoordinator {
             state = State.IDLE
             RewardedCompletion.DISMISSED
         } else {
+            latestObservedCount = null
             state = State.APPLYING_GRANT
             RewardedCompletion.GRANTED
         }
@@ -96,27 +99,35 @@ internal class RewardedCreateCoordinator {
     fun beginPendingRecovery(expectedCount: Int): Boolean {
         if (state != State.IDLE) return false
         expectedCreatedCount = expectedCount
+        latestObservedCount = null
         state = State.APPLYING_GRANT
         return true
     }
 
     fun creationObserved(currentCount: Int) {
+        if (state != State.CREATING && state != State.APPLYING_GRANT && state != State.AWAITING_CREATION) return
+        latestObservedCount = maxOf(latestObservedCount ?: currentCount, currentCount)
         if (state != State.AWAITING_CREATION) return
-        if (currentCount < requireNotNull(expectedCreatedCount)) return
-        expectedCreatedCount = null
-        state = State.IDLE
+        if (requireNotNull(latestObservedCount) < requireNotNull(expectedCreatedCount)) return
+        resetCreation()
     }
 
     private fun finishCreation(
         wasCreated: Boolean,
         currentCount: Int,
     ) {
-        if (!wasCreated || currentCount >= requireNotNull(expectedCreatedCount)) {
-            expectedCreatedCount = null
-            state = State.IDLE
+        val observedCount = maxOf(latestObservedCount ?: currentCount, currentCount)
+        if (!wasCreated || observedCount >= requireNotNull(expectedCreatedCount)) {
+            resetCreation()
         } else {
             state = State.AWAITING_CREATION
         }
+    }
+
+    private fun resetCreation() {
+        expectedCreatedCount = null
+        latestObservedCount = null
+        state = State.IDLE
     }
 
     fun dismissDialog() {

@@ -25,11 +25,52 @@ import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class HomePresenterRewardedAdTest {
+    @Test
+    fun templateCanBeCreatedAgainAfterFirstCreationIsObserved() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = List(3) { index -> bandalart(index + 1L) },
+                    recentBandalartId = 1L,
+                    createdBandalart = bandalart(4L),
+                    beforeCompletionUpdate = { yield() },
+                )
+            val slotRepository = FakeBandalartSlotRepository(maxSlots = 5)
+
+            presenter(repository, slotRepository).test {
+                var state = awaitLoaded()
+                state.eventSink(
+                    HomeScreen.Event.CreateBandalartFromTemplate(
+                        BandalartTemplateId.STUDY_PLAN_V1,
+                    ),
+                )
+                state = awaitCreated()
+                state.eventSink(HomeScreen.Event.ConsumeEffect)
+                state.eventSink(
+                    HomeScreen.Event.CreateBandalartFromTemplate(
+                        BandalartTemplateId.WORKOUT_HABIT_V1,
+                    ),
+                )
+                yield()
+
+                assertEquals(2, repository.createCalls)
+                assertEquals(
+                    listOf(
+                        BandalartTemplateId.STUDY_PLAN_V1,
+                        BandalartTemplateId.WORKOUT_HABIT_V1,
+                    ),
+                    repository.createdTemplateIds,
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     fun templateUsesExistingFreeSlotGateAndCreatesSelectedTemplate() =
         runTest {

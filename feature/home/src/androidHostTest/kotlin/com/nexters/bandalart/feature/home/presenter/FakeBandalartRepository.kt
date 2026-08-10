@@ -40,6 +40,7 @@ internal class FakeBandalartRepository(
     private val beforeTaskCellUpdate: suspend () -> Unit = {},
     private val afterTaskCellUpdate: suspend () -> Unit = {},
     private val beforeBandalartLoad: suspend (Long) -> Unit = {},
+    private val beforeCompletionUpdate: suspend () -> Unit = {},
     private val taskCellUpdateError: Throwable? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
@@ -127,6 +128,7 @@ internal class FakeBandalartRepository(
         bandalartId: Long,
         isCompleted: Boolean,
     ) {
+        beforeCompletionUpdate()
         completionUpdates += bandalartId to isCompleted
     }
 
