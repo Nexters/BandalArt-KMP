@@ -85,6 +85,18 @@ class RewardedCreateCoordinatorTest {
         assertTrue(coordinator.beginSlotCheck())
     }
 
+    @Test
+    fun creationObservedBeforeRepositoryReturnsStillUnlocksNextRequest() {
+        val coordinator = RewardedCreateCoordinator()
+        assertTrue(coordinator.beginSlotCheck())
+        assertTrue(coordinator.slotsResolved(canCreate = true, currentCount = 3))
+
+        coordinator.creationObserved(currentCount = 4)
+        coordinator.creationFinished(wasCreated = true, currentCount = 3)
+
+        assertTrue(coordinator.beginSlotCheck())
+    }
+
     private fun RewardedCreateCoordinator.openRewardedRequest(): Long {
         assertTrue(beginSlotCheck())
         assertFalse(slotsResolved(canCreate = false, currentCount = 3))
