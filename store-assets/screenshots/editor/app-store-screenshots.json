@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 2,
+  "appName": "반다라트",
+  "themeId": "bandalart-navy",
+  "connectedCanvas": false,
+  "locales": [
+    "ko"
+  ],
+  "locale": "ko",
+  "device": "android",
+  "orientation": "portrait",
+  "appIcon": "/app-icon.png",
+  "slidesByDevice": {
+    "iphone": [
+      {
+        "id": "ios-template",
+        "layout": "hero",
+        "label": {
+          "ko": "빠른 시작"
+        },
+        "headline": {
+          "ko": "목표에 맞는 틀로\n바로 시작하세요"
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "ios-reminder",
+        "layout": "device-bottom",
+        "label": {
+          "ko": "마감일 알림"
+        },
+        "headline": {
+          "ko": "오늘의 목표를\n놓치지 않게"
+        },
+        "screenshot": ""
+      }
+    ],
+    "android": [
+      {
+        "id": "android-template",
+        "layout": "hero",
+        "label": {
+          "ko": "빠른 시작"
+        },
+        "headline": {
+          "ko": "목표에 맞는 틀로\n바로 시작하세요"
+        },
+        "screenshot": "/screenshots/android/phone/ko/03.png"
+      },
+      {
+        "id": "android-widget",
+        "layout": "device-bottom",
+        "label": {
+          "ko": "홈 화면 위젯"
+        },
+        "headline": {
+          "ko": "마지막 목표를\n홈 화면에서"
+        },
+        "screenshot": "",
+        "inverted": true
+      },
+      {
+        "id": "android-reminder",
+        "layout": "device-top",
+        "label": {
+          "ko": "마감일 알림"
+        },
+        "headline": {
+          "ko": "오늘의 목표를\n놓치지 않게"
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "android-management",
+        "layout": "two-devices",
+        "label": {
+          "ko": "목표 관리"
+        },
+        "headline": {
+          "ko": "여러 목표도\n한눈에 관리하세요"
+        },
+        "screenshot": "/screenshots/android/phone/ko/01.png",
+        "screenshotSecondary": "/screenshots/android/phone/ko/02.png"
+      }
+    ],
+    "ipad": [],
+    "android-7": [],
+    "android-10": [],
+    "feature-graphic": []
+  }
+}
