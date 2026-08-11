@@ -384,7 +384,11 @@ class HomePresenter(
 
         fun openBandalartList() {
             val currentBandalartId = bandalartData?.id ?: return
-            bottomSheet = HomeScreen.BottomSheetState.BandalartList(currentBandalartId)
+            bottomSheet =
+                HomeScreen.BottomSheetState.BandalartList(
+                    currentBandalartId = currentBandalartId,
+                    isCreationOptionsVisible = bandalartList.size <= 1,
+                )
         }
 
         fun openEmoji() {
