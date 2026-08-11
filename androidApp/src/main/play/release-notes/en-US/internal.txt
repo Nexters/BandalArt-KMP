@@ -1,3 +1,3 @@
-• View a selected BandalArt goal and tasks from a Home Screen widget, and update task completion.
-• Widget screens support Korean, English, and Japanese.
-• When you have one BandalArt, the top Add button lets you choose a blank BandalArt or a goal template.
+• The Home Screen widget now automatically shows the last BandalArt you viewed in the app.
+• View goal progress and tasks in the widget, and update task completion.
+• Improved header alignment on the Create New BandalArt sheet.
