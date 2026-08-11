@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">BandalArt</string>
+    <string name="app_name_dev">BandalArt.dev</string>
     <string name="bandalart_widget_name">BandalArt Goal</string>
     <string name="bandalart_widget_description">View your selected BandalArt goal and tasks on the Home Screen.</string>
     <string name="bandalart_widget_loading">Loading BandalArt…</string>
