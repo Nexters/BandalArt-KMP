@@ -16,14 +16,14 @@
 
 package com.nexters.bandalart.core.domain.notification
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 class DeadlineReminderPlannerTest {
     @Test
