@@ -1,1 +1,1 @@
-• Improved the background contrast of BandalArt subcell groups in light mode.
+• Fixed an issue where the banner ad at the bottom of the home screen was not displayed.

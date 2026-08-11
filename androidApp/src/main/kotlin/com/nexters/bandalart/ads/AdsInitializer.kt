@@ -17,6 +17,7 @@
 package com.nexters.bandalart.ads
 
 import android.content.Context
+import android.util.Log
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
@@ -43,30 +44,33 @@ class AdsInitializer(
 
         scope.launch {
             runCatching {
-                MobileAds.putPublisherFirstPartyIdEnabled(false)
                 MobileAds.initialize(
                     context,
                     InitializationConfig.Builder(context.getString(R.string.admob_app_id)).build(),
-                ) {
-                    val adUnitId = context.getString(R.string.admob_rewarded_ad_unit_id)
-                    runCatching {
-                        RewardedAdPreloader.start(
-                            adUnitId,
-                            PreloadConfiguration(
-                                AdRequest
-                                    .Builder(adUnitId)
-                                    .setGoogleExtrasBundle(nonPersonalizedAdExtras())
-                                    .build(),
-                            ),
-                        )
-                    }.onFailure { exception ->
-                        Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
-                    }
-                    initialization.complete(true)
-                    Napier.d("GMA Next-Gen SDK initialized", tag = "AdsInitializer")
+                )
+                MobileAds.putPublisherFirstPartyIdEnabled(false)
+
+                val adUnitId = context.getString(R.string.admob_rewarded_ad_unit_id)
+                runCatching {
+                    RewardedAdPreloader.start(
+                        adUnitId,
+                        PreloadConfiguration(
+                            AdRequest
+                                .Builder(adUnitId)
+                                .setGoogleExtrasBundle(nonPersonalizedAdExtras())
+                                .build(),
+                        ),
+                    )
+                }.onFailure { exception ->
+                    Log.e("AdsInitializer", "Rewarded ad preloader failed to start", exception)
+                    Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
                 }
+
+                initialization.complete(true)
+                Napier.d("GMA Next-Gen SDK initialized", tag = "AdsInitializer")
             }.onFailure { exception ->
                 initialization.complete(false)
+                Log.e("AdsInitializer", "GMA Next-Gen SDK initialization failed", exception)
                 Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = "AdsInitializer")
             }
         }
