@@ -32,19 +32,33 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
         }
     }
 
-    static let placeholder = BandalartWidgetSnapshotModel(
-        bandalartId: 1,
-        subGoalId: 2,
-        title: "2026 Goal",
-        profileEmoji: "🎯",
-        completionRatio: 45,
-        subGoalTitle: "Build healthy routines",
-        tasks: [
-            BandalartWidgetTaskModel(id: 3, title: "Exercise three times", isCompleted: true),
-            BandalartWidgetTaskModel(id: 4, title: "Sleep before midnight", isCompleted: false),
-            BandalartWidgetTaskModel(id: 5, title: "Drink enough water", isCompleted: false),
-        ]
-    )
+    static var placeholder: BandalartWidgetSnapshotModel {
+        BandalartWidgetSnapshotModel(
+            bandalartId: 1,
+            subGoalId: 2,
+            title: String(localized: "2026 Goal"),
+            profileEmoji: "🎯",
+            completionRatio: 45,
+            subGoalTitle: String(localized: "Build healthy routines"),
+            tasks: [
+                BandalartWidgetTaskModel(
+                    id: 3,
+                    title: String(localized: "Exercise three times"),
+                    isCompleted: true
+                ),
+                BandalartWidgetTaskModel(
+                    id: 4,
+                    title: String(localized: "Sleep before midnight"),
+                    isCompleted: false
+                ),
+                BandalartWidgetTaskModel(
+                    id: 5,
+                    title: String(localized: "Drink enough water"),
+                    isCompleted: false
+                ),
+            ]
+        )
+    }
 
     private init(
         bandalartId: Int64,

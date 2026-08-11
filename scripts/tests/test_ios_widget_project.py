@@ -11,6 +11,31 @@ APP_INFO = ROOT / "iosApp/iosApp/Info.plist"
 WIDGET_INFO = ROOT / "iosApp/BandalartWidget/Info.plist"
 RELEASE_WORKFLOW = ROOT / ".github/workflows/release-cd.yml"
 FASTFILE = ROOT / "fastlane/Fastfile"
+WIDGET_SOURCE = ROOT / "iosApp/BandalartWidget/BandalartWidget.swift"
+WIDGET_LOCALIZATIONS = ROOT / "iosApp/BandalartWidget"
+
+REQUIRED_WIDGET_STRINGS = {
+    "Choose a sub-goal",
+    "Add tasks in the app",
+    "Choose a Bandalart",
+    "Edit this widget after creating a goal in the app.",
+    "Bandalart",
+    "See your goal progress and complete tasks from the Home Screen.",
+    "Bandalart Goal",
+    "Selects a Bandalart and sub-goal to display.",
+    "Bandalart / Sub-goal",
+    "Update a Bandalart task",
+    "Marks a Bandalart task as complete or incomplete.",
+    "Bandalart ID",
+    "Sub-goal ID",
+    "Task ID",
+    "Completed",
+    "2026 Goal",
+    "Build healthy routines",
+    "Exercise three times",
+    "Sleep before midnight",
+    "Drink enough water",
+}
 
 
 class IosWidgetProjectTest(unittest.TestCase):
@@ -62,6 +87,27 @@ class IosWidgetProjectTest(unittest.TestCase):
         self.assertIn('targets: ["BandalartWidget"]', fastfile)
         self.assertIn("IOS_WIDGET_BUNDLE_ID => widget_profile_name", fastfile)
         self.assertIn("CURRENT_PROJECT_VERSION=#{build_number}", fastfile)
+
+    def test_widget_provider_does_not_replace_an_empty_selection(self):
+        source = WIDGET_SOURCE.read_text()
+
+        self.assertIn("let selection = configuration.selection", source)
+        self.assertNotIn("BandalartSelectionQuery().suggestedEntities().first", source)
+
+    def test_widget_resources_cover_Korean_English_and_Japanese(self):
+        translations = {}
+        for language in ("ko", "en", "ja"):
+            path = WIDGET_LOCALIZATIONS / f"{language}.lproj/Localizable.strings"
+            contents = path.read_text()
+            translations[language] = {
+                line.split(" = ", 1)[0].strip().strip('"')
+                for line in contents.splitlines()
+                if " = " in line
+            }
+            self.assertTrue(
+                REQUIRED_WIDGET_STRINGS.issubset(translations[language]),
+                f"{language} is missing widget translations",
+            )
 
 
 if __name__ == "__main__":

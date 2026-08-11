@@ -37,12 +37,7 @@ struct BandalartWidgetProvider: AppIntentTimelineProvider {
         for configuration: BandalartWidgetConfigurationIntent,
         placeholderWhenEmpty: Bool = false
     ) async -> BandalartWidgetEntry {
-        let selection: BandalartSelectionEntity?
-        if let configuredSelection = configuration.selection {
-            selection = configuredSelection
-        } else {
-            selection = try? await BandalartSelectionQuery().suggestedEntities().first
-        }
+        let selection = configuration.selection
         let snapshot: BandalartWidgetSnapshotModel?
         if let selection {
             snapshot = try? await BandalartWidgetBridge.snapshot(
@@ -123,10 +118,17 @@ private struct DetailBandalartWidgetView: View {
                 Text("\(snapshot.completionRatio)%")
                     .font(.subheadline.weight(.semibold))
             }
-            Text(snapshot.subGoalTitle ?? "Choose a sub-goal")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+            if let subGoalTitle = snapshot.subGoalTitle {
+                Text(subGoalTitle)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            } else {
+                Text("Choose a sub-goal")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
             VStack(alignment: .leading, spacing: 5) {
                 ForEach(Array(snapshot.tasks.prefix(taskLimit))) { task in
                     Button(
