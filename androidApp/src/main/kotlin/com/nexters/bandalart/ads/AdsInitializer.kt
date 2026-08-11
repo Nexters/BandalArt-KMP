@@ -17,7 +17,6 @@
 package com.nexters.bandalart.ads
 
 import android.content.Context
-import android.util.Log
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
@@ -62,16 +61,13 @@ class AdsInitializer(
                         ),
                     )
                 }.onFailure { exception ->
-                    Log.e(TAG, "Rewarded ad preloader failed to start", exception)
                     Napier.e("Rewarded ad preloader failed to start", exception, tag = TAG)
                 }
 
                 initialization.complete(true)
-                Log.i(TAG, "GMA Next-Gen SDK initialized")
                 Napier.d("GMA Next-Gen SDK initialized", tag = TAG)
             }.onFailure { exception ->
                 initialization.complete(false)
-                Log.e(TAG, "GMA Next-Gen SDK initialization failed", exception)
                 Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = TAG)
             }
         }
