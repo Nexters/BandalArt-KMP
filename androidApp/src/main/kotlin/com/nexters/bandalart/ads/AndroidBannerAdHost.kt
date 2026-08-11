@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.ads
 
+import android.util.Log
 import android.view.View
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -105,6 +106,7 @@ class AndroidBannerAdHost(
                                         isLoaded = true
                                     }
                                 }
+                                Log.i(TAG, "Banner ad loaded")
                                 Napier.d("Banner ad loaded", tag = "BannerAd")
                             }
 
@@ -112,6 +114,7 @@ class AndroidBannerAdHost(
                                 activity.runOnUiThread {
                                     if (!released.get()) isLoaded = false
                                 }
+                                Log.w(TAG, "Banner ad failed to load: $adError")
                                 Napier.w("Banner ad failed to load: $adError", tag = "BannerAd")
                             }
                         },
@@ -124,5 +127,6 @@ class AndroidBannerAdHost(
 
 private const val FIXED_BANNER_WIDTH_DP = 320
 private const val FIXED_BANNER_HEIGHT_DP = 50
+private const val TAG = "BannerAd"
 
 internal fun supportsFixedBanner(availableWidthDp: Float): Boolean = availableWidthDp >= FIXED_BANNER_WIDTH_DP
