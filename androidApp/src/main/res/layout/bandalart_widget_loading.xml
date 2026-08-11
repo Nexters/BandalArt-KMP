@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bandalart_widget_background"
+    android:gravity="center"
+    android:padding="16dp"
+    android:text="@string/bandalart_widget_loading"
+    android:textColor="@color/widget_text_secondary"
+    android:textSize="12sp" />

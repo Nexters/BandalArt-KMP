@@ -74,6 +74,10 @@
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)
 - [foreground 인앱 업데이트](features/updates/IN_APP_UPDATE_FOREGROUND_STRATEGY.md)
 
+### Widgets
+
+- [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
+
 ## Releases
 
 ### Android

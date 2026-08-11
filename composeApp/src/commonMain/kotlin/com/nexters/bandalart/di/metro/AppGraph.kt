@@ -29,6 +29,8 @@ import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
+import com.nexters.bandalart.core.domain.repository.BandalartWidgetRepository
+import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
@@ -74,6 +76,8 @@ interface AppGraph {
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway
     val bandalartRepository: BandalartRepository
+    val bandalartWidgetRepository: BandalartWidgetRepository
+    val bandalartWidgetLaunchTarget: BandalartWidgetLaunchTarget
     val bandalartSlotRepository: BandalartSlotRepository
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository

@@ -79,6 +79,28 @@
             android:noHistory="true"
             android:theme="@style/Theme.Bandalart" />
 
+        <activity
+            android:name="com.nexters.bandalart.widget.BandalartWidgetConfigurationActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bandalart">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.nexters.bandalart.widget.BandalartGlanceWidgetReceiver"
+            android:exported="false"
+            android:label="@string/bandalart_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bandalart_widget_info" />
+        </receiver>
+
         <receiver
             android:name="com.nexters.bandalart.notification.DeadlineReminderTimeChangeReceiver"
             android:enabled="true"

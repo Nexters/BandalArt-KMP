@@ -195,6 +195,13 @@ internal class FakeBandalartRepository(
         afterTaskCellUpdate()
     }
 
+    override suspend fun setTaskCompleted(
+        bandalartId: Long,
+        subGoalId: Long,
+        taskId: Long,
+        completed: Boolean,
+    ): Boolean = error("Not used")
+
     override suspend fun updateBandalartEmoji(
         bandalartId: Long,
         cellId: Long,

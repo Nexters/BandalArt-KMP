@@ -18,6 +18,7 @@ package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartSlotRepository
+import com.nexters.bandalart.core.data.repository.DefaultBandalartWidgetRepository
 import com.nexters.bandalart.core.data.notification.DefaultDeadlineReminderReconciler
 import com.nexters.bandalart.core.data.repository.DefaultDeadlineReminderProjectionRepository
 import com.nexters.bandalart.core.data.repository.DefaultInAppUpdateRepository
@@ -28,6 +29,9 @@ import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
+import com.nexters.bandalart.core.domain.repository.BandalartWidgetRepository
+import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
@@ -51,11 +55,22 @@ import kotlinx.datetime.TimeZone
 object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
+    fun provideBandalartWidgetLaunchTarget(): BandalartWidgetLaunchTarget = BufferedBandalartWidgetLaunchTarget()
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun provideBandalartRepository(
         bandalartDataStore: BandalartDataStore,
         bandalartDao: BandalartDao,
         deadlineReminderReconciler: DeadlineReminderReconciler,
     ): BandalartRepository = DefaultBandalartRepository(bandalartDataStore, bandalartDao, deadlineReminderReconciler)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBandalartWidgetRepository(
+        bandalartRepository: BandalartRepository,
+        bandalartDao: BandalartDao,
+    ): BandalartWidgetRepository = DefaultBandalartWidgetRepository(bandalartRepository, bandalartDao)
 
     @Provides
     @SingleIn(AppScope::class)

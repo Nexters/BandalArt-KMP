@@ -18,16 +18,63 @@ package com.nexters.bandalart.feature.home.presenter
 
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class HomePresenterTest {
+    @Test
+    fun widgetLaunchSelectsAndAcknowledgesAValidTarget() =
+        runTest {
+            val target = BufferedBandalartWidgetLaunchTarget().apply { record(2L) }
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
+                    recentBandalartId = 1L,
+                )
+
+            presenter(repository, target).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 2L || state.isLoading || target.pendingBandalartId.value != null) {
+                    state = awaitItem()
+                }
+
+                assertEquals(2L, repository.recentBandalartId)
+                assertNull(target.pendingBandalartId.value)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun widgetLaunchAcknowledgesAMissingTargetWithoutChangingTheFallbackSelection() =
+        runTest {
+            val target = BufferedBandalartWidgetLaunchTarget().apply { record(99L) }
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
+                    recentBandalartId = 1L,
+                )
+
+            presenter(repository, target).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L || state.isLoading || target.pendingBandalartId.value != null) {
+                    state = awaitItem()
+                }
+
+                assertEquals(1L, repository.recentBandalartId)
+                assertNull(target.pendingBandalartId.value)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     fun mostRecentlyOpenedBandalartAndCellTreeAreLoaded() =
         runTest {
@@ -228,14 +275,17 @@ class HomePresenterTest {
         completionRatio = if (isCompleted) 100 else 0,
     )
 
-    private fun presenter(repository: FakeBandalartRepository) =
-        HomePresenter(
-            navigator = FakeNavigator(HomeScreen),
-            bandalartRepository = repository,
-            bandalartSlotRepository = FakeBandalartSlotRepository(),
-            inAppUpdateRepository = FakeInAppUpdateRepository(),
-            settingsRepository = FakeSettingsRepository(),
-        )
+    private fun presenter(
+        repository: FakeBandalartRepository,
+        widgetLaunchTarget: BandalartWidgetLaunchTarget = BufferedBandalartWidgetLaunchTarget(),
+    ) = HomePresenter(
+        navigator = FakeNavigator(HomeScreen),
+        bandalartRepository = repository,
+        bandalartSlotRepository = FakeBandalartSlotRepository(),
+        inAppUpdateRepository = FakeInAppUpdateRepository(),
+        settingsRepository = FakeSettingsRepository(),
+        bandalartWidgetLaunchTarget = widgetLaunchTarget,
+    )
 
     private fun cell(
         id: Long,

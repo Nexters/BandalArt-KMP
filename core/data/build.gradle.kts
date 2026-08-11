@@ -19,10 +19,13 @@ kotlin {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.robolectric)
+            implementation(libs.robolectric.junit5.extension)
         }
     }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Djunit.platform.launcher.interceptors.enabled=true")
 }

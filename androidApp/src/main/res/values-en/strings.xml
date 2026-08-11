@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BandalArt</string>
+    <string name="app_name_dev">BandalArt.dev</string>
+    <string name="bandalart_widget_name">BandalArt Goal</string>
+    <string name="bandalart_widget_description">View your selected BandalArt goal and tasks on the Home Screen.</string>
+    <string name="bandalart_widget_loading">Loading BandalArt…</string>
+    <string name="bandalart_widget_preview_title">My main goal</string>
+    <string name="bandalart_widget_preview_ratio">42%%</string>
+    <string name="bandalart_widget_unconfigured">Choose a BandalArt to display</string>
+    <string name="bandalart_widget_deleted">The selected goal is unavailable\nTap to configure again</string>
+    <string name="bandalart_widget_completion_ratio">Progress %1$d%%</string>
+    <string name="bandalart_widget_no_subgoal">No sub-goal selected</string>
+    <string name="bandalart_widget_no_tasks">No tasks yet</string>
+    <string name="bandalart_widget_unnamed_goal">Untitled goal</string>
+    <string name="bandalart_widget_config_title">Widget settings</string>
+    <string name="bandalart_widget_config_section_title">BandalArt</string>
+    <string name="bandalart_widget_config_choose_goal">Choose a goal to show in the widget.</string>
+    <string name="bandalart_widget_config_create_first">Create a BandalArt in the app first.</string>
+    <string name="bandalart_widget_config_subgoal">Sub-goal</string>
+    <string name="bandalart_widget_config_subgoal_description">Shown in medium and large widgets.</string>
+    <string name="bandalart_widget_config_none">None</string>
+    <string name="bandalart_widget_config_unnamed_subgoal">Untitled sub-goal</string>
+    <string name="bandalart_widget_config_saving">Saving…</string>
+    <string name="bandalart_widget_config_save">Show in widget</string>
+</resources>

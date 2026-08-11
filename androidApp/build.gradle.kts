@@ -98,9 +98,12 @@ dependencies {
     implementation(projects.composeApp)
     implementation(projects.core.common)
     implementation(projects.core.designsystem)
+    implementation(projects.core.domain)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.app.update)
