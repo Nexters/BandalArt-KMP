@@ -112,6 +112,10 @@ fun recordAndroidWidgetLaunch(
 
 fun observeAndroidWidgetBandalarts(appGraph: AppGraph): Flow<List<BandalartEntity>> = appGraph.bandalartRepository.getBandalartList()
 
+fun observeAndroidWidgetRecentBandalartId(appGraph: AppGraph): Flow<Long> = appGraph.bandalartRepository.observeRecentBandalartId()
+
+suspend fun getAndroidWidgetRecentBandalartId(appGraph: AppGraph): Long = appGraph.bandalartRepository.getRecentBandalartId()
+
 suspend fun getAndroidWidgetSubGoals(
     appGraph: AppGraph,
     bandalartId: Long,

@@ -76,6 +76,7 @@
 
 ### Widgets
 
+- [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)
 - [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
 
 ## Releases

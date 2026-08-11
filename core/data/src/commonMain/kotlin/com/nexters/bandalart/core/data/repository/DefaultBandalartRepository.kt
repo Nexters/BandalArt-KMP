@@ -133,6 +133,8 @@ class DefaultBandalartRepository(
 
     override suspend fun getRecentBandalartId(): Long = bandalartDataStore.getRecentBandalartId()
 
+    override fun observeRecentBandalartId(): Flow<Long> = bandalartDataStore.recentBandalartId
+
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = bandalartDataStore.getPrevBandalartList()
 
     override suspend fun upsertBandalartId(

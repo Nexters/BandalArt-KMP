@@ -57,6 +57,7 @@ import androidx.glance.text.TextStyle
 import com.nexters.bandalart.BandalartApplication
 import com.nexters.bandalart.MainActivity
 import com.nexters.bandalart.R
+import com.nexters.bandalart.di.metro.getAndroidWidgetRecentBandalartId
 import com.nexters.bandalart.di.metro.getAndroidWidgetSnapshot
 
 class BandalartGlanceWidget : GlanceAppWidget() {
@@ -76,8 +77,12 @@ class BandalartGlanceWidget : GlanceAppWidget() {
         id: GlanceId,
     ) {
         val preferences = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
-        val selection = preferences.toWidgetSelection()
         val appGraph = (context.applicationContext as BandalartApplication).appGraph
+        val selection =
+            resolveWidgetSelection(
+                configuredSelection = preferences.toWidgetSelection(),
+                recentBandalartId = getAndroidWidgetRecentBandalartId(appGraph),
+            )
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
         val snapshot =
             selection?.let {
