@@ -27,6 +27,8 @@ class BandalartWidgetLocalizationTest {
     fun `widget resources cover Korean English and Japanese`() {
         val requiredKeys =
             setOf(
+                "app_name",
+                "app_name_dev",
                 "bandalart_widget_name",
                 "bandalart_widget_description",
                 "bandalart_widget_loading",
