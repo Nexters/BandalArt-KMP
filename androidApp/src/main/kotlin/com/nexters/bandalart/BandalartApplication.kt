@@ -29,6 +29,7 @@ import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
 import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
+import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentBandalartId
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import com.nexters.bandalart.widget.BandalartGlanceWidget
 import io.github.aakira.napier.DebugAntilog
@@ -39,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class BandalartApplication : Application() {
@@ -99,7 +101,10 @@ class BandalartApplication : Application() {
     @Suppress("TooGenericExceptionCaught")
     private fun observeBandalartChangesForWidgets() {
         applicationScope.launch {
-            observeAndroidWidgetBandalarts(appGraph).collect {
+            combine(
+                observeAndroidWidgetBandalarts(appGraph),
+                observeAndroidWidgetRecentBandalartId(appGraph),
+            ) { _, _ -> Unit }.collect {
                 try {
                     BandalartGlanceWidget().updateAll(this@BandalartApplication)
                 } catch (exception: CancellationException) {

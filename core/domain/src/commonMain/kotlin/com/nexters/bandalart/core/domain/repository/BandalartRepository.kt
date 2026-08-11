@@ -115,16 +115,14 @@ interface BandalartRepository {
      */
     suspend fun deleteBandalartCell(cellId: Long)
 
-    /**
-     * 최근에 수정한 반다라트 고유 id 수정
-     * @param recentBandalartId 최근에 수정한 반다라트 고유 id
-     */
+    /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)
 
-    /**
-     * 최근에 수정한 반다라트 고유 id 조회
-     */
+    /** 마지막으로 본 반다라트 고유 id를 조회한다. */
     suspend fun getRecentBandalartId(): Long
+
+    /** 마지막으로 본 반다라트 변경을 관찰한다. */
+    fun observeRecentBandalartId(): Flow<Long>
 
     /**
      * 바로 직전 상태의 반다라트 id 와 목표달성 여부를 가진 목록을 조회

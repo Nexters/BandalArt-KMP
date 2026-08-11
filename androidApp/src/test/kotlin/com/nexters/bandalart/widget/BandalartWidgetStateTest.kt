@@ -24,6 +24,39 @@ import org.junit.jupiter.api.Test
 
 class BandalartWidgetStateTest {
     @Test
+    fun `last viewed board replaces configured board and clears its subgoal`() {
+        assertEquals(
+            BandalartWidgetSelection(bandalartId = 3L, subGoalId = null),
+            resolveWidgetSelection(
+                configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+                recentBandalartId = 3L,
+            ),
+        )
+    }
+
+    @Test
+    fun `last viewed board keeps configured subgoal when board is unchanged`() {
+        assertEquals(
+            BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+            resolveWidgetSelection(
+                configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+                recentBandalartId = 1L,
+            ),
+        )
+    }
+
+    @Test
+    fun `configured board remains the fallback before a board has been viewed`() {
+        assertEquals(
+            BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+            resolveWidgetSelection(
+                configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+                recentBandalartId = 0L,
+            ),
+        )
+    }
+
+    @Test
     fun `changing the configured board clears its subgoal selection`() {
         assertEquals(
             null,

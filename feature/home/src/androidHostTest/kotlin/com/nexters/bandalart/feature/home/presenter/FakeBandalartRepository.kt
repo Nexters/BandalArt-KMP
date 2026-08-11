@@ -49,8 +49,13 @@ internal class FakeBandalartRepository(
     private val childCells = childCells.toMutableMap()
     private var unpublishedCreatedBandalart: BandalartEntity? = null
 
-    var recentBandalartId: Long = recentBandalartId
-        private set
+    private val recentBandalartFlow = MutableStateFlow(recentBandalartId)
+
+    var recentBandalartId: Long
+        get() = recentBandalartFlow.value
+        private set(value) {
+            recentBandalartFlow.value = value
+        }
 
     var createCalls: Int = 0
         private set
@@ -121,6 +126,8 @@ internal class FakeBandalartRepository(
     }
 
     override suspend fun getRecentBandalartId(): Long = recentBandalartId
+
+    override fun observeRecentBandalartId(): Flow<Long> = recentBandalartFlow
 
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = previousBandalartList
 

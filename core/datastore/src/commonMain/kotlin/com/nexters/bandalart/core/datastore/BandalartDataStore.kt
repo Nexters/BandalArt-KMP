@@ -26,6 +26,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -161,20 +162,23 @@ class BandalartDataStore(
                     throw exception
             }.map { preferences -> preferences[deadlineReminderEnabledKey] ?: false }
 
-    suspend fun setRecentBandalartId(recentBandalartId: Long) {
-        dataStore.edit { preferences ->
-            preferences[recentBandalartKey] = recentBandalartId
-        }
-    }
-
-    suspend fun getRecentBandalartId() =
+    val recentBandalartId =
         dataStore.data
             .catch { exception ->
                 if (exception is IOException)
                     emit(emptyPreferences())
                 else
                     throw exception
-            }.first()[recentBandalartKey] ?: 0L
+            }.map { preferences -> preferences[recentBandalartKey] ?: 0L }
+            .distinctUntilChanged()
+
+    suspend fun setRecentBandalartId(recentBandalartId: Long) {
+        dataStore.edit { preferences ->
+            preferences[recentBandalartKey] = recentBandalartId
+        }
+    }
+
+    suspend fun getRecentBandalartId(): Long = recentBandalartId.first()
 
     private fun Preferences.pendingRewardedCreation(): StoredPendingRewardedCreation? {
         val requestId = this[pendingRewardedRequestIdKey] ?: return null

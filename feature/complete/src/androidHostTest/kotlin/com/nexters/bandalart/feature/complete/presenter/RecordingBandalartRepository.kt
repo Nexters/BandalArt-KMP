@@ -97,6 +97,8 @@ internal class RecordingBandalartRepository : BandalartRepository {
 
     override suspend fun getRecentBandalartId(): Long = error("Not used")
 
+    override fun observeRecentBandalartId(): Flow<Long> = emptyFlow()
+
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = error("Not used")
 
     override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean = error("Not used")

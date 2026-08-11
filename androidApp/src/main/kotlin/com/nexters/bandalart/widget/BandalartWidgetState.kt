@@ -51,6 +51,17 @@ internal fun subGoalIdAfterBandalartSelection(
     selectedBandalartId: Long,
 ): Long? = currentSubGoalId.takeIf { currentBandalartId == selectedBandalartId }
 
+internal fun resolveWidgetSelection(
+    configuredSelection: BandalartWidgetSelection?,
+    recentBandalartId: Long,
+): BandalartWidgetSelection? {
+    val bandalartId = recentBandalartId.takeIf { it > 0L } ?: configuredSelection?.bandalartId ?: return null
+    return BandalartWidgetSelection(
+        bandalartId = bandalartId,
+        subGoalId = configuredSelection?.subGoalId.takeIf { configuredSelection?.bandalartId == bandalartId },
+    )
+}
+
 internal enum class BandalartWidgetLayout(
     val taskLimit: Int,
 ) {
