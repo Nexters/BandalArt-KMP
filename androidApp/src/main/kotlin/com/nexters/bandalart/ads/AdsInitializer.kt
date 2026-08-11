@@ -61,14 +61,14 @@ class AdsInitializer(
                         ),
                     )
                 }.onFailure { exception ->
-                    Napier.e("Rewarded ad preloader failed to start", exception, tag = TAG)
+                    Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
                 }
 
                 initialization.complete(true)
-                Napier.d("GMA Next-Gen SDK initialized", tag = TAG)
+                Napier.d("GMA Next-Gen SDK initialized", tag = "AdsInitializer")
             }.onFailure { exception ->
                 initialization.complete(false)
-                Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = TAG)
+                Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = "AdsInitializer")
             }
         }
     }
@@ -76,9 +76,5 @@ class AdsInitializer(
     suspend fun awaitInitialized(): Boolean {
         initialize()
         return initialization.await()
-    }
-
-    private companion object {
-        const val TAG = "AdsInitializer"
     }
 }
