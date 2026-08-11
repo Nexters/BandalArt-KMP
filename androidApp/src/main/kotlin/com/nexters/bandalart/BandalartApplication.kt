@@ -62,6 +62,7 @@ class BandalartApplication : Application() {
             )
         installAndroidDeadlineReminderInfrastructure(
             appGraph = appGraph,
+            startupScope = applicationScope,
             launchIntentFactory = { _, _ ->
                 Intent(this, DeadlineNotificationTrampolineActivity::class.java)
             },
