@@ -1,1 +1,2 @@
-• Fixed an issue where the banner ad at the bottom of the home screen was not displayed.
+• View a selected BandalArt goal and tasks from a Home Screen widget, and update task completion.
+• Widget screens support Korean, English, and Japanese.
