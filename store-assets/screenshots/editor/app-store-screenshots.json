@@ -24,20 +24,8 @@
         "screenshot": ""
       },
       {
-        "id": "ios-widget",
-        "layout": "device-bottom",
-        "label": {
-          "ko": "홈 화면 위젯"
-        },
-        "headline": {
-          "ko": "마지막 목표를\n홈 화면에서"
-        },
-        "screenshot": "",
-        "inverted": true
-      },
-      {
         "id": "ios-reminder",
-        "layout": "device-top",
+        "layout": "device-bottom",
         "label": {
           "ko": "마감일 알림"
         },
