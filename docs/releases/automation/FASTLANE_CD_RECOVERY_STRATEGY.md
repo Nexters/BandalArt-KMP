@@ -70,9 +70,12 @@
 
 - `IOS_DISTRIBUTION_CERTIFICATE_BASE64`: Apple Distribution 인증서와 private key가 포함된 `.p12`의 base64
 - `IOS_DISTRIBUTION_CERTIFICATE_PASSWORD`: `.p12` 암호
-- `IOS_PROVISIONING_PROFILE_BASE64`: `com.nexters.bandalart.iosApp` App Store profile의 base64
+- `IOS_PROVISIONING_PROFILE_BASE64`: App Group이 포함된 `com.nexters.bandalart.iosApp` App Store profile의 base64
+- `IOS_WIDGET_PROVISIONING_PROFILE_BASE64`: App Group이 포함된 `com.nexters.bandalart.iosApp.widget` App Store profile의 base64
 - `APP_STORE_CONNECT_KEY_ID`: Individual API Key ID
 - `APP_STORE_CONNECT_KEY_P8_BASE64`: Individual `.p8`의 base64
+
+App Group, App ID, 두 profile과 GitHub Environment secret 등록 절차는 [iOS WidgetKit MVP 전략](../../features/widgets/IOS_WIDGETKIT_MVP_STRATEGY.md#10-testflight용-app-group과-서명-자산을-등록하는-방법)을 따른다.
 
 현재 보유한 Individual API Key에는 issuer ID를 연결하지 않는다. Team Key를 새로 발급하는 경우에만 별도 설계 변경 후 issuer ID를 사용한다.
 
