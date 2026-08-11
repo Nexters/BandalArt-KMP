@@ -54,10 +54,10 @@ class BandalartWidgetStateTest {
 
     @Test
     fun `maps configured missing data to deleted and absent selection to unconfigured`() {
-        assertEquals(BandalartWidgetViewState.Unconfigured, toWidgetViewState(null, null))
+        assertEquals(BandalartWidgetViewState.Unconfigured, toWidgetViewState(null, null, "Untitled goal"))
         assertEquals(
             BandalartWidgetViewState.Deleted,
-            toWidgetViewState(BandalartWidgetSelection(1L, 2L), null),
+            toWidgetViewState(BandalartWidgetSelection(1L, 2L), null, "Untitled goal"),
         )
     }
 
@@ -66,6 +66,7 @@ class BandalartWidgetStateTest {
         val state =
             toWidgetViewState(
                 selection = BandalartWidgetSelection(1L, 2L),
+                unnamedGoalTitle = "Untitled goal",
                 snapshot =
                     BandalartWidgetSnapshot(
                         bandalartId = 1L,
@@ -87,7 +88,7 @@ class BandalartWidgetStateTest {
                     ),
             ) as BandalartWidgetViewState.Content
 
-        assertEquals("이름 없는 목표", state.title)
+        assertEquals("Untitled goal", state.title)
         assertEquals("🎯", state.profileEmoji)
         assertEquals(100, state.completionRatio)
         assertEquals(2L, state.subGoalId)

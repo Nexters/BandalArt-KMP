@@ -88,6 +88,7 @@ internal sealed interface BandalartWidgetViewState {
 internal fun toWidgetViewState(
     selection: BandalartWidgetSelection?,
     snapshot: BandalartWidgetSnapshot?,
+    unnamedGoalTitle: String,
 ): BandalartWidgetViewState =
     when {
         selection == null -> BandalartWidgetViewState.Unconfigured
@@ -96,7 +97,7 @@ internal fun toWidgetViewState(
             BandalartWidgetViewState.Content(
                 bandalartId = snapshot.bandalartId,
                 subGoalId = snapshot.subGoalId,
-                title = snapshot.title.ifBlank { "이름 없는 목표" },
+                title = snapshot.title.ifBlank { unnamedGoalTitle },
                 profileEmoji = snapshot.profileEmoji?.ifBlank { null } ?: "🎯",
                 completionRatio = snapshot.completionRatio.coerceIn(0, 100),
                 subGoalTitle = snapshot.subGoalTitle?.ifBlank { null },

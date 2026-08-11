@@ -87,7 +87,12 @@ class BandalartGlanceWidget : GlanceAppWidget() {
                     subGoalId = it.subGoalId,
                 )
             }
-        val viewState = toWidgetViewState(selection, snapshot)
+        val viewState =
+            toWidgetViewState(
+                selection = selection,
+                snapshot = snapshot,
+                unnamedGoalTitle = context.getString(R.string.bandalart_widget_unnamed_goal),
+            )
 
         provideContent {
             BandalartWidgetContent(
@@ -130,9 +135,9 @@ private fun BandalartWidgetContent(
             ) {
                 val message =
                     if (state == BandalartWidgetViewState.Unconfigured) {
-                        "표시할 반다라트를 선택해 주세요"
+                        context.getString(R.string.bandalart_widget_unconfigured)
                     } else {
-                        "선택한 목표를 찾을 수 없어요\n눌러서 다시 설정해 주세요"
+                        context.getString(R.string.bandalart_widget_deleted)
                     }
                 StatusContent(message = message, compact = layout != BandalartWidgetLayout.LARGE)
             }
@@ -228,7 +233,7 @@ private fun DetailContent(
                 maxLines = 1,
             )
             Text(
-                text = "달성률 ${state.completionRatio}%",
+                text = context.getString(R.string.bandalart_widget_completion_ratio, state.completionRatio),
                 style = CaptionTextStyle,
                 maxLines = 1,
             )
@@ -236,7 +241,7 @@ private fun DetailContent(
     }
     Spacer(modifier = GlanceModifier.height(if (compact) 4.dp else 10.dp))
     Text(
-        text = state.subGoalTitle ?: "세부 목표를 선택하지 않았어요",
+        text = state.subGoalTitle ?: context.getString(R.string.bandalart_widget_no_subgoal),
         style = if (compact) CompactSubGoalTextStyle else SubGoalTextStyle,
         maxLines = 1,
     )
@@ -244,7 +249,7 @@ private fun DetailContent(
     val tasks = state.tasksFor(layout)
     if (tasks.isEmpty()) {
         Text(
-            text = "등록된 할 일이 없어요",
+            text = context.getString(R.string.bandalart_widget_no_tasks),
             style = CaptionTextStyle,
             maxLines = 1,
         )

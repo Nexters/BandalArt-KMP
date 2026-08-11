@@ -50,6 +50,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -58,6 +59,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.lifecycle.lifecycleScope
 import com.nexters.bandalart.BandalartApplication
+import com.nexters.bandalart.R
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
@@ -200,7 +202,7 @@ private fun ConfigurationScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text("위젯 설정") }) },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.bandalart_widget_config_title)) }) },
     ) { innerPadding ->
         when (state) {
             ConfigurationState.Loading ->
@@ -211,7 +213,7 @@ private fun ConfigurationScreen(
                 ) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("반다라트를 불러오는 중이에요")
+                    Text(stringResource(R.string.bandalart_widget_loading))
                 }
 
             is ConfigurationState.Ready ->
@@ -234,25 +236,32 @@ private fun ConfigurationContent(
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val unnamedGoal = stringResource(R.string.bandalart_widget_unnamed_goal)
+    val unnamedSubGoal = stringResource(R.string.bandalart_widget_config_unnamed_subgoal)
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 20.dp)) {
         Text(
-            text = "반다라트",
+            text = stringResource(R.string.bandalart_widget_config_section_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = "위젯에 표시할 목표를 선택해 주세요.",
+            text = stringResource(R.string.bandalart_widget_config_choose_goal),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.weight(1f)) {
             if (state.bandalarts.isEmpty()) {
-                item { Text("먼저 앱에서 반다라트를 만들어 주세요.", modifier = Modifier.padding(vertical = 16.dp)) }
+                item {
+                    Text(
+                        stringResource(R.string.bandalart_widget_config_create_first),
+                        modifier = Modifier.padding(vertical = 16.dp),
+                    )
+                }
             } else {
                 items(state.bandalarts, key = BandalartEntity::id) { bandalart ->
                     SelectionRow(
-                        title = bandalart.title?.ifBlank { null } ?: "이름 없는 목표",
+                        title = bandalart.title?.ifBlank { null } ?: unnamedGoal,
                         selected = state.selectedBandalartId == bandalart.id,
                         onClick = { onBandalartSelected(bandalart.id) },
                     )
@@ -262,17 +271,17 @@ private fun ConfigurationContent(
                 item {
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                     Text(
-                        text = "세부 목표",
+                        text = stringResource(R.string.bandalart_widget_config_subgoal),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = "중간·큰 위젯에 표시됩니다.",
+                        text = stringResource(R.string.bandalart_widget_config_subgoal_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     SelectionRow(
-                        title = "선택 안 함",
+                        title = stringResource(R.string.bandalart_widget_config_none),
                         selected = state.selectedSubGoalId == null,
                         onClick = { onSubGoalSelected(null) },
                     )
@@ -282,7 +291,7 @@ private fun ConfigurationContent(
                 } else {
                     items(state.subGoals, key = BandalartCellEntity::id) { subGoal ->
                         SelectionRow(
-                            title = subGoal.title?.ifBlank { null } ?: "이름 없는 세부 목표",
+                            title = subGoal.title?.ifBlank { null } ?: unnamedSubGoal,
                             selected = state.selectedSubGoalId == subGoal.id,
                             onClick = { onSubGoalSelected(subGoal.id) },
                         )
@@ -295,7 +304,15 @@ private fun ConfigurationContent(
             enabled = state.selectedBandalartId != null && !state.isSaving,
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
         ) {
-            Text(if (state.isSaving) "저장 중…" else "위젯에 표시")
+            Text(
+                stringResource(
+                    if (state.isSaving) {
+                        R.string.bandalart_widget_config_saving
+                    } else {
+                        R.string.bandalart_widget_config_save
+                    },
+                ),
+            )
         }
     }
 }

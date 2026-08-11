@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bandalart_widget_name">BandalArt目標</string>
+    <string name="bandalart_widget_description">選択したBandalArtの目標とタスクをホーム画面で確認できます。</string>
+    <string name="bandalart_widget_loading">BandalArtを読み込み中…</string>
+    <string name="bandalart_widget_preview_title">私のメイン目標</string>
+    <string name="bandalart_widget_preview_ratio">42%%</string>
+    <string name="bandalart_widget_unconfigured">表示するBandalArtを選択してください</string>
+    <string name="bandalart_widget_deleted">選択した目標が見つかりません\nタップして再設定してください</string>
+    <string name="bandalart_widget_completion_ratio">達成率 %1$d%%</string>
+    <string name="bandalart_widget_no_subgoal">サブ目標が選択されていません</string>
+    <string name="bandalart_widget_no_tasks">登録されたタスクはありません</string>
+    <string name="bandalart_widget_unnamed_goal">名前のない目標</string>
+    <string name="bandalart_widget_config_title">ウィジェット設定</string>
+    <string name="bandalart_widget_config_section_title">BandalArt</string>
+    <string name="bandalart_widget_config_choose_goal">ウィジェットに表示する目標を選択してください。</string>
+    <string name="bandalart_widget_config_create_first">先にアプリでBandalArtを作成してください。</string>
+    <string name="bandalart_widget_config_subgoal">サブ目標</string>
+    <string name="bandalart_widget_config_subgoal_description">中・大サイズのウィジェットに表示されます。</string>
+    <string name="bandalart_widget_config_none">選択しない</string>
+    <string name="bandalart_widget_config_unnamed_subgoal">名前のないサブ目標</string>
+    <string name="bandalart_widget_config_saving">保存中…</string>
+    <string name="bandalart_widget_config_save">ウィジェットに表示</string>
+</resources>
