@@ -149,7 +149,7 @@ Kotlin/Native framework가 Widget Extension에서 링크되지 않거나 Room/SQ
 - **본 앱 App ID**: `com.nexters.bandalart.iosApp`
 - **위젯 App ID**: `com.nexters.bandalart.iosApp.widget`
 
-위젯은 본 앱에 포함되는 extension이다. 위젯용 App Store Connect 앱 레코드는 만들지 않는다.
+Apple의 서명 관점에서 위젯은 본 앱과 별도의 App Extension target이다. 따라서 독립된 bundle ID, App ID, provisioning profile과 entitlement가 필요하고 본 앱과 다른 프로세스로 실행된다. 다만 별도의 App Store 앱은 아니며, 본 앱 IPA 안에 `.appex`로 포함되어 본 앱과 함께 TestFlight 배포와 App Review를 거친다. 위젯용 App Store Connect 앱 레코드는 만들지 않는다.
 
 ### 10.2 App Group 등록
 
