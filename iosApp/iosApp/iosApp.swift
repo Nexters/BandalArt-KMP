@@ -16,7 +16,9 @@ private let deadlineBandalartIdKey = "deadline_bandalart_id"
 
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
+    let deadlineReminderLifecycleBridge = DeadlineReminderLifecycleBridge()
     let adsBridge = IosAdsBridgeImpl()
+    private var timeZoneObserver: NSObjectProtocol?
 
     func application(
         _ application: UIApplication,
@@ -25,7 +27,29 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         FirebaseApp.configure()
         adsBridge.start()
         UNUserNotificationCenter.current().delegate = self
+        timeZoneObserver = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSSystemTimeZoneDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.deadlineReminderLifecycleBridge.record()
+        }
+        deadlineReminderLifecycleBridge.record()
         return true
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        deadlineReminderLifecycleBridge.record()
+    }
+
+    func applicationSignificantTimeChange(_ application: UIApplication) {
+        deadlineReminderLifecycleBridge.record()
+    }
+
+    deinit {
+        if let timeZoneObserver {
+            NotificationCenter.default.removeObserver(timeZoneObserver)
+        }
     }
 
     func userNotificationCenter(
@@ -78,6 +102,7 @@ struct iosApp: App {
         WindowGroup {
             ContentView(
                 notificationLaunchBridge: appDelegate.notificationLaunchBridge,
+                deadlineReminderLifecycleBridge: appDelegate.deadlineReminderLifecycleBridge,
                 adsBridge: appDelegate.adsBridge
             )
         }
