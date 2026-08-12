@@ -422,6 +422,20 @@ class HomePresenter(
                     initialBandalartData = currentBandalart,
                     bandalartData = currentBandalart,
                 )
+            val subGoalId =
+                when (cellType) {
+                    CellType.SUB -> cellData.id
+                    CellType.TASK -> cellData.parentId
+                    CellType.MAIN -> null
+                }
+            subGoalId?.takeIf { it > 0L }?.let { recentSubGoalId ->
+                scope.launch {
+                    bandalartRepository.setRecentSubGoalId(
+                        bandalartId = currentBandalart.id,
+                        subGoalId = recentSubGoalId,
+                    )
+                }
+            }
         }
 
         fun updateCellTitle(

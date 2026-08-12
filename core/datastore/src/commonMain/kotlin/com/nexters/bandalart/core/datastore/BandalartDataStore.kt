@@ -36,6 +36,7 @@ class BandalartDataStore(
 ) {
     private companion object {
         private const val RECENT_BANDALART_ID = "recent_bandalart_id"
+        private const val RECENT_SUB_GOAL_ID_PREFIX = "recent_sub_goal_id_"
         private const val COMPLETED_BANDALART_LIST_ID = "completed_bandalart_list_id"
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
         private const val THEME_MODE = "theme_mode"
@@ -172,6 +173,18 @@ class BandalartDataStore(
             }.map { preferences -> preferences[recentBandalartKey] ?: 0L }
             .distinctUntilChanged()
 
+    val recentSubGoalId =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences ->
+                val bandalartId = preferences[recentBandalartKey] ?: 0L
+                if (bandalartId > 0L) preferences[recentSubGoalKey(bandalartId)] ?: 0L else 0L
+            }.distinctUntilChanged()
+
     suspend fun setRecentBandalartId(recentBandalartId: Long) {
         dataStore.edit { preferences ->
             preferences[recentBandalartKey] = recentBandalartId
@@ -179,6 +192,23 @@ class BandalartDataStore(
     }
 
     suspend fun getRecentBandalartId(): Long = recentBandalartId.first()
+
+    suspend fun setRecentSubGoalId(
+        bandalartId: Long,
+        subGoalId: Long,
+    ) {
+        dataStore.edit { preferences ->
+            preferences[recentSubGoalKey(bandalartId)] = subGoalId
+        }
+    }
+
+    suspend fun getRecentSubGoalId(bandalartId: Long): Long =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences()) else throw exception
+            }.first()[recentSubGoalKey(bandalartId)] ?: 0L
+
+    private fun recentSubGoalKey(bandalartId: Long) = longPreferencesKey("$RECENT_SUB_GOAL_ID_PREFIX$bandalartId")
 
     private fun Preferences.pendingRewardedCreation(): StoredPendingRewardedCreation? {
         val requestId = this[pendingRewardedRequestIdKey] ?: return null

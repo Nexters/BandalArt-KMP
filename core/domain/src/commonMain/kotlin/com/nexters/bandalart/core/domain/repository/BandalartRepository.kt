@@ -124,6 +124,18 @@ interface BandalartRepository {
     /** 마지막으로 본 반다라트 변경을 관찰한다. */
     fun observeRecentBandalartId(): Flow<Long>
 
+    /** 반다라트별로 마지막으로 본 세부 목표 고유 id를 저장한다. */
+    suspend fun setRecentSubGoalId(
+        bandalartId: Long,
+        subGoalId: Long,
+    )
+
+    /** 지정한 반다라트에서 마지막으로 본 세부 목표 고유 id를 조회한다. */
+    suspend fun getRecentSubGoalId(bandalartId: Long): Long
+
+    /** 현재 마지막으로 본 반다라트의 세부 목표 변경을 관찰한다. */
+    fun observeRecentSubGoalId(): Flow<Long>
+
     /**
      * 바로 직전 상태의 반다라트 id 와 목표달성 여부를 가진 목록을 조회
      */

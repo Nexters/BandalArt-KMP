@@ -58,6 +58,8 @@ import com.nexters.bandalart.BandalartApplication
 import com.nexters.bandalart.MainActivity
 import com.nexters.bandalart.R
 import com.nexters.bandalart.di.metro.getAndroidWidgetRecentBandalartId
+import com.nexters.bandalart.di.metro.getAndroidWidgetRecentSubGoalId
+import com.nexters.bandalart.di.metro.getAndroidWidgetSubGoals
 import com.nexters.bandalart.di.metro.getAndroidWidgetSnapshot
 
 class BandalartGlanceWidget : GlanceAppWidget() {
@@ -78,10 +80,22 @@ class BandalartGlanceWidget : GlanceAppWidget() {
     ) {
         val preferences = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
         val appGraph = (context.applicationContext as BandalartApplication).appGraph
+        val configuredSelection = preferences.toWidgetSelection()
+        val recentBandalartId = getAndroidWidgetRecentBandalartId(appGraph)
+        val bandalartId = resolveWidgetBandalartId(configuredSelection, recentBandalartId)
+        val availableSubGoalIds =
+            bandalartId
+                ?.let { getAndroidWidgetSubGoals(appGraph, it) }
+                .orEmpty()
+                .filterNot { it.title.isNullOrBlank() }
+                .mapNotNull { it.id }
+        val recentSubGoalId = bandalartId?.let { getAndroidWidgetRecentSubGoalId(appGraph, it) } ?: 0L
         val selection =
             resolveWidgetSelection(
-                configuredSelection = preferences.toWidgetSelection(),
-                recentBandalartId = getAndroidWidgetRecentBandalartId(appGraph),
+                configuredSelection = configuredSelection,
+                recentBandalartId = recentBandalartId,
+                recentSubGoalId = recentSubGoalId,
+                availableSubGoalIds = availableSubGoalIds,
             )
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
         val snapshot =

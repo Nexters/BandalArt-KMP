@@ -135,6 +135,17 @@ class DefaultBandalartRepository(
 
     override fun observeRecentBandalartId(): Flow<Long> = bandalartDataStore.recentBandalartId
 
+    override suspend fun setRecentSubGoalId(
+        bandalartId: Long,
+        subGoalId: Long,
+    ) {
+        bandalartDataStore.setRecentSubGoalId(bandalartId, subGoalId)
+    }
+
+    override suspend fun getRecentSubGoalId(bandalartId: Long): Long = bandalartDataStore.getRecentSubGoalId(bandalartId)
+
+    override fun observeRecentSubGoalId(): Flow<Long> = bandalartDataStore.recentSubGoalId
+
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = bandalartDataStore.getPrevBandalartList()
 
     override suspend fun upsertBandalartId(

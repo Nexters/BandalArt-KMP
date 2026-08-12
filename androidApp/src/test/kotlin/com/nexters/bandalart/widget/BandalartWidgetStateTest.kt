@@ -24,23 +24,27 @@ import org.junit.jupiter.api.Test
 
 class BandalartWidgetStateTest {
     @Test
-    fun `last viewed board replaces configured board and clears its subgoal`() {
+    fun `last viewed board uses its last opened subgoal`() {
         assertEquals(
-            BandalartWidgetSelection(bandalartId = 3L, subGoalId = null),
+            BandalartWidgetSelection(bandalartId = 3L, subGoalId = 31L),
             resolveWidgetSelection(
                 configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
                 recentBandalartId = 3L,
+                recentSubGoalId = 31L,
+                availableSubGoalIds = listOf(30L, 31L),
             ),
         )
     }
 
     @Test
-    fun `last viewed board keeps configured subgoal when board is unchanged`() {
+    fun `last opened subgoal takes priority over configured subgoal`() {
         assertEquals(
-            BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+            BandalartWidgetSelection(bandalartId = 1L, subGoalId = 3L),
             resolveWidgetSelection(
                 configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
                 recentBandalartId = 1L,
+                recentSubGoalId = 3L,
+                availableSubGoalIds = listOf(2L, 3L),
             ),
         )
     }
@@ -52,6 +56,34 @@ class BandalartWidgetStateTest {
             resolveWidgetSelection(
                 configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
                 recentBandalartId = 0L,
+                recentSubGoalId = 0L,
+                availableSubGoalIds = listOf(2L, 3L),
+            ),
+        )
+    }
+
+    @Test
+    fun `first titled subgoal replaces a missing or invalid recent selection`() {
+        assertEquals(
+            BandalartWidgetSelection(bandalartId = 3L, subGoalId = 30L),
+            resolveWidgetSelection(
+                configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+                recentBandalartId = 3L,
+                recentSubGoalId = 99L,
+                availableSubGoalIds = listOf(30L, 31L),
+            ),
+        )
+    }
+
+    @Test
+    fun `board summary is shown when no titled subgoal exists`() {
+        assertEquals(
+            BandalartWidgetSelection(bandalartId = 3L, subGoalId = null),
+            resolveWidgetSelection(
+                configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L),
+                recentBandalartId = 3L,
+                recentSubGoalId = 31L,
+                availableSubGoalIds = emptyList(),
             ),
         )
     }

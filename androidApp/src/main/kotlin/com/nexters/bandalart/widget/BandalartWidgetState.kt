@@ -48,9 +48,11 @@ internal fun MutablePreferences.setWidgetSelection(
 internal suspend fun saveWidgetConfiguration(
     selection: BandalartWidgetSelection,
     setRecentBandalartId: suspend (Long) -> Unit,
+    setRecentSubGoalId: suspend (Long, Long) -> Unit,
     persistSelection: suspend (BandalartWidgetSelection) -> Unit,
 ) {
     persistSelection(selection)
+    selection.subGoalId?.let { setRecentSubGoalId(selection.bandalartId, it) }
     setRecentBandalartId(selection.bandalartId)
 }
 
@@ -63,13 +65,30 @@ internal fun subGoalIdAfterBandalartSelection(
 internal fun resolveWidgetSelection(
     configuredSelection: BandalartWidgetSelection?,
     recentBandalartId: Long,
+    recentSubGoalId: Long,
+    availableSubGoalIds: List<Long>,
 ): BandalartWidgetSelection? {
     val bandalartId = recentBandalartId.takeIf { it > 0L } ?: configuredSelection?.bandalartId ?: return null
+    val configuredSubGoalId =
+        configuredSelection
+            ?.takeIf { it.bandalartId == bandalartId }
+            ?.subGoalId
+            ?.takeIf(availableSubGoalIds::contains)
+    val subGoalId =
+        recentSubGoalId
+            .takeIf { it > 0L && availableSubGoalIds.contains(it) }
+            ?: configuredSubGoalId
+            ?: availableSubGoalIds.firstOrNull()
     return BandalartWidgetSelection(
         bandalartId = bandalartId,
-        subGoalId = configuredSelection?.subGoalId.takeIf { configuredSelection?.bandalartId == bandalartId },
+        subGoalId = subGoalId,
     )
 }
+
+internal fun resolveWidgetBandalartId(
+    configuredSelection: BandalartWidgetSelection?,
+    recentBandalartId: Long,
+): Long? = recentBandalartId.takeIf { it > 0L } ?: configuredSelection?.bandalartId
 
 internal enum class BandalartWidgetLayout(
     val taskLimit: Int,

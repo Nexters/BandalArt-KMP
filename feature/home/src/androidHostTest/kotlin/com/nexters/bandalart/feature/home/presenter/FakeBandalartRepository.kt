@@ -57,6 +57,8 @@ internal class FakeBandalartRepository(
             recentBandalartFlow.value = value
         }
 
+    val recentSubGoalIds = mutableMapOf<Long, Long>()
+
     var createCalls: Int = 0
         private set
     val createdTemplateIds = mutableListOf<BandalartTemplateId?>()
@@ -123,11 +125,26 @@ internal class FakeBandalartRepository(
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) {
         this.recentBandalartId = recentBandalartId
+        recentSubGoalFlow.value = recentSubGoalIds[recentBandalartId] ?: 0L
     }
 
     override suspend fun getRecentBandalartId(): Long = recentBandalartId
 
     override fun observeRecentBandalartId(): Flow<Long> = recentBandalartFlow
+
+    private val recentSubGoalFlow = MutableStateFlow(0L)
+
+    override suspend fun setRecentSubGoalId(
+        bandalartId: Long,
+        subGoalId: Long,
+    ) {
+        recentSubGoalIds[bandalartId] = subGoalId
+        if (bandalartId == recentBandalartId) recentSubGoalFlow.value = subGoalId
+    }
+
+    override suspend fun getRecentSubGoalId(bandalartId: Long): Long = recentSubGoalIds[bandalartId] ?: 0L
+
+    override fun observeRecentSubGoalId(): Flow<Long> = recentSubGoalFlow
 
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = previousBandalartList
 
