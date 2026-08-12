@@ -16,55 +16,22 @@
 
 package com.nexters.bandalart.di.metro
 
-import android.content.Intent
-import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
-import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
-import com.nexters.bandalart.core.domain.repository.SettingsRepository
-import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
-import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 
 class AndroidDeadlineReminderInfrastructureTest {
-    @AfterEach
-    fun tearDown() {
-        AndroidDeadlineReminderDependenciesRegistry.clearForTest()
-    }
-
     @Test
-    fun installationReconcilesPersistedRemindersAtColdStart() =
+    fun reconciliationEntryPointDelegatesToAppGraph() =
         runTest {
             val reconciler = mockk<DeadlineReminderReconciler>(relaxed = true)
-            val dependencies =
-                object : AndroidDeadlineReminderDependencies {
-                    override val deadlineReminderProjectionRepository =
-                        mockk<DeadlineReminderProjectionRepository>()
-                    override val settingsRepository = mockk<SettingsRepository>()
-                    override val deadlineNotificationAuthorization =
-                        mockk<DeadlineNotificationAuthorization>()
-                    override val deadlineReminderReconciler = reconciler
+            val appGraph = mockk<AppGraph>()
+            every { appGraph.deadlineReminderReconciler } returns reconciler
 
-                    override fun createDeadlineNotificationLaunchIntent(
-                        batchId: String,
-                        bandalartId: Long,
-                    ): Intent = mockk()
-
-                    override fun captureDeadlineNotification(
-                        notificationId: Int,
-                        title: String,
-                        body: String,
-                        data: Map<String, String>,
-                    ) = Unit
-                }
-
-            installAndroidDeadlineReminderInfrastructure(
-                dependencies = dependencies,
-                startupScope = this,
-            ).join()
+            reconcileAndroidDeadlineReminders(appGraph)
 
             coVerify(exactly = 1) { reconciler.reconcileAll() }
         }

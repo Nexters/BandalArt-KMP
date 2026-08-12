@@ -32,10 +32,7 @@ import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorizati
 import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 private class AndroidPlatformBindings(
     application: Application,
@@ -59,7 +56,6 @@ fun createAndroidAppGraph(
 
 fun installAndroidDeadlineReminderInfrastructure(
     appGraph: AppGraph,
-    startupScope: CoroutineScope,
     launchIntentFactory: (batchId: String, bandalartId: Long) -> Intent,
     notificationCapture: (
         notificationId: Int,
@@ -67,44 +63,33 @@ fun installAndroidDeadlineReminderInfrastructure(
         body: String,
         data: Map<String, String>,
     ) -> Unit,
-): Job =
-    installAndroidDeadlineReminderInfrastructure(
-        dependencies =
-            object : AndroidDeadlineReminderDependencies {
-                override val deadlineReminderProjectionRepository
-                    get() = appGraph.deadlineReminderProjectionRepository
-                override val settingsRepository
-                    get() = appGraph.settingsRepository
-                override val deadlineNotificationAuthorization
-                    get() = appGraph.deadlineNotificationAuthorization
-                override val deadlineReminderReconciler
-                    get() = appGraph.deadlineReminderReconciler
+) {
+    AndroidDeadlineReminderDependenciesRegistry.install(
+        object : AndroidDeadlineReminderDependencies {
+            override val deadlineReminderProjectionRepository
+                get() = appGraph.deadlineReminderProjectionRepository
+            override val settingsRepository
+                get() = appGraph.settingsRepository
+            override val deadlineNotificationAuthorization
+                get() = appGraph.deadlineNotificationAuthorization
+            override val deadlineReminderReconciler
+                get() = appGraph.deadlineReminderReconciler
 
-                override fun createDeadlineNotificationLaunchIntent(
-                    batchId: String,
-                    bandalartId: Long,
-                ): Intent = launchIntentFactory(batchId, bandalartId)
+            override fun createDeadlineNotificationLaunchIntent(
+                batchId: String,
+                bandalartId: Long,
+            ): Intent = launchIntentFactory(batchId, bandalartId)
 
-                override fun captureDeadlineNotification(
-                    notificationId: Int,
-                    title: String,
-                    body: String,
-                    data: Map<String, String>,
-                ) {
-                    notificationCapture(notificationId, title, body, data)
-                }
-            },
-        startupScope = startupScope,
+            override fun captureDeadlineNotification(
+                notificationId: Int,
+                title: String,
+                body: String,
+                data: Map<String, String>,
+            ) {
+                notificationCapture(notificationId, title, body, data)
+            }
+        },
     )
-
-internal fun installAndroidDeadlineReminderInfrastructure(
-    dependencies: AndroidDeadlineReminderDependencies,
-    startupScope: CoroutineScope,
-): Job {
-    AndroidDeadlineReminderDependenciesRegistry.install(dependencies)
-    return startupScope.launch {
-        dependencies.deadlineReminderReconciler.reconcileAll()
-    }
 }
 
 suspend fun reconcileAndroidDeadlineReminders(appGraph: AppGraph) {
