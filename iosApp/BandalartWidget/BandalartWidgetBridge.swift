@@ -83,39 +83,9 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
 enum BandalartWidgetBridge {
     private static let bridge = IosWidgetDataBridge()
 
-    static func bandalarts() async throws -> [IosWidgetBandalartOption] {
+    static func recentSnapshot() async throws -> BandalartWidgetSnapshotModel? {
         return try await withCheckedThrowingContinuation { continuation in
-            bridge.getBandalarts { values, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: values ?? [])
-                }
-            }
-        }
-    }
-
-    static func subGoals(bandalartId: Int64) async throws -> [IosWidgetSubGoalOption] {
-        return try await withCheckedThrowingContinuation { continuation in
-            bridge.getSubGoals(bandalartId: bandalartId) { values, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: values ?? [])
-                }
-            }
-        }
-    }
-
-    static func snapshot(
-        bandalartId: Int64,
-        subGoalId: Int64?
-    ) async throws -> BandalartWidgetSnapshotModel? {
-        return try await withCheckedThrowingContinuation { continuation in
-            bridge.getSnapshot(
-                bandalartId: bandalartId,
-                subGoalId: subGoalId.map(KotlinLong.init(longLong:))
-            ) { snapshot, error in
+            bridge.getRecentSnapshot { snapshot, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {

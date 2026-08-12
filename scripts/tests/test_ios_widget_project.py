@@ -12,18 +12,19 @@ WIDGET_INFO = ROOT / "iosApp/BandalartWidget/Info.plist"
 RELEASE_WORKFLOW = ROOT / ".github/workflows/release-cd.yml"
 FASTFILE = ROOT / "fastlane/Fastfile"
 WIDGET_SOURCE = ROOT / "iosApp/BandalartWidget/BandalartWidget.swift"
+APP_SOURCE = ROOT / "iosApp/iosApp/iosApp.swift"
+RUNTIME_BRIDGE = ROOT / "composeApp/src/iosMain/kotlin/com/nexters/bandalart/widget/IosWidgetRuntimeBridge.kt"
+DATA_BRIDGE = ROOT / "iosWidgetShared/src/iosMain/kotlin/com/nexters/bandalart/widget/IosWidgetDataBridge.kt"
 WIDGET_LOCALIZATIONS = ROOT / "iosApp/BandalartWidget"
 
 REQUIRED_WIDGET_STRINGS = {
     "Choose a sub-goal",
     "Add tasks in the app",
     "Choose a Bandalart",
-    "Edit this widget after creating a goal in the app.",
+    "Create or open a goal in the app.",
     "Bandalart",
     "See your goal progress and complete tasks from the Home Screen.",
-    "Bandalart Goal",
-    "Selects a Bandalart and sub-goal to display.",
-    "Bandalart / Sub-goal",
+    "Shows the last Bandalart viewed in the app.",
     "Update a Bandalart task",
     "Marks a Bandalart task as complete or incomplete.",
     "Bandalart ID",
@@ -99,11 +100,28 @@ class IosWidgetProjectTest(unittest.TestCase):
         self.assertIn("IOS_WIDGET_BUNDLE_ID => widget_profile_name", fastfile)
         self.assertIn("CURRENT_PROJECT_VERSION=#{build_number}", fastfile)
 
-    def test_widget_provider_does_not_replace_an_empty_selection(self):
+    def test_widget_provider_reads_the_last_selection_from_the_shared_container(self):
         source = WIDGET_SOURCE.read_text()
 
-        self.assertIn("let selection = configuration.selection", source)
-        self.assertNotIn("BandalartSelectionQuery().suggestedEntities().first", source)
+        self.assertIn("BandalartWidgetBridge.recentSnapshot()", source)
+        self.assertNotIn("configuration.selection", source)
+
+    def test_last_selection_is_persisted_before_timeline_reload(self):
+        app_source = APP_SOURCE.read_text()
+        runtime_source = RUNTIME_BRIDGE.read_text()
+        data_source = DATA_BRIDGE.read_text()
+        keys = (
+            "ios_widget_recent_bandalart_id",
+            "ios_widget_recent_sub_goal_id",
+        )
+
+        for key in keys:
+            self.assertIn(key, app_source)
+            self.assertIn(key, data_source)
+        self.assertLess(
+            runtime_source.index("selectionWriter.writeSelection"),
+            runtime_source.index("timelineReloader.reloadTimelines", runtime_source.index("selectionWriter.writeSelection")),
+        )
 
     def test_widget_resources_cover_Korean_English_and_Japanese(self):
         translations = {}

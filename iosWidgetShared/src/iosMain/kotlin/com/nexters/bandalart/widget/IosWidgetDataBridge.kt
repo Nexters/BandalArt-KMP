@@ -21,46 +21,39 @@ import com.nexters.bandalart.core.database.entity.BandalartDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartWidgetSnapshotDto
 import com.nexters.bandalart.core.database.openExistingSharedBandalartDatabase
 import kotlinx.coroutines.flow.first
+import platform.Foundation.NSUserDefaults
 
 class IosWidgetDataBridge {
     private var sharedDatabase: BandalartDatabase? = null
 
     private fun database(): BandalartDatabase? = sharedDatabase ?: openExistingSharedBandalartDatabase()?.also { sharedDatabase = it }
 
-    suspend fun getBandalarts(): List<IosWidgetBandalartOption> =
-        database()
-            ?.bandalartDao
-            ?.getBandalartList()
-            ?.first()
-            .orEmpty()
-            .map(BandalartDBEntity::toIosWidgetBandalartRecord)
-            .toIosWidgetBandalartOptions()
-
-    suspend fun getSubGoals(bandalartId: Long): List<IosWidgetSubGoalOption> {
-        if (bandalartId <= 0L) return emptyList()
-        val dao = database()?.bandalartDao ?: return emptyList()
-        val mainCell = dao.findBandalartMainCell(bandalartId)?.cell ?: return emptyList()
-        val mainCellId = mainCell.id ?: return emptyList()
-        if (mainCell.bandalartId != bandalartId || mainCell.parentId != null) return emptyList()
-
-        return dao
-            .getChildCells(mainCellId)
-            .map { cell ->
-                IosWidgetSubGoalRecord(
-                    id = cell.id,
-                    bandalartId = cell.bandalartId,
-                    parentId = cell.parentId,
-                    title = cell.title,
-                )
-            }.toIosWidgetSubGoalOptions(bandalartId = bandalartId, mainCellId = mainCellId)
-    }
-
-    suspend fun getSnapshot(
-        bandalartId: Long,
-        subGoalId: Long?,
-    ): IosWidgetSnapshot? {
-        if (bandalartId <= 0L || (subGoalId != null && subGoalId <= 0L)) return null
+    suspend fun getRecentSnapshot(): IosWidgetSnapshot? {
         val dao = database()?.bandalartDao ?: return null
+        val defaults = NSUserDefaults(suiteName = IOS_WIDGET_APP_GROUP_IDENTIFIER)
+        val bandalartId =
+            dao
+                .getBandalartList()
+                .first()
+                .map(BandalartDBEntity::toIosWidgetBandalartRecord)
+                .toIosWidgetBandalartOptions()
+                .resolveRecentBandalartId(defaults.integerForKey(IOS_WIDGET_RECENT_BANDALART_ID_KEY))
+                ?: return null
+        val mainCell = dao.findBandalartMainCell(bandalartId)?.cell ?: return null
+        val mainCellId = mainCell.id ?: return null
+        val subGoalId =
+            dao
+                .getChildCells(mainCellId)
+                .map { cell ->
+                    IosWidgetSubGoalRecord(
+                        id = cell.id,
+                        bandalartId = cell.bandalartId,
+                        parentId = cell.parentId,
+                        title = cell.title,
+                    )
+                }.toIosWidgetSubGoalOptions(bandalartId = bandalartId, mainCellId = mainCellId)
+                .resolveRecentSubGoalId(defaults.integerForKey(IOS_WIDGET_RECENT_SUB_GOAL_ID_KEY))
+
         return dao.findWidgetSnapshot(bandalartId, subGoalId)?.toIosWidgetSnapshotRecord()?.toIosWidgetSnapshot()
     }
 
@@ -83,6 +76,10 @@ class IosWidgetDataBridge {
         return dao.findWidgetSnapshot(bandalartId, subGoalId)?.toIosWidgetSnapshotRecord()?.toIosWidgetSnapshot()
     }
 }
+
+private const val IOS_WIDGET_APP_GROUP_IDENTIFIER = "group.com.nexters.bandalart"
+private const val IOS_WIDGET_RECENT_BANDALART_ID_KEY = "ios_widget_recent_bandalart_id"
+private const val IOS_WIDGET_RECENT_SUB_GOAL_ID_KEY = "ios_widget_recent_sub_goal_id"
 
 private fun BandalartDBEntity.toIosWidgetBandalartRecord() =
     IosWidgetBandalartRecord(

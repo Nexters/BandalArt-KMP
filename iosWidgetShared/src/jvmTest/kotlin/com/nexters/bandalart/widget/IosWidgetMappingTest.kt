@@ -82,4 +82,23 @@ class IosWidgetMappingTest {
             snapshot,
         )
     }
+
+    @Test
+    fun `recent selection prefers stored ids and falls back to first valid content`() {
+        val bandalarts =
+            listOf(
+                IosWidgetBandalartOption(id = 1L, title = "건강", profileEmoji = null),
+                IosWidgetBandalartOption(id = 2L, title = "공부", profileEmoji = null),
+            )
+        val subGoals =
+            listOf(
+                IosWidgetSubGoalOption(id = 11L, bandalartId = 1L, title = "운동"),
+                IosWidgetSubGoalOption(id = 12L, bandalartId = 1L, title = "수면"),
+            )
+
+        assertEquals(2L, bandalarts.resolveRecentBandalartId(2L))
+        assertEquals(1L, bandalarts.resolveRecentBandalartId(99L))
+        assertEquals(12L, subGoals.resolveRecentSubGoalId(12L))
+        assertEquals(11L, subGoals.resolveRecentSubGoalId(99L))
+    }
 }

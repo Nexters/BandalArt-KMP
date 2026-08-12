@@ -1,81 +1,11 @@
 import AppIntents
 import Foundation
 
-struct BandalartSelectionEntity: AppEntity, Hashable {
-    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Bandalart Goal")
-    static var defaultQuery = BandalartSelectionQuery()
-
-    let id: String
-    let bandalartId: Int64
-    let subGoalId: Int64?
-    let bandalartTitle: String
-    let subGoalTitle: String
-    let profileEmoji: String?
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(
-            title: "\(subGoalTitle.isEmpty ? bandalartTitle : subGoalTitle)",
-            subtitle: "\(profileEmoji ?? "🎯") \(bandalartTitle)"
-        )
-    }
-}
-
-struct BandalartSelectionQuery: EntityQuery {
-    func entities(for identifiers: [BandalartSelectionEntity.ID]) async throws -> [BandalartSelectionEntity] {
-        let identifierSet = Set(identifiers)
-        return try await selections().filter { identifierSet.contains($0.id) }
-    }
-
-    func suggestedEntities() async throws -> [BandalartSelectionEntity] {
-        try await selections()
-    }
-
-    func defaultResult() async -> BandalartSelectionEntity? {
-        try? await suggestedEntities().first
-    }
-
-    private func selections() async throws -> [BandalartSelectionEntity] {
-        var result: [BandalartSelectionEntity] = []
-        for bandalart in try await BandalartWidgetBridge.bandalarts() {
-            result.append(
-                BandalartSelectionEntity(
-                    id: "\(bandalart.id)",
-                    bandalartId: bandalart.id,
-                    subGoalId: nil,
-                    bandalartTitle: bandalart.title,
-                    subGoalTitle: "",
-                    profileEmoji: bandalart.profileEmoji
-                )
-            )
-            for subGoal in try await BandalartWidgetBridge.subGoals(bandalartId: bandalart.id) {
-                result.append(
-                    BandalartSelectionEntity(
-                        id: "\(bandalart.id):\(subGoal.id)",
-                        bandalartId: bandalart.id,
-                        subGoalId: subGoal.id,
-                        bandalartTitle: bandalart.title,
-                        subGoalTitle: subGoal.title,
-                        profileEmoji: bandalart.profileEmoji
-                    )
-                )
-            }
-        }
-        return result
-    }
-}
-
 struct BandalartWidgetConfigurationIntent: WidgetConfigurationIntent {
-    static var title: LocalizedStringResource = "Choose a Bandalart"
-    static var description = IntentDescription("Selects a Bandalart and sub-goal to display.")
-
-    @Parameter(title: "Bandalart / Sub-goal")
-    var selection: BandalartSelectionEntity?
+    static var title: LocalizedStringResource = "Bandalart"
+    static var description = IntentDescription("Shows the last Bandalart viewed in the app.")
 
     init() {}
-
-    init(selection: BandalartSelectionEntity?) {
-        self.selection = selection
-    }
 }
 
 struct SetBandalartTaskCompletedIntent: AppIntent {

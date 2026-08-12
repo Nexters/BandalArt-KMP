@@ -1,12 +1,10 @@
 "Choose a sub-goal" = "Choose a sub-goal";
 "Add tasks in the app" = "Add tasks in the app";
 "Choose a Bandalart" = "Choose a Bandalart";
-"Edit this widget after creating a goal in the app." = "Edit this widget after creating a goal in the app.";
+"Create or open a goal in the app." = "Create or open a goal in the app.";
 "Bandalart" = "Bandalart";
 "See your goal progress and complete tasks from the Home Screen." = "See your goal progress and complete tasks from the Home Screen.";
-"Bandalart Goal" = "Bandalart Goal";
-"Selects a Bandalart and sub-goal to display." = "Selects a Bandalart and sub-goal to display.";
-"Bandalart / Sub-goal" = "Bandalart / Sub-goal";
+"Shows the last Bandalart viewed in the app." = "Shows the last Bandalart viewed in the app.";
 "Update a Bandalart task" = "Update a Bandalart task";
 "Marks a Bandalart task as complete or incomplete." = "Marks a Bandalart task as complete or incomplete.";
 "Bandalart ID" = "Bandalart ID";

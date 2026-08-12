@@ -185,6 +185,23 @@ class BandalartDataStore(
                 if (bandalartId > 0L) preferences[recentSubGoalKey(bandalartId)] ?: 0L else 0L
             }.distinctUntilChanged()
 
+    val recentBandalartSelection =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences()) else throw exception
+            }.map { preferences ->
+                val bandalartId = preferences[recentBandalartKey] ?: 0L
+                RecentBandalartSelection(
+                    bandalartId = bandalartId,
+                    subGoalId =
+                        if (bandalartId > 0L) {
+                            preferences[recentSubGoalKey(bandalartId)] ?: 0L
+                        } else {
+                            0L
+                        },
+                )
+            }.distinctUntilChanged()
+
     suspend fun setRecentBandalartId(recentBandalartId: Long) {
         dataStore.edit { preferences ->
             preferences[recentBandalartKey] = recentBandalartId
@@ -328,6 +345,11 @@ class BandalartDataStore(
         }
     }
 }
+
+data class RecentBandalartSelection(
+    val bandalartId: Long,
+    val subGoalId: Long,
+)
 
 data class StoredPendingRewardedCreation(
     val requestId: Long,

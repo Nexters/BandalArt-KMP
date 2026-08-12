@@ -27,7 +27,15 @@ interface IosWidgetTimelineReloader {
     fun reloadTimelines()
 }
 
+interface IosWidgetSelectionWriter {
+    fun writeSelection(
+        bandalartId: Long,
+        subGoalId: Long,
+    )
+}
+
 class IosWidgetRuntimeBridge(
+    private val selectionWriter: IosWidgetSelectionWriter,
     private val timelineReloader: IosWidgetTimelineReloader,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -38,6 +46,15 @@ class IosWidgetRuntimeBridge(
         this.appGraph = appGraph
         scope.launch {
             appGraph.bandalartRepository.getBandalartList().collect {
+                timelineReloader.reloadTimelines()
+            }
+        }
+        scope.launch {
+            appGraph.bandalartDataStore.recentBandalartSelection.collect { selection ->
+                selectionWriter.writeSelection(
+                    bandalartId = selection.bandalartId,
+                    subGoalId = selection.subGoalId,
+                )
                 timelineReloader.reloadTimelines()
             }
         }
