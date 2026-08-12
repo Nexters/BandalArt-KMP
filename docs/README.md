@@ -86,6 +86,8 @@
 
 - [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)
 - [Android 위젯 표시 대상 선택 가이드](features/widgets/ANDROID_WIDGET_SELECTION_GUIDE.md)
+- [Android 위젯 동기화 트러블슈팅](features/widgets/ANDROID_WIDGET_SYNC_TROUBLESHOOTING.md)
+- [Android와 iOS 위젯 동기화 모델 비교](features/widgets/ANDROID_IOS_WIDGET_SYNC_RESEARCH.md)
 - [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
 - [iOS WidgetKit 위젯 MVP](features/widgets/IOS_WIDGETKIT_MVP_STRATEGY.md)
 
