@@ -1,12 +1,10 @@
 "Choose a sub-goal" = "세부 목표를 선택해 주세요";
 "Add tasks in the app" = "앱에서 할 일을 추가해 주세요";
 "Choose a Bandalart" = "반다라트를 선택해 주세요";
-"Edit this widget after creating a goal in the app." = "앱에서 목표를 만든 후 위젯을 편집해 주세요.";
+"Create or open a goal in the app." = "앱에서 목표를 만들거나 열어 주세요.";
 "Bandalart" = "반다라트";
 "See your goal progress and complete tasks from the Home Screen." = "홈 화면에서 목표 진행률을 확인하고 할 일을 완료할 수 있어요.";
-"Bandalart Goal" = "반다라트 목표";
-"Selects a Bandalart and sub-goal to display." = "위젯에 표시할 반다라트와 세부 목표를 선택합니다.";
-"Bandalart / Sub-goal" = "반다라트 / 세부 목표";
+"Shows the last Bandalart viewed in the app." = "앱에서 마지막으로 본 반다라트를 표시합니다.";
 "Update a Bandalart task" = "반다라트 할 일 변경";
 "Marks a Bandalart task as complete or incomplete." = "반다라트 할 일을 완료 또는 미완료로 변경합니다.";
 "Bandalart ID" = "반다라트 ID";

@@ -63,6 +63,12 @@ internal fun List<IosWidgetSubGoalRecord>.toIosWidgetSubGoalOptions(
         IosWidgetSubGoalOption(id = id, bandalartId = bandalartId, title = title)
     }
 
+internal fun List<IosWidgetBandalartOption>.resolveRecentBandalartId(recentBandalartId: Long): Long? =
+    firstOrNull { it.id == recentBandalartId }?.id ?: firstOrNull()?.id
+
+internal fun List<IosWidgetSubGoalOption>.resolveRecentSubGoalId(recentSubGoalId: Long): Long? =
+    firstOrNull { it.id == recentSubGoalId }?.id ?: firstOrNull()?.id
+
 internal fun IosWidgetSnapshotRecord.toIosWidgetSnapshot(): IosWidgetSnapshot =
     IosWidgetSnapshot(
         bandalartId = bandalartId,

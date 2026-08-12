@@ -14,7 +14,7 @@ struct BandalartWidgetProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> BandalartWidgetEntry {
         BandalartWidgetEntry(
             date: .now,
-            configuration: BandalartWidgetConfigurationIntent(selection: nil),
+            configuration: BandalartWidgetConfigurationIntent(),
             snapshot: .placeholder
         )
     }
@@ -37,20 +37,11 @@ struct BandalartWidgetProvider: AppIntentTimelineProvider {
         for configuration: BandalartWidgetConfigurationIntent,
         placeholderWhenEmpty: Bool = false
     ) async -> BandalartWidgetEntry {
-        let selection = configuration.selection
-        let snapshot: BandalartWidgetSnapshotModel?
-        if let selection {
-            snapshot = try? await BandalartWidgetBridge.snapshot(
-                bandalartId: selection.bandalartId,
-                subGoalId: selection.subGoalId
-            )
-        } else {
-            snapshot = placeholderWhenEmpty ? .placeholder : nil
-        }
+        let snapshot = try? await BandalartWidgetBridge.recentSnapshot()
         return BandalartWidgetEntry(
             date: .now,
             configuration: configuration,
-            snapshot: snapshot
+            snapshot: snapshot ?? (placeholderWhenEmpty ? .placeholder : nil)
         )
     }
 }
@@ -172,7 +163,7 @@ private struct EmptyBandalartWidgetView: View {
                 .font(.title)
             Text("Choose a Bandalart")
                 .font(.headline)
-            Text("Edit this widget after creating a goal in the app.")
+            Text("Create or open a goal in the app.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

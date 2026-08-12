@@ -143,6 +143,26 @@ class BandalartDataStoreTest {
                 bandalartDataStore.setRecentBandalartId(1L)
                 assertEquals(11L, bandalartDataStore.recentSubGoalId.first())
             }
+
+        @Test
+        @DisplayName("위젯용 최근 선택은 반다라트와 해당 세부 목표를 한 상태로 제공해야 한다")
+        fun recentBandalartSelectionIsAtomic() =
+            runTest {
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 1L, subGoalId = 11L)
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 2L, subGoalId = 21L)
+
+                bandalartDataStore.setRecentBandalartId(1L)
+                assertEquals(
+                    RecentBandalartSelection(bandalartId = 1L, subGoalId = 11L),
+                    bandalartDataStore.recentBandalartSelection.first(),
+                )
+
+                bandalartDataStore.setRecentBandalartId(2L)
+                assertEquals(
+                    RecentBandalartSelection(bandalartId = 2L, subGoalId = 21L),
+                    bandalartDataStore.recentBandalartSelection.first(),
+                )
+            }
     }
 
     @Nested

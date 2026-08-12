@@ -109,6 +109,8 @@ Kotlin/Native framework가 Widget Extension에서 링크되지 않거나 Room/SQ
 - Compose/Firebase/Ads를 포함하지 않는 `iosWidgetShared` static framework와 Swift 전용 모델·bridge를 추가했다.
 - Widget Extension, AppIntent 기반 설정, interactive task button, family별 SwiftUI와 deep link를 추가했다.
 - 본 앱 활성화 시 Room invalidation refresh와 timeline reload를 수행하고, widget URL을 기존 Home 선택 경로로 전달한다.
+- 앱 DataStore의 마지막 반다라트와 반다라트별 마지막 세부 목표를 하나의 선택 상태로 관찰한다. 본 앱이 App Group `UserDefaults`에 선택을 먼저 저장한 뒤 timeline을 reload하며, 위젯은 고정 설정 대신 이 선택을 공유 DB snapshot에 적용한다.
+- 저장된 반다라트나 세부 목표가 삭제되었거나 제목이 비어 있으면 각각 제목이 있는 첫 반다라트와 첫 세부 목표로 대체한다.
 - TestFlight workflow에 extension profile 복원·서명·export mapping과 nested `.appex` 검증을 추가했다.
 
 ### 9.2 확인한 제약과 해결

@@ -14,6 +14,9 @@ import WidgetKit
 
 private let deadlineReminderIdentifierPrefix = "deadline.v1."
 private let deadlineBandalartIdKey = "deadline_bandalart_id"
+private let widgetAppGroupIdentifier = "group.com.nexters.bandalart"
+private let widgetRecentBandalartIdKey = "ios_widget_recent_bandalart_id"
+private let widgetRecentSubGoalIdKey = "ios_widget_recent_sub_goal_id"
 
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
@@ -21,6 +24,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     let adsBridge = IosAdsBridgeImpl()
     let widgetLaunchBridge = IosWidgetLaunchBridge()
     let widgetRuntimeBridge = IosWidgetRuntimeBridge(
+        selectionWriter: IosWidgetSelectionWriterImpl(),
         timelineReloader: IosWidgetTimelineReloaderImpl()
     )
     private var timeZoneObserver: NSObjectProtocol?
@@ -95,6 +99,24 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
             DispatchQueue.main.async { [notificationLaunchBridge] in
                 notificationLaunchBridge.record(bandalartId: bandalartId)
             }
+        }
+    }
+}
+
+private final class IosWidgetSelectionWriterImpl: IosWidgetSelectionWriter {
+    private let defaults = UserDefaults(suiteName: widgetAppGroupIdentifier)
+
+    func writeSelection(bandalartId: Int64, subGoalId: Int64) {
+        guard let defaults else { return }
+        if bandalartId > 0 {
+            defaults.set(bandalartId, forKey: widgetRecentBandalartIdKey)
+        } else {
+            defaults.removeObject(forKey: widgetRecentBandalartIdKey)
+        }
+        if subGoalId > 0 {
+            defaults.set(subGoalId, forKey: widgetRecentSubGoalIdKey)
+        } else {
+            defaults.removeObject(forKey: widgetRecentSubGoalIdKey)
         }
     }
 }
