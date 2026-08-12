@@ -22,6 +22,17 @@
     </array>
     <key>CFBundleName</key>
     <string>$(PRODUCT_NAME)</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+       <dict>
+          <key>CFBundleURLName</key>
+          <string>com.nexters.bandalart.widget</string>
+          <key>CFBundleURLSchemes</key>
+          <array>
+             <string>bandalart</string>
+          </array>
+       </dict>
+    </array>
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>

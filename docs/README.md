@@ -12,9 +12,14 @@
 ## 현재 기준 가이드
 
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
+- [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
 - [KMP 테스트 소스셋과 Circuit Presenter 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
 
 ## Architecture
+
+### Coordinator
+
+- [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
 
 ### Circuit
 
@@ -79,6 +84,7 @@
 
 - [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)
 - [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
+- [iOS WidgetKit 위젯 MVP](features/widgets/IOS_WIDGETKIT_MVP_STRATEGY.md)
 
 ## Releases
 

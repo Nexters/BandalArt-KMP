@@ -10,6 +10,7 @@ import UIKit
 import ComposeApp
 import Firebase
 import UserNotifications
+import WidgetKit
 
 private let deadlineReminderIdentifierPrefix = "deadline.v1."
 private let deadlineBandalartIdKey = "deadline_bandalart_id"
@@ -18,6 +19,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
     let deadlineReminderLifecycleBridge = DeadlineReminderLifecycleBridge()
     let adsBridge = IosAdsBridgeImpl()
+    let widgetLaunchBridge = IosWidgetLaunchBridge()
+    let widgetRuntimeBridge = IosWidgetRuntimeBridge(
+        timelineReloader: IosWidgetTimelineReloaderImpl()
+    )
     private var timeZoneObserver: NSObjectProtocol?
 
     func application(
@@ -94,17 +99,42 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     }
 }
 
+private final class IosWidgetTimelineReloaderImpl: IosWidgetTimelineReloader {
+    func reloadTimelines() {
+        WidgetCenter.shared.reloadTimelines(ofKind: "BandalartWidget")
+    }
+}
+
 @main
 struct iosApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             ContentView(
                 notificationLaunchBridge: appDelegate.notificationLaunchBridge,
                 deadlineReminderLifecycleBridge: appDelegate.deadlineReminderLifecycleBridge,
-                adsBridge: appDelegate.adsBridge
+                adsBridge: appDelegate.adsBridge,
+                widgetLaunchBridge: appDelegate.widgetLaunchBridge,
+                widgetRuntimeBridge: appDelegate.widgetRuntimeBridge
             )
+            .onOpenURL { url in
+                guard url.scheme == "bandalart",
+                      url.host == "widget",
+                      let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let value = components.queryItems?.first(where: { $0.name == "bandalartId" })?.value,
+                      let bandalartId = Int64(value),
+                      bandalartId > 0 else {
+                    return
+                }
+                appDelegate.widgetLaunchBridge.record(bandalartId: bandalartId)
+            }
+            .onChange(of: scenePhase) { phase in
+                if phase == .active {
+                    appDelegate.widgetRuntimeBridge.applicationDidBecomeActive()
+                }
+            }
         }
     }
 }

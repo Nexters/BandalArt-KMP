@@ -195,6 +195,7 @@ jobs:
                     CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
                     CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
                     PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+                    WIDGET_PROFILE_BASE64: ${{ secrets.IOS_WIDGET_PROVISIONING_PROFILE_BASE64 }}
                     ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
                     ASC_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
                     SERVER_BASE_URL: ${{ secrets.SERVER_BASE_URL }}
@@ -203,12 +204,14 @@ jobs:
                     : "${CERTIFICATE_BASE64:?IOS_DISTRIBUTION_CERTIFICATE_BASE64 is required}"
                     : "${CERTIFICATE_PASSWORD:?IOS_DISTRIBUTION_CERTIFICATE_PASSWORD is required}"
                     : "${PROFILE_BASE64:?IOS_PROVISIONING_PROFILE_BASE64 is required}"
+                    : "${WIDGET_PROFILE_BASE64:?IOS_WIDGET_PROVISIONING_PROFILE_BASE64 is required}"
                     : "${ASC_KEY_ID:?APP_STORE_CONNECT_KEY_ID is required}"
                     : "${ASC_KEY_BASE64:?APP_STORE_CONNECT_KEY_P8_BASE64 is required}"
                     : "${SERVER_BASE_URL:?SERVER_BASE_URL is required}"
                     umask 077
                     printf '%s' "$CERTIFICATE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-distribution.p12"
                     printf '%s' "$PROFILE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-appstore.mobileprovision"
+                    printf '%s' "$WIDGET_PROFILE_BASE64" | openssl base64 -d -A > "$RUNNER_TEMP/bandalart-widget-appstore.mobileprovision"
                     touch "$RUNNER_TEMP/unused-android-keystore.jks"
                     printf 'STORE_FILE=%s\n' "$RUNNER_TEMP/unused-android-keystore.jks" > keystore.properties
                     printf 'STORE_PASSWORD=unused\nKEY_ALIAS=unused\nKEY_PASSWORD=unused\n' >> keystore.properties
@@ -219,6 +222,7 @@ jobs:
                     IOS_CERTIFICATE_PATH: ${{ runner.temp }}/bandalart-distribution.p12
                     IOS_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
                     IOS_PROVISIONING_PROFILE_PATH: ${{ runner.temp }}/bandalart-appstore.mobileprovision
+                    IOS_WIDGET_PROVISIONING_PROFILE_PATH: ${{ runner.temp }}/bandalart-widget-appstore.mobileprovision
                     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
                     APP_STORE_CONNECT_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
                 run: bundle exec fastlane ios beta
@@ -233,7 +237,14 @@ jobs:
                             rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
                         fi
                     fi
+                    if test -f "$RUNNER_TEMP/bandalart-widget-appstore.mobileprovision"; then
+                        WIDGET_PROFILE_UUID="$(security cms -D -i "$RUNNER_TEMP/bandalart-widget-appstore.mobileprovision" 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || true)"
+                        if test -n "$WIDGET_PROFILE_UUID"; then
+                            rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/$WIDGET_PROFILE_UUID.mobileprovision"
+                        fi
+                    fi
                     rm -f "$RUNNER_TEMP/bandalart-distribution.p12"
                     rm -f "$RUNNER_TEMP/bandalart-appstore.mobileprovision"
+                    rm -f "$RUNNER_TEMP/bandalart-widget-appstore.mobileprovision"
                     rm -f "$RUNNER_TEMP/unused-android-keystore.jks"
                     rm -f keystore.properties secrets.properties

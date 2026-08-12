@@ -13,12 +13,16 @@ struct ComposeView: UIViewControllerRepresentable {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let deadlineReminderLifecycleBridge: DeadlineReminderLifecycleBridge
     let adsBridge: IosAdsBridge
+    let widgetLaunchBridge: IosWidgetLaunchBridge
+    let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.MainViewController(
             notificationLaunchBridge: notificationLaunchBridge,
             deadlineReminderLifecycleBridge: deadlineReminderLifecycleBridge,
-            adsBridge: adsBridge
+            adsBridge: adsBridge,
+            widgetLaunchBridge: widgetLaunchBridge,
+            widgetRuntimeBridge: widgetRuntimeBridge
         )
     }
 
@@ -29,12 +33,16 @@ struct ContentView: View {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let deadlineReminderLifecycleBridge: DeadlineReminderLifecycleBridge
     let adsBridge: IosAdsBridge
+    let widgetLaunchBridge: IosWidgetLaunchBridge
+    let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
     var body: some View {
         ComposeView(
             notificationLaunchBridge: notificationLaunchBridge,
             deadlineReminderLifecycleBridge: deadlineReminderLifecycleBridge,
-            adsBridge: adsBridge
+            adsBridge: adsBridge,
+            widgetLaunchBridge: widgetLaunchBridge,
+            widgetRuntimeBridge: widgetRuntimeBridge
         )
                 .ignoresSafeArea(edges: .all)
                 .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
