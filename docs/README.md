@@ -13,6 +13,7 @@
 
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
 - [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
+- [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
 - [KMP 테스트 소스셋과 Circuit Presenter 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
 
 ## Architecture
@@ -37,6 +38,7 @@
 ### KMP
 
 - [AGP 9 KMP 마이그레이션](architecture/kmp/KMP_AGP_9_MIGRATION_STRATEGY.md)
+- [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
 - [KMP 통합 검증 전략](architecture/kmp/KMP_INTEGRATION_VALIDATION_STRATEGY.md)
 - [KMP 정적 분석 지원](architecture/kmp/KMP_STATIC_ANALYSIS_SUPPORT.md)
 - [KMP 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
