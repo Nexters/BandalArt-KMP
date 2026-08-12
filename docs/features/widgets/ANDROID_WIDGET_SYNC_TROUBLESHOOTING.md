@@ -27,11 +27,12 @@ Android `2.3.2 (20302)`에서 위젯이 늦게 바뀌거나 이전 달성률을 
 앱 프로세스가 살아 있는 동안의 로컬 변경은 다음 경로로 처리한다.
 
 1. 앱이 Room의 반다라트·세부 목표·할 일 또는 DataStore의 최근 선택을 변경한다.
-2. `BandalartApplication`이 반다라트 목록, 최근 반다라트, 최근 세부 목표 Flow를 관찰한다.
+2. `BandalartApplication`이 반다라트 목록과 원자적인 `recentBandalartSelection` Flow를 함께 관찰한다.
 3. 데이터 변경 또는 프로세스 `ON_STOP`에서 `BandalartWidgetRefreshRunner.refresh()`를 요청한다.
 4. refresh runner가 여러 요청을 `Mutex`로 직렬화한다.
 5. `BandalartGlanceWidget.updateAll()`이 설치된 모든 위젯의 갱신을 요청한다.
-6. `provideGlance()`가 최신 Room/DataStore 값을 다시 읽어 `RemoteViews`를 만들고 launcher host에 전달한다.
+6. 새 `provideGlance()`는 최신 Room/DataStore 값을 읽고, 실행 중인 Glance composition은 같은 변경 Flow를 계속 관찰한다.
+7. 변경된 snapshot을 새 `RemoteViews`로 만들어 launcher host에 전달한다.
 
 정기 polling은 사용하지 않는다. 앱에서 방금 변경한 로컬 데이터는 위 경로로 갱신하지만, 앱 프로세스가 죽은 동안 서버에서만 바뀐 데이터는 별도의 broadcast나 WorkManager 동기화 계기가 없으면 자동으로 반영되지 않는다.
 
@@ -54,6 +55,17 @@ JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
 
 검증 시 refresh runner의 `Mutex`를 제거하면 `latest progress wins when background and database refresh overlap`가 실패하고, 현재 `main` 구현에서는 통과한다.
 
+## 2.3.3에서 보완한 활성 세션과 최근 선택
+
+Glance 공식 동작상 `provideGlance()`가 이미 실행 중이면 뒤이어 호출한 `updateAll()`이 그 세션을 재시작하지 않는다. 이전 구현은 `provideContent()` 전에 snapshot을 한 번만 읽어서, 활성 세션이 남아 있는 동안 새 갱신 요청이 와도 이전 화면을 유지할 수 있었다.
+
+2.3.3에서는 다음 두 경계를 보완한다.
+
+1. `provideContent()` 안에서 Room/DataStore 변경으로 만든 위젯 상태 Flow를 `collectAsState()`로 구독한다. 활성 Glance 세션은 진행률·할 일·최근 선택이 바뀌면 같은 composition에서 최신 snapshot으로 다시 그린다.
+2. Android도 DataStore의 한 Preferences snapshot에서 생성된 `recentBandalartSelection`을 사용한다. 반다라트 ID를 읽은 뒤 별도 시점에 세부 목표 ID를 읽어 서로 다른 선택이 조합되는 경로를 제거했다.
+
+세션이 종료된 뒤의 변경은 기존 `updateAll()` 경로가 새 세션을 시작한다. 따라서 활성 세션 구독은 `updateAll()`을 대체하지 않고, 두 경로가 각각 실행 중·종료 후 갱신을 담당한다.
+
 ## Android/Glance의 실제 한계
 
 `updateAll()`은 launcher 화면을 앱의 Compose UI처럼 같은 프레임에 다시 그리는 API가 아니다. Android 공식 문서에 따르면 앱 위젯은 다른 프로세스에서 host되며, Glance가 콘텐츠를 `RemoteViews`로 다시 만들고 host에 전송한다. 따라서 호출 직후 한두 프레임 안에 표시된다는 실시간 보장은 없고 기기와 launcher에 따라 짧은 비동기 지연은 생길 수 있다.
@@ -75,14 +87,14 @@ JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
 | 비교 지점 | Android 현재 구현 | iOS 현재 구현 | Android에서 늘어나는 위험 |
 | --- | --- | --- | --- |
 | 화면 host | 제조사 또는 사용자가 선택한 launcher가 `RemoteViews`를 표시 | Apple의 WidgetKit과 시스템 host가 timeline을 표시 | launcher별 캐시·배치·크기 처리 차이를 함께 검증해야 함 |
-| 갱신 입력 | Room Flow, 최근 반다라트 Flow, 최근 세부 목표 Flow, 프로세스 `ON_STOP`, 위젯 action | 반다라트 Flow, 원자적인 최근 선택 Flow, 앱 활성화, 위젯 intent | 여러 Android 요청이 겹치거나 순서가 바뀔 가능성이 큼 |
-| 실행 중 갱신 | 실행 중인 `provideGlance()`를 새 `updateAll()`이 재시작하지 않음 | WidgetKit이 reload 요청을 받고 새 timeline 요청 시점을 관리 | Android session이 최신 데이터를 관찰하지 않으면 후속 요청이 와도 이전 snapshot을 유지할 수 있음 |
+| 갱신 입력 | Room Flow, 원자적인 최근 선택 Flow, 프로세스 `ON_STOP`, 위젯 action | 반다라트 Flow, 원자적인 최근 선택 Flow, 앱 활성화, 위젯 intent | 여러 Android 요청이 겹치거나 순서가 바뀔 가능성이 큼 |
+| 실행 중 갱신 | 새 `updateAll()`은 세션을 재시작하지 않으므로 활성 composition이 변경 Flow를 직접 관찰 | WidgetKit이 reload 요청을 받고 새 timeline 요청 시점을 관리 | Android는 활성 세션 구독과 세션 종료 후 `updateAll()` 두 경로를 함께 유지해야 함 |
 | 갱신 시점의 읽기 | `updateAll()` 처리 중 앱 프로세스가 snapshot을 읽고 각 인스턴스를 갱신 | 앱은 선택을 App Group에 먼저 쓰고 timeline reload를 요청하며, extension이 timeline 생성 시 snapshot을 읽음 | Android는 먼저 읽은 snapshot의 갱신이 늦게 끝나면 이전 화면을 덮을 수 있었음 |
-| 최근 선택 | 반다라트 ID와 해당 세부 목표 ID를 `provideGlance()`에서 따로 읽음 | 한 Preferences snapshot에서 만든 `recentBandalartSelection`을 먼저 기록 | Android는 두 읽기 사이에 선택이 바뀌면 조합이 일시적으로 어긋날 여지가 남음 |
+| 최근 선택 | 한 Preferences snapshot에서 만든 `recentBandalartSelection`을 사용 | 한 Preferences snapshot에서 만든 `recentBandalartSelection`을 먼저 기록 | 두 플랫폼 모두 앱 수준에서는 반다라트와 세부 목표를 원자적으로 전달 |
 | 인스턴스 상태 | 각 위젯의 Glance 설정값과 앱의 최근 선택 fallback을 함께 해석 | 현재 intent는 매개변수가 없고 모든 위젯이 같은 최근 선택을 사용 | 여러 Android 인스턴스에서 설정 상태와 최근 상태의 조합 수가 늘어남 |
 | 백그라운드 정책 | 앱 프로세스와 launcher가 제조사별 절전 정책의 영향을 받을 수 있음 | extension 실행과 timeline 갱신을 WidgetKit이 통제 | Android 실기기 QA에 제조사·launcher 조합이 추가됨 |
 
-Android의 `Mutex`는 앱이 시작한 갱신 요청끼리 순서를 보장한다. 실행 중인 Glance session을 다시 시작하거나 launcher가 화면에 반영하는 시점까지 통제하지는 못한다. 따라서 회귀 테스트 통과는 앱의 동시 refresh 순서를 고정했다는 뜻이며, 실행 중 session이 최신 값을 다시 읽거나 홈 화면에 즉시 보인다는 보장은 아니다.
+Android의 `Mutex`는 앱이 시작한 갱신 요청끼리 순서를 보장하고, 활성 Glance composition의 Flow 구독은 실행 중 세션이 최신 값을 다시 읽게 한다. 둘 다 launcher가 `RemoteViews`를 화면에 반영하는 시점까지 통제하지는 못하므로, 홈 화면에 같은 프레임으로 즉시 보인다는 보장은 아니다.
 
 iOS도 자동으로 안전한 것은 아니다. App Group 데이터 기록과 extension의 데이터베이스 읽기 사이에 순서 문제가 생길 수 있고, WidgetKit도 요청마다 즉시 새 timeline을 표시한다고 보장하지 않는다. Apple은 WidgetKit이 여러 위젯의 reload를 합치거나 사용 빈도에 따라 reload 예산을 조정할 수 있다고 설명한다.
 
@@ -90,12 +102,10 @@ iOS도 자동으로 안전한 것은 아니다. App Group 데이터 기록과 ex
 
 Android에서 남은 위험을 줄일 때는 다음 순서로 검토한다.
 
-1. 실행 중인 `provideGlance()`가 Room/DataStore 변경을 관찰하게 하거나, session 종료 후 최신 generation을 다시 갱신하는 구조를 검토한다.
-2. `provideGlance()`가 반다라트와 세부 목표를 따로 읽지 않고 `recentBandalartSelection` 하나를 읽게 한다.
-3. refresh 요청에 증가하는 generation과 원인을 기록해 마지막 generation이 실제 snapshot 생성까지 도달했는지 확인한다.
-4. `updateAll()` 완료와 launcher 표시 완료를 같은 의미로 기록하지 않는다.
-5. Pixel 계열 launcher와 Samsung One UI launcher에서 단일·복수 위젯을 각각 검증한다.
-6. 배포 기록에 source commit을 남겨 같은 버전 이름의 서로 다른 소스를 구분한다.
+1. refresh 요청에 증가하는 generation과 원인을 기록해 마지막 generation이 실제 snapshot 생성까지 도달했는지 확인한다.
+2. `updateAll()` 완료와 launcher 표시 완료를 같은 의미로 기록하지 않는다.
+3. Pixel 계열 launcher와 Samsung One UI launcher에서 단일·복수 위젯을 각각 검증한다.
+4. 배포 기록에 source commit을 남겨 같은 버전 이름의 서로 다른 소스를 구분한다.
 
 ## 실기기 재현 및 판정 절차
 

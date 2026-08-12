@@ -21,6 +21,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -57,10 +59,11 @@ import androidx.glance.text.TextStyle
 import com.nexters.bandalart.BandalartApplication
 import com.nexters.bandalart.MainActivity
 import com.nexters.bandalart.R
-import com.nexters.bandalart.di.metro.getAndroidWidgetRecentBandalartId
-import com.nexters.bandalart.di.metro.getAndroidWidgetRecentSubGoalId
 import com.nexters.bandalart.di.metro.getAndroidWidgetSubGoals
 import com.nexters.bandalart.di.metro.getAndroidWidgetSnapshot
+import com.nexters.bandalart.di.metro.observeAndroidWidgetStateChanges
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class BandalartGlanceWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode =
@@ -81,39 +84,35 @@ class BandalartGlanceWidget : GlanceAppWidget() {
         val preferences = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
         val appGraph = (context.applicationContext as BandalartApplication).appGraph
         val configuredSelection = preferences.toWidgetSelection()
-        val recentBandalartId = getAndroidWidgetRecentBandalartId(appGraph)
-        val bandalartId = resolveWidgetBandalartId(configuredSelection, recentBandalartId)
-        val availableSubGoalIds =
-            bandalartId
-                ?.let { getAndroidWidgetSubGoals(appGraph, it) }
-                .orEmpty()
-                .filterNot { it.title.isNullOrBlank() }
-                .mapNotNull { it.id }
-        val recentSubGoalId = bandalartId?.let { getAndroidWidgetRecentSubGoalId(appGraph, it) } ?: 0L
-        val selection =
-            resolveWidgetSelection(
-                configuredSelection = configuredSelection,
-                recentBandalartId = recentBandalartId,
-                recentSubGoalId = recentSubGoalId,
-                availableSubGoalIds = availableSubGoalIds,
-            )
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
-        val snapshot =
-            selection?.let {
-                getAndroidWidgetSnapshot(
-                    appGraph = appGraph,
-                    bandalartId = it.bandalartId,
-                    subGoalId = it.subGoalId,
-                )
-            }
-        val viewState =
-            toWidgetViewState(
-                selection = selection,
-                snapshot = snapshot,
+        val viewStates =
+            observeWidgetViewStates(
+                configuredSelection = configuredSelection,
+                changes =
+                    observeAndroidWidgetStateChanges(appGraph).map { selection ->
+                        BandalartWidgetRecentSelection(
+                            bandalartId = selection.bandalartId,
+                            subGoalId = selection.subGoalId,
+                        )
+                    },
+                loadAvailableSubGoalIds = { bandalartId ->
+                    getAndroidWidgetSubGoals(appGraph, bandalartId)
+                        .filterNot { it.title.isNullOrBlank() }
+                        .mapNotNull { it.id }
+                },
+                loadSnapshot = { selection ->
+                    getAndroidWidgetSnapshot(
+                        appGraph = appGraph,
+                        bandalartId = selection.bandalartId,
+                        subGoalId = selection.subGoalId,
+                    )
+                },
                 unnamedGoalTitle = context.getString(R.string.bandalart_widget_unnamed_goal),
             )
+        val initialViewState = viewStates.first()
 
         provideContent {
+            val viewState by viewStates.collectAsState(initialViewState)
             BandalartWidgetContent(
                 context = context,
                 appWidgetId = appWidgetId,

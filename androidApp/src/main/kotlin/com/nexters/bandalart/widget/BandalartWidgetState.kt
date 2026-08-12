@@ -21,6 +21,10 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetTask
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
 
 internal val BandalartIdKey = longPreferencesKey("bandalartId")
 internal val SubGoalIdKey = longPreferencesKey("subGoalId")
@@ -28,6 +32,11 @@ internal val SubGoalIdKey = longPreferencesKey("subGoalId")
 internal data class BandalartWidgetSelection(
     val bandalartId: Long,
     val subGoalId: Long?,
+)
+
+internal data class BandalartWidgetRecentSelection(
+    val bandalartId: Long,
+    val subGoalId: Long,
 )
 
 internal fun Preferences.toWidgetSelection(): BandalartWidgetSelection? {
@@ -89,6 +98,37 @@ internal fun resolveWidgetBandalartId(
     configuredSelection: BandalartWidgetSelection?,
     recentBandalartId: Long,
 ): Long? = recentBandalartId.takeIf { it > 0L } ?: configuredSelection?.bandalartId
+
+@OptIn(ExperimentalCoroutinesApi::class)
+internal fun observeWidgetViewStates(
+    configuredSelection: BandalartWidgetSelection?,
+    changes: Flow<BandalartWidgetRecentSelection>,
+    loadAvailableSubGoalIds: suspend (Long) -> List<Long>,
+    loadSnapshot: suspend (BandalartWidgetSelection) -> BandalartWidgetSnapshot?,
+    unnamedGoalTitle: String,
+): Flow<BandalartWidgetViewState> =
+    changes
+        .mapLatest { recentSelection ->
+            val bandalartId =
+                resolveWidgetBandalartId(
+                    configuredSelection = configuredSelection,
+                    recentBandalartId = recentSelection.bandalartId,
+                )
+            val availableSubGoalIds = bandalartId?.let { loadAvailableSubGoalIds(it) }.orEmpty()
+            val selection =
+                resolveWidgetSelection(
+                    configuredSelection = configuredSelection,
+                    recentBandalartId = recentSelection.bandalartId,
+                    recentSubGoalId = recentSelection.subGoalId,
+                    availableSubGoalIds = availableSubGoalIds,
+                )
+            val snapshot = selection?.let { loadSnapshot(it) }
+            toWidgetViewState(
+                selection = selection,
+                snapshot = snapshot,
+                unnamedGoalTitle = unnamedGoalTitle,
+            )
+        }.distinctUntilChanged()
 
 internal enum class BandalartWidgetLayout(
     val taskLimit: Int,

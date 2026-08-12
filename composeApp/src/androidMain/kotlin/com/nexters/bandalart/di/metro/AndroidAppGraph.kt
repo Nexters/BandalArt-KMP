@@ -33,6 +33,12 @@ import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+
+data class AndroidWidgetRecentSelection(
+    val bandalartId: Long,
+    val subGoalId: Long,
+)
 
 private class AndroidPlatformBindings(
     application: Application,
@@ -110,13 +116,18 @@ fun recordAndroidWidgetLaunch(
     appGraph.bandalartWidgetLaunchTarget.record(bandalartId)
 }
 
+fun observeAndroidWidgetStateChanges(appGraph: AppGraph): Flow<AndroidWidgetRecentSelection> =
+    combine(
+        appGraph.bandalartRepository.getBandalartList(),
+        appGraph.bandalartDataStore.recentBandalartSelection,
+    ) { _, selection ->
+        AndroidWidgetRecentSelection(
+            bandalartId = selection.bandalartId,
+            subGoalId = selection.subGoalId,
+        )
+    }
+
 fun observeAndroidWidgetBandalarts(appGraph: AppGraph): Flow<List<BandalartEntity>> = appGraph.bandalartRepository.getBandalartList()
-
-fun observeAndroidWidgetRecentBandalartId(appGraph: AppGraph): Flow<Long> = appGraph.bandalartRepository.observeRecentBandalartId()
-
-fun observeAndroidWidgetRecentSubGoalId(appGraph: AppGraph): Flow<Long> = appGraph.bandalartRepository.observeRecentSubGoalId()
-
-suspend fun getAndroidWidgetRecentBandalartId(appGraph: AppGraph): Long = appGraph.bandalartRepository.getRecentBandalartId()
 
 suspend fun setAndroidWidgetRecentBandalartId(
     appGraph: AppGraph,
@@ -124,11 +135,6 @@ suspend fun setAndroidWidgetRecentBandalartId(
 ) {
     appGraph.bandalartRepository.setRecentBandalartId(bandalartId)
 }
-
-suspend fun getAndroidWidgetRecentSubGoalId(
-    appGraph: AppGraph,
-    bandalartId: Long,
-): Long = appGraph.bandalartRepository.getRecentSubGoalId(bandalartId)
 
 suspend fun setAndroidWidgetRecentSubGoalId(
     appGraph: AppGraph,
