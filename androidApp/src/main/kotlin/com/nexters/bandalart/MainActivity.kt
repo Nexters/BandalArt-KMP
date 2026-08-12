@@ -47,6 +47,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            (application as BandalartApplication).reconcileDeadlineRemindersOnUserLaunch()
+        }
         recordWidgetLaunch(intent)
         appUpdateManager = AppUpdateManagerFactory.create(this)
         skipNextResumeForSplash = savedInstanceState == null

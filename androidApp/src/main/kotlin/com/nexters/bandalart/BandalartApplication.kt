@@ -30,6 +30,7 @@ import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
 import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
 import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentBandalartId
+import com.nexters.bandalart.di.metro.reconcileAndroidDeadlineReminders
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import com.nexters.bandalart.widget.BandalartGlanceWidget
 import io.github.aakira.napier.DebugAntilog
@@ -96,6 +97,12 @@ class BandalartApplication : Application() {
             .apply { set(applicationContext) }
 
         observeBandalartChangesForWidgets()
+    }
+
+    internal fun reconcileDeadlineRemindersOnUserLaunch() {
+        applicationScope.launch {
+            reconcileAndroidDeadlineReminders(appGraph)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
