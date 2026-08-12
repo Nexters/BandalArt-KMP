@@ -21,8 +21,11 @@ import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -31,6 +34,38 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class HomePresenterTest {
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun openingASubgoalAndItsTaskRecordsTheSubgoalForTheCurrentBandalart() =
+        runTest {
+            val mainCell = cell(id = 20L, parentId = null)
+            val subCell = cell(id = 21L, parentId = mainCell.id)
+            val taskCell = cell(id = 22L, parentId = subCell.id)
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(2L)),
+                    recentBandalartId = 2L,
+                    mainCells = mapOf(2L to mainCell),
+                    childCells = mapOf(mainCell.id to listOf(subCell), subCell.id to listOf(taskCell)),
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 2L || state.isLoading) {
+                    state = awaitItem()
+                }
+
+                state.eventSink(HomeScreen.Event.OpenCell(CellType.SUB, false, subCell))
+                advanceUntilIdle()
+                assertEquals(21L, repository.recentSubGoalIds[2L])
+
+                state.eventSink(HomeScreen.Event.OpenCell(CellType.TASK, false, taskCell))
+                advanceUntilIdle()
+                assertEquals(21L, repository.recentSubGoalIds[2L])
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     fun widgetLaunchSelectsAndAcknowledgesAValidTarget() =
         runTest {

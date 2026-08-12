@@ -31,10 +31,12 @@ import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
 import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
 import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentBandalartId
+import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentSubGoalId
 import com.nexters.bandalart.di.metro.reconcileAndroidDeadlineReminders
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import com.nexters.bandalart.widget.BandalartGlanceWidget
 import com.nexters.bandalart.widget.BandalartWidgetProcessLifecycleObserver
+import com.nexters.bandalart.widget.BandalartWidgetRefreshRunner
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.easyhooon.ding.Ding
@@ -51,10 +53,11 @@ class BandalartApplication : Application() {
         private set
     private val adsInitializer by lazy { AdsInitializer(applicationContext) }
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val widgetRefreshRunner = BandalartWidgetRefreshRunner(::refreshWidgets)
     private val widgetProcessLifecycleObserver =
         BandalartWidgetProcessLifecycleObserver(
             onBackground = {
-                applicationScope.launch { refreshWidgets() }
+                applicationScope.launch { widgetRefreshRunner.refresh() }
             },
         )
 
@@ -120,8 +123,9 @@ class BandalartApplication : Application() {
             combine(
                 observeAndroidWidgetBandalarts(appGraph),
                 observeAndroidWidgetRecentBandalartId(appGraph),
-            ) { _, _ -> Unit }.collect {
-                refreshWidgets()
+                observeAndroidWidgetRecentSubGoalId(appGraph),
+            ) { _, _, _ -> Unit }.collect {
+                widgetRefreshRunner.refresh()
             }
         }
     }

@@ -35,11 +35,13 @@ class BandalartWidgetConfigurationStateTest {
         runBlocking {
             val configuredSelection = BandalartWidgetSelection(bandalartId = 1L, subGoalId = 2L)
             var recentBandalartId = 3L
+            var recentSubGoalId = 0L
             var persistedSelection: BandalartWidgetSelection? = null
 
             saveWidgetConfiguration(
                 selection = configuredSelection,
                 setRecentBandalartId = { recentBandalartId = it },
+                setRecentSubGoalId = { _, subGoalId -> recentSubGoalId = subGoalId },
                 persistSelection = { persistedSelection = it },
             )
 
@@ -48,6 +50,8 @@ class BandalartWidgetConfigurationStateTest {
                 resolveWidgetSelection(
                     configuredSelection = persistedSelection,
                     recentBandalartId = recentBandalartId,
+                    recentSubGoalId = recentSubGoalId,
+                    availableSubGoalIds = listOf(2L),
                 ),
             )
         }

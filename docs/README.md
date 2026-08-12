@@ -85,6 +85,7 @@
 ### Widgets
 
 - [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)
+- [Android 위젯 표시 대상 선택 가이드](features/widgets/ANDROID_WIDGET_SELECTION_GUIDE.md)
 - [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
 - [iOS WidgetKit 위젯 MVP](features/widgets/IOS_WIDGETKIT_MVP_STRATEGY.md)
 

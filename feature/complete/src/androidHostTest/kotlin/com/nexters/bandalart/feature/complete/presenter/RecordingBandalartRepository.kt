@@ -99,6 +99,15 @@ internal class RecordingBandalartRepository : BandalartRepository {
 
     override fun observeRecentBandalartId(): Flow<Long> = emptyFlow()
 
+    override suspend fun setRecentSubGoalId(
+        bandalartId: Long,
+        subGoalId: Long,
+    ) = error("Not used")
+
+    override suspend fun getRecentSubGoalId(bandalartId: Long): Long = error("Not used")
+
+    override fun observeRecentSubGoalId(): Flow<Long> = emptyFlow()
+
     override suspend fun getPrevBandalartList(): List<Pair<Long, Boolean>> = error("Not used")
 
     override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean = error("Not used")

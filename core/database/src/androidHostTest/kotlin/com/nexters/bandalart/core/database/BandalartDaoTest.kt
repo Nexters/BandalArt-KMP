@@ -315,6 +315,32 @@ class BandalartDaoTest {
     @DisplayName("반다라트 완료율 및 자동 완료 처리 테스트")
     inner class CompletionTest {
         @Test
+        @DisplayName("태스크 완료 시 반다라트 목록 Flow에 최신 달성률이 방출되어야 한다")
+        fun completionChangeEmitsUpdatedProgress() =
+            runTest {
+                val bandalartId = bandalartDao.createEmptyBandalart()
+                val subGoal = bandalartDao.getBandalartMainCell(bandalartId).children.first()
+                val task = bandalartDao.getChildCells(subGoal.id!!).first()
+
+                bandalartDao.getBandalartList().test {
+                    assertEquals(0, awaitItem().single().completionRatio)
+
+                    bandalartDao.updateTaskCellWithDto(
+                        task.id!!,
+                        UpdateBandalartTaskCellDto(
+                            title = "태스크",
+                            description = null,
+                            dueDate = null,
+                            isCompleted = true,
+                        ),
+                    )
+
+                    assertEquals(4, awaitItem().single().completionRatio)
+                    cancelAndIgnoreRemainingEvents()
+                }
+            }
+
+        @Test
         @DisplayName("태스크 셀 완료 시 반다라트 완료율이 올바르게 계산되어야 한다")
         fun testCompletionRatioUpdate() =
             runTest {

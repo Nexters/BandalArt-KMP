@@ -66,6 +66,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.di.metro.getAndroidWidgetSubGoals
 import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
 import com.nexters.bandalart.di.metro.setAndroidWidgetRecentBandalartId
+import com.nexters.bandalart.di.metro.setAndroidWidgetRecentSubGoalId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -172,6 +173,9 @@ class BandalartWidgetConfigurationActivity : ComponentActivity() {
             saveWidgetConfiguration(
                 selection = BandalartWidgetSelection(selectedBandalartId, current.selectedSubGoalId),
                 setRecentBandalartId = { bandalartId -> setAndroidWidgetRecentBandalartId(appGraph, bandalartId) },
+                setRecentSubGoalId = { bandalartId, subGoalId ->
+                    setAndroidWidgetRecentSubGoalId(appGraph, bandalartId, subGoalId)
+                },
                 persistSelection = { selection ->
                     updateAppWidgetState(this@BandalartWidgetConfigurationActivity, glanceId) { preferences ->
                         preferences.setWidgetSelection(selection.bandalartId, selection.subGoalId)

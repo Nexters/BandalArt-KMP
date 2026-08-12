@@ -111,6 +111,41 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("최근 세부 목표 ID 관련 테스트")
+    inner class RecentSubGoalIdTest {
+        @Test
+        @DisplayName("최근 세부 목표를 반다라트별로 저장하고 복원해야 한다")
+        fun recentSubGoalIsStoredPerBandalart() =
+            runTest {
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 1L, subGoalId = 11L)
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 2L, subGoalId = 21L)
+
+                assertEquals(11L, bandalartDataStore.getRecentSubGoalId(1L))
+                assertEquals(21L, bandalartDataStore.getRecentSubGoalId(2L))
+            }
+
+        @Test
+        @DisplayName("현재 최근 반다라트의 세부 목표 변경을 관찰해야 한다")
+        fun currentBandalartRecentSubGoalIsObservable() =
+            runTest {
+                bandalartDataStore.setRecentBandalartId(1L)
+                assertEquals(0L, bandalartDataStore.recentSubGoalId.first())
+
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 1L, subGoalId = 11L)
+                assertEquals(11L, bandalartDataStore.recentSubGoalId.first())
+
+                bandalartDataStore.setRecentBandalartId(2L)
+                assertEquals(0L, bandalartDataStore.recentSubGoalId.first())
+
+                bandalartDataStore.setRecentSubGoalId(bandalartId = 2L, subGoalId = 21L)
+                assertEquals(21L, bandalartDataStore.recentSubGoalId.first())
+
+                bandalartDataStore.setRecentBandalartId(1L)
+                assertEquals(11L, bandalartDataStore.recentSubGoalId.first())
+            }
+    }
+
+    @Nested
     @DisplayName("반다라트 최대 슬롯 관련 테스트")
     inner class MaxBandalartSlotsTest {
         @Test
