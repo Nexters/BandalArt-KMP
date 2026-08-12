@@ -2,7 +2,7 @@
 
 ## 문서 목적
 
-이 문서는 현재 Android 홈 화면 위젯이 실제로 지원하는 기능과 제약을 정리한다. 구현 계획과 과거 결정을 다루는 [Android Glance 위젯 MVP 전략](ANDROID_WIDGET_MVP_STRATEGY.md)과 달리, 제품 기획과 후속 기능 우선순위를 검토할 때의 현재 기준으로 사용한다. 표시 대상의 상세 우선순위는 [Android 위젯 표시 대상 선택 가이드](ANDROID_WIDGET_SELECTION_GUIDE.md)를 따른다.
+이 문서는 현재 Android 홈 화면 위젯이 실제로 지원하는 기능과 제약을 정리한다. 구현 계획과 과거 결정을 다루는 [Android Glance 위젯 MVP 전략](ANDROID_WIDGET_MVP_STRATEGY.md)과 달리, 제품 기획과 후속 기능 우선순위를 검토할 때의 현재 기준으로 사용한다. 표시 대상의 상세 우선순위는 [Android 위젯 표시 대상 선택 가이드](ANDROID_WIDGET_SELECTION_GUIDE.md)를 따르고, 갱신 지연이나 stale 상태는 [Android 위젯 동기화 트러블슈팅](ANDROID_WIDGET_SYNC_TROUBLESHOOTING.md)으로 진단한다.
 
 ## 현재 지원 기능
 

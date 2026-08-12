@@ -1,5 +1,3 @@
-• Improved the Home Screen widget so it reflects the latest BandalArt after you switch goals and return Home.
-• View goal progress and tasks in the widget, and update task completion.
-• Fixed a crash during widget setup and an issue where the selected sub-goal was not displayed.
-• Improved deadline reminder scheduling so configured notifications continue to arrive after restarting the app.
-• Polished the Create New BandalArt screen for a clearer experience.
+• Improved widget syncing for the most recently viewed BandalArt and sub-goal.
+• Fixed stale progress or tasks when data changes overlap with the app moving to the background.
+• Improved fallback selection when a recent sub-goal is missing or deleted.
