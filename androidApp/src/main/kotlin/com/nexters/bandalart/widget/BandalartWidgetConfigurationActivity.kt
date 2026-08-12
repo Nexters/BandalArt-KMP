@@ -65,6 +65,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.di.metro.getAndroidWidgetSubGoals
 import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
+import com.nexters.bandalart.di.metro.setAndroidWidgetRecentBandalartId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -168,9 +169,15 @@ class BandalartWidgetConfigurationActivity : ComponentActivity() {
         state = current.copy(isSaving = true)
         lifecycleScope.launch {
             val glanceId = GlanceAppWidgetManager(this@BandalartWidgetConfigurationActivity).getGlanceIdBy(appWidgetId)
-            updateAppWidgetState(this@BandalartWidgetConfigurationActivity, glanceId) { preferences ->
-                preferences.setWidgetSelection(selectedBandalartId, current.selectedSubGoalId)
-            }
+            saveWidgetConfiguration(
+                selection = BandalartWidgetSelection(selectedBandalartId, current.selectedSubGoalId),
+                setRecentBandalartId = { bandalartId -> setAndroidWidgetRecentBandalartId(appGraph, bandalartId) },
+                persistSelection = { selection ->
+                    updateAppWidgetState(this@BandalartWidgetConfigurationActivity, glanceId) { preferences ->
+                        preferences.setWidgetSelection(selection.bandalartId, selection.subGoalId)
+                    }
+                },
+            )
             BandalartGlanceWidget().update(this@BandalartWidgetConfigurationActivity, glanceId)
             setResult(Activity.RESULT_OK, resultIntent(appWidgetId))
             finish()
@@ -259,7 +266,7 @@ private fun ConfigurationContent(
                     )
                 }
             } else {
-                items(state.bandalarts, key = BandalartEntity::id) { bandalart ->
+                items(state.bandalarts, key = { bandalart -> bandalartConfigurationItemKey(bandalart.id) }) { bandalart ->
                     SelectionRow(
                         title = bandalart.title?.ifBlank { null } ?: unnamedGoal,
                         selected = state.selectedBandalartId == bandalart.id,
@@ -289,7 +296,7 @@ private fun ConfigurationContent(
                 if (state.isLoadingSubGoals) {
                     item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
                 } else {
-                    items(state.subGoals, key = BandalartCellEntity::id) { subGoal ->
+                    items(state.subGoals, key = { subGoal -> subGoalConfigurationItemKey(subGoal.id) }) { subGoal ->
                         SelectionRow(
                             title = subGoal.title?.ifBlank { null } ?: unnamedSubGoal,
                             selected = state.selectedSubGoalId == subGoal.id,
@@ -334,3 +341,7 @@ private fun SelectionRow(
 }
 
 private fun resultIntent(appWidgetId: Int): Intent = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+
+internal fun bandalartConfigurationItemKey(bandalartId: Long): String = "bandalart:$bandalartId"
+
+internal fun subGoalConfigurationItemKey(subGoalId: Long): String = "subGoal:$subGoalId"

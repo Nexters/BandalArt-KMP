@@ -45,6 +45,15 @@ internal fun MutablePreferences.setWidgetSelection(
     subGoalId?.let { this[SubGoalIdKey] = it } ?: remove(SubGoalIdKey)
 }
 
+internal suspend fun saveWidgetConfiguration(
+    selection: BandalartWidgetSelection,
+    setRecentBandalartId: suspend (Long) -> Unit,
+    persistSelection: suspend (BandalartWidgetSelection) -> Unit,
+) {
+    persistSelection(selection)
+    setRecentBandalartId(selection.bandalartId)
+}
+
 internal fun subGoalIdAfterBandalartSelection(
     currentBandalartId: Long?,
     currentSubGoalId: Long?,
