@@ -1,5 +1,7 @@
 # Fastlane Android/iOS CD 복구 전략
 
+현재 CD 파일별 책임과 수정 기준은 [Fastlane CD 파일 가이드](FASTLANE_CD_FILE_GUIDE.md)를 따른다.
+
 ## 배경
 
 현재 `fastlane/` 설정은 오래된 Android 단일 모듈 구조와 Firebase App Distribution 플러그인을 전제로 하며, 실제 KMP 모듈·Play Internal 배포 절차와 맞지 않는다. 또한 추적 중인 Fastlane 파일에 장기 자격증명이 포함된 이력이 있어 현재 설정을 배포 근거로 재사용할 수 없다.

@@ -109,6 +109,7 @@
 
 ### Automation
 
+- [Fastlane CD 파일 가이드](releases/automation/FASTLANE_CD_FILE_GUIDE.md)
 - [Fastlane Android/iOS CD 복구](releases/automation/FASTLANE_CD_RECOVERY_STRATEGY.md)
 
 ## Project
