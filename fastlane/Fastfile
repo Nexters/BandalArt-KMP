@@ -8,6 +8,7 @@ require "shellwords"
 require "tmpdir"
 
 require_relative "lib/app_store_connect_builds"
+require_relative "lib/ios_ads_mode"
 require_relative "lib/plist_file"
 require_relative "lib/provisioning_profile"
 
@@ -304,6 +305,7 @@ platform :ios do
     widget_profile_path = required_env!("IOS_WIDGET_PROVISIONING_PROFILE_PATH")
     key_id = required_env!("APP_STORE_CONNECT_KEY_ID")
     key_content = required_env!("APP_STORE_CONNECT_KEY_P8_BASE64")
+    ads_mode = required_env!("IOS_ADS_MODE")
     UI.user_error!("iOS distribution certificate is missing") unless File.file?(certificate_path)
     UI.user_error!("iOS provisioning profile is missing") unless File.file?(profile_path)
     UI.user_error!("iOS widget provisioning profile is missing") unless File.file?(widget_profile_path)
@@ -322,7 +324,20 @@ platform :ios do
     latest_build = latest_app_store_build_number!(key_id, key_content, version)
     build_number = latest_build.to_i + 1
     set_info_plist_value(path: info_plist, key: "CFBundleVersion", value: build_number.to_s)
+    begin
+      ads_xcargs = Bandalart::IosAdsMode.compilation_condition(
+        mode: ads_mode,
+      )
+    rescue ArgumentError => error
+      UI.user_error!(error.message)
+    end
+    build_xcargs =
+      [
+        ads_xcargs,
+        "CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{version}",
+      ].compact.join(" ")
     UI.message("iOS release #{version} (#{build_number}) -> TestFlight")
+    UI.message("IOS_ADS_MODE=#{ads_mode}")
 
     profile = provisioning_profile(profile_path)
     profile_name = verify_profile!(profile, required_app_group: IOS_APP_GROUP_ID)
@@ -381,7 +396,7 @@ platform :ios do
       project: project_path,
       scheme: "iosApp",
       configuration: "Release",
-      xcargs: "SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) BANDALART_TEST_ADS' CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{version}",
+      xcargs: build_xcargs,
       clean: true,
       export_method: "app-store",
       output_directory: output_directory,
@@ -402,13 +417,18 @@ platform :ios do
     )
     verify_ipa!(ipa_path, version, build_number)
     verify_ci_source!
+    what_to_test = File.read(File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test.txt")).strip
+    ads_test_notes =
+      File.read(
+        File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test_#{ads_mode}_ads.txt"),
+      ).strip
 
     upload_to_testflight(
       api_key: api_key,
       app_identifier: IOS_BUNDLE_ID,
       apple_id: IOS_APP_ID,
       ipa: ipa_path,
-      changelog: File.read(File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test.txt")),
+      changelog: [what_to_test, ads_test_notes].join("\n\n"),
       distribute_external: false,
       skip_waiting_for_build_processing: false,
     )
@@ -430,6 +450,7 @@ platform :ios do
         "- Source: `#{capture_command!("git", "rev-parse", "HEAD").strip}`",
         "- Bundle ID: `#{IOS_BUNDLE_ID}`",
         "- Version: `#{version} (#{build_number})`",
+        "- Ads: `#{ads_mode}`",
         "- Result: exact build verified",
       ],
     )

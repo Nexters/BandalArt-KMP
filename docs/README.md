@@ -107,6 +107,7 @@
 ### iOS
 
 - [Firebase iOS 통합 조사](releases/ios/FIREBASE_IOS_INTEGRATION_RESEARCH.md)
+- [iOS 1.2.0 App Store 출시 자료](releases/ios/IOS_1_2_0_APP_STORE_RELEASE.md)
 - [iOS release size baseline](releases/ios/IOS_RELEASE_SIZE_BASELINE.md)
 - [iOS release size 최적화 조사](releases/ios/IOS_RELEASE_SIZE_OPTIMIZATION_RESEARCH.md)
 - [iOS release size 최적화 전략](releases/ios/IOS_RELEASE_SIZE_OPTIMIZATION_STRATEGY.md)
