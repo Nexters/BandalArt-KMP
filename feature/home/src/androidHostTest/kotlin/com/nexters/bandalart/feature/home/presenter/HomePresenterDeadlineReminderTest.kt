@@ -397,6 +397,71 @@ class HomePresenterDeadlineReminderTest {
             }
         }
 
+    @Test
+    fun foregroundReconcilesEvenWhenReminderPreferenceIsDisabled() =
+        runTest {
+            val authorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.GRANTED)
+            val reconciler = RecordingReconciler()
+            val presenter =
+                presenter(
+                    repository = repository(),
+                    authorization = authorization,
+                    reconciler = reconciler,
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                state.eventSink(HomeScreen.Event.DeadlineReminderForegrounded)
+                while (
+                    state.deadlineNotificationAuthorizationStatus !=
+                    DeadlineNotificationAuthorizationStatus.GRANTED
+                ) {
+                    state = awaitItem()
+                }
+
+                assertEquals(false, state.deadlineReminderEnabled)
+                assertEquals(1, reconciler.reconcileCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun blockedEnableIntentCompletesAfterGrantingPermissionInSystemSettings() =
+        runTest {
+            val settings = FakeSettingsRepository()
+            val authorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.BLOCKED)
+            val reconciler = RecordingReconciler()
+            val presenter =
+                presenter(
+                    repository = repository(),
+                    settings = settings,
+                    authorization = authorization,
+                    reconciler = reconciler,
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                state.eventSink(HomeScreen.Event.OpenSettings)
+                while (
+                    state.deadlineNotificationAuthorizationStatus !=
+                    DeadlineNotificationAuthorizationStatus.BLOCKED
+                ) {
+                    state = awaitItem()
+                }
+                state.eventSink(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                advanceUntilIdle()
+                assertEquals(1, authorization.openSettingsCalls)
+
+                authorization.status = DeadlineNotificationAuthorizationStatus.GRANTED
+                state.eventSink(HomeScreen.Event.DeadlineReminderForegrounded)
+                while (!state.deadlineReminderEnabled) state = awaitItem()
+
+                assertEquals(DeadlineNotificationAuthorizationStatus.GRANTED, state.deadlineNotificationAuthorizationStatus)
+                assertEquals(1, reconciler.reconcileCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun presenter(
         repository: FakeBandalartRepository,
         settings: FakeSettingsRepository = FakeSettingsRepository(),
@@ -448,6 +513,7 @@ class HomePresenterDeadlineReminderTest {
         private val requestedStatus: DeadlineNotificationAuthorizationStatus = status,
     ) : DeadlineNotificationAuthorization {
         var requestCalls = 0
+        var openSettingsCalls = 0
 
         override suspend fun getStatus() = status
 
@@ -457,7 +523,9 @@ class HomePresenterDeadlineReminderTest {
             return status
         }
 
-        override suspend fun openSettings() = Unit
+        override suspend fun openSettings() {
+            openSettingsCalls += 1
+        }
     }
 
     private class RecordingReconciler : DeadlineReminderReconciler {
