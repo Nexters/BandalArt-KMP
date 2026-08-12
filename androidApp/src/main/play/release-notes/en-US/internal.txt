@@ -1,4 +1,4 @@
-• The Home Screen widget now automatically shows the last BandalArt you viewed in the app.
+• Improved the Home Screen widget so it reflects the latest BandalArt after you switch goals and return Home.
 • View goal progress and tasks in the widget, and update task completion.
 • Improved deadline reminder scheduling so configured notifications continue to arrive after restarting the app.
 • Polished the Create New BandalArt screen for a clearer experience.
