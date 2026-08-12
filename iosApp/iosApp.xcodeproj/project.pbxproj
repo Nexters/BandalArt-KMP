@@ -134,8 +134,8 @@
 				226F38522D5A407D00A1512E /* Sources */,
 				226F38532D5A407D00A1512E /* Frameworks */,
 				226F38542D5A407D00A1512E /* Resources */,
-				F1BDA0012E4A000100000001 /* Upload Crashlytics Symbols */,
 				F300000C2F3000000000000C /* Embed App Extensions */,
+				F1BDA0012E4A000100000001 /* Upload Crashlytics Symbols */,
 			);
 			buildRules = (
 			);

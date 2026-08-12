@@ -49,6 +49,17 @@ class IosWidgetProjectTest(unittest.TestCase):
         self.assertIn('APPLICATION_EXTENSION_API_ONLY = YES;', project)
         self.assertIn(':iosWidgetShared:embedAndSignAppleFrameworkForXcode', project)
 
+    def test_crashlytics_upload_runs_after_widget_embedding(self):
+        project = PROJECT.read_text()
+        app_target_phases = project.split(
+            '226F38552D5A407D00A1512E /* iosApp */ = {', 1
+        )[1].split('buildRules = (', 1)[0]
+
+        self.assertLess(
+            app_target_phases.index('/* Embed App Extensions */'),
+            app_target_phases.index('/* Upload Crashlytics Symbols */'),
+        )
+
     def test_app_and_widget_share_only_the_expected_app_group(self):
         expected = ["group.com.nexters.bandalart"]
 
