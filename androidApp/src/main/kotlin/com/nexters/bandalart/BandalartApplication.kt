@@ -19,6 +19,7 @@ package com.nexters.bandalart
 import android.app.Application
 import android.content.Intent
 import androidx.glance.appwidget.updateAll
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
@@ -33,6 +34,7 @@ import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentBandalartId
 import com.nexters.bandalart.di.metro.reconcileAndroidDeadlineReminders
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import com.nexters.bandalart.widget.BandalartGlanceWidget
+import com.nexters.bandalart.widget.BandalartWidgetProcessLifecycleObserver
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.easyhooon.ding.Ding
@@ -49,6 +51,12 @@ class BandalartApplication : Application() {
         private set
     private val adsInitializer by lazy { AdsInitializer(applicationContext) }
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val widgetProcessLifecycleObserver =
+        BandalartWidgetProcessLifecycleObserver(
+            onBackground = {
+                applicationScope.launch { refreshWidgets() }
+            },
+        )
 
     override fun onCreate() {
         super.onCreate()
@@ -97,6 +105,7 @@ class BandalartApplication : Application() {
             .apply { set(applicationContext) }
 
         observeBandalartChangesForWidgets()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(widgetProcessLifecycleObserver)
     }
 
     internal fun reconcileDeadlineRemindersOnUserLaunch() {
@@ -112,14 +121,19 @@ class BandalartApplication : Application() {
                 observeAndroidWidgetBandalarts(appGraph),
                 observeAndroidWidgetRecentBandalartId(appGraph),
             ) { _, _ -> Unit }.collect {
-                try {
-                    BandalartGlanceWidget().updateAll(this@BandalartApplication)
-                } catch (exception: CancellationException) {
-                    throw exception
-                } catch (exception: Exception) {
-                    Napier.e("Failed to refresh widgets after an app edit", exception, tag = "BandalartWidget")
-                }
+                refreshWidgets()
             }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun refreshWidgets() {
+        try {
+            BandalartGlanceWidget().updateAll(this@BandalartApplication)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            Napier.e("Failed to refresh widgets", exception, tag = "BandalartWidget")
         }
     }
 }
