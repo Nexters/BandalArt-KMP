@@ -116,6 +116,13 @@ fun observeAndroidWidgetRecentBandalartId(appGraph: AppGraph): Flow<Long> = appG
 
 suspend fun getAndroidWidgetRecentBandalartId(appGraph: AppGraph): Long = appGraph.bandalartRepository.getRecentBandalartId()
 
+suspend fun setAndroidWidgetRecentBandalartId(
+    appGraph: AppGraph,
+    bandalartId: Long,
+) {
+    appGraph.bandalartRepository.setRecentBandalartId(bandalartId)
+}
+
 suspend fun getAndroidWidgetSubGoals(
     appGraph: AppGraph,
     bandalartId: Long,
