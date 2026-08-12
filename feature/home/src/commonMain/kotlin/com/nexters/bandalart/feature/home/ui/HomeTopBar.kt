@@ -97,13 +97,7 @@ internal fun HomeTopBar(
                         .height(48.dp)
                         .widthIn(min = 48.dp)
                         .clickable(
-                            onClick = {
-                                if (bandalartCount > 1) {
-                                    onHomeUiAction(HomeScreen.Event.OpenBandalartList)
-                                } else {
-                                    onHomeUiAction(HomeScreen.Event.AddBandalart)
-                                }
-                            },
+                            onClick = { onHomeUiAction(HomeScreen.Event.OpenBandalartList) },
                         ),
                 contentAlignment = Alignment.Center,
             ) {

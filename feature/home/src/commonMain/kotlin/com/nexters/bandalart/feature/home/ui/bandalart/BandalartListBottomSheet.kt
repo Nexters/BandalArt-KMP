@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -146,15 +145,18 @@ fun BandalartListBottomSheet(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.W700,
-                    modifier = modifier.fillMaxWidth(),
+                    modifier =
+                        modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .padding(horizontal = 48.dp),
                     textAlign = TextAlign.Center,
                 )
                 IconButton(
                     modifier =
                         Modifier
                             .align(Alignment.CenterEnd)
-                            .height(21.dp)
-                            .aspectRatio(1f),
+                            .size(48.dp),
                     onClick = {
                         onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
                     },

@@ -55,6 +55,7 @@
 
 ### Ads
 
+- [Android AdMob 미노출 트러블슈팅](features/ads/ADMOB_ANDROID_TROUBLESHOOTING.md)
 - [AdMob 홈 하단 배너](features/ads/ADMOB_HOME_BANNER_STRATEGY.md)
 - [AdMob 보상형 생성 gate](features/ads/ADMOB_REWARDED_CREATE_GATE_STRATEGY.md)
 - [AdMob 슬롯 기반](features/ads/ADMOB_SLOT_FOUNDATION_STRATEGY.md)
@@ -73,6 +74,7 @@
 - [반다라트 템플릿 catalog v1](features/templates/BANDALART_TEMPLATE_CATALOG_V1_STRATEGY.md)
 - [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
 - [마감일 기반 로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
+- [Android 마감 알림 시작 복구](features/notifications/ANDROID_DEADLINE_REMINDER_STARTUP_RECOVERY.md)
 - [이메일 문의](features/settings/EMAIL_INQUIRY_STRATEGY.md)
 - [설정 bottom sheet typography](features/settings/SETTINGS_BOTTOM_SHEET_TYPOGRAPHY_STRATEGY.md)
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)
@@ -80,6 +82,7 @@
 
 ### Widgets
 
+- [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)
 - [Android Glance 위젯 MVP](features/widgets/ANDROID_WIDGET_MVP_STRATEGY.md)
 - [iOS WidgetKit 위젯 MVP](features/widgets/IOS_WIDGETKIT_MVP_STRATEGY.md)
 

@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.ads
 
+import android.util.Log
 import android.view.View
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -112,6 +113,7 @@ class AndroidBannerAdHost(
                                 activity.runOnUiThread {
                                     if (!released.get()) isLoaded = false
                                 }
+                                Log.w("BannerAd", "Banner ad failed to load: $adError")
                                 Napier.w("Banner ad failed to load: $adError", tag = "BannerAd")
                             }
                         },

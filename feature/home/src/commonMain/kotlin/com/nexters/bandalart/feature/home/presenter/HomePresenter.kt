@@ -124,6 +124,7 @@ class HomePresenter(
         }
         var deadlinePermissionRequestId by remember { mutableStateOf<Long?>(null) }
         var nextDeadlinePermissionRequestId by remember { mutableStateOf(0L) }
+        var enableDeadlineReminderAfterSettings by rememberRetained { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
         val selectionLoadGeneration = remember { longArrayOf(0L) }
@@ -384,7 +385,11 @@ class HomePresenter(
 
         fun openBandalartList() {
             val currentBandalartId = bandalartData?.id ?: return
-            bottomSheet = HomeScreen.BottomSheetState.BandalartList(currentBandalartId)
+            bottomSheet =
+                HomeScreen.BottomSheetState.BandalartList(
+                    currentBandalartId = currentBandalartId,
+                    isCreationOptionsVisible = bandalartList.size <= 1,
+                )
         }
 
         fun openEmoji() {
@@ -992,6 +997,7 @@ class HomePresenter(
                             }
 
                             DeadlineNotificationAuthorizationStatus.BLOCKED -> {
+                                enableDeadlineReminderAfterSettings = true
                                 deadlineNotificationAuthorization.openSettings()
                             }
 
@@ -1015,9 +1021,19 @@ class HomePresenter(
                 HomeScreen.Event.DeadlineReminderForegrounded -> {
                     scope.launch {
                         deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
-                        if (deadlineReminderEnabled) {
-                            deadlineReminderReconciler.reconcileAll()
+                        val shouldEnableAfterSettings =
+                            enableDeadlineReminderAfterSettings &&
+                                (
+                                    deadlineNotificationAuthorizationStatus ==
+                                        DeadlineNotificationAuthorizationStatus.GRANTED ||
+                                        deadlineNotificationAuthorizationStatus ==
+                                        DeadlineNotificationAuthorizationStatus.QUIET
+                                )
+                        enableDeadlineReminderAfterSettings = false
+                        if (shouldEnableAfterSettings) {
+                            settingsRepository.setDeadlineReminderEnabled(true)
                         }
+                        deadlineReminderReconciler.reconcileAll()
                     }
                 }
 

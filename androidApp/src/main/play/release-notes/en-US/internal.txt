@@ -1,1 +1,4 @@
-• Improved the background contrast of BandalArt subcell groups in light mode.
+• The Home Screen widget now automatically shows the last BandalArt you viewed in the app.
+• View goal progress and tasks in the widget, and update task completion.
+• Improved deadline reminder scheduling so configured notifications continue to arrive after restarting the app.
+• Polished the Create New BandalArt screen for a clearer experience.

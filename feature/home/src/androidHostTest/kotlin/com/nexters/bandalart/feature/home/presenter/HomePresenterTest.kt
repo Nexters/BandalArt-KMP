@@ -223,11 +223,38 @@ class HomePresenterTest {
         }
 
     @Test
-    fun addButtonSwitchesExistingListSheetToCreationOptionsAndBack() =
+    fun singleBandalartTopBarActionOpensCreationOptionsWithoutCreating() =
         runTest {
             val repository =
                 FakeBandalartRepository(
                     initialBandalarts = listOf(bandalart(1L)),
+                    recentBandalartId = 1L,
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L || state.isLoading) {
+                    state = awaitItem()
+                }
+
+                state.eventSink(HomeScreen.Event.OpenBandalartList)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.BandalartList)
+
+                val sheet = state.bottomSheet
+                assertTrue(sheet.isCreationOptionsVisible)
+                assertEquals(0, repository.createCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun addButtonSwitchesExistingListSheetToCreationOptionsAndBack() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
                     recentBandalartId = 1L,
                 )
 

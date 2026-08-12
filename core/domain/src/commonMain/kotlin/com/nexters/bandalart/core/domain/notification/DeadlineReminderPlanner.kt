@@ -16,12 +16,12 @@
 
 package com.nexters.bandalart.core.domain.notification
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 
 object DeadlineReminderDueDateParser {
     fun parse(value: String?): LocalDate? =
@@ -44,7 +44,10 @@ class DeadlineReminderPlanner(
     ): DeadlineReminderPlan {
         if (!isEnabled) return DeadlineReminderPlan(emptyList(), overflowCount = 0)
 
-        val now = clock.now().toLocalDateTime(timeZoneProvider.currentTimeZone())
+        val now =
+            kotlinx.datetime.Instant
+                .fromEpochMilliseconds(clock.now().toEpochMilliseconds())
+                .toLocalDateTime(timeZoneProvider.currentTimeZone())
         val batches =
             candidates
                 .asSequence()

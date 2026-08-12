@@ -88,6 +88,17 @@ class BandalartDataStoreTest {
             }
 
         @Test
+        @DisplayName("마지막으로 본 반다라트 변경을 관찰할 수 있어야 한다")
+        fun recentBandalartIdIsObservable() =
+            runTest {
+                assertEquals(0L, bandalartDataStore.recentBandalartId.first())
+
+                bandalartDataStore.setRecentBandalartId(123L)
+
+                assertEquals(123L, bandalartDataStore.recentBandalartId.first())
+            }
+
+        @Test
         @DisplayName("값이 설정되지 않았을 때 기본값 0L을 반환해야 한다")
         fun testDefaultRecentBandalartId() =
             runTest {
