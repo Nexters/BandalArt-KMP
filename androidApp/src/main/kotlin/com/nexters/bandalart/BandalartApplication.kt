@@ -29,9 +29,7 @@ import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
-import com.nexters.bandalart.di.metro.observeAndroidWidgetBandalarts
-import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentBandalartId
-import com.nexters.bandalart.di.metro.observeAndroidWidgetRecentSubGoalId
+import com.nexters.bandalart.di.metro.observeAndroidWidgetStateChanges
 import com.nexters.bandalart.di.metro.reconcileAndroidDeadlineReminders
 import com.nexters.bandalart.di.metro.recordRewardedCreation
 import com.nexters.bandalart.widget.BandalartGlanceWidget
@@ -45,7 +43,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class BandalartApplication : Application() {
@@ -120,11 +117,7 @@ class BandalartApplication : Application() {
     @Suppress("TooGenericExceptionCaught")
     private fun observeBandalartChangesForWidgets() {
         applicationScope.launch {
-            combine(
-                observeAndroidWidgetBandalarts(appGraph),
-                observeAndroidWidgetRecentBandalartId(appGraph),
-                observeAndroidWidgetRecentSubGoalId(appGraph),
-            ) { _, _, _ -> Unit }.collect {
+            observeAndroidWidgetStateChanges(appGraph).collect {
                 widgetRefreshRunner.refresh()
             }
         }
