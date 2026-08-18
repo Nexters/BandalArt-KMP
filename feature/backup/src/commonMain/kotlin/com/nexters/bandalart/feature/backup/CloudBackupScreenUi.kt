@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -41,7 +42,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.backup_back
 import bandalart.core.designsystem.generated.resources.backup_created
@@ -68,6 +71,9 @@ import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialo
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @CircuitInject(CloudBackupScreen::class, AppScope::class)
@@ -117,12 +123,20 @@ internal fun CloudBackup(
                                     stringResource(
                                         Res.string.backup_status_existing,
                                         state.metadata.bandalartCount,
-                                        state.metadata.updatedAt.toDisplayDate(),
+                                        state.metadata.updatedAt.toDisplayDateTime(),
                                     )
                             },
                         style = MaterialTheme.typography.titleMedium,
                         fontFamily = pretendardFontFamily(),
                         fontWeight = FontWeight.SemiBold,
+                        autoSize =
+                            TextAutoSize.StepBased(
+                                minFontSize = 12.sp,
+                                maxFontSize = 16.sp,
+                                stepSize = 0.5.sp,
+                            ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (state.isLoading) {
                         Row(
@@ -235,7 +249,25 @@ private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> U
     )
 }
 
-private fun String.toDisplayDate(): String = take(10).ifBlank { this }
+private fun String.toDisplayDateTime(): String =
+    runCatching {
+        val localDateTime = Instant.parse(this).toLocalDateTime(TimeZone.currentSystemDefault())
+        buildString {
+            append(localDateTime.year)
+            append('-')
+            append(localDateTime.monthNumber.toTwoDigits())
+            append('-')
+            append(localDateTime.dayOfMonth.toTwoDigits())
+            append(' ')
+            append(localDateTime.hour.toTwoDigits())
+            append(':')
+            append(localDateTime.minute.toTwoDigits())
+        }
+    }.getOrElse {
+        take(16).replace('T', ' ').ifBlank { this }
+    }
+
+private fun Int.toTwoDigits(): String = toString().padStart(2, '0')
 
 private fun CloudBackupUiState.Result.messageResource() =
     when (this) {
