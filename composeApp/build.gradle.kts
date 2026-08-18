@@ -1,3 +1,4 @@
+import com.nexters.bandalart.buildlogic.task.GenerateBackupBuildConfigTask
 import java.util.Properties
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
@@ -19,41 +20,24 @@ val localProperties =
             ?.inputStream()
             ?.use(::load)
     }
-val supabaseUrl =
+val backupSupabaseUrl =
     providers.gradleProperty("bandalart.supabaseUrl").orNull
         ?: providers.environmentVariable("BANDALART_SUPABASE_URL").orNull
         ?: localProperties.getProperty("bandalart.supabaseUrl").orEmpty()
-val supabasePublishableKey =
+val backupSupabasePublishableKey =
     providers.gradleProperty("bandalart.supabasePublishableKey").orNull
         ?: providers.environmentVariable("BANDALART_SUPABASE_PUBLISHABLE_KEY").orNull
         ?: localProperties.getProperty("bandalart.supabasePublishableKey").orEmpty()
 val generatedBackupConfigDirectory = layout.buildDirectory.dir("generated/backupConfig/commonMain")
-val generateBackupBuildConfig by tasks.registering {
-    val generatedFile =
+val generateBackupBuildConfig by tasks.registering(GenerateBackupBuildConfigTask::class) {
+    supabaseUrl.set(backupSupabaseUrl)
+    supabasePublishableKey.set(backupSupabasePublishableKey)
+    outputFile.set(
         generatedBackupConfigDirectory.map {
             it.file("com/nexters/bandalart/backup/BackupBuildConfig.kt")
-        }
-    inputs.property("supabaseUrl", supabaseUrl)
-    inputs.property("supabasePublishableKey", supabasePublishableKey)
-    outputs.file(generatedFile)
-    doLast {
-        generatedFile.get().asFile.apply {
-            parentFile.mkdirs()
-            writeText(
-                """
-                package com.nexters.bandalart.backup
-
-                internal object BackupBuildConfig {
-                    const val SUPABASE_URL = ${supabaseUrl.asKotlinStringLiteral()}
-                    const val SUPABASE_PUBLISHABLE_KEY = ${supabasePublishableKey.asKotlinStringLiteral()}
-                }
-                """.trimIndent(),
-            )
-        }
-    }
+        },
+    )
 }
-
-fun String.asKotlinStringLiteral(): String = "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
 metro {
     enableCircuitCodegen.set(true)
