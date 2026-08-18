@@ -1,3 +1,4 @@
 • Back up your BandalArt data to the cloud from Settings.
 • Restore a detected backup on the same device after reinstalling the app.
 • Improved font rendering in Settings and Cloud Backup.
+• Fixed shared and saved BandalArt images to match the dark mode background.
