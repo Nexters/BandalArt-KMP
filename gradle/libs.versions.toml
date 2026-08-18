@@ -5,8 +5,8 @@ minSdk = "28"
 targetSdk = "36"
 compileSdk = "37"
 majorVersion = "2"
-minorVersion = "3"
-patchVersion = "3"
+minorVersion = "4"
+patchVersion = "0"
 packageName = "com.nexters.bandalart"
 
 # Gradle Plugin
@@ -21,9 +21,13 @@ kotlin-ktlint-source = "0.50.0"
 
 # Kotlinx
 kotlinx-coroutines = "1.10.1"
-kotlinx-datetime = "0.6.1"
+kotlinx-datetime = "0.6.2"
 kotlinx-serialization = "1.8.1"
 kotlinx-collections-immutable = "0.3.8"
+
+# Network
+ktor = "3.4.3"
+supabase = "3.2.0"
 
 # Compose & UI
 compose-multiplatform = "1.10.3"
@@ -118,6 +122,11 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
+
+# Network
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
 
 # Androidx
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }

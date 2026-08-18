@@ -123,6 +123,9 @@ interface BandalartDao {
     @Query("SELECT * FROM bandalarts")
     fun getBandalartList(): Flow<List<BandalartDBEntity>>
 
+    @Query("SELECT * FROM bandalarts")
+    suspend fun getAllBandalarts(): List<BandalartDBEntity>
+
     // Read - 셀
 
     /** 특정 반다라트의 메인 셀(최상위 셀) 조회 */
@@ -155,6 +158,25 @@ interface BandalartDao {
 
     @Query("SELECT * FROM bandalart_cells")
     suspend fun getAllCells(): List<BandalartCellDBEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBandalartsForBackup(bandalarts: List<BandalartDBEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCellsForBackup(cells: List<BandalartCellDBEntity>)
+
+    @Query("DELETE FROM bandalarts")
+    suspend fun deleteAllBandalartsForBackup()
+
+    @Transaction
+    suspend fun replaceAllForBackup(
+        bandalarts: List<BandalartDBEntity>,
+        cells: List<BandalartCellDBEntity>,
+    ) {
+        deleteAllBandalartsForBackup()
+        insertBandalartsForBackup(bandalarts)
+        insertCellsForBackup(cells)
+    }
 
     @Transaction
     suspend fun findWidgetSnapshot(

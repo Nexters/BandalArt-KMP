@@ -50,6 +50,8 @@
     <string name="settings_theme_system">システム設定</string>
     <string name="settings_theme_light">ライトモード</string>
     <string name="settings_theme_dark">ダークモード</string>
+    <string name="settings_cloud_backup">クラウドバックアップ</string>
+    <string name="settings_cloud_backup_body">データをバックアップ、またはバックアップから復元します</string>
     <string name="settings_app_info">アプリ情報</string>
     <string name="settings_contact">お問い合わせ</string>
     <string name="settings_contact_subject">[BandalArt お問い合わせ]</string>
@@ -57,6 +59,26 @@
     <string name="settings_contact_fallback">メールアプリを開けないため、メールアドレスをコピーしました。</string>
     <string name="settings_version">バージョン</string>
     <string name="settings_version_value">v%1$s</string>
+
+    <!-- CloudBackupScreen.kt -->
+    <string name="backup_title">クラウドバックアップ</string>
+    <string name="backup_description">この端末のBandalArtデータをクラウドに保存できます。</string>
+    <string name="backup_status_none">保存されたバックアップはありません</string>
+    <string name="backup_status_existing">BandalArt %1$d件・%2$sにバックアップ</string>
+    <string name="backup_not_supported">この端末ではクラウドバックアップを利用できません。</string>
+    <string name="backup_now">今すぐバックアップ</string>
+    <string name="backup_restore">バックアップから復元</string>
+    <string name="backup_start_fresh">新しく始める</string>
+    <string name="backup_loading">処理中です…</string>
+    <string name="backup_created">バックアップが完了しました。</string>
+    <string name="backup_restored">バックアップから復元しました。</string>
+    <string name="backup_not_found">復元できるバックアップがありません。</string>
+    <string name="backup_error">バックアップを処理できませんでした。しばらくしてからもう一度お試しください。</string>
+    <string name="backup_restore_confirm_title">バックアップから復元しますか？</string>
+    <string name="backup_restore_confirm_body">現在のアプリデータはバックアップのデータに置き換わります。</string>
+    <string name="backup_restore_confirm">復元</string>
+    <string name="backup_restore_cancel">キャンセル</string>
+    <string name="backup_back">戻る</string>
 
     <!--  BandalartListBottomSheet.kt -->
     <string name="bandalart_list_empty_title">新しいバンダラート %1$d</string>

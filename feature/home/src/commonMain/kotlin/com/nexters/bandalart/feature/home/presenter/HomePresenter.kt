@@ -47,6 +47,7 @@ import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.mapper.toUiModel
@@ -856,6 +857,10 @@ class HomePresenter(
                     scope.launch {
                         deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
                     }
+                }
+                HomeScreen.Event.OpenCloudBackup -> {
+                    bottomSheet = null
+                    navigator.goTo(CloudBackupScreen(entryPoint = CloudBackupScreen.EntryPoint.SETTINGS))
                 }
                 HomeScreen.Event.OpenEmoji -> {
                     if (!isUpdatingBandalartEmoji) openEmoji()

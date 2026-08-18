@@ -18,13 +18,16 @@ package com.nexters.bandalart.di.metro
 
 import android.app.Application
 import android.content.Intent
+import com.nexters.bandalart.backup.AndroidDeviceBackupKeyProvider
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
+import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
@@ -44,6 +47,7 @@ private class AndroidPlatformBindings(
     application: Application,
     override val bannerAdHost: BannerAdHost,
     override val rewardedAdGateway: RewardedAdGateway,
+    override val backupApiConfig: BackupApiConfig,
 ) : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory(application)
     override val dataStoreFactory = BandalartDataStoreFactory(application)
@@ -52,13 +56,16 @@ private class AndroidPlatformBindings(
     override val supportMailLauncher = AndroidSupportMailLauncher(application)
     override val deadlineReminderScheduler = AndroidDeadlineReminderScheduler(application)
     override val deadlineNotificationAuthorization = AndroidDeadlineNotificationAuthorization(application)
+    override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
+        if (backupApiConfig.isConfigured) AndroidDeviceBackupKeyProvider(application) else DeviceBackupKeyProvider { null }
 }
 
 fun createAndroidAppGraph(
     application: Application,
     bannerAdHost: BannerAdHost,
     rewardedAdGateway: RewardedAdGateway,
-): AppGraph = createAppGraph(AndroidPlatformBindings(application, bannerAdHost, rewardedAdGateway))
+    backupApiConfig: BackupApiConfig = BackupApiConfig(url = "", publishableKey = ""),
+): AppGraph = createAppGraph(AndroidPlatformBindings(application, bannerAdHost, rewardedAdGateway, backupApiConfig))
 
 fun installAndroidDeadlineReminderInfrastructure(
     appGraph: AppGraph,

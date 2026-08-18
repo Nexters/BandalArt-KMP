@@ -50,6 +50,8 @@
     <string name="settings_theme_system">System default</string>
     <string name="settings_theme_light">Light mode</string>
     <string name="settings_theme_dark">Dark mode</string>
+    <string name="settings_cloud_backup">Cloud backup</string>
+    <string name="settings_cloud_backup_body">Back up data or restore from a backup</string>
     <string name="settings_app_info">App info</string>
     <string name="settings_contact">Contact us</string>
     <string name="settings_contact_subject">[BandalArt Support]</string>
@@ -57,6 +59,26 @@
     <string name="settings_contact_fallback">The email app is unavailable, so we copied the support email address.</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_value">v%1$s</string>
+
+    <!-- CloudBackupScreen.kt -->
+    <string name="backup_title">Cloud backup</string>
+    <string name="backup_description">Keep this device's BandalArt data in the cloud.</string>
+    <string name="backup_status_none">No backup found</string>
+    <string name="backup_status_existing">%1$d BandalArts · backed up %2$s</string>
+    <string name="backup_not_supported">Cloud backup is unavailable on this device.</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_restore">Restore from backup</string>
+    <string name="backup_start_fresh">Start fresh</string>
+    <string name="backup_loading">Working…</string>
+    <string name="backup_created">Backup complete.</string>
+    <string name="backup_restored">Restored from backup.</string>
+    <string name="backup_not_found">No backup is available to restore.</string>
+    <string name="backup_error">We couldn't process the backup. Please try again later.</string>
+    <string name="backup_restore_confirm_title">Restore from backup?</string>
+    <string name="backup_restore_confirm_body">Your current app data will be replaced with the backup.</string>
+    <string name="backup_restore_confirm">Restore</string>
+    <string name="backup_restore_cancel">Cancel</string>
+    <string name="backup_back">Back</string>
 
     <!--  BandalartListBottomSheet.kt -->
     <string name="bandalart_list_empty_title">New Bandalart %1$d</string>

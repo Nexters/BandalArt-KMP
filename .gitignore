@@ -74,3 +74,6 @@ xcuserdata/
 
 .kotlin/
 __pycache__/
+
+# Node-based project tools
+/node_modules/

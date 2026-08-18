@@ -21,6 +21,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.nexters.bandalart.core.common.NoOpBannerAdHost
 import com.nexters.bandalart.core.common.NoOpRewardedAdGateway
 import com.nexters.bandalart.feature.complete.CompleteScreen
+import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
@@ -70,7 +71,15 @@ class AppGraphTest {
         assertSame(appGraph.inAppUpdateRepository, appGraph.inAppUpdateRepository)
         assertSame(appGraph.onboardingRepository, appGraph.onboardingRepository)
         assertSame(appGraph.settingsRepository, appGraph.settingsRepository)
+        assertSame(appGraph.cloudBackupRepository, appGraph.cloudBackupRepository)
+        assertSame(appGraph.startupBackupPolicy, appGraph.startupBackupPolicy)
         assertSame(appGraph.circuit, appGraph.circuit)
+    }
+
+    @Test
+    fun cloudBackupIsUnsupportedWithoutApiConfiguration() {
+        org.junit.jupiter.api.Assertions
+            .assertFalse(appGraph.cloudBackupRepository.isSupported)
     }
 
     @Test
@@ -90,5 +99,8 @@ class AppGraphTest {
         assertNotNull(appGraph.circuit.ui(completeScreen))
         assertNotNull(appGraph.circuit.presenter(HomeScreen, FakeNavigator(HomeScreen)))
         assertNotNull(appGraph.circuit.ui(HomeScreen))
+        val backupScreen = CloudBackupScreen(entryPoint = CloudBackupScreen.EntryPoint.SETTINGS)
+        assertNotNull(appGraph.circuit.presenter(backupScreen, FakeNavigator(backupScreen)))
+        assertNotNull(appGraph.circuit.ui(backupScreen))
     }
 }

@@ -21,6 +21,7 @@ import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.common.SupportMailLauncher
+import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -34,6 +35,9 @@ import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import com.nexters.bandalart.core.domain.backup.CloudBackupRepository
+import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
+import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
@@ -55,6 +59,8 @@ interface PlatformBindings {
     val rewardedAdGateway: RewardedAdGateway
     val deadlineReminderScheduler: DeadlineReminderScheduler
     val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
+    val deviceBackupKeyProvider: DeviceBackupKeyProvider
+    val backupApiConfig: BackupApiConfig
 }
 
 @DependencyGraph(
@@ -82,6 +88,8 @@ interface AppGraph {
     val inAppUpdateRepository: InAppUpdateRepository
     val onboardingRepository: OnboardingRepository
     val settingsRepository: SettingsRepository
+    val cloudBackupRepository: CloudBackupRepository
+    val startupBackupPolicy: StartupBackupPolicy
     val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
     val deadlineReminderScheduler: DeadlineReminderScheduler
     val deadlineReminderProjectionRepository: DeadlineReminderProjectionRepository

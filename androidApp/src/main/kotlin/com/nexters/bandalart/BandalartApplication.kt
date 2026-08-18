@@ -26,6 +26,7 @@ import com.nexters.bandalart.ads.AdsInitializer
 import com.nexters.bandalart.ads.AndroidBannerAdHost
 import com.nexters.bandalart.ads.AndroidRewardedAdGateway
 import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
+import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.di.metro.createAndroidAppGraph
 import com.nexters.bandalart.di.metro.installAndroidDeadlineReminderInfrastructure
@@ -68,6 +69,11 @@ class BandalartApplication : Application() {
                 application = this,
                 bannerAdHost = bannerAdHost,
                 rewardedAdGateway = rewardedAdGateway,
+                backupApiConfig =
+                    BackupApiConfig(
+                        url = BuildConfig.SUPABASE_URL,
+                        publishableKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY,
+                    ),
             )
         installAndroidDeadlineReminderInfrastructure(
             appGraph = appGraph,

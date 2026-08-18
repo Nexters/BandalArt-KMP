@@ -16,6 +16,17 @@
 
 package com.nexters.bandalart.di.metro
 
+import com.nexters.bandalart.core.data.backup.BackupApiConfig
+import com.nexters.bandalart.core.data.backup.BackupLocalDataSource
+import com.nexters.bandalart.core.data.backup.BackupRemoteDataSource
+import com.nexters.bandalart.core.data.backup.BackupRpcClient
+import com.nexters.bandalart.core.data.backup.BackupRpcMetadataRow
+import com.nexters.bandalart.core.data.backup.BackupRpcRow
+import com.nexters.bandalart.core.data.backup.DefaultCloudBackupRepository
+import com.nexters.bandalart.core.data.backup.DefaultStartupBackupPolicy
+import com.nexters.bandalart.core.data.backup.RoomBackupLocalDataSource
+import com.nexters.bandalart.core.data.backup.SupabaseBackupRemoteDataSource
+import com.nexters.bandalart.core.data.backup.createSupabaseBackupRpcClient
 import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartSlotRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartWidgetRepository
@@ -35,6 +46,9 @@ import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTar
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import com.nexters.bandalart.core.domain.backup.CloudBackupRepository
+import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
+import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
 import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificationLaunchTarget
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
@@ -48,6 +62,7 @@ import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlinx.datetime.TimeZone
+import kotlinx.serialization.json.JsonObject
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -92,6 +107,34 @@ object RepositoryBindings {
 
     @Provides
     @SingleIn(AppScope::class)
+    fun provideBackupLocalDataSource(
+        bandalartDao: BandalartDao,
+        bandalartDataStore: BandalartDataStore,
+    ): BackupLocalDataSource = RoomBackupLocalDataSource(bandalartDao, bandalartDataStore)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBackupRpcClient(config: BackupApiConfig): BackupRpcClient =
+        if (config.isConfigured) createSupabaseBackupRpcClient(config) else UnavailableBackupRpcClient
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBackupRemoteDataSource(rpcClient: BackupRpcClient): BackupRemoteDataSource = SupabaseBackupRemoteDataSource(rpcClient)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideCloudBackupRepository(
+        deviceKeyProvider: DeviceBackupKeyProvider,
+        localDataSource: BackupLocalDataSource,
+        remoteDataSource: BackupRemoteDataSource,
+    ): CloudBackupRepository = DefaultCloudBackupRepository(deviceKeyProvider, localDataSource, remoteDataSource)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideStartupBackupPolicy(repository: CloudBackupRepository): StartupBackupPolicy = DefaultStartupBackupPolicy(repository)
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun provideDeadlineReminderProjectionRepository(bandalartDao: BandalartDao): DeadlineReminderProjectionRepository =
         DefaultDeadlineReminderProjectionRepository(bandalartDao)
 
@@ -118,6 +161,17 @@ object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDeadlineNotificationLaunchTarget(): DeadlineNotificationLaunchTarget = BufferedDeadlineNotificationLaunchTarget()
+}
+
+private object UnavailableBackupRpcClient : BackupRpcClient {
+    override suspend fun getBackup(deviceKey: String): BackupRpcRow? = error("Supabase backup API is not configured")
+
+    override suspend fun putBackup(
+        deviceKey: String,
+        schemaVersion: Int,
+        payload: JsonObject,
+        bandalartCount: Int,
+    ): BackupRpcMetadataRow = error("Supabase backup API is not configured")
 }
 
 private object SystemDeadlineReminderClock : Clock {
