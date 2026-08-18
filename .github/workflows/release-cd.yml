@@ -161,6 +161,10 @@ jobs:
                 run: |
                     : "${BANDALART_SUPABASE_URL:?BANDALART_SUPABASE_URL is required}"
                     : "${BANDALART_SUPABASE_PUBLISHABLE_KEY:?BANDALART_SUPABASE_PUBLISHABLE_KEY is required}"
+                    case "$BANDALART_SUPABASE_URL" in
+                        https://*) ;;
+                        *) echo "BANDALART_SUPABASE_URL must start with https://" >&2; exit 1 ;;
+                    esac
                     bundle exec fastlane android internal
 
             -   name: Remove Android credentials
@@ -249,6 +253,10 @@ jobs:
                 run: |
                     : "${BANDALART_SUPABASE_URL:?BANDALART_SUPABASE_URL is required}"
                     : "${BANDALART_SUPABASE_PUBLISHABLE_KEY:?BANDALART_SUPABASE_PUBLISHABLE_KEY is required}"
+                    case "$BANDALART_SUPABASE_URL" in
+                        https://*) ;;
+                        *) echo "BANDALART_SUPABASE_URL must start with https://" >&2; exit 1 ;;
+                    esac
                     bundle exec fastlane ios beta
 
             -   name: Remove iOS credentials
