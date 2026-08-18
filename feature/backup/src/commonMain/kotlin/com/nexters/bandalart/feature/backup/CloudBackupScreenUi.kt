@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -62,7 +61,9 @@ import bandalart.core.designsystem.generated.resources.backup_start_fresh
 import bandalart.core.designsystem.generated.resources.backup_status_existing
 import bandalart.core.designsystem.generated.resources.backup_status_none
 import bandalart.core.designsystem.generated.resources.backup_title
+import bandalart.core.designsystem.generated.resources.ic_settings_backup_restore
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
+import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
@@ -205,20 +206,15 @@ private fun BackupHeader(
 
 @Composable
 private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> Unit) {
-    AlertDialog(
-        onDismissRequest = { eventSink(CloudBackupUiState.Event.DismissRestoreConfirmation) },
-        title = { Text(stringResource(Res.string.backup_restore_confirm_title)) },
-        text = { Text(stringResource(Res.string.backup_restore_confirm_body)) },
-        confirmButton = {
-            TextButton(onClick = { eventSink(CloudBackupUiState.Event.ConfirmRestore) }) {
-                Text(stringResource(Res.string.backup_restore_confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { eventSink(CloudBackupUiState.Event.DismissRestoreConfirmation) }) {
-                Text(stringResource(Res.string.backup_restore_cancel))
-            }
-        },
+    BandalartActionAlertDialog(
+        icon = Res.drawable.ic_settings_backup_restore,
+        iconContentDescription = stringResource(Res.string.backup_restore),
+        title = stringResource(Res.string.backup_restore_confirm_title),
+        message = stringResource(Res.string.backup_restore_confirm_body),
+        confirmLabel = stringResource(Res.string.backup_restore_confirm),
+        cancelLabel = stringResource(Res.string.backup_restore_cancel),
+        onConfirmClick = { eventSink(CloudBackupUiState.Event.ConfirmRestore) },
+        onCancelClick = { eventSink(CloudBackupUiState.Event.DismissRestoreConfirmation) },
     )
 }
 
