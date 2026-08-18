@@ -1,3 +1,2 @@
-• Improved widget syncing for the most recently viewed BandalArt and sub-goal.
-• Fixed stale progress or tasks when data changes overlap with the app moving to the background.
-• Improved fallback selection when a recent sub-goal is missing or deleted.
+• Back up your BandalArt data to the cloud from Settings.
+• Restore a detected backup on the same device after reinstalling the app.

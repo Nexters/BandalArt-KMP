@@ -156,7 +156,12 @@ jobs:
                     ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/bandalart-upload.jks
                     BUNDLETOOL_JAR: ${{ runner.temp }}/bundletool-all-1.18.3.jar
                     ANDROID_UPDATE_PRIORITY: ${{ inputs.android_update_priority }}
-                run: bundle exec fastlane android internal
+                    BANDALART_SUPABASE_URL: ${{ secrets.BANDALART_SUPABASE_URL }}
+                    BANDALART_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.BANDALART_SUPABASE_PUBLISHABLE_KEY }}
+                run: |
+                    : "${BANDALART_SUPABASE_URL:?BANDALART_SUPABASE_URL is required}"
+                    : "${BANDALART_SUPABASE_PUBLISHABLE_KEY:?BANDALART_SUPABASE_PUBLISHABLE_KEY is required}"
+                    bundle exec fastlane android internal
 
             -   name: Remove Android credentials
                 if: always()
@@ -239,7 +244,12 @@ jobs:
                     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
                     APP_STORE_CONNECT_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
                     IOS_ADS_MODE: ${{ inputs.ios_ads_mode }}
-                run: bundle exec fastlane ios beta
+                    BANDALART_SUPABASE_URL: ${{ secrets.BANDALART_SUPABASE_URL }}
+                    BANDALART_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.BANDALART_SUPABASE_PUBLISHABLE_KEY }}
+                run: |
+                    : "${BANDALART_SUPABASE_URL:?BANDALART_SUPABASE_URL is required}"
+                    : "${BANDALART_SUPABASE_PUBLISHABLE_KEY:?BANDALART_SUPABASE_PUBLISHABLE_KEY is required}"
+                    bundle exec fastlane ios beta
 
             -   name: Remove iOS credentials
                 if: always()
