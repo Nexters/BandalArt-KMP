@@ -50,6 +50,44 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("클라우드 백업 설정 테스트")
+    inner class CloudBackupPreferencesTest {
+        @Test
+        fun durablePreferencesRoundTripWithoutPendingRewardState() =
+            runTest {
+                bandalartDataStore.setRecentBandalartId(1L)
+                bandalartDataStore.setRecentSubGoalId(1L, 11L)
+                bandalartDataStore.upsertBandalartId(1L, true)
+                bandalartDataStore.setOnboardingCompletedStatus(true)
+                bandalartDataStore.setThemeMode("dark")
+                bandalartDataStore.addRecentEmoji("🎯")
+                bandalartDataStore.setDeadlineReminderEnabled(true)
+                bandalartDataStore.resolveMaxBandalartSlots(4)
+                bandalartDataStore.prepareRewardedCreation(requestId = 7L, minimumSlots = 4)
+                val backup = bandalartDataStore.createBackupPreferences(listOf(1L))
+
+                bandalartDataStore.setRecentBandalartId(2L)
+                bandalartDataStore.setRecentSubGoalId(2L, 22L)
+                bandalartDataStore.setThemeMode("light")
+                bandalartDataStore.restoreBackupPreferences(
+                    backup = backup,
+                    bandalartIdsToClear = listOf(1L, 2L),
+                )
+
+                assertEquals(1L, bandalartDataStore.getRecentBandalartId())
+                assertEquals(11L, bandalartDataStore.getRecentSubGoalId(1L))
+                assertEquals(0L, bandalartDataStore.getRecentSubGoalId(2L))
+                assertEquals(listOf(1L to true), bandalartDataStore.getPrevBandalartList())
+                assertTrue(bandalartDataStore.getOnboardingCompletedStatus())
+                assertEquals("dark", bandalartDataStore.themeMode.first())
+                assertEquals(listOf("🎯"), bandalartDataStore.recentEmojis.first())
+                assertTrue(bandalartDataStore.deadlineReminderEnabled.first())
+                assertEquals(4, bandalartDataStore.resolveMaxBandalartSlots(1))
+                assertEquals(null, bandalartDataStore.getPendingRewardedCreation())
+            }
+    }
+
+    @Nested
     @DisplayName("마감일 알림 설정 테스트")
     inner class DeadlineReminderPreferenceTest {
         @Test

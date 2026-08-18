@@ -22,6 +22,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     let notificationLaunchBridge = DeadlineNotificationLaunchBridge()
     let deadlineReminderLifecycleBridge = DeadlineReminderLifecycleBridge()
     let adsBridge = IosAdsBridgeImpl()
+    let deviceBackupKeyBridge = IosDeviceBackupKeyBridgeImpl()
     let widgetLaunchBridge = IosWidgetLaunchBridge()
     let widgetRuntimeBridge = IosWidgetRuntimeBridge(
         selectionWriter: IosWidgetSelectionWriterImpl(),
@@ -138,6 +139,7 @@ struct iosApp: App {
                 notificationLaunchBridge: appDelegate.notificationLaunchBridge,
                 deadlineReminderLifecycleBridge: appDelegate.deadlineReminderLifecycleBridge,
                 adsBridge: appDelegate.adsBridge,
+                deviceBackupKeyBridge: appDelegate.deviceBackupKeyBridge,
                 widgetLaunchBridge: appDelegate.widgetLaunchBridge,
                 widgetRuntimeBridge: appDelegate.widgetRuntimeBridge
             )

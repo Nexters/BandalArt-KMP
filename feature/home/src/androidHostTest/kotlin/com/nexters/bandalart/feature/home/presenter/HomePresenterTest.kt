@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.test.FakeNavigator
@@ -34,6 +35,38 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class HomePresenterTest {
+    @Test
+    fun cloudBackupSettingsOpensDedicatedScreen() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L)),
+                    recentBandalartId = 1L,
+                )
+            val navigator = FakeNavigator(HomeScreen)
+            val presenter =
+                HomePresenter(
+                    navigator = navigator,
+                    bandalartRepository = repository,
+                    bandalartSlotRepository = FakeBandalartSlotRepository(),
+                    inAppUpdateRepository = FakeInAppUpdateRepository(),
+                    settingsRepository = FakeSettingsRepository(),
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.OpenCloudBackup)
+
+                assertEquals(
+                    CloudBackupScreen(entryPoint = CloudBackupScreen.EntryPoint.SETTINGS),
+                    navigator.awaitNextScreen(),
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
     fun openingASubgoalAndItsTaskRecordsTheSubgoalForTheCurrentBandalart() =

@@ -13,6 +13,7 @@ struct ComposeView: UIViewControllerRepresentable {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let deadlineReminderLifecycleBridge: DeadlineReminderLifecycleBridge
     let adsBridge: IosAdsBridge
+    let deviceBackupKeyBridge: IosDeviceBackupKeyBridge
     let widgetLaunchBridge: IosWidgetLaunchBridge
     let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
@@ -21,6 +22,7 @@ struct ComposeView: UIViewControllerRepresentable {
             notificationLaunchBridge: notificationLaunchBridge,
             deadlineReminderLifecycleBridge: deadlineReminderLifecycleBridge,
             adsBridge: adsBridge,
+            deviceBackupKeyBridge: deviceBackupKeyBridge,
             widgetLaunchBridge: widgetLaunchBridge,
             widgetRuntimeBridge: widgetRuntimeBridge
         )
@@ -33,6 +35,7 @@ struct ContentView: View {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
     let deadlineReminderLifecycleBridge: DeadlineReminderLifecycleBridge
     let adsBridge: IosAdsBridge
+    let deviceBackupKeyBridge: IosDeviceBackupKeyBridge
     let widgetLaunchBridge: IosWidgetLaunchBridge
     let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
@@ -41,6 +44,7 @@ struct ContentView: View {
             notificationLaunchBridge: notificationLaunchBridge,
             deadlineReminderLifecycleBridge: deadlineReminderLifecycleBridge,
             adsBridge: adsBridge,
+            deviceBackupKeyBridge: deviceBackupKeyBridge,
             widgetLaunchBridge: widgetLaunchBridge,
             widgetRuntimeBridge: widgetRuntimeBridge
         )

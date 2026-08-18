@@ -55,6 +55,10 @@
 
 ## Features
 
+### Backup
+
+- [Supabase 반다라트 백업 전략](features/backup/SUPABASE_BACKUP_STRATEGY.md)
+
 ### Ads
 
 - [Android AdMob 미노출 트러블슈팅](features/ads/ADMOB_ANDROID_TROUBLESHOOTING.md)

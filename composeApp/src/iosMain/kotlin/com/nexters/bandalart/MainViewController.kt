@@ -18,6 +18,7 @@ package com.nexters.bandalart
 
 import androidx.compose.ui.window.ComposeUIViewController
 import com.nexters.bandalart.ads.IosAdsBridge
+import com.nexters.bandalart.backup.IosDeviceBackupKeyBridge
 import com.nexters.bandalart.di.metro.createIosAppGraph
 import com.nexters.bandalart.notification.DeadlineNotificationLaunchBridge
 import com.nexters.bandalart.notification.DeadlineReminderLifecycleBridge
@@ -30,10 +31,11 @@ fun MainViewController(
     notificationLaunchBridge: DeadlineNotificationLaunchBridge,
     deadlineReminderLifecycleBridge: DeadlineReminderLifecycleBridge,
     adsBridge: IosAdsBridge,
+    deviceBackupKeyBridge: IosDeviceBackupKeyBridge,
     widgetLaunchBridge: IosWidgetLaunchBridge,
     widgetRuntimeBridge: IosWidgetRuntimeBridge,
 ): UIViewController {
-    val appGraph = createIosAppGraph(adsBridge)
+    val appGraph = createIosAppGraph(adsBridge, deviceBackupKeyBridge)
     notificationLaunchBridge.attach(appGraph.deadlineNotificationLaunchTarget)
     deadlineReminderLifecycleBridge.attach(appGraph.deadlineReminderReconciler)
     widgetLaunchBridge.attach(appGraph.bandalartWidgetLaunchTarget)

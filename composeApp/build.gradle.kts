@@ -1,3 +1,6 @@
+import java.util.Properties
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
 plugins {
     id("bandalart.lint")
     id("bandalart.kmp")
@@ -7,6 +10,50 @@ plugins {
     id("bandalart.kmp.firebase")
     alias(libs.plugins.metro)
 }
+
+val localProperties =
+    Properties().apply {
+        rootProject
+            .file("local.properties")
+            .takeIf { it.exists() }
+            ?.inputStream()
+            ?.use(::load)
+    }
+val supabaseUrl =
+    providers.gradleProperty("bandalart.supabaseUrl").orNull
+        ?: providers.environmentVariable("BANDALART_SUPABASE_URL").orNull
+        ?: localProperties.getProperty("bandalart.supabaseUrl").orEmpty()
+val supabasePublishableKey =
+    providers.gradleProperty("bandalart.supabasePublishableKey").orNull
+        ?: providers.environmentVariable("BANDALART_SUPABASE_PUBLISHABLE_KEY").orNull
+        ?: localProperties.getProperty("bandalart.supabasePublishableKey").orEmpty()
+val generatedBackupConfigDirectory = layout.buildDirectory.dir("generated/backupConfig/commonMain")
+val generateBackupBuildConfig by tasks.registering {
+    val generatedFile =
+        generatedBackupConfigDirectory.map {
+            it.file("com/nexters/bandalart/backup/BackupBuildConfig.kt")
+        }
+    inputs.property("supabaseUrl", supabaseUrl)
+    inputs.property("supabasePublishableKey", supabasePublishableKey)
+    outputs.file(generatedFile)
+    doLast {
+        generatedFile.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(
+                """
+                package com.nexters.bandalart.backup
+
+                internal object BackupBuildConfig {
+                    const val SUPABASE_URL = ${supabaseUrl.asKotlinStringLiteral()}
+                    const val SUPABASE_PUBLISHABLE_KEY = ${supabasePublishableKey.asKotlinStringLiteral()}
+                }
+                """.trimIndent(),
+            )
+        }
+    }
+}
+
+fun String.asKotlinStringLiteral(): String = "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
 metro {
     enableCircuitCodegen.set(true)
@@ -52,6 +99,7 @@ kotlin {
             implementation(projects.core.ui)
 
             implementation(projects.feature.complete)
+            implementation(projects.feature.backup)
             implementation(projects.feature.home)
             implementation(projects.feature.onboarding)
             implementation(projects.feature.splash)
@@ -67,11 +115,17 @@ kotlin {
 
             implementation(libs.cmptoast)
             implementation(libs.jindong.compose)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.napier)
         }
+        getByName("commonMain").kotlin.srcDir(generatedBackupConfigDirectory)
     }
 
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+}
+
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    dependsOn(generateBackupBuildConfig)
 }
 
 tasks.withType<Test> {

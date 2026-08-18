@@ -3,6 +3,7 @@ plugins {
     id("bandalart.kmp")
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
+    id("bandalart.kotlin.serialization")
 }
 
 kotlin {
@@ -10,6 +11,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
 
             compileOnly(libs.compose.stable.marker)
         }

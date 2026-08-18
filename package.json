@@ -1,0 +1,19 @@
+{
+  "name": "bandalart-project-tools",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "supabase": "supabase",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:reset": "supabase db reset",
+    "supabase:lint": "supabase db lint --local --level error",
+    "supabase:test": "supabase test db supabase/tests/database --local"
+  },
+  "devDependencies": {
+    "supabase": "2.114.0"
+  }
+}

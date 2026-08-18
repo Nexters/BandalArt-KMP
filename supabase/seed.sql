@@ -1,0 +1,1 @@
+-- Intentionally empty. Backup tests create and roll back their own fixtures.

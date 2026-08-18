@@ -4,15 +4,26 @@ plugins {
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
     id("bandalart.room")
+    id("bandalart.kotlin.serialization")
 }
 
 kotlin {
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.ktor.client.android)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.common)
             implementation(projects.core.database)
             implementation(projects.core.datastore)
             implementation(projects.core.domain)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.supabase.postgrest)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
 
         androidHostTest.dependencies {

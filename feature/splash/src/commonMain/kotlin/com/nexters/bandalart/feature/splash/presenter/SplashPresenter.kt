@@ -22,7 +22,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.nexters.bandalart.core.domain.backup.StartupBackupDecision
+import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
+import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
@@ -39,6 +42,7 @@ import kotlinx.coroutines.launch
 class SplashPresenter(
     @Assisted private val navigator: Navigator,
     private val repository: OnboardingRepository,
+    private val startupBackupPolicy: StartupBackupPolicy,
 ) : Presenter<SplashScreen.State> {
     @Composable
     override fun present(): SplashScreen.State {
@@ -51,11 +55,24 @@ class SplashPresenter(
                     if (!isChecking) {
                         isChecking = true
                         scope.launch {
+                            val onboardingCompleted = repository.getOnboardingCompletedStatus()
                             val destination =
-                                if (repository.getOnboardingCompletedStatus()) {
-                                    HomeScreen
-                                } else {
-                                    OnboardingScreen
+                                when (val decision = startupBackupPolicy.evaluate()) {
+                                    StartupBackupDecision.Continue -> {
+                                        if (onboardingCompleted) HomeScreen else OnboardingScreen
+                                    }
+                                    is StartupBackupDecision.OfferRestore ->
+                                        CloudBackupScreen(
+                                            entryPoint = CloudBackupScreen.EntryPoint.STARTUP,
+                                            fallback =
+                                                if (onboardingCompleted) {
+                                                    CloudBackupScreen.Fallback.HOME
+                                                } else {
+                                                    CloudBackupScreen.Fallback.ONBOARDING
+                                                },
+                                            backupCount = decision.metadata.bandalartCount,
+                                            backupUpdatedAt = decision.metadata.updatedAt,
+                                        )
                                 }
                             navigator.resetRoot(destination)
                         }

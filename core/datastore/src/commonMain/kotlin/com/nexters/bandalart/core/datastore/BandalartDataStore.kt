@@ -132,6 +132,60 @@ class BandalartDataStore(
         }
     }
 
+    suspend fun createBackupPreferences(bandalartIds: List<Long>): BandalartBackupPreferences {
+        val preferences =
+            dataStore.data
+                .catch { exception ->
+                    if (exception is IOException) emit(emptyPreferences()) else throw exception
+                }.first()
+        return BandalartBackupPreferences(
+            recentBandalartId = preferences[recentBandalartKey] ?: 0L,
+            recentSubGoalIds =
+                bandalartIds
+                    .associateWith { bandalartId ->
+                        preferences[recentSubGoalKey(bandalartId)] ?: 0L
+                    }.filterValues { it > 0L },
+            completedBandalarts = stringToList(preferences[completedBandalartListKey].orEmpty()),
+            onboardingCompleted = preferences[onboardingCompletedKey] ?: false,
+            themeMode = preferences[themeModeKey],
+            recentEmojis =
+                preferences[recentEmojisKey]
+                    ?.let { Json.decodeFromString<List<String>>(it) }
+                    ?: emptyList(),
+            deadlineReminderEnabled = preferences[deadlineReminderEnabledKey] ?: false,
+            maxBandalartSlots = preferences[maxBandalartSlotsKey] ?: bandalartIds.size,
+        )
+    }
+
+    suspend fun restoreBackupPreferences(
+        backup: BandalartBackupPreferences,
+        bandalartIdsToClear: List<Long>,
+    ) {
+        dataStore.edit { preferences ->
+            bandalartIdsToClear.forEach { bandalartId ->
+                preferences.remove(recentSubGoalKey(bandalartId))
+            }
+            preferences[recentBandalartKey] = backup.recentBandalartId
+            backup.recentSubGoalIds.forEach { (bandalartId, subGoalId) ->
+                preferences[recentSubGoalKey(bandalartId)] = subGoalId
+            }
+            preferences[completedBandalartListKey] = listToString(backup.completedBandalarts)
+            preferences[onboardingCompletedKey] = backup.onboardingCompleted
+            if (backup.themeMode == null) {
+                preferences.remove(themeModeKey)
+            } else {
+                preferences[themeModeKey] = backup.themeMode
+            }
+            preferences[recentEmojisKey] = Json.encodeToString(backup.recentEmojis)
+            preferences[deadlineReminderEnabledKey] = backup.deadlineReminderEnabled
+            preferences[maxBandalartSlotsKey] = backup.maxBandalartSlots
+            preferences.remove(pendingRewardedRequestIdKey)
+            preferences.remove(pendingRewardedTargetSlotsKey)
+            preferences.remove(pendingRewardedGrantedKey)
+            preferences.remove(pendingRewardedTemplateIdKey)
+        }
+    }
+
     val themeMode =
         dataStore.data
             .catch { exception ->
@@ -356,4 +410,15 @@ data class StoredPendingRewardedCreation(
     val targetSlots: Int,
     val isGranted: Boolean,
     val templateId: String? = null,
+)
+
+data class BandalartBackupPreferences(
+    val recentBandalartId: Long,
+    val recentSubGoalIds: Map<Long, Long>,
+    val completedBandalarts: List<Pair<Long, Boolean>>,
+    val onboardingCompleted: Boolean,
+    val themeMode: String?,
+    val recentEmojis: List<String>,
+    val deadlineReminderEnabled: Boolean,
+    val maxBandalartSlots: Int,
 )

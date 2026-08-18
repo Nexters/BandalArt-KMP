@@ -50,6 +50,8 @@
     <string name="settings_theme_system">시스템 설정</string>
     <string name="settings_theme_light">라이트 모드</string>
     <string name="settings_theme_dark">다크 모드</string>
+    <string name="settings_cloud_backup">클라우드 백업</string>
+    <string name="settings_cloud_backup_body">데이터를 백업하거나 백업에서 복원해요</string>
     <string name="settings_app_info">앱 정보</string>
     <string name="settings_contact">문의하기</string>
     <string name="settings_contact_subject">[반다라트 문의]</string>
@@ -57,6 +59,26 @@
     <string name="settings_contact_fallback">메일 앱을 열 수 없어 이메일 주소를 복사했어요.</string>
     <string name="settings_version">버전</string>
     <string name="settings_version_value">v%1$s</string>
+
+    <!-- CloudBackupScreen.kt -->
+    <string name="backup_title">클라우드 백업</string>
+    <string name="backup_description">현재 기기의 반다라트 데이터를 클라우드에 보관할 수 있어요.</string>
+    <string name="backup_status_none">저장된 백업이 없어요</string>
+    <string name="backup_status_existing">반다라트 %1$d개 · %2$s 백업</string>
+    <string name="backup_not_supported">이 기기에서는 클라우드 백업을 사용할 수 없어요.</string>
+    <string name="backup_now">지금 백업하기</string>
+    <string name="backup_restore">백업에서 복원</string>
+    <string name="backup_start_fresh">새로 시작</string>
+    <string name="backup_loading">처리 중이에요…</string>
+    <string name="backup_created">백업을 완료했어요.</string>
+    <string name="backup_restored">백업에서 복원했어요.</string>
+    <string name="backup_not_found">복원할 백업이 없어요.</string>
+    <string name="backup_error">백업을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
+    <string name="backup_restore_confirm_title">백업에서 복원할까요?</string>
+    <string name="backup_restore_confirm_body">현재 앱 데이터가 백업 데이터로 교체돼요.</string>
+    <string name="backup_restore_confirm">복원</string>
+    <string name="backup_restore_cancel">취소</string>
+    <string name="backup_back">뒤로가기</string>
 
     <!--  BandalartListBottomSheet.kt -->
     <string name="bandalart_list_empty_title">새 반다라트 %1$d</string>

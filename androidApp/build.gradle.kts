@@ -13,9 +13,32 @@ plugins {
 }
 
 val useTestAds = providers.gradleProperty("bandalart.useTestAds").orNull.toBoolean()
+val localProperties =
+    Properties().apply {
+        rootProject
+            .file("local.properties")
+            .takeIf { it.exists() }
+            ?.inputStream()
+            ?.use(::load)
+    }
+val supabaseUrl =
+    providers.gradleProperty("bandalart.supabaseUrl").orNull
+        ?: providers.environmentVariable("BANDALART_SUPABASE_URL").orNull
+        ?: localProperties.getProperty("bandalart.supabaseUrl").orEmpty()
+val supabasePublishableKey =
+    providers.gradleProperty("bandalart.supabasePublishableKey").orNull
+        ?: providers.environmentVariable("BANDALART_SUPABASE_PUBLISHABLE_KEY").orNull
+        ?: localProperties.getProperty("bandalart.supabasePublishableKey").orEmpty()
+
+fun String.asBuildConfigString(): String = "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
 android {
     namespace = "com.nexters.bandalart"
+
+    defaultConfig {
+        buildConfigField("String", "SUPABASE_URL", supabaseUrl.asBuildConfigString())
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", supabasePublishableKey.asBuildConfigString())
+    }
 
     signingConfigs {
         create("release") {
@@ -97,6 +120,7 @@ play {
 dependencies {
     implementation(projects.composeApp)
     implementation(projects.core.common)
+    implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
 

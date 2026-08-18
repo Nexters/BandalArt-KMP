@@ -19,16 +19,21 @@ package com.nexters.bandalart.di.metro
 import com.nexters.bandalart.ads.IosAdsBridge
 import com.nexters.bandalart.ads.IosBannerAdHost
 import com.nexters.bandalart.ads.IosRewardedAdGateway
+import com.nexters.bandalart.backup.BackupBuildConfig
+import com.nexters.bandalart.backup.IosDeviceBackupKeyBridge
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.IosSupportMailLauncher
+import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
 import com.nexters.bandalart.notification.IosDeadlineNotificationAuthorization
 import com.nexters.bandalart.notification.IosDeadlineReminderScheduler
 
 private class IosPlatformBindings(
     adsBridge: IosAdsBridge,
+    deviceBackupKeyBridge: IosDeviceBackupKeyBridge,
 ) : PlatformBindings {
     override val databaseFactory = BandalartDatabaseFactory()
     override val dataStoreFactory = BandalartDataStoreFactory()
@@ -39,6 +44,20 @@ private class IosPlatformBindings(
     override val rewardedAdGateway = IosRewardedAdGateway(adsBridge)
     override val deadlineReminderScheduler = IosDeadlineReminderScheduler()
     override val deadlineNotificationAuthorization = IosDeadlineNotificationAuthorization()
+    override val backupApiConfig =
+        BackupApiConfig(
+            url = BackupBuildConfig.SUPABASE_URL,
+            publishableKey = BackupBuildConfig.SUPABASE_PUBLISHABLE_KEY,
+        )
+    override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
+        if (backupApiConfig.isConfigured) {
+            DeviceBackupKeyProvider(deviceBackupKeyBridge::getDeviceKey)
+        } else {
+            DeviceBackupKeyProvider { null }
+        }
 }
 
-internal fun createIosAppGraph(adsBridge: IosAdsBridge): AppGraph = createAppGraph(IosPlatformBindings(adsBridge))
+internal fun createIosAppGraph(
+    adsBridge: IosAdsBridge,
+    deviceBackupKeyBridge: IosDeviceBackupKeyBridge,
+): AppGraph = createAppGraph(IosPlatformBindings(adsBridge, deviceBackupKeyBridge))

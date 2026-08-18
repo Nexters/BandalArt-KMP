@@ -60,6 +60,8 @@ import bandalart.core.designsystem.generated.resources.clear_description
 import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
+import bandalart.core.designsystem.generated.resources.settings_cloud_backup
+import bandalart.core.designsystem.generated.resources.settings_cloud_backup_body
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_body
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_blocked
@@ -172,6 +174,13 @@ internal fun SettingsBottomSheet(
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
+            SettingsCloudBackupRow(
+                onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
             SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
             SettingsContactRow(
                 onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
@@ -203,6 +212,42 @@ internal fun SettingsBottomSheet(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsCloudBackupRow(onClick: () -> Unit) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(Res.string.settings_cloud_backup),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 15.sp,
+                fontFamily = pretendardFontFamily(),
+                fontWeight = FontWeight.W600,
+            )
+            Text(
+                text = stringResource(Res.string.settings_cloud_backup_body),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp,
+                fontFamily = pretendardFontFamily(),
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(top = 4.dp, end = 12.dp),
+            )
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
     }
 }
 

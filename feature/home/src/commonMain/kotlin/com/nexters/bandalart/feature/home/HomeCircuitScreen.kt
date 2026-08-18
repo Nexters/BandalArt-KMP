@@ -225,6 +225,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object OpenSettings : Event
 
+        data object OpenCloudBackup : Event
+
         data class SelectThemeMode(
             val themeMode: ThemeMode,
         ) : Event

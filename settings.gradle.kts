@@ -49,6 +49,7 @@ include(":core:navigation")
 include(":core:ui")
 
 include(":feature:complete")
+include(":feature:backup")
 include(":feature:home")
 include(":feature:onboarding")
 include(":feature:splash")

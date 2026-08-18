@@ -16,6 +16,10 @@
 
 package com.nexters.bandalart.feature.splash.presenter
 
+import com.nexters.bandalart.core.domain.backup.BackupMetadata
+import com.nexters.bandalart.core.domain.backup.StartupBackupDecision
+import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
+import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
@@ -44,7 +48,7 @@ class SplashPresenterTest {
         runTest {
             val repository = FakeOnboardingRepository(initialCompletedStatus = true)
             val navigator = FakeNavigator(SplashScreen)
-            val presenter = SplashPresenter(navigator, repository)
+            val presenter = SplashPresenter(navigator, repository, continuePolicy())
 
             presenter.test {
                 val state = awaitItem()
@@ -58,13 +62,41 @@ class SplashPresenterTest {
             }
         }
 
+    @Test
+    fun emptyInstallWithBackupOffersRestoreBeforeHome() =
+        runTest {
+            val metadata = BackupMetadata(2, "2026-08-18T01:00:00Z")
+            val repository = FakeOnboardingRepository(initialCompletedStatus = true)
+            val navigator = FakeNavigator(SplashScreen)
+            val presenter =
+                SplashPresenter(
+                    navigator,
+                    repository,
+                    StartupBackupPolicy { StartupBackupDecision.OfferRestore(metadata) },
+                )
+
+            presenter.test {
+                awaitItem().eventSink(SplashScreen.Event.CheckOnboardingStatus)
+
+                assertEquals(
+                    CloudBackupScreen(
+                        entryPoint = CloudBackupScreen.EntryPoint.STARTUP,
+                        fallback = CloudBackupScreen.Fallback.HOME,
+                        backupCount = 2,
+                        backupUpdatedAt = metadata.updatedAt,
+                    ),
+                    navigator.awaitResetRoot().newRoot,
+                )
+            }
+        }
+
     private suspend fun assertDestination(
         isCompleted: Boolean,
         expected: Screen,
     ) {
         val repository = FakeOnboardingRepository(isCompleted)
         val navigator = FakeNavigator(SplashScreen)
-        val presenter = SplashPresenter(navigator, repository)
+        val presenter = SplashPresenter(navigator, repository, continuePolicy())
 
         presenter.test {
             awaitItem().eventSink(SplashScreen.Event.CheckOnboardingStatus)
@@ -73,4 +105,6 @@ class SplashPresenterTest {
             assertEquals(1, repository.getCallCount)
         }
     }
+
+    private fun continuePolicy() = StartupBackupPolicy { StartupBackupDecision.Continue }
 }
