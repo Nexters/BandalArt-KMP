@@ -28,6 +28,7 @@ kotlin {
             implementation(libs.circuit.runtime.presenter)
             implementation(libs.circuit.runtime.ui)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
 
         androidHostTest.dependencies {

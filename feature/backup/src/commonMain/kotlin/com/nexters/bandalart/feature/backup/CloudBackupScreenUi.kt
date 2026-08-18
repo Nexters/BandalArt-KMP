@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -41,7 +42,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.backup_back
 import bandalart.core.designsystem.generated.resources.backup_created
@@ -62,11 +65,15 @@ import bandalart.core.designsystem.generated.resources.backup_status_existing
 import bandalart.core.designsystem.generated.resources.backup_status_none
 import bandalart.core.designsystem.generated.resources.backup_title
 import bandalart.core.designsystem.generated.resources.ic_settings_backup_restore
+import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @CircuitInject(CloudBackupScreen::class, AppScope::class)
@@ -97,6 +104,7 @@ internal fun CloudBackup(
             Text(
                 text = stringResource(Res.string.backup_description),
                 style = MaterialTheme.typography.bodyLarge,
+                fontFamily = pretendardFontFamily(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -115,11 +123,20 @@ internal fun CloudBackup(
                                     stringResource(
                                         Res.string.backup_status_existing,
                                         state.metadata.bandalartCount,
-                                        state.metadata.updatedAt.toDisplayDate(),
+                                        state.metadata.updatedAt.toDisplayDateTime(),
                                     )
                             },
                         style = MaterialTheme.typography.titleMedium,
+                        fontFamily = pretendardFontFamily(),
                         fontWeight = FontWeight.SemiBold,
+                        autoSize =
+                            TextAutoSize.StepBased(
+                                minFontSize = 12.sp,
+                                maxFontSize = 16.sp,
+                                stepSize = 0.5.sp,
+                            ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (state.isLoading) {
                         Row(
@@ -128,12 +145,16 @@ internal fun CloudBackup(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             CircularProgressIndicator()
-                            Text(stringResource(Res.string.backup_loading))
+                            Text(
+                                text = stringResource(Res.string.backup_loading),
+                                fontFamily = pretendardFontFamily(),
+                            )
                         }
                     }
                     state.result?.let { result ->
                         Text(
                             text = stringResource(result.messageResource()),
+                            fontFamily = pretendardFontFamily(),
                             color =
                                 if (result == CloudBackupUiState.Result.ERROR) {
                                     MaterialTheme.colorScheme.error
@@ -152,7 +173,10 @@ internal fun CloudBackup(
                     enabled = state.isSupported && !state.isLoading,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(stringResource(Res.string.backup_now))
+                    Text(
+                        text = stringResource(Res.string.backup_now),
+                        fontFamily = pretendardFontFamily(),
+                    )
                 }
             }
             OutlinedButton(
@@ -160,7 +184,10 @@ internal fun CloudBackup(
                 enabled = state.isSupported && !state.isLoading && state.metadata != null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(Res.string.backup_restore))
+                Text(
+                    text = stringResource(Res.string.backup_restore),
+                    fontFamily = pretendardFontFamily(),
+                )
             }
             if (state.entryPoint == CloudBackupScreen.EntryPoint.STARTUP) {
                 TextButton(
@@ -168,7 +195,10 @@ internal fun CloudBackup(
                     enabled = !state.isLoading,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(stringResource(Res.string.backup_start_fresh))
+                    Text(
+                        text = stringResource(Res.string.backup_start_fresh),
+                        fontFamily = pretendardFontFamily(),
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -199,6 +229,7 @@ private fun BackupHeader(
         Text(
             text = stringResource(Res.string.backup_title),
             style = MaterialTheme.typography.headlineSmall,
+            fontFamily = pretendardFontFamily(),
             fontWeight = FontWeight.Bold,
         )
     }
@@ -218,7 +249,25 @@ private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> U
     )
 }
 
-private fun String.toDisplayDate(): String = take(10).ifBlank { this }
+private fun String.toDisplayDateTime(): String =
+    runCatching {
+        val localDateTime = Instant.parse(this).toLocalDateTime(TimeZone.currentSystemDefault())
+        buildString {
+            append(localDateTime.year)
+            append('-')
+            append(localDateTime.monthNumber.toTwoDigits())
+            append('-')
+            append(localDateTime.dayOfMonth.toTwoDigits())
+            append(' ')
+            append(localDateTime.hour.toTwoDigits())
+            append(':')
+            append(localDateTime.minute.toTwoDigits())
+        }
+    }.getOrElse {
+        take(16).replace('T', ' ').ifBlank { this }
+    }
+
+private fun Int.toTwoDigits(): String = toString().padStart(2, '0')
 
 private fun CloudBackupUiState.Result.messageResource() =
     when (this) {
