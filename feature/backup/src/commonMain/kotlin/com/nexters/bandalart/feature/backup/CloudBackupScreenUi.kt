@@ -62,6 +62,7 @@ import bandalart.core.designsystem.generated.resources.backup_status_existing
 import bandalart.core.designsystem.generated.resources.backup_status_none
 import bandalart.core.designsystem.generated.resources.backup_title
 import bandalart.core.designsystem.generated.resources.ic_settings_backup_restore
+import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -97,6 +98,7 @@ internal fun CloudBackup(
             Text(
                 text = stringResource(Res.string.backup_description),
                 style = MaterialTheme.typography.bodyLarge,
+                fontFamily = pretendardFontFamily(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -119,6 +121,7 @@ internal fun CloudBackup(
                                     )
                             },
                         style = MaterialTheme.typography.titleMedium,
+                        fontFamily = pretendardFontFamily(),
                         fontWeight = FontWeight.SemiBold,
                     )
                     if (state.isLoading) {
@@ -128,12 +131,16 @@ internal fun CloudBackup(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             CircularProgressIndicator()
-                            Text(stringResource(Res.string.backup_loading))
+                            Text(
+                                text = stringResource(Res.string.backup_loading),
+                                fontFamily = pretendardFontFamily(),
+                            )
                         }
                     }
                     state.result?.let { result ->
                         Text(
                             text = stringResource(result.messageResource()),
+                            fontFamily = pretendardFontFamily(),
                             color =
                                 if (result == CloudBackupUiState.Result.ERROR) {
                                     MaterialTheme.colorScheme.error
@@ -152,7 +159,10 @@ internal fun CloudBackup(
                     enabled = state.isSupported && !state.isLoading,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(stringResource(Res.string.backup_now))
+                    Text(
+                        text = stringResource(Res.string.backup_now),
+                        fontFamily = pretendardFontFamily(),
+                    )
                 }
             }
             OutlinedButton(
@@ -160,7 +170,10 @@ internal fun CloudBackup(
                 enabled = state.isSupported && !state.isLoading && state.metadata != null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(Res.string.backup_restore))
+                Text(
+                    text = stringResource(Res.string.backup_restore),
+                    fontFamily = pretendardFontFamily(),
+                )
             }
             if (state.entryPoint == CloudBackupScreen.EntryPoint.STARTUP) {
                 TextButton(
@@ -168,7 +181,10 @@ internal fun CloudBackup(
                     enabled = !state.isLoading,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(stringResource(Res.string.backup_start_fresh))
+                    Text(
+                        text = stringResource(Res.string.backup_start_fresh),
+                        fontFamily = pretendardFontFamily(),
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -199,6 +215,7 @@ private fun BackupHeader(
         Text(
             text = stringResource(Res.string.backup_title),
             style = MaterialTheme.typography.headlineSmall,
+            fontFamily = pretendardFontFamily(),
             fontWeight = FontWeight.Bold,
         )
     }

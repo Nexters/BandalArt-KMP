@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -80,6 +81,7 @@ fun BandalartActionAlertDialog(
                     text = title,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 20.sp,
+                    fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W700,
                     modifier =
                         Modifier
@@ -94,6 +96,7 @@ fun BandalartActionAlertDialog(
                     text = message,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp,
+                    fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W500,
                     modifier =
                         Modifier
@@ -129,6 +132,7 @@ fun BandalartActionAlertDialog(
                         Text(
                             text = cancelLabel,
                             fontSize = 16.sp,
+                            fontFamily = pretendardFontFamily(),
                             fontWeight = FontWeight.W600,
                         )
                     }
@@ -150,6 +154,7 @@ fun BandalartActionAlertDialog(
                         Text(
                             text = confirmLabel,
                             fontSize = 16.sp,
+                            fontFamily = pretendardFontFamily(),
                             fontWeight = FontWeight.W600,
                             textAlign = TextAlign.Center,
                         )
