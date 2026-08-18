@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-internal fun BandalartActionAlertDialog(
+fun BandalartActionAlertDialog(
     icon: DrawableResource,
     iconContentDescription: String?,
     title: String,
