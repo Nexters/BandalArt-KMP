@@ -65,13 +65,13 @@ AdMob 슬롯 기반 작업(PR #241)은 무료 슬롯 3개와 영구 확장 슬�
 - granted 요청을 가진 process 재실행 시 누락 생성 복구 및 이미 생성된 요청 중복 방지
 - Room Flow 반영이 지연된 동안 연속 Add 차단
 - Android host unit test, Android lint, 관련 컴파일을 통과한다.
-- Play Internal Testing은 `-Pbandalart.useTestAds=true`로 공식 Google 테스트 Rewarded ID를 사용해 무효 트래픽 없이 검증한다. production 배포 기본값은 실제 광고 단위 ID를 유지한다.
+- 이 기능을 처음 배포했을 때는 Play Internal Testing에 `-Pbandalart.useTestAds=true`를 전달해 공식 Google 테스트 Rewarded ID를 사용했다. [#354](https://github.com/Nexters/BandalArt-KMP/issues/354) 이후에는 debug만 테스트 ID를 사용하고 Internal release는 운영 광고 ID를 사용한다.
 
 ## Android Internal Testing 배포
 
 - 앱 버전은 `2.2.17 (20217)`로 올린다.
 - 한국어, 영어, 일본어 Internal release notes를 보상형 생성 흐름에 맞게 갱신한다.
-- clean AAB와 upload 명령 모두 `-Pbandalart.useTestAds=true`를 전달한다.
+- 현재 clean AAB와 upload 명령에는 광고 ID override를 전달하지 않는다. release 운영 ID가 포함되고 테스트 ID가 없는 AAB만 업로드한다.
 
 ## 비범위
 

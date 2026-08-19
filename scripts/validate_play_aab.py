@@ -85,14 +85,14 @@ def verify_archive(path: Path) -> None:
                 value in content for value in REMOVED_NAMESPACE
             )
 
-        if not test_rewarded_id_found:
-            fail("official Google rewarded test ad ID is missing")
-        if production_rewarded_id_found:
-            fail("production rewarded ad ID is present")
-        if not test_banner_id_found:
-            fail("official Google banner test ad ID is missing")
-        if production_banner_id_found:
-            fail("production banner ad ID is present")
+        if test_rewarded_id_found:
+            fail("official Google test rewarded ad ID is present")
+        if not production_rewarded_id_found:
+            fail("production rewarded ad ID is missing")
+        if test_banner_id_found:
+            fail("official Google test banner ad ID is present")
+        if not production_banner_id_found:
+            fail("production banner ad ID is missing")
         if not required_namespace_found:
             fail("expected Compose resource namespace is missing")
         if removed_namespace_found:

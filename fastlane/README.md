@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android internal
 ```
 
-Build, validate, and upload a test-ad release AAB to Play Internal Testing
+Build, validate, and upload a production-ad release AAB to Play Internal Testing
 
 ----
 
