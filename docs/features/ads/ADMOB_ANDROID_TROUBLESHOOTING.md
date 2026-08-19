@@ -4,7 +4,7 @@
 
 Play Internal Testing에서 홈 배너와 보상형 광고가 모두 나타나지 않았던 사건의 진단 과정과 재발 방지 절차를 기록한다. 같은 증상이 생기면 광고 크기나 광고 단위 ID부터 바꾸지 말고, 설치 산출물과 SDK 초기화부터 요청·표시까지의 생명주기를 아래 순서로 확인한다.
 
-관련 이슈는 [#289](https://github.com/Nexters/BandalArt-KMP/issues/289), 최종 원인 수정은 [#297](https://github.com/Nexters/BandalArt-KMP/pull/297)이다. `2.2.26 (20226)`은 Google 테스트 광고 ID로 Internal Testing에 배포했으며, 이슈는 실기기에서 테스트 creative를 확인한 뒤 닫는다.
+관련 초기화 이슈는 [#289](https://github.com/Nexters/BandalArt-KMP/issues/289), 최종 원인 수정은 [#297](https://github.com/Nexters/BandalArt-KMP/pull/297)이다. `2.2.26 (20226)`은 당시 Google 테스트 광고 ID로 Internal Testing에 배포해 테스트 creative를 확인했다. 이후 [#354](https://github.com/Nexters/BandalArt-KMP/issues/354)부터는 Internal Testing도 운영 수익 집계를 검증할 수 있도록 release와 같은 운영 광고 ID를 사용한다.
 
 ## 사건 요약
 
@@ -80,12 +80,12 @@ adb pull /data/app/.../base.apk /tmp/bandalart-base.apk
 unzip -p /tmp/bandalart-base.apk resources.arsc | strings | grep 'ca-app-pub-'
 ```
 
-Internal AAB에는 Google 공식 테스트 ID가 들어가야 한다.
+현재 Internal AAB에는 운영 광고 ID가 들어가야 한다.
 
-- Rewarded: `ca-app-pub-3940256099942544/5224354917`
-- Fixed Size Banner: `ca-app-pub-3940256099942544/6300978111`
+- Rewarded: `ca-app-pub-5570932833347277/6659503579`
+- Fixed Size Banner: `ca-app-pub-5570932833347277/1215605203`
 
-운영 광고 단위 ID가 하나라도 들어 있으면 Internal 검증용 산출물로 업로드하지 않는다. 테스트 광고 AAB도 Production으로 승급하지 않고, 운영 ID와 새 versionCode로 다시 빌드한다.
+공식 Google 테스트 광고 단위 ID가 하나라도 들어 있으면 Internal 검증용 산출물로 업로드하지 않는다. Debug 빌드는 계속 공식 테스트 ID를 사용하고, Play에 올리는 release AAB만 운영 ID를 사용한다. Internal 설치본에서는 실제 광고를 클릭하지 않는다.
 
 ### 3. 한 번의 cold start를 관찰한다
 
@@ -190,9 +190,9 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 - [ ] fail-open 생성과 광고 성공을 구분했다.
 - [ ] release에서 초기화·preloader·배너 load 실패를 확인할 수 있다.
 - [ ] Presenter의 fail-open, dismiss, exactly-once, 템플릿 보존 테스트가 통과한다.
-- [ ] Internal AAB에는 공식 테스트 ID만 포함한다.
-- [ ] 테스트 광고가 포함된 AAB을 Production으로 승급하지 않는다.
-- [ ] 실기기에서 배너 `Test Ad`와 보상형 테스트 creative를 각각 확인했다.
+- [ ] Internal AAB에는 Rewarded와 Banner 운영 ID가 모두 포함되고 공식 테스트 ID는 포함되지 않는다.
+- [ ] Debug 빌드에는 공식 테스트 ID만 포함한다.
+- [ ] Internal 실기기에서 실제 광고 응답을 확인하되 광고를 클릭하지 않는다.
 
 ## 블로그 작성용 구성
 
@@ -211,7 +211,7 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 5. **원인 확인:** Next-Gen SDK binary와 공식 문서로 초기화 전 API 호출의 예외와 동기식 초기화 계약을 확인했다.
 6. **수정:** `initialize`를 먼저 호출하고 release-safe 실패 로그를 최소한으로 추가했다.
 7. **제품 정책:** 광고 장애 시 fail-open과 사용자의 자발적 dismiss를 다르게 취급한 이유를 설명한다.
-8. **운영 교훈:** 정확한 산출물 검증, 상태 판별표, 테스트 광고 AAB의 Production 승급 금지를 체크리스트로 정리한다.
+8. **운영 교훈:** 정확한 산출물 검증, 상태 판별표, release 운영 ID와 debug 테스트 ID의 분리를 체크리스트로 정리한다.
 
 ## 공식 참고
 
