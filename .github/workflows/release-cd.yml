@@ -20,7 +20,7 @@ on:
             ios_ads_mode:
                 description: iOS ad configuration (test for testing, production for the App Store release candidate)
                 required: true
-                default: test
+                default: production
                 type: choice
                 options:
                     - test
