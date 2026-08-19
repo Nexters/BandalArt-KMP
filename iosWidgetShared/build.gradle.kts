@@ -14,6 +14,7 @@ kotlin {
         it.binaries.framework {
             baseName = "IosWidgetShared"
             isStatic = true
+            binaryOption("smallBinary", "true")
         }
     }
 
