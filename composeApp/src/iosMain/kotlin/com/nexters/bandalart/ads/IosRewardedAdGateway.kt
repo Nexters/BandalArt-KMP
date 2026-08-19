@@ -17,6 +17,7 @@
 package com.nexters.bandalart.ads
 
 import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdPurpose
 import com.nexters.bandalart.core.common.RewardedAdResult
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -24,9 +25,12 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 class IosRewardedAdGateway(
     private val adsBridge: IosAdsBridge,
 ) : RewardedAdGateway {
-    override suspend fun show(requestId: Long): RewardedAdResult =
+    override suspend fun show(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): RewardedAdResult =
         suspendCancellableCoroutine { continuation ->
-            adsBridge.showRewarded(requestId) { result ->
+            adsBridge.showRewarded(requestId, purpose) { result ->
                 if (continuation.isActive) continuation.resume(result)
             }
             continuation.invokeOnCancellation {

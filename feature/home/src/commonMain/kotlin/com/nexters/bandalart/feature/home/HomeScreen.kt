@@ -57,6 +57,7 @@ import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdPurpose
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.common.SupportMailDraft
 import com.nexters.bandalart.core.common.SupportMailLauncher
@@ -110,7 +111,7 @@ internal fun Home(
         val requestId = state.rewardedAdRequestId ?: return@LaunchedEffect
         val result =
             try {
-                rewardedAdGateway.show(requestId)
+                rewardedAdGateway.show(requestId, RewardedAdPurpose.BANDALART_CREATION)
             } catch (exception: CancellationException) {
                 throw exception
             } catch (_: Exception) {

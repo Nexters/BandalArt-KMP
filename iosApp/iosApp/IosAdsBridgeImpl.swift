@@ -21,11 +21,24 @@ import UIKit
 private enum AdUnitID {
 #if DEBUG || BANDALART_TEST_ADS
     static let banner = "ca-app-pub-3940256099942544/2435281174"
-    static let rewarded = "ca-app-pub-3940256099942544/1712485313"
+    static let rewardedBandalartCreation = "ca-app-pub-3940256099942544/1712485313"
+    static let rewardedCloudBackup = "ca-app-pub-3940256099942544/1712485313"
 #else
     static let banner = "ca-app-pub-5570932833347277/4693940934"
-    static let rewarded = "ca-app-pub-5570932833347277/2754173309"
+    static let rewardedBandalartCreation = "ca-app-pub-5570932833347277/2754173309"
+    static let rewardedCloudBackup = "ca-app-pub-5570932833347277/2754173309"
 #endif
+
+    static let rewardedUnitIDs = Set([rewardedBandalartCreation, rewardedCloudBackup])
+
+    static func rewarded(for purpose: CommonRewardedAdPurpose) -> String {
+        switch purpose {
+        case .bandalartCreation:
+            rewardedBandalartCreation
+        case .cloudBackup:
+            rewardedCloudBackup
+        }
+    }
 }
 
 @MainActor
@@ -33,10 +46,12 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
     private let bannerViews = NSHashTable<IosBannerAdView>.weakObjects()
 
     private var isInitialized = false
-    private var isRewardedLoading = false
-    private var rewardedAd: RewardedAd?
+    private var loadingRewardedAdUnitIDs = Set<String>()
+    private var rewardedAds: [String: RewardedAd] = [:]
     private var activeRewardedAd: RewardedAd?
+    private var activeRewardedAdUnitID: String?
     private var pendingRequestID: Int64?
+    private var pendingRewardedAdUnitID: String?
     private var pendingCompletion: ((CommonRewardedAdResult) -> Void)?
     private var didEarnReward = false
     private var isRewardedDismissed = false
@@ -51,7 +66,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
                 guard let self else { return }
                 self.isInitialized = true
                 self.bannerViews.allObjects.forEach { $0.loadAdIfNeeded() }
-                self.loadRewardedIfNeeded()
+                AdUnitID.rewardedUnitIDs.forEach { self.loadRewardedIfNeeded(adUnitID: $0) }
             }
         }
     }
@@ -67,6 +82,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
 
     func showRewarded(
         requestId: Int64,
+        purpose: CommonRewardedAdPurpose,
         completion: @escaping (CommonRewardedAdResult) -> Void
     ) {
         guard pendingRequestID == nil, activeRewardedAd == nil else {
@@ -75,6 +91,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
         }
 
         pendingRequestID = requestId
+        pendingRewardedAdUnitID = AdUnitID.rewarded(for: purpose)
         pendingCompletion = completion
         presentRewardedIfReady()
     }
@@ -84,6 +101,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
         pendingCompletion = nil
         if activeRewardedAd == nil {
             pendingRequestID = nil
+            pendingRewardedAdUnitID = nil
         }
     }
 
@@ -113,13 +131,14 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
 
     private func presentRewardedIfReady() {
         guard isInitialized else { return }
-        guard let rewardedAd else {
-            loadRewardedIfNeeded()
+        guard let pendingRewardedAdUnitID else { return }
+        guard let rewardedAd = rewardedAds.removeValue(forKey: pendingRewardedAdUnitID) else {
+            loadRewardedIfNeeded(adUnitID: pendingRewardedAdUnitID)
             return
         }
 
-        self.rewardedAd = nil
         activeRewardedAd = rewardedAd
+        activeRewardedAdUnitID = pendingRewardedAdUnitID
         didEarnReward = false
         isRewardedDismissed = false
         rewardedAd.present(from: nil) { [weak self] in
@@ -131,29 +150,32 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
         }
     }
 
-    private func loadRewardedIfNeeded() {
-        guard isInitialized, rewardedAd == nil, activeRewardedAd == nil, !isRewardedLoading else {
+    private func loadRewardedIfNeeded(adUnitID: String) {
+        guard isInitialized,
+              rewardedAds[adUnitID] == nil,
+              activeRewardedAdUnitID != adUnitID,
+              !loadingRewardedAdUnitIDs.contains(adUnitID) else {
             return
         }
 
-        isRewardedLoading = true
+        loadingRewardedAdUnitIDs.insert(adUnitID)
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
                 let ad = try await RewardedAd.load(
-                    with: AdUnitID.rewarded,
+                    with: adUnitID,
                     request: Request()
                 )
                 ad.fullScreenContentDelegate = self
-                self.rewardedAd = ad
-                self.isRewardedLoading = false
-                if self.pendingCompletion != nil {
+                self.rewardedAds[adUnitID] = ad
+                self.loadingRewardedAdUnitIDs.remove(adUnitID)
+                if self.pendingRewardedAdUnitID == adUnitID {
                     self.presentRewardedIfReady()
                 }
             } catch {
-                self.isRewardedLoading = false
+                self.loadingRewardedAdUnitIDs.remove(adUnitID)
                 NSLog("Rewarded ad failed to load: %@", error.localizedDescription)
-                if self.pendingCompletion != nil {
+                if self.pendingRewardedAdUnitID == adUnitID {
                     self.finishRewarded(with: .failed)
                 }
             }
@@ -162,13 +184,18 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
 
     private func finishRewarded(with result: CommonRewardedAdResult) {
         let completion = pendingCompletion
+        let completedAdUnitID = activeRewardedAdUnitID ?? pendingRewardedAdUnitID
         pendingRequestID = nil
+        pendingRewardedAdUnitID = nil
         pendingCompletion = nil
         activeRewardedAd = nil
+        activeRewardedAdUnitID = nil
         didEarnReward = false
         isRewardedDismissed = false
         completion?(result)
-        loadRewardedIfNeeded()
+        if let completedAdUnitID {
+            loadRewardedIfNeeded(adUnitID: completedAdUnitID)
+        }
     }
 }
 

@@ -67,6 +67,10 @@
     <string name="backup_status_existing">%1$d BandalArts · backed up %2$s</string>
     <string name="backup_not_supported">Cloud backup is unavailable on this device.</string>
     <string name="backup_now">Back up now</string>
+    <string name="backup_create_confirm_title">Back up to the cloud?</string>
+    <string name="backup_create_confirm_body">To use cloud backup, please watch the ad to the end.</string>
+    <string name="backup_create_confirm">Watch ad and back up</string>
+    <string name="backup_create_cancel">Cancel</string>
     <string name="backup_restore">Restore from backup</string>
     <string name="backup_start_fresh">Start fresh</string>
     <string name="backup_loading">Working…</string>

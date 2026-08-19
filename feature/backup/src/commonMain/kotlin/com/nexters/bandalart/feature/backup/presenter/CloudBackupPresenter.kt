@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.backup.BackupMetadata
 import com.nexters.bandalart.core.domain.backup.CloudBackupRepository
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
@@ -40,6 +41,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @AssistedInject
 class CloudBackupPresenter(
@@ -59,7 +61,11 @@ class CloudBackupPresenter(
             )
         }
         var isLoading by remember { mutableStateOf(screen.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) }
+        var showCreateBackupConfirmation by remember { mutableStateOf(false) }
         var showRestoreConfirmation by remember { mutableStateOf(false) }
+        // Backup rewards are screen-scoped; recreation cancels the request and requires a retry.
+        var rewardedAdRequestId by remember { mutableStateOf<Long?>(null) }
+        var effect by remember { mutableStateOf<CloudBackupUiState.Effect?>(null) }
         var result by remember { mutableStateOf<CloudBackupUiState.Result?>(null) }
 
         LaunchedEffect(screen.entryPoint, repository.isSupported) {
@@ -115,12 +121,32 @@ class CloudBackupPresenter(
             }
         }
 
+        fun createBackup() {
+            isLoading = true
+            result = null
+            scope.launch {
+                try {
+                    metadata = repository.createBackup()
+                    result = CloudBackupUiState.Result.BACKUP_CREATED
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (_: Exception) {
+                    result = CloudBackupUiState.Result.ERROR
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
+
         return CloudBackupUiState(
             entryPoint = screen.entryPoint,
             isSupported = repository.isSupported,
             isLoading = isLoading,
             metadata = metadata,
+            showCreateBackupConfirmation = showCreateBackupConfirmation,
             showRestoreConfirmation = showRestoreConfirmation,
+            rewardedAdRequestId = rewardedAdRequestId,
+            effect = effect,
             result = result,
         ) { event ->
             when (event) {
@@ -128,32 +154,44 @@ class CloudBackupPresenter(
                     if (screen.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) navigator.pop() else navigateToFallback()
                 }
                 CloudBackupUiState.Event.CreateBackup -> {
-                    isLoading = true
-                    result = null
-                    scope.launch {
-                        try {
-                            metadata = repository.createBackup()
-                            result = CloudBackupUiState.Result.BACKUP_CREATED
-                        } catch (exception: CancellationException) {
-                            throw exception
-                        } catch (_: Exception) {
-                            result = CloudBackupUiState.Result.ERROR
-                        } finally {
-                            isLoading = false
+                    if (!isLoading && rewardedAdRequestId == null) showCreateBackupConfirmation = true
+                }
+                CloudBackupUiState.Event.ConfirmCreateBackup -> {
+                    if (showCreateBackupConfirmation && rewardedAdRequestId == null) {
+                        showCreateBackupConfirmation = false
+                        rewardedAdRequestId = Random.nextLong()
+                    }
+                }
+                CloudBackupUiState.Event.DismissCreateBackupConfirmation -> showCreateBackupConfirmation = false
+                is CloudBackupUiState.Event.RewardedAdFinished -> {
+                    if (event.requestId == rewardedAdRequestId) {
+                        rewardedAdRequestId = null
+                        when (event.result) {
+                            RewardedAdResult.REWARDED -> createBackup()
+                            RewardedAdResult.DISMISSED -> Unit
+                            RewardedAdResult.FAILED -> {
+                                effect = CloudBackupUiState.Effect.ShowAdUnavailableSnackbar
+                                createBackup()
+                            }
                         }
                     }
                 }
                 CloudBackupUiState.Event.RestoreBackup -> {
-                    if (screen.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) {
-                        showRestoreConfirmation = true
-                    } else {
-                        restore()
+                    if (rewardedAdRequestId == null) {
+                        if (screen.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) {
+                            showRestoreConfirmation = true
+                        } else {
+                            restore()
+                        }
                     }
                 }
-                CloudBackupUiState.Event.ConfirmRestore -> restore()
+                CloudBackupUiState.Event.ConfirmRestore -> {
+                    if (rewardedAdRequestId == null) restore()
+                }
                 CloudBackupUiState.Event.DismissRestoreConfirmation -> showRestoreConfirmation = false
                 CloudBackupUiState.Event.StartFresh -> navigateToFallback()
                 CloudBackupUiState.Event.ConsumeResult -> result = null
+                CloudBackupUiState.Event.ConsumeEffect -> effect = null
             }
         }
     }

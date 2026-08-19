@@ -39,6 +39,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +51,10 @@ import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.backup_back
 import bandalart.core.designsystem.generated.resources.backup_created
+import bandalart.core.designsystem.generated.resources.backup_create_cancel
+import bandalart.core.designsystem.generated.resources.backup_create_confirm
+import bandalart.core.designsystem.generated.resources.backup_create_confirm_body
+import bandalart.core.designsystem.generated.resources.backup_create_confirm_title
 import bandalart.core.designsystem.generated.resources.backup_description
 import bandalart.core.designsystem.generated.resources.backup_error
 import bandalart.core.designsystem.generated.resources.backup_loading
@@ -64,9 +71,15 @@ import bandalart.core.designsystem.generated.resources.backup_start_fresh
 import bandalart.core.designsystem.generated.resources.backup_status_existing
 import bandalart.core.designsystem.generated.resources.backup_status_none
 import bandalart.core.designsystem.generated.resources.backup_title
+import bandalart.core.designsystem.generated.resources.ic_cloud_download
 import bandalart.core.designsystem.generated.resources.ic_history
+import bandalart.core.designsystem.generated.resources.rewarded_ad_unavailable
+import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdPurpose
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
+import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
@@ -74,15 +87,54 @@ import dev.zacsweers.metro.Inject
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+
+private const val SNACKBAR_DURATION_MILLIS = 1500L
 
 @CircuitInject(CloudBackupScreen::class, AppScope::class)
 @Inject
 @Composable
 internal fun CloudBackup(
     state: CloudBackupUiState,
+    rewardedAdGateway: RewardedAdGateway,
     modifier: Modifier = Modifier,
 ) {
+    val showSnackbar = LocalShowSnackbar.current
+    val latestEventSink by rememberUpdatedState(state.eventSink)
+    LaunchedEffect(state.rewardedAdRequestId) {
+        val requestId = state.rewardedAdRequestId ?: return@LaunchedEffect
+        try {
+            val result =
+                try {
+                    rewardedAdGateway.show(requestId, RewardedAdPurpose.CLOUD_BACKUP)
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (_: Exception) {
+                    RewardedAdResult.FAILED
+                }
+            latestEventSink(CloudBackupUiState.Event.RewardedAdFinished(requestId, result))
+        } finally {
+            rewardedAdGateway.consume(requestId)
+        }
+    }
+    LaunchedEffect(state.effect) {
+        when (state.effect) {
+            CloudBackupUiState.Effect.ShowAdUnavailableSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.rewarded_ad_unavailable), showSnackbar)
+                state.eventSink(CloudBackupUiState.Event.ConsumeEffect)
+            }
+            null -> Unit
+        }
+    }
+
+    if (state.showCreateBackupConfirmation) {
+        CreateBackupConfirmationDialog(state.eventSink)
+    }
     if (state.showRestoreConfirmation) {
         RestoreConfirmationDialog(state.eventSink)
     }
@@ -170,7 +222,7 @@ internal fun CloudBackup(
             if (state.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) {
                 Button(
                     onClick = { state.eventSink(CloudBackupUiState.Event.CreateBackup) },
-                    enabled = state.isSupported && !state.isLoading,
+                    enabled = state.isSupported && !state.isLoading && state.rewardedAdRequestId == null,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
@@ -181,7 +233,11 @@ internal fun CloudBackup(
             }
             OutlinedButton(
                 onClick = { state.eventSink(CloudBackupUiState.Event.RestoreBackup) },
-                enabled = state.isSupported && !state.isLoading && state.metadata != null,
+                enabled =
+                    state.isSupported &&
+                        !state.isLoading &&
+                        state.rewardedAdRequestId == null &&
+                        state.metadata != null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
@@ -247,6 +303,31 @@ private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> U
         onConfirmClick = { eventSink(CloudBackupUiState.Event.ConfirmRestore) },
         onCancelClick = { eventSink(CloudBackupUiState.Event.DismissRestoreConfirmation) },
     )
+}
+
+@Composable
+private fun CreateBackupConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> Unit) {
+    BandalartActionAlertDialog(
+        icon = Res.drawable.ic_cloud_download,
+        iconContentDescription = stringResource(Res.string.backup_now),
+        title = stringResource(Res.string.backup_create_confirm_title),
+        message = stringResource(Res.string.backup_create_confirm_body),
+        confirmLabel = stringResource(Res.string.backup_create_confirm),
+        cancelLabel = stringResource(Res.string.backup_create_cancel),
+        onConfirmClick = { eventSink(CloudBackupUiState.Event.ConfirmCreateBackup) },
+        onCancelClick = { eventSink(CloudBackupUiState.Event.DismissCreateBackupConfirmation) },
+    )
+}
+
+private suspend fun showSnackbarForDuration(
+    message: String,
+    showSnackbar: suspend (String) -> Boolean,
+) {
+    coroutineScope {
+        val snackbarJob = launch { showSnackbar(message) }
+        delay(SNACKBAR_DURATION_MILLIS)
+        snackbarJob.cancel()
+    }
 }
 
 private fun String.toDisplayDateTime(): String =

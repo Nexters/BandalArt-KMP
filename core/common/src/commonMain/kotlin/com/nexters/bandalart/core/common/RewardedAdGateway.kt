@@ -22,14 +22,25 @@ enum class RewardedAdResult {
     FAILED,
 }
 
+enum class RewardedAdPurpose {
+    BANDALART_CREATION,
+    CLOUD_BACKUP,
+}
+
 interface RewardedAdGateway {
-    suspend fun show(requestId: Long): RewardedAdResult
+    suspend fun show(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): RewardedAdResult
 
     fun consume(requestId: Long)
 }
 
 object NoOpRewardedAdGateway : RewardedAdGateway {
-    override suspend fun show(requestId: Long): RewardedAdResult = RewardedAdResult.FAILED
+    override suspend fun show(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): RewardedAdResult = RewardedAdResult.FAILED
 
     override fun consume(requestId: Long) = Unit
 }

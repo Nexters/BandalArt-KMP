@@ -57,7 +57,8 @@ android {
             isDebuggable = true
             applicationIdSuffix = ".dev"
             resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
-            resValue("string", "admob_rewarded_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
+            resValue("string", "admob_rewarded_bandalart_creation_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
+            resValue("string", "admob_rewarded_cloud_backup_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/6300978111")
             manifestPlaceholders +=
                 mapOf(
@@ -73,7 +74,16 @@ android {
             resValue("string", "admob_app_id", "ca-app-pub-5570932833347277~6079637815")
             resValue(
                 "string",
-                "admob_rewarded_ad_unit_id",
+                "admob_rewarded_bandalart_creation_ad_unit_id",
+                if (useTestAds) {
+                    "ca-app-pub-3940256099942544/5224354917"
+                } else {
+                    "ca-app-pub-5570932833347277/6659503579"
+                },
+            )
+            resValue(
+                "string",
+                "admob_rewarded_cloud_backup_ad_unit_id",
                 if (useTestAds) {
                     "ca-app-pub-3940256099942544/5224354917"
                 } else {
