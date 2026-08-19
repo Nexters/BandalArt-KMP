@@ -5,4 +5,6 @@
     <string name="deadline_reminder_title">今日が締め切りの目標があります</string>
     <string name="deadline_reminder_single_body">%1$sを完了する時間です。</string>
     <string name="deadline_reminder_multiple_body">%1$d個の目標が今日締切です。</string>
+    <string name="deadline_reminder_test_title">締切日リマインダーのテスト</string>
+    <string name="deadline_reminder_test_body">この通知が表示されれば、通知は正しく設定されています。</string>
 </resources>

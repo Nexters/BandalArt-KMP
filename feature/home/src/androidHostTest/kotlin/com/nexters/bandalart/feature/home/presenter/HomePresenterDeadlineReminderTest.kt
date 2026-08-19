@@ -22,7 +22,11 @@ import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificati
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingErrorCategory
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -462,12 +466,59 @@ class HomePresenterDeadlineReminderTest {
             }
         }
 
+    @Test
+    fun sendingTestNotificationDelegatesToSchedulerAndReportsSuccess() =
+        runTest {
+            val scheduler = RecordingScheduler()
+            val presenter = presenter(repository = repository(), scheduler = scheduler)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.SendDeadlineReminderTestNotification)
+                while (state.effect != HomeScreen.Effect.ShowDeadlineReminderTestSentSnackbar) {
+                    state = awaitItem()
+                }
+
+                assertEquals(1, scheduler.testNotificationCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun failedTestNotificationReportsFailure() =
+        runTest {
+            val scheduler =
+                RecordingScheduler(
+                    DeadlineReminderSchedulingResult(
+                        scheduledCount = 0,
+                        lastErrorCategory = DeadlineReminderSchedulingErrorCategory.SCHEDULING,
+                    ),
+                )
+            val presenter = presenter(repository = repository(), scheduler = scheduler)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.SendDeadlineReminderTestNotification)
+                while (state.effect != HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar) {
+                    state = awaitItem()
+                }
+
+                assertEquals(1, scheduler.testNotificationCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun presenter(
         repository: FakeBandalartRepository,
         settings: FakeSettingsRepository = FakeSettingsRepository(),
         authorization: DeadlineNotificationAuthorization =
             FakeAuthorization(DeadlineNotificationAuthorizationStatus.REQUESTABLE),
         reconciler: DeadlineReminderReconciler = RecordingReconciler(),
+        scheduler: DeadlineReminderScheduler = RecordingScheduler(),
         launchTarget: BufferedDeadlineNotificationLaunchTarget = BufferedDeadlineNotificationLaunchTarget(),
     ) = HomePresenter(
         navigator = FakeNavigator(HomeScreen),
@@ -477,6 +528,7 @@ class HomePresenterDeadlineReminderTest {
         settingsRepository = settings,
         deadlineNotificationAuthorization = authorization,
         deadlineReminderReconciler = reconciler,
+        deadlineReminderScheduler = scheduler,
         deadlineNotificationLaunchTarget = launchTarget,
     )
 
@@ -535,6 +587,22 @@ class HomePresenterDeadlineReminderTest {
 
         override suspend fun reconcileAll() {
             reconcileCalls += 1
+        }
+    }
+
+    private class RecordingScheduler(
+        private val testResult: DeadlineReminderSchedulingResult = DeadlineReminderSchedulingResult(scheduledCount = 1),
+    ) : DeadlineReminderScheduler {
+        var testNotificationCalls = 0
+
+        override suspend fun replaceAll(batches: List<DeadlineReminderBatch>) =
+            DeadlineReminderSchedulingResult(scheduledCount = batches.size)
+
+        override suspend fun clearAll() = DeadlineReminderSchedulingResult(scheduledCount = 0)
+
+        override suspend fun postTestNotification(): DeadlineReminderSchedulingResult {
+            testNotificationCalls += 1
+            return testResult
         }
     }
 }

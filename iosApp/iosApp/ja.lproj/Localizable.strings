@@ -1,3 +1,5 @@
 "deadline_reminder_title" = "今日が締め切りの目標があります";
 "deadline_reminder_single_body" = "%@を完了する時間です。";
 "deadline_reminder_multiple_body" = "%ld個の目標が今日締切です。";
+"deadline_reminder_test_title" = "締切日リマインダーのテスト";
+"deadline_reminder_test_body" = "この通知が表示されれば、通知は正しく設定されています。";

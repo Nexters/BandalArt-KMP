@@ -5,4 +5,6 @@
     <string name="deadline_reminder_title">You have goals due today</string>
     <string name="deadline_reminder_single_body">Time to complete %1$s.</string>
     <string name="deadline_reminder_multiple_body">%1$d goals are due today.</string>
+    <string name="deadline_reminder_test_title">Deadline reminder test</string>
+    <string name="deadline_reminder_test_body">If you can see this, notifications are set up correctly.</string>
 </resources>

@@ -209,6 +209,9 @@
     <string name="settings_deadline_reminder_dialog_body">목표 제목이 잠금 화면에 보일 수 있으며, 마감일 당일 오전 9시부터 기기 상태에 따라 알림이 전달돼요.</string>
     <string name="settings_deadline_reminder_confirm">알림 켜기</string>
     <string name="settings_deadline_reminder_cancel">취소</string>
+    <string name="settings_deadline_reminder_test_sent">테스트 알림을 보냈어요.</string>
+    <string name="settings_deadline_reminder_test_failed">테스트 알림을 보내지 못했어요. 시스템 알림 설정을 확인해 주세요.</string>
+    <string name="settings_deadline_reminder_test">테스트 알림 보내기</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">새 반다라트 만들기</string>

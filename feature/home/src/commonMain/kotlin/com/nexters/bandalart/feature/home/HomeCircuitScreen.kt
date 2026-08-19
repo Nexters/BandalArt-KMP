@@ -104,6 +104,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object ShowSlotErrorSnackbar : Effect
 
+        data object ShowDeadlineReminderTestSentSnackbar : Effect
+
+        data object ShowDeadlineReminderTestFailedSnackbar : Effect
+
         data object ShowMainGoalToast : Effect
 
         data object OpenSupportMail : Effect
@@ -240,6 +244,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object DeadlineReminderPermissionResult : Event
 
         data object DeadlineReminderForegrounded : Event
+
+        data object SendDeadlineReminderTestNotification : Event
 
         data object ContactSupport : Event
 

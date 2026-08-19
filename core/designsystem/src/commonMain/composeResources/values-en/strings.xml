@@ -207,6 +207,9 @@
     <string name="settings_deadline_reminder_dialog_body">Goal titles may appear on your lock screen. Reminders are delivered from 9 AM on the due date depending on device conditions.</string>
     <string name="settings_deadline_reminder_confirm">Turn on</string>
     <string name="settings_deadline_reminder_cancel">Cancel</string>
+    <string name="settings_deadline_reminder_test_sent">Test notification sent.</string>
+    <string name="settings_deadline_reminder_test_failed">Couldn’t send a test notification. Check system notification settings.</string>
+    <string name="settings_deadline_reminder_test">Send test notification</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">Create a Bandalart</string>
