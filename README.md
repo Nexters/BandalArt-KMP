@@ -78,20 +78,20 @@
 
 | 영역 | 사용 기술 |
 | --- | --- |
-| 언어·빌드 | Kotlin 2.4.10, Swift, Gradle 9.5.0, Android Gradle Plugin 9.3.0, Java Development Kit (JDK) 21 |
-| UI | Compose Multiplatform 1.10.3, Material 3, Pretendard, Compottie, Coil 3, Landscapist |
-| 상태·내비게이션 | [Circuit 0.36.1](https://slackhq.github.io/circuit/) |
-| 의존성 주입 | [Metro 1.1.1](https://zacsweers.github.io/metro/) |
-| 로컬 데이터 | Room KMP 2.7.2, SQLite 2.5.0, DataStore 1.1.4 |
-| 네트워크·클라우드 | Ktor 3.4.3, Supabase KMP 3.2.0과 PostgREST RPC |
-| 비동기·직렬화 | Kotlin Coroutines 1.10.1, Kotlinx Serialization 1.8.1, Kotlinx DateTime 0.6.2, Immutable Collections 0.3.8 |
-| 백그라운드·알림 | AndroidX WorkManager 2.11.2, AndroidX Core 1.16.0의 NotificationCompat, iOS UserNotifications |
-| 홈 화면 위젯 | AndroidX Glance 1.1.1, WidgetKit |
-| 서비스 | GitLive Firebase Kotlin SDK 2.1.0의 Analytics·Crashlytics·Remote Config, Google Mobile Ads Next-Gen SDK 1.3.0 |
-| Android | AndroidX Activity·Fragment·Lifecycle·SplashScreen, Play In-App Updates, Baseline Profiles, R8 |
+| 언어·빌드 | Kotlin, Swift, Gradle, Android Gradle Plugin, Java Development Kit (JDK) |
+| UI | Compose Multiplatform, Material Design, Pretendard, Compottie, Coil, Landscapist |
+| 상태·내비게이션 | [Circuit](https://slackhq.github.io/circuit/) |
+| 의존성 주입 | [Metro](https://zacsweers.github.io/metro/) |
+| 로컬 데이터 | Room KMP, SQLite, DataStore |
+| 네트워크·클라우드 | Ktor, Supabase KMP, PostgREST RPC |
+| 비동기·직렬화 | Kotlin Coroutines, Kotlinx Serialization, Kotlinx DateTime, Immutable Collections |
+| 백그라운드·알림 | AndroidX WorkManager, AndroidX Core NotificationCompat, iOS UserNotifications |
+| 홈 화면 위젯 | AndroidX Glance, WidgetKit |
+| 서비스 | GitLive Firebase Kotlin SDK, Firebase Analytics, Firebase Crashlytics, Firebase Remote Config, Google Mobile Ads Next-Gen SDK |
+| Android | AndroidX Activity, Fragment, Lifecycle, SplashScreen, Play In-App Updates, Baseline Profiles, R8 |
 | iOS | Swift 호스트 앱, Swift Package Manager |
 | 로깅·도구 | Napier, Ding, uri-kmp, CMPToast, Jindong |
-| 테스트 | JUnit 5, Circuit Test, Turbine, MockK, Robolectric, Kotest |
+| 테스트 | JUnit, Circuit Test, Turbine, MockK, Robolectric, Kotest |
 | 코드 품질 | Spotless, ktlint, Detekt |
 
 정확한 의존성 버전은 [Gradle Version Catalog](gradle/libs.versions.toml)를 기준으로 관리합니다. 오픈소스 고지와 라이선스는 [Third-party notices](THIRD_PARTY_NOTICES.md)에서 확인할 수 있습니다.
