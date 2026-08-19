@@ -2,7 +2,7 @@
 
 - 작성 기준: 2026-08-06, `docs/kmp-testing-guide`
 - 관련 이슈: [#209](https://github.com/Nexters/BandalArt-KMP/issues/209)
-- 대상 구성: AGP 9 Android-KMP plugin, Kotlin Multiplatform, Circuit 0.35.1, JUnit 5
+- 대상 구성: AGP 9 Android-KMP plugin, Kotlin Multiplatform, Circuit 0.36.1, JUnit 5
 
 ## 결론
 
@@ -71,7 +71,7 @@ runTest {
 
 - [Circuit 공식 Testing 문서](https://slackhq.github.io/circuit/docs/testing/)
 
-프로젝트가 소비 중인 `circuit-test:0.35.1` Gradle Module Metadata를 확인한 결과는 다음과 같다.
+프로젝트가 소비 중인 `circuit-test:0.36.1` Gradle Module Metadata를 확인한 결과는 다음과 같다.
 
 - common metadata와 Android/JVM/iOS/JS/Wasm/macOS 변형을 게시한다.
 - `molecule-runtime:2.2.0`과 `turbine:1.2.1`을 전이 의존성으로 제공한다.

@@ -1,6 +1,6 @@
 # Compose와 Circuit 상태 수명 가이드
 
-- 작성 기준: 2026-08-08, Circuit 0.35.1
+- 작성 기준: 2026-08-19, Circuit 0.36.1
 - 적용 범위: Compose Multiplatform UI, Circuit Presenter, Android saved state, repository persistence
 
 ## 한 줄 원칙
@@ -38,7 +38,7 @@ Circuit back stack 보존은 해당 화면 record가 stack에 남아 있을 때�
 
 `rememberSaveable`의 process 복원은 Android saved-state 동작이다. iOS 앱 종료·재실행까지 보장하는 KMP 영속성으로 해석하지 않는다. 플랫폼을 넘어 복구해야 하는 값은 repository에 저장한다.
 
-현재 프로젝트는 Circuit 0.35.1을 사용하며 Android에서는 기본 ViewModel-backed retained registry를 사용하고 `CircuitRetainedSettings.useFirstParty`를 켜지 않았다. Compose의 first-party retain API와 Circuit retained API를 한 화면에서 임의로 섞지 않고, 전환이 필요하면 별도 마이그레이션으로 플랫폼별 수명과 테스트 계약을 다시 고정한다.
+현재 프로젝트는 Circuit 0.36.1을 사용하며 Android에서는 기본 ViewModel-backed retained registry를 사용하고 `CircuitRetainedSettings.useFirstParty`를 켜지 않았다. Compose의 first-party retain API와 Circuit retained API를 한 화면에서 임의로 섞지 않고, 전환이 필요하면 별도 마이그레이션으로 플랫폼별 수명과 테스트 계약을 다시 고정한다.
 
 ## API별 기준
 
