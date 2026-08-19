@@ -595,8 +595,7 @@ class HomePresenterDeadlineReminderTest {
     ) : DeadlineReminderScheduler {
         var testNotificationCalls = 0
 
-        override suspend fun replaceAll(batches: List<DeadlineReminderBatch>) =
-            DeadlineReminderSchedulingResult(scheduledCount = batches.size)
+        override suspend fun replaceAll(batches: List<DeadlineReminderBatch>) = DeadlineReminderSchedulingResult(scheduledCount = batches.size)
 
         override suspend fun clearAll() = DeadlineReminderSchedulingResult(scheduledCount = 0)
 
