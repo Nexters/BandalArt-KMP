@@ -181,7 +181,7 @@ DataStore의 `deadlineReminderEnabled`는 사용자의 의사이며 OS authoriza
 - exact alarm 권한과 별도 `BOOT_COMPLETED` receiver는 추가하지 않는다. WorkManager가 persistent work를 재부팅 뒤 복원한다.
 - unique work 이름과 tag는 batch/board namespace를 사용하고 교체는 `ExistingWorkPolicy.REPLACE`로 처리한다.
 - `TIME_SET`, `TIMEZONE_CHANGED` receiver는 DB를 직접 오래 읽지 않고 unique reconcile work만 enqueue한다.
-- Android 13 이상 `POST_NOTIFICATIONS` runtime permission과 API 26 이상 `deadline_reminder` channel을 사용한다.
+- Android 13 이상 `POST_NOTIFICATIONS` runtime permission과 API 26 이상 `deadline_reminder_v2` high-importance channel을 사용한다. 기존 `deadline_reminder` channel은 생성 뒤 importance를 올릴 수 없어 ID를 변경한다.
 - Worker는 input title을 그대로 게시하지 않고 실행 직전 Room에서 해당 board/date의 현재 적격 item을 다시 조회한다.
 - 설정 OFF, 권한/channel 차단, 삭제·완료·날짜 변경, 잘못된 날짜, 다음 날 지연 실행은 stale work로 보고 `Result.success()`로 끝낸다.
 - explicit `MainActivity` pending intent에 `FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE`을 사용한다.
