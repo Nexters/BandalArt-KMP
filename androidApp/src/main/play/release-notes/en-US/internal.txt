@@ -1,6 +1,1 @@
-• Back up your BandalArt data to the cloud from Settings.
-• Restore a detected backup on the same device after reinstalling the app.
-• Improved font rendering in Settings and Cloud Backup.
-• Fixed shared and saved BandalArt images to match the dark mode background.
-• Improved the icons for the cloud backup menu and restore dialog.
-• Send an immediate test notification from Settings to verify deadline reminders.
+• Moved deadline reminders to a new high-importance channel so they can appear prominently at the top of the screen.

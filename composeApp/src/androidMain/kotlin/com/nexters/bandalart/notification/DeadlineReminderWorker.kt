@@ -16,7 +16,6 @@
 
 package com.nexters.bandalart.notification
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -123,15 +122,7 @@ class DeadlineReminderWorker(
         dependencies: AndroidDeadlineReminderDependencies,
     ) {
         val notificationManager = applicationContext.getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(
-            NotificationChannel(
-                DeadlineReminderWork.CHANNEL_ID,
-                applicationContext.getString(R.string.deadline_reminder_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            ).apply {
-                description = applicationContext.getString(R.string.deadline_reminder_channel_description)
-            },
-        )
+        notificationManager.ensureDeadlineReminderChannel(applicationContext)
         val launchIntent =
             dependencies
                 .createDeadlineNotificationLaunchIntent(batchId, bandalartId)

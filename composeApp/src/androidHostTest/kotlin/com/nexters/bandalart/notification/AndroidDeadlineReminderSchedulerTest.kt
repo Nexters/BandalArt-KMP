@@ -17,6 +17,7 @@
 package com.nexters.bandalart.notification
 
 import android.app.Application
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
@@ -123,6 +124,30 @@ class AndroidDeadlineReminderSchedulerTest {
             assertFalse(
                 notificationManager.activeNotifications.any { notification ->
                     notification.tag == DeadlineReminderWork.TEST_NOTIFICATION_TAG
+                },
+            )
+        }
+
+    @Test
+    fun testNotificationMigratesFromLegacyDefaultChannelToNewHighImportanceChannel() =
+        runTest {
+            val notificationManager = application.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    "deadline_reminder",
+                    "Legacy deadline reminders",
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ),
+            )
+
+            scheduler.postTestNotification()
+
+            val highImportanceChannel = notificationManager.getNotificationChannel("deadline_reminder_v2")
+            assertEquals(NotificationManager.IMPORTANCE_HIGH, highImportanceChannel?.importance)
+            assertTrue(
+                notificationManager.activeNotifications.any { notification ->
+                    notification.tag == DeadlineReminderWork.TEST_NOTIFICATION_TAG &&
+                        notification.notification.channelId == "deadline_reminder_v2"
                 },
             )
         }

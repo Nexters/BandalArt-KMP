@@ -17,7 +17,6 @@
 package com.nexters.bandalart.notification
 
 import android.app.Application
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import androidx.core.app.NotificationCompat
 import androidx.work.ExistingWorkPolicy
@@ -105,15 +104,7 @@ class AndroidDeadlineReminderScheduler(
     override suspend fun postTestNotification(): DeadlineReminderSchedulingResult =
         try {
             val notificationManager = application.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(
-                NotificationChannel(
-                    DeadlineReminderWork.CHANNEL_ID,
-                    application.getString(R.string.deadline_reminder_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT,
-                ).apply {
-                    description = application.getString(R.string.deadline_reminder_channel_description)
-                },
-            )
+            notificationManager.ensureDeadlineReminderChannel(application)
             val notification =
                 NotificationCompat
                     .Builder(application, DeadlineReminderWork.CHANNEL_ID)
@@ -159,7 +150,7 @@ internal object DeadlineReminderWork {
     const val KEY_BANDALART_ID = "bandalart_id"
     const val KEY_DUE_DATE = "due_date"
     const val NOTIFICATION_ID = 0
-    const val CHANNEL_ID = "deadline_reminder"
+    const val CHANNEL_ID = "deadline_reminder_v2"
     const val TEST_NOTIFICATION_TAG = "deadline.v1.test"
 
     fun uniqueWorkName(batchId: String): String = "deadline.v1.work.$batchId"

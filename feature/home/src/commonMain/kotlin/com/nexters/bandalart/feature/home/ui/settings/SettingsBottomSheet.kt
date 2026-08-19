@@ -44,7 +44,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -74,7 +73,6 @@ import bandalart.core.designsystem.generated.resources.settings_deadline_reminde
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_dialog_title
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_overflow
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_section
-import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test
 import bandalart.core.designsystem.generated.resources.settings_contact
 import bandalart.core.designsystem.generated.resources.settings_theme_dark
 import bandalart.core.designsystem.generated.resources.settings_theme_light
@@ -172,20 +170,6 @@ internal fun SettingsBottomSheet(
                         }
                     },
                 )
-                if (
-                    deadlineReminderEnabled &&
-                    (
-                        deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.GRANTED ||
-                            deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.QUIET
-                    )
-                ) {
-                    TextButton(
-                        onClick = { onHomeUiAction(HomeScreen.Event.SendDeadlineReminderTestNotification) },
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    ) {
-                        Text(text = stringResource(Res.string.settings_deadline_reminder_test))
-                    }
-                }
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,
