@@ -64,7 +64,7 @@ import bandalart.core.designsystem.generated.resources.backup_start_fresh
 import bandalart.core.designsystem.generated.resources.backup_status_existing
 import bandalart.core.designsystem.generated.resources.backup_status_none
 import bandalart.core.designsystem.generated.resources.backup_title
-import bandalart.core.designsystem.generated.resources.ic_settings_backup_restore
+import bandalart.core.designsystem.generated.resources.ic_history
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
@@ -238,7 +238,7 @@ private fun BackupHeader(
 @Composable
 private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> Unit) {
     BandalartActionAlertDialog(
-        icon = Res.drawable.ic_settings_backup_restore,
+        icon = Res.drawable.ic_history,
         iconContentDescription = stringResource(Res.string.backup_restore),
         title = stringResource(Res.string.backup_restore_confirm_title),
         message = stringResource(Res.string.backup_restore_confirm_body),

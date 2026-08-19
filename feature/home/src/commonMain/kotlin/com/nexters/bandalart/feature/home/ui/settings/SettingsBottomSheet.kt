@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
+import bandalart.core.designsystem.generated.resources.ic_cloud_download
 import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
@@ -86,6 +87,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduling
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -225,6 +227,13 @@ private fun SettingsCloudBackupRow(onClick: () -> Unit) {
                 .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Icon(
+            imageVector = vectorResource(Res.drawable.ic_cloud_download),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(22.dp),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(Res.string.settings_cloud_backup),
