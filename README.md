@@ -24,7 +24,8 @@
 - 목표, 하위 목표, 실천 항목으로 구성된 만다라트 계획 작성과 달성 관리
 - 취업 준비, 운동 습관, 공부 계획, 재테크 습관, 여행 준비 템플릿 제공
 - 여러 반다라트 생성, 전환, 삭제와 이미지 저장·공유
-- 마감일 당일 오전 9시부터 전달되는 Android·iOS 로컬 알림
+- 동일 기기에서 앱을 다시 설치한 뒤 복원할 수 있는 수동 클라우드 백업
+- 마감일 당일 오전 9시를 목표로 전달되는 Android·iOS 로컬 알림
 - 마지막으로 본 반다라트의 진행률과 실천 항목을 확인하고 완료 상태를 변경할 수 있는 Android·iOS 홈 화면 위젯
 - 시스템 설정, 라이트 모드, 다크 모드와 목표 완료 시 진동 피드백
 - 한국어, 영어, 일본어 인터페이스
@@ -46,14 +47,14 @@
 ![image](https://github.com/user-attachments/assets/c45b3830-95b2-4b20-9280-7004fc812350)
 
 ```text
-├── androidApp          # Android 애플리케이션과 플랫폼 연동
-├── composeApp          # 공통 앱 조립, Android·iOS 플랫폼 구현
-├── iosApp              # Swift 호스트 앱과 iOS 네이티브 브리지
+├── androidApp          # Android 애플리케이션, 홈 화면 위젯과 플랫폼 연동
+├── composeApp          # 공통 앱 조립, Android·iOS 알림과 플랫폼 구현
+├── iosApp              # Swift 호스트 앱, WidgetKit과 iOS 네이티브 브리지
 ├── baselineprofile     # Android Baseline Profile 생성
 ├── build-logic         # Gradle convention plugin
 ├── core
 │   ├── common          # 공통 유틸리티와 플랫폼 계약
-│   ├── data            # Repository 구현
+│   ├── data            # Repository 구현과 Supabase 원격 백업 연결
 │   ├── database        # Room KMP 데이터베이스
 │   ├── datastore       # 설정과 앱 상태 저장
 │   ├── designsystem    # 테마, Pretendard, 공통 컴포넌트와 리소스
@@ -61,6 +62,7 @@
 │   ├── navigation      # Circuit Screen과 내비게이션 계약
 │   └── ui              # 공통 UI 도구
 ├── feature
+│   ├── backup          # 클라우드 백업과 복원
 │   ├── complete        # 목표 달성 화면
 │   ├── home            # 계획 작성, 템플릿, 설정과 광고 흐름
 │   ├── onboarding      # 온보딩
@@ -78,13 +80,16 @@
 | --- | --- |
 | 언어·빌드 | Kotlin 2.4.10, Swift, Gradle 9.5.0, Android Gradle Plugin 9.3.0, Java Development Kit (JDK) 21 |
 | UI | Compose Multiplatform 1.10.3, Material 3, Pretendard, Compottie, Coil 3, Landscapist |
-| 상태·내비게이션 | [Circuit 0.35.1](https://slackhq.github.io/circuit/) |
+| 상태·내비게이션 | [Circuit 0.36.1](https://slackhq.github.io/circuit/) |
 | 의존성 주입 | [Metro 1.1.1](https://zacsweers.github.io/metro/) |
-| 데이터 | Room KMP, SQLite, DataStore |
-| 비동기·직렬화 | Kotlin Coroutines, Kotlinx Serialization, Kotlinx DateTime, Immutable Collections |
-| 서비스 | Firebase Analytics·Crashlytics·Remote Config, Google AdMob |
-| Android | WorkManager, In-app Updates, Baseline Profiles, R8 |
-| iOS | Swift 호스트 앱, Swift Package Manager, UserNotifications |
+| 로컬 데이터 | Room KMP 2.7.2, SQLite 2.5.0, DataStore 1.1.4 |
+| 네트워크·클라우드 | Ktor 3.4.3, Supabase KMP 3.2.0과 PostgREST RPC |
+| 비동기·직렬화 | Kotlin Coroutines 1.10.1, Kotlinx Serialization 1.8.1, Kotlinx DateTime 0.6.2, Immutable Collections 0.3.8 |
+| 백그라운드·알림 | AndroidX WorkManager 2.11.2, AndroidX Core 1.16.0의 NotificationCompat, iOS UserNotifications |
+| 홈 화면 위젯 | AndroidX Glance 1.1.1, WidgetKit |
+| 서비스 | GitLive Firebase Kotlin SDK 2.1.0의 Analytics·Crashlytics·Remote Config, Google Mobile Ads Next-Gen SDK 1.3.0 |
+| Android | AndroidX Activity·Fragment·Lifecycle·SplashScreen, Play In-App Updates, Baseline Profiles, R8 |
+| iOS | Swift 호스트 앱, Swift Package Manager |
 | 로깅·도구 | Napier, Ding, uri-kmp, CMPToast, Jindong |
 | 테스트 | JUnit 5, Circuit Test, Turbine, MockK, Robolectric, Kotest |
 | 코드 품질 | Spotless, ktlint, Detekt |

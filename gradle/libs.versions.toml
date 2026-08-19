@@ -52,7 +52,7 @@ androidx-sqlite = "2.5.0"
 
 # DI
 metro = "1.1.1"
-circuit = "0.35.1"
+circuit = "0.36.1"
 
 # Image Load
 coil3 = "3.1.0"
