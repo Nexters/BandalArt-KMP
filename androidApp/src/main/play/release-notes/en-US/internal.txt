@@ -3,3 +3,4 @@
 • Improved font rendering in Settings and Cloud Backup.
 • Fixed shared and saved BandalArt images to match the dark mode background.
 • Improved the icons for the cloud backup menu and restore dialog.
+• Send an immediate test notification from Settings to verify deadline reminders.
