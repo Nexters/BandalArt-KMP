@@ -53,6 +53,7 @@ kotlin {
         it.binaries.framework {
             baseName = xcfName
             isStatic = true
+            binaryOption("smallBinary", "true")
         }
     }
 
