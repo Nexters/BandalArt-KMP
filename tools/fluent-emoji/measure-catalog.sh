@@ -15,7 +15,6 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly OUTPUT_DIR="${SCRIPT_DIR}/measurement"
 readonly RUNTIME_DRAWABLE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/drawable"
-readonly RUNTIME_CATALOG_PATH="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji_catalog.json"
 readonly RUNTIME_KOTLIN_PATH="${PROJECT_DIR}/core/ui/src/commonMain/kotlin/com/nexters/bandalart/core/ui/component/emoji/FluentEmojiCatalog.generated.kt"
 
 sync_runtime_resources=false
@@ -171,11 +170,9 @@ jq -s \
 
 if [[ "${sync_runtime_resources}" == true ]]; then
     runtime_drawable_staging_dir="${temporary_dir}/runtime-drawable"
-    runtime_catalog_staging_path="${temporary_dir}/fluent_emoji_catalog.json"
     runtime_kotlin_staging_path="${temporary_dir}/FluentEmojiCatalog.generated.kt"
     mkdir -p "${runtime_drawable_staging_dir}"
     cp "${generated_dir}"/*.webp "${runtime_drawable_staging_dir}/"
-    cp "${candidate_catalog_path}" "${runtime_catalog_staging_path}"
     node "${SCRIPT_DIR}/generate-runtime-catalog.mjs" \
         "${candidate_catalog_path}" \
         "${runtime_kotlin_staging_path}"
@@ -186,7 +183,7 @@ if [[ "${sync_runtime_resources}" == true ]]; then
         exit 1
     fi
 
-    mkdir -p "${RUNTIME_DRAWABLE_DIR}" "$(dirname "${RUNTIME_CATALOG_PATH}")" "$(dirname "${RUNTIME_KOTLIN_PATH}")"
+    mkdir -p "${RUNTIME_DRAWABLE_DIR}" "$(dirname "${RUNTIME_KOTLIN_PATH}")"
     cp "${runtime_drawable_staging_dir}"/*.webp "${RUNTIME_DRAWABLE_DIR}/"
     while IFS= read -r -d '' existing_asset_path; do
         asset_name="${existing_asset_path##*/}"
@@ -194,8 +191,6 @@ if [[ "${sync_runtime_resources}" == true ]]; then
             rm -f "${existing_asset_path}"
         fi
     done < <(find "${RUNTIME_DRAWABLE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
-    cp "${runtime_catalog_staging_path}" "${RUNTIME_CATALOG_PATH}.tmp"
-    mv "${RUNTIME_CATALOG_PATH}.tmp" "${RUNTIME_CATALOG_PATH}"
     cp "${runtime_kotlin_staging_path}" "${RUNTIME_KOTLIN_PATH}.tmp"
     mv "${RUNTIME_KOTLIN_PATH}.tmp" "${RUNTIME_KOTLIN_PATH}"
 fi
@@ -204,5 +199,5 @@ rm -rf "${OUTPUT_DIR}"
 mv "${working_output_dir}" "${OUTPUT_DIR}"
 echo "Measured actual 100, 200, and 300 item Color catalogs in ${OUTPUT_DIR}."
 if [[ "${sync_runtime_resources}" == true ]]; then
-    echo "Synced 300 Color assets and runtime catalog resources."
+    echo "Synced 300 Color assets and the generated Kotlin runtime catalog."
 fi

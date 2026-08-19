@@ -31,7 +31,7 @@ Actual 100/200/300 item Color resource and deterministic ZIP payload measurement
 ./tools/fluent-emoji/measure-catalog.sh
 ```
 
-Sync the finalized 300 Color assets, runtime catalog JSON, and generated Kotlin catalog into the KMP modules:
+Sync the finalized 300 Color assets and generated Kotlin catalog into the KMP modules. The measurement JSON remains under `tools/fluent-emoji/measurement` and is not copied into the runtime bundle:
 
 ```bash
 ./tools/fluent-emoji/measure-catalog.sh --sync-resources

@@ -30,8 +30,8 @@
 ### 파일 책임
 
 - `core/designsystem/composeResources/drawable`: `fluent_<codepoints>.webp` 300개
-- `core/designsystem/composeResources/files`: 검색·카테고리 후속 단계가 사용할 catalog JSON
-- `core/ui/component/emoji`: 생성 mapping, 공통 renderer와 fallback
+- `tools/fluent-emoji/measurement`: 생성 입력과 측정 근거로 유지하는 catalog JSON
+- `core/ui/component/emoji`: JSON에서 생성한 runtime mapping, 공통 renderer와 fallback
 - `feature/home`, `feature/complete`: 기존 직접 `Text(profileEmoji)`만 renderer 호출로 교체
 
 ### 롤백 경계
@@ -41,7 +41,7 @@ renderer 또는 resource codegen 문제가 생기면 feature 호출부를 기존
 ### 구현 결과
 
 - Color WebP 300개를 공통 drawable resource로 동기화했으며 파일 합계는 935,622B다.
-- runtime catalog JSON과 생성 Kotlin mapping은 같은 300개 Unicode/resource key를 사용한다.
+- 측정 catalog JSON에서 같은 300개 Unicode/resource key의 Kotlin runtime mapping을 생성한다. JSON 자체는 앱에서 읽지 않으므로 runtime resource bundle에는 포함하지 않는다.
 - 남성·여성 sign 및 man/woman person code point를 포함한 성별 변형은 runtime catalog에도 포함하지 않았다.
 - Home header, 반다라트 목록, 편집 bottom sheet와 Complete 화면이 공통 renderer를 사용한다.
 - 현재 공유·저장 이미지인 `BandalartChart`에는 `profileEmoji`가 포함되지 않아 renderer 교체 대상이 없다. 이후 export에 이모지를 추가할 때는 공통 renderer를 사용한다.
