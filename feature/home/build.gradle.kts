@@ -52,8 +52,12 @@ kotlin {
 
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
+            implementation(libs.androidx.compose.ui.test)
             implementation(libs.circuit.test)
+            implementation(libs.junit)
+            implementation(libs.junit.vintage.engine)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.robolectric)
             implementation(libs.turbine)
         }
     }

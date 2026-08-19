@@ -62,7 +62,6 @@ import com.nexters.bandalart.core.common.SupportMailOpenResult
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
 import com.nexters.bandalart.core.common.openWithClipboardFallback
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
-import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
@@ -320,10 +319,7 @@ internal fun HomeContent(
                     Column(
                         modifier =
                             Modifier
-                                .captureToGraphicsLayer(
-                                    graphicsLayer = homeGraphicsLayer,
-                                    captureBackgroundColor = Gray50,
-                                ),
+                                .captureBandalartToGraphicsLayer(homeGraphicsLayer),
                     ) {
                         if (state.bandalartCellData != null && state.bandalartData != null) {
                             HomeHeader(
@@ -338,10 +334,7 @@ internal fun HomeContent(
                                 onHomeUiAction = state.eventSink,
                                 modifier =
                                     Modifier
-                                        .captureToGraphicsLayer(
-                                            graphicsLayer = completeGraphicsLayer,
-                                            captureBackgroundColor = Gray50,
-                                        ),
+                                        .captureBandalartToGraphicsLayer(completeGraphicsLayer),
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -372,6 +365,13 @@ internal fun HomeContent(
         }
     }
 }
+
+@Composable
+internal fun Modifier.captureBandalartToGraphicsLayer(graphicsLayer: GraphicsLayer): Modifier =
+    captureToGraphicsLayer(
+        graphicsLayer = graphicsLayer,
+        captureBackgroundColor = MaterialTheme.colorScheme.background,
+    )
 
 internal fun HomeScreen.State.isBannerCreativeVisible(): Boolean =
     !isLoading &&
