@@ -5,4 +5,6 @@
     <string name="deadline_reminder_title">오늘 마감인 목표가 있어요</string>
     <string name="deadline_reminder_single_body">%1$s을(를) 완료할 시간이에요.</string>
     <string name="deadline_reminder_multiple_body">%1$d개의 목표가 오늘 마감이에요.</string>
+    <string name="deadline_reminder_test_title">마감일 알림 테스트</string>
+    <string name="deadline_reminder_test_body">이 알림이 보이면 알림 설정이 정상이에요.</string>
 </resources>

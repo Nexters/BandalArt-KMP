@@ -51,6 +51,8 @@ import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import bandalart.core.designsystem.generated.resources.settings_contact_body
 import bandalart.core.designsystem.generated.resources.settings_contact_fallback
 import bandalart.core.designsystem.generated.resources.settings_contact_subject
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_sent
+import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_failed
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
@@ -208,6 +210,14 @@ private fun HandleHomeEffects(
 
             HomeScreen.Effect.ShowSlotErrorSnackbar -> {
                 showSnackbarForDuration(getString(Res.string.rewarded_slot_error), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowDeadlineReminderTestSentSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.settings_deadline_reminder_test_sent), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.settings_deadline_reminder_test_failed), showSnackbar)
             }
 
             HomeScreen.Effect.ShowMainGoalToast -> {

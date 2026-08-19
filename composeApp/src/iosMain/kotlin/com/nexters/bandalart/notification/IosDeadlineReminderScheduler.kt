@@ -38,6 +38,7 @@ import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotification
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationSound
+import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
 class IosDeadlineReminderScheduler(
@@ -68,6 +69,26 @@ class IosDeadlineReminderScheduler(
     override suspend fun clearAll(): DeadlineReminderSchedulingResult {
         clearFeatureNotifications()
         return DeadlineReminderSchedulingResult(scheduledCount = 0)
+    }
+
+    override suspend fun postTestNotification(): DeadlineReminderSchedulingResult {
+        val content =
+            UNMutableNotificationContent().apply {
+                setTitle(localized(DEADLINE_REMINDER_TEST_TITLE_KEY))
+                setBody(localized(DEADLINE_REMINDER_TEST_BODY_KEY))
+                setSound(UNNotificationSound.defaultSound)
+            }
+        val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, repeats = false)
+        val request = UNNotificationRequest.requestWithIdentifier(DEADLINE_REMINDER_TEST_IDENTIFIER, content, trigger)
+        val error = notificationCenter.add(request)
+        return if (error == null) {
+            DeadlineReminderSchedulingResult(scheduledCount = 1)
+        } else {
+            DeadlineReminderSchedulingResult(
+                scheduledCount = 0,
+                lastErrorCategory = error.toSchedulingErrorCategory(),
+            )
+        }
     }
 
     private suspend fun clearFeatureNotifications() {
@@ -162,3 +183,6 @@ private const val DEADLINE_REMINDER_HOUR = 9L
 private const val DEADLINE_REMINDER_TITLE_KEY = "deadline_reminder_title"
 private const val DEADLINE_REMINDER_SINGLE_BODY_KEY = "deadline_reminder_single_body"
 private const val DEADLINE_REMINDER_MULTIPLE_BODY_KEY = "deadline_reminder_multiple_body"
+private const val DEADLINE_REMINDER_TEST_IDENTIFIER = "deadline.v1.test"
+private const val DEADLINE_REMINDER_TEST_TITLE_KEY = "deadline_reminder_test_title"
+private const val DEADLINE_REMINDER_TEST_BODY_KEY = "deadline_reminder_test_body"

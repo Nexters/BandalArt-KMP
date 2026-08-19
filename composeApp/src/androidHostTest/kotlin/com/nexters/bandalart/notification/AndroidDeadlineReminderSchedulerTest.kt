@@ -17,6 +17,7 @@
 package com.nexters.bandalart.notification
 
 import android.app.Application
+import android.app.NotificationManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
 import androidx.work.WorkInfo
@@ -32,6 +33,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -85,5 +87,43 @@ class AndroidDeadlineReminderSchedulerTest {
 
             val afterClear = workManager.getWorkInfosByTagFlow(DeadlineReminderWork.FEATURE_TAG).first()
             assertTrue(afterClear.all { info -> info.state == WorkInfo.State.CANCELLED })
+        }
+
+    @Test
+    fun testNotificationPostsWithoutReplacingScheduledDeadlineWork() =
+        runTest {
+            val dueDate =
+                Clock.System
+                    .now()
+                    .plus(2, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .date
+            val batch = DeadlineReminderBatch(bandalartId = 3, dueDate = dueDate, items = emptyList())
+            scheduler.replaceAll(listOf(batch))
+
+            val result = scheduler.postTestNotification()
+
+            assertEquals(1, result.scheduledCount)
+            assertEquals(null, result.lastErrorCategory)
+            val activeWork =
+                workManager
+                    .getWorkInfosByTagFlow(DeadlineReminderWork.FEATURE_TAG)
+                    .first()
+                    .filterNot { info -> info.state == WorkInfo.State.CANCELLED }
+            assertEquals(1, activeWork.size)
+            val notificationManager = application.getSystemService(NotificationManager::class.java)
+            assertTrue(
+                notificationManager.activeNotifications.any { notification ->
+                    notification.tag == DeadlineReminderWork.TEST_NOTIFICATION_TAG
+                },
+            )
+
+            scheduler.clearAll()
+
+            assertFalse(
+                notificationManager.activeNotifications.any { notification ->
+                    notification.tag == DeadlineReminderWork.TEST_NOTIFICATION_TAG
+                },
+            )
         }
 }

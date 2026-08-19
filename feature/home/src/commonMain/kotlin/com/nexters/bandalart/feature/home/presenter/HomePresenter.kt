@@ -40,6 +40,8 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificationLaunchTarget
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
+import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
@@ -82,6 +84,7 @@ class HomePresenter(
     private val deadlineNotificationAuthorization: DeadlineNotificationAuthorization =
         NoOpDeadlineNotificationAuthorization,
     private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
+    private val deadlineReminderScheduler: DeadlineReminderScheduler = NoOpDeadlineReminderScheduler,
     private val deadlineNotificationLaunchTarget: DeadlineNotificationLaunchTarget =
         BufferedDeadlineNotificationLaunchTarget(),
     private val bandalartWidgetLaunchTarget: BandalartWidgetLaunchTarget =
@@ -1053,6 +1056,17 @@ class HomePresenter(
                             settingsRepository.setDeadlineReminderEnabled(true)
                         }
                         deadlineReminderReconciler.reconcileAll()
+                    }
+                }
+
+                HomeScreen.Event.SendDeadlineReminderTestNotification -> {
+                    scope.launch {
+                        val result = deadlineReminderScheduler.postTestNotification()
+                        if (result.scheduledCount > 0 && result.lastErrorCategory == null) {
+                            emitEffect(HomeScreen.Effect.ShowDeadlineReminderTestSentSnackbar)
+                        } else {
+                            emitEffect(HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar)
+                        }
                     }
                 }
 

@@ -24,6 +24,12 @@ interface DeadlineReminderScheduler {
     suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult
 
     suspend fun clearAll(): DeadlineReminderSchedulingResult
+
+    suspend fun postTestNotification(): DeadlineReminderSchedulingResult =
+        DeadlineReminderSchedulingResult(
+            scheduledCount = 0,
+            lastErrorCategory = DeadlineReminderSchedulingErrorCategory.UNSUPPORTED,
+        )
 }
 
 object NoOpDeadlineReminderScheduler : DeadlineReminderScheduler {

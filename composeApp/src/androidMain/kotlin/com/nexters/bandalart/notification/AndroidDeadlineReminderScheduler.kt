@@ -17,7 +17,9 @@
 package com.nexters.bandalart.notification
 
 import android.app.Application
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import androidx.core.app.NotificationCompat
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -27,6 +29,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingErrorCategory
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
+import com.nexters.bandalart.shared.R
 import kotlinx.coroutines.CancellationException
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -99,9 +102,48 @@ class AndroidDeadlineReminderScheduler(
             )
         }
 
+    override suspend fun postTestNotification(): DeadlineReminderSchedulingResult =
+        try {
+            val notificationManager = application.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    DeadlineReminderWork.CHANNEL_ID,
+                    application.getString(R.string.deadline_reminder_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ).apply {
+                    description = application.getString(R.string.deadline_reminder_channel_description)
+                },
+            )
+            val notification =
+                NotificationCompat
+                    .Builder(application, DeadlineReminderWork.CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setContentTitle(application.getString(R.string.deadline_reminder_test_title))
+                    .setContentText(application.getString(R.string.deadline_reminder_test_body))
+                    .setAutoCancel(true)
+                    .build()
+            notificationManager.notify(
+                DeadlineReminderWork.TEST_NOTIFICATION_TAG,
+                DeadlineReminderWork.NOTIFICATION_ID,
+                notification,
+            )
+            DeadlineReminderSchedulingResult(scheduledCount = 1)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (_: Exception) {
+            DeadlineReminderSchedulingResult(
+                scheduledCount = 0,
+                lastErrorCategory = DeadlineReminderSchedulingErrorCategory.SCHEDULING,
+            )
+        }
+
     private suspend fun clearFeatureState() {
         workManager.cancelAllWorkByTag(DeadlineReminderWork.FEATURE_TAG).await()
         val notificationManager = application.getSystemService(NotificationManager::class.java)
+        notificationManager.cancel(
+            DeadlineReminderWork.TEST_NOTIFICATION_TAG,
+            DeadlineReminderWork.NOTIFICATION_ID,
+        )
         notificationManager.activeNotifications
             .asSequence()
             .mapNotNull { notification -> notification.tag }
@@ -118,6 +160,7 @@ internal object DeadlineReminderWork {
     const val KEY_DUE_DATE = "due_date"
     const val NOTIFICATION_ID = 0
     const val CHANNEL_ID = "deadline_reminder"
+    const val TEST_NOTIFICATION_TAG = "deadline.v1.test"
 
     fun uniqueWorkName(batchId: String): String = "deadline.v1.work.$batchId"
 

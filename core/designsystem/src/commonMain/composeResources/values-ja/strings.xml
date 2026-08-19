@@ -208,6 +208,9 @@
     <string name="settings_deadline_reminder_dialog_body">目標のタイトルがロック画面に表示される場合があります。締切日当日の午前9時以降、端末の状態に応じて通知されます。</string>
     <string name="settings_deadline_reminder_confirm">オンにする</string>
     <string name="settings_deadline_reminder_cancel">キャンセル</string>
+    <string name="settings_deadline_reminder_test_sent">テスト通知を送信しました。</string>
+    <string name="settings_deadline_reminder_test_failed">テスト通知を送信できませんでした。システムの通知設定を確認してください。</string>
+    <string name="settings_deadline_reminder_test">テスト通知を送信</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">新しいバンダラート</string>
