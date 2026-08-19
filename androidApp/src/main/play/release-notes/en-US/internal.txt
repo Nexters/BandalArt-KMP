@@ -2,3 +2,4 @@
 • Restore a detected backup on the same device after reinstalling the app.
 • Improved font rendering in Settings and Cloud Backup.
 • Fixed shared and saved BandalArt images to match the dark mode background.
+• Improved the icons for the cloud backup menu and restore dialog.
