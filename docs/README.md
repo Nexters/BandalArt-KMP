@@ -11,6 +11,7 @@
 
 ## 현재 기준 가이드
 
+- [AdMob 광고 ID와 운영 검증 가이드](features/ads/ADMOB_AD_ID_POLICY_GUIDE.md)
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
 - [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
 - [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
@@ -61,6 +62,7 @@
 
 ### Ads
 
+- [AdMob 광고 ID와 운영 검증 가이드](features/ads/ADMOB_AD_ID_POLICY_GUIDE.md)
 - [Android AdMob 미노출 트러블슈팅](features/ads/ADMOB_ANDROID_TROUBLESHOOTING.md)
 - [AdMob 홈 하단 배너](features/ads/ADMOB_HOME_BANNER_STRATEGY.md)
 - [AdMob 보상형 생성 gate](features/ads/ADMOB_REWARDED_CREATE_GATE_STRATEGY.md)

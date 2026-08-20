@@ -4,7 +4,7 @@
 
 Play Internal Testing에서 홈 배너와 보상형 광고가 모두 나타나지 않았던 사건의 진단 과정과 재발 방지 절차를 기록한다. 같은 증상이 생기면 광고 크기나 광고 단위 ID부터 바꾸지 말고, 설치 산출물과 SDK 초기화부터 요청·표시까지의 생명주기를 아래 순서로 확인한다.
 
-관련 초기화 이슈는 [#289](https://github.com/Nexters/BandalArt-KMP/issues/289), 최종 원인 수정은 [#297](https://github.com/Nexters/BandalArt-KMP/pull/297)이다. `2.2.26 (20226)`은 당시 Google 테스트 광고 ID로 Internal Testing에 배포해 테스트 creative를 확인했다. 이후 [#354](https://github.com/Nexters/BandalArt-KMP/issues/354)부터는 Internal Testing도 운영 수익 집계를 검증할 수 있도록 release와 같은 운영 광고 ID를 사용한다.
+관련 초기화 이슈는 [#289](https://github.com/Nexters/BandalArt-KMP/issues/289), 최종 원인 수정은 [#297](https://github.com/Nexters/BandalArt-KMP/pull/297)이다. `2.2.26 (20226)`은 당시 Google 테스트 광고 ID로 Internal Testing에 배포해 테스트 creative를 확인했다. 이후 [#354](https://github.com/Nexters/BandalArt-KMP/issues/354)부터는 Internal Testing도 운영 수익 집계를 검증할 수 있도록 release와 같은 운영 광고 ID를 사용한다. 현재 플랫폼·배포 경로별 ID 선택과 클릭 금지 정책은 [AdMob 광고 ID와 운영 검증 가이드](ADMOB_AD_ID_POLICY_GUIDE.md)를 따른다.
 
 ## 사건 요약
 
@@ -82,7 +82,8 @@ unzip -p /tmp/bandalart-base.apk resources.arsc | strings | grep 'ca-app-pub-'
 
 현재 Internal AAB에는 운영 광고 ID가 들어가야 한다.
 
-- Rewarded: `ca-app-pub-5570932833347277/6659503579`
+- Bandalart Creation Rewarded: `ca-app-pub-5570932833347277/6659503579`
+- Cloud Backup Rewarded: `ca-app-pub-5570932833347277/7686378276`
 - Fixed Size Banner: `ca-app-pub-5570932833347277/1215605203`
 
 공식 Google 테스트 광고 단위 ID가 하나라도 들어 있으면 Internal 검증용 산출물로 업로드하지 않는다. Debug 빌드는 계속 공식 테스트 ID를 사용하고, Play에 올리는 release AAB만 운영 ID를 사용한다. Internal 설치본에서는 실제 광고를 클릭하지 않는다.
@@ -190,7 +191,7 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 - [ ] fail-open 생성과 광고 성공을 구분했다.
 - [ ] release에서 초기화·preloader·배너 load 실패를 확인할 수 있다.
 - [ ] Presenter의 fail-open, dismiss, exactly-once, 템플릿 보존 테스트가 통과한다.
-- [ ] Internal AAB에는 Rewarded와 Banner 운영 ID가 모두 포함되고 공식 테스트 ID는 포함되지 않는다.
+- [ ] Internal AAB에는 반다라트 생성 Rewarded, 클라우드 백업 Rewarded와 Banner 운영 ID가 모두 포함되고 공식 테스트 ID는 포함되지 않는다.
 - [ ] Debug 빌드에는 공식 테스트 ID만 포함한다.
 - [ ] Internal 실기기에서 실제 광고 응답을 확인하되 광고를 클릭하지 않는다.
 
