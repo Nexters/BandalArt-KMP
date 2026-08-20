@@ -395,7 +395,7 @@ class HomePresenterRewardedAdTest {
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoaded(): HomeScreen.State {
         var state = awaitItem()
-        while (state.bandalartList.size != 3 || state.bandalartData?.id != 1L || state.isLoading) {
+        while (state.bandalartList.size != 3 || state.bandalartData?.id != 1L) {
             state = awaitItem()
         }
         return state

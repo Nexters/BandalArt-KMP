@@ -167,10 +167,6 @@
     <string name="server_error_dialog_message">もう一度お試しください。</string>
     <string name="server_error_retry_message">再試行</string>
 
-    <!-- BandalartSkeletonScreen.kt-->
-    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
-    <string name="skeleton_complete_ratio">達成率 (-%)</string>
-
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">リクエストは成功しましたがデータの検証に失敗しました</string>
     <string name="create_bandalart">新しいバンダラートを作成しました。</string>
@@ -197,9 +193,6 @@
     <string name="delete_description">削除アイコン</string>
     <string name="app_icon_description">アプリアイコン</string>
     <string name="gallery_icon">ギャラリーアイコン</string>
-
-    <!--  label -->
-    <string name="skeleton_trans_animate_label">メニューアイコン</string>
 
     <!-- deadline reminder -->
     <string name="settings_deadline_reminder_section">通知</string>

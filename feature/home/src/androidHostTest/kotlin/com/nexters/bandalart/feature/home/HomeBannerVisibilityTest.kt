@@ -16,6 +16,8 @@
 
 package com.nexters.bandalart.feature.home
 
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
+import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -23,7 +25,8 @@ import org.junit.jupiter.api.Test
 class HomeBannerVisibilityTest {
     private val visibleState =
         HomeScreen.State(
-            isLoading = false,
+            bandalartData = dummyBandalartData,
+            bandalartCellData = dummyBandalartChartData,
             eventSink = {},
         )
 
@@ -33,8 +36,9 @@ class HomeBannerVisibilityTest {
     }
 
     @Test
-    fun bannerIsHiddenWhileLoading() {
-        assertFalse(visibleState.copy(isLoading = true).isBannerCreativeVisible())
+    fun bannerIsHiddenUntilHomeContentIsReady() {
+        assertFalse(visibleState.copy(bandalartData = null).isBannerCreativeVisible())
+        assertFalse(visibleState.copy(bandalartCellData = null).isBannerCreativeVisible())
     }
 
     @Test

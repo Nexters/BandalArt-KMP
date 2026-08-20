@@ -167,7 +167,6 @@ class HomePresenterRuntimeTest {
             presenter.test {
                 var state = awaitLoadedBandalart()
                 advanceUntilIdle()
-                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.CheckForUpdate(20206))
                 expectNoEvents()
 
@@ -204,7 +203,7 @@ class HomePresenterRuntimeTest {
 
     private suspend fun app.cash.turbine.ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(): HomeScreen.State {
         var state = awaitItem()
-        while (state.bandalartData == null || state.isLoading) {
+        while (state.bandalartData == null) {
             state = awaitItem()
         }
         return state

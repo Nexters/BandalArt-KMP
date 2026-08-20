@@ -118,7 +118,6 @@ class HomePresenterQuickCompletionTest {
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
                 advanceUntilIdle()
-                expectMostRecentItem()
                 val mainCell = requireNotNull(state.bandalartCellData)
                 val subCell = mainCell.children.single()
 
@@ -239,7 +238,6 @@ class HomePresenterQuickCompletionTest {
 
                 allowUpdate.complete(Unit)
                 advanceUntilIdle()
-                state = expectMostRecentItem()
 
                 assertEquals(1, repository.taskCellUpdateCalls)
                 assertEquals(2L, state.bandalartData?.id)
@@ -277,7 +275,7 @@ class HomePresenterQuickCompletionTest {
                 )
                 do {
                     state = awaitItem()
-                } while (state.bandalartCellData?.isCompleted != true || state.isLoading)
+                } while (state.bandalartCellData?.isCompleted != true)
 
                 allowUpdate.complete(Unit)
                 do {
@@ -313,7 +311,7 @@ class HomePresenterQuickCompletionTest {
                 repository.publishBandalartRevision(bandalart().copy(completionRatio = 2))
                 do {
                     state = awaitItem()
-                } while (state.taskCell(taskCell.id).title != null || state.isLoading)
+                } while (state.taskCell(taskCell.id).title != null)
 
                 allowUpdateReturn.complete(Unit)
                 advanceUntilIdle()
@@ -343,7 +341,6 @@ class HomePresenterQuickCompletionTest {
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
                 advanceUntilIdle()
-                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 advanceUntilIdle()
 
@@ -369,7 +366,6 @@ class HomePresenterQuickCompletionTest {
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
                 advanceUntilIdle()
-                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 updateAttempted.await()
                 yield()
@@ -397,7 +393,6 @@ class HomePresenterQuickCompletionTest {
             presenter(repository).test {
                 val state = awaitLoadedBandalart()
                 advanceUntilIdle()
-                expectMostRecentItem()
                 state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
                 updateAttempted.await()
                 yield()
@@ -446,7 +441,7 @@ class HomePresenterQuickCompletionTest {
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long = 1L,): HomeScreen.State {
         var state = awaitItem()
-        while (state.bandalartData?.id != bandalartId || state.isLoading) {
+        while (state.bandalartData?.id != bandalartId) {
             state = awaitItem()
         }
         return state

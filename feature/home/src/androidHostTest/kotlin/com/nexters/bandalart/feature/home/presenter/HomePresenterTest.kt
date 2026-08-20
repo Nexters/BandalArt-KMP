@@ -55,7 +55,7 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
 
                 state.eventSink(HomeScreen.Event.OpenCloudBackup)
 
@@ -84,7 +84,7 @@ class HomePresenterTest {
 
             presenter(repository).test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 2L || state.isLoading) {
+                while (state.bandalartData?.id != 2L) {
                     state = awaitItem()
                 }
 
@@ -111,7 +111,7 @@ class HomePresenterTest {
 
             presenter(repository, target).test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 2L || state.isLoading || target.pendingBandalartId.value != null) {
+                while (state.bandalartData?.id != 2L || target.pendingBandalartId.value != null) {
                     state = awaitItem()
                 }
 
@@ -133,7 +133,7 @@ class HomePresenterTest {
 
             presenter(repository, target).test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading || target.pendingBandalartId.value != null) {
+                while (state.bandalartData?.id != 1L || target.pendingBandalartId.value != null) {
                     state = awaitItem()
                 }
 
@@ -164,7 +164,7 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 2L || state.isLoading) {
+                while (state.bandalartData?.id != 2L) {
                     state = awaitItem()
                 }
 
@@ -203,7 +203,7 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) {
+                while (state.bandalartData == null) {
                     state = awaitItem()
                 }
 
@@ -225,7 +225,7 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != created.id || state.isLoading) {
+                while (state.bandalartData?.id != created.id) {
                     state = awaitItem()
                 }
 
@@ -253,7 +253,7 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 2L || state.isLoading) {
+                while (state.bandalartData?.id != 2L) {
                     state = awaitItem()
                 }
 
@@ -275,14 +275,14 @@ class HomePresenterTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) {
+                while (state.bandalartData?.id != 1L) {
                     state = awaitItem()
                 }
 
                 state.eventSink(HomeScreen.Event.SelectBandalart(2L))
                 do {
                     state = awaitItem()
-                } while (state.bandalartData?.id != 2L || state.isLoading)
+                } while (state.bandalartData?.id != 2L)
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertFalse(state.isBandalartCompleted)
@@ -301,7 +301,7 @@ class HomePresenterTest {
 
             presenter(repository).test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) {
+                while (state.bandalartData?.id != 1L) {
                     state = awaitItem()
                 }
 
@@ -328,7 +328,7 @@ class HomePresenterTest {
 
             presenter(repository).test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) {
+                while (state.bandalartData?.id != 1L) {
                     state = awaitItem()
                 }
                 state.eventSink(HomeScreen.Event.OpenBandalartList)

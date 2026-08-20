@@ -51,7 +51,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 2L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertEquals(null, launchTarget.pendingBandalartId.value)
@@ -68,10 +68,10 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
 
                 launchTarget.record(2)
-                while (state.bandalartData?.id != 2L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertEquals(null, launchTarget.pendingBandalartId.value)
@@ -103,7 +103,7 @@ class HomePresenterDeadlineReminderTest {
                 initialLoadStarted.await()
 
                 launchTarget.record(2)
-                while (state.bandalartData?.id != 2L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertEquals(null, launchTarget.pendingBandalartId.value)
@@ -139,15 +139,14 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
 
                 state.eventSink(HomeScreen.Event.SelectBandalart(2))
                 manualLoadStarted.await()
                 launchTarget.record(1)
                 while (
                     launchTarget.pendingBandalartId.value != null ||
-                    repository.recentBandalartId != 1L ||
-                    state.isLoading
+                    repository.recentBandalartId != 1L
                 ) {
                     state = awaitItem()
                 }
@@ -191,12 +190,12 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
                 repository.publishBandalartRevision(bandalart(1).copy(isCompleted = true))
                 completionLoadStarted.await()
 
                 launchTarget.record(2)
-                while (state.bandalartData?.id != 2L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
 
                 assertEquals(201L, state.bandalartCellData?.id)
                 assertEquals(null, launchTarget.pendingBandalartId.value)
@@ -223,7 +222,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
 
                 repository.publishBandalartRevision(
                     bandalart = bandalart(1).copy(title = "edited"),
@@ -231,14 +230,13 @@ class HomePresenterDeadlineReminderTest {
                 )
                 while (
                     state.bandalartData?.titleText != "edited" ||
-                    state.bandalartCellData?.title != "edited" ||
-                    state.isLoading
+                    state.bandalartCellData?.title != "edited"
                 ) {
                     state = awaitItem()
                 }
 
-                assertEquals(1L, state.bandalartData?.id)
-                assertEquals(101L, state.bandalartCellData?.id)
+                assertEquals(1L, state.bandalartData.id)
+                assertEquals(101L, state.bandalartCellData.id)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -256,10 +254,10 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData?.id != 1L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
 
                 state.eventSink(HomeScreen.Event.DeleteBandalart(1))
-                while (state.bandalartData?.id != 2L || state.isLoading) state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
 
                 assertEquals(2L, repository.recentBandalartId)
                 assertEquals(201L, state.bandalartCellData?.id)
@@ -276,7 +274,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
                 while (launchTarget.pendingBandalartId.value != null) state = awaitItem()
 
                 assertEquals(1L, state.bandalartData?.id)
@@ -300,7 +298,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
                 state.eventSink(HomeScreen.Event.OpenSettings)
                 state.eventSink(HomeScreen.Event.ConfirmDeadlineReminderPermission)
                 do {
@@ -331,7 +329,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
                 state.eventSink(HomeScreen.Event.OpenSettings)
                 state.eventSink(HomeScreen.Event.ConfirmDeadlineReminderPermission)
                 while (!state.deadlineReminderEnabled) state = awaitItem()
@@ -474,7 +472,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
 
                 state.eventSink(HomeScreen.Event.SendDeadlineReminderTestNotification)
                 while (state.effect != HomeScreen.Effect.ShowDeadlineReminderTestSentSnackbar) {
@@ -500,7 +498,7 @@ class HomePresenterDeadlineReminderTest {
 
             presenter.test {
                 var state = awaitItem()
-                while (state.bandalartData == null || state.isLoading) state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
 
                 state.eventSink(HomeScreen.Event.SendDeadlineReminderTestNotification)
                 while (state.effect != HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar) {
