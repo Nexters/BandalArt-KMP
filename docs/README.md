@@ -58,6 +58,7 @@
 ### Backup
 
 - [Supabase 반다라트 백업 전략](features/backup/SUPABASE_BACKUP_STRATEGY.md)
+- [Supabase 요청·Realtime 오류 트러블슈팅](features/backup/SUPABASE_REQUEST_TROUBLESHOOTING.md)
 
 ### Ads
 

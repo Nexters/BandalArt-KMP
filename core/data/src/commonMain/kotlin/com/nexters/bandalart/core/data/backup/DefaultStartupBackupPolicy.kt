@@ -30,11 +30,15 @@ class DefaultStartupBackupPolicy(
                 StartupBackupDecision.Continue
             } else {
                 val hasLocalData = repository.hasLocalData()
-                val backup = repository.findBackup()
-                if (hasLocalData || backup == null) {
+                if (hasLocalData) {
                     StartupBackupDecision.Continue
                 } else {
-                    StartupBackupDecision.OfferRestore(backup)
+                    val backup = repository.findBackup()
+                    if (backup == null) {
+                        StartupBackupDecision.Continue
+                    } else {
+                        StartupBackupDecision.OfferRestore(backup)
+                    }
                 }
             }
         } catch (exception: CancellationException) {
