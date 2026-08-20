@@ -12,7 +12,7 @@
 - 홈의 공유 버튼과 Snackbar는 배너 위에 배치하고 시스템 navigation bar safe area를 유지한다.
 - bottom sheet, dialog, 이미지 capture, 보상형 광고 표시 및 loading 중에는 배너 creative와 클릭·접근성 focus를 숨긴다.
 - iOS는 광고 SDK를 추가하지 않고 no-op host를 유지한다.
-- Internal Testing AAB에서는 Rewarded와 Banner 모두 Google 공식 테스트 광고 단위 ID만 사용한다.
+- Debug 빌드에서는 Rewarded와 Banner 모두 Google 공식 테스트 광고 단위 ID를 사용한다. Play Internal Testing에 배포하는 release AAB는 운영 광고 단위 ID를 사용한다.
 
 ## 플랫폼 경계
 
@@ -48,10 +48,10 @@
 ## Internal Testing
 
 - Android 버전을 `2.2.18 (20218)`로 올린다. Play 전체 track의 현재 최대 versionCode는 `20217`이다.
-- `-Pbandalart.useTestAds=true`가 release Rewarded와 Banner ID를 각각 Google 공식 테스트 ID로 바꿔야 한다.
-- clean bundle과 publish task 모두 같은 property를 전달한다.
-- AAB 검증 시 Rewarded 테스트 ID `ca-app-pub-3940256099942544/5224354917`와 Fixed Size Banner 테스트 ID `ca-app-pub-3940256099942544/6300978111`의 존재를 확인하고 두 production ad unit ID가 있으면 업로드하지 않는다.
-- 이 테스트 광고 artifact는 production으로 promote하지 않는다. production 광고 ID를 쓰는 다음 배포는 새 versionCode로 다시 빌드한다.
+- 이 기능을 처음 검증한 `2.2.18 (20218)`은 `-Pbandalart.useTestAds=true`로 release Rewarded와 Banner ID를 Google 공식 테스트 ID로 바꿔 배포했다.
+- 이 정책 때문에 이후 Internal 설치본에도 테스트 광고가 계속 노출된 문제는 [#354](https://github.com/Nexters/BandalArt-KMP/issues/354)에서 수정했다.
+- 현재 clean bundle과 publish task는 별도 광고 override 없이 release의 운영 Rewarded와 Banner ID를 사용한다.
+- AAB 검증은 두 운영 광고 ID가 모두 존재하고 공식 Google 테스트 광고 ID가 하나도 없는지 확인한다.
 
 ## 검증
 
@@ -60,16 +60,16 @@
 - Home banner visibility 규칙을 각 overlay/capture/loading/rewarded 상태별로 검증한다.
 - Android graph가 실제 host를, iOS graph와 Preview/Test가 no-op host를 제공하는지 컴파일과 graph test로 확인한다.
 - 관련 Android host tests, Detekt, Android lint/build와 iOS framework CI를 통과한다.
-- Internal AAB의 package/version, 서명, Compose resource namespace와 두 테스트 광고 ID를 검증한다.
+- Internal AAB의 package/version, 서명, Compose resource namespace와 두 운영 광고 ID를 검증하고 테스트 광고 ID 유입을 거부한다.
 
 ### Internal 수동 검증
 
-- 홈 하단에 `Test Ad` 표시가 있는 배너 creative가 실제로 노출된다.
+- 홈 하단에 실제 배너 creative가 노출되고 `Test Ad` 라벨이 없는지 확인한다. 실제 광고는 클릭하지 않는다.
 - 320dp 이상 화면에서 고정형 배너가 중앙에 표시되고 navigation bar, 공유 버튼과 겹치지 않는다. 320dp 미만 가용 폭에서는 광고 요청과 빈 공간이 모두 없어야 한다. 현재 앱은 portrait 고정이므로 orientation lock 해제는 이번 범위에 포함하지 않는다.
 - Snackbar가 배너 위에 표시된다.
 - bottom sheet, dialog, 공유·저장 capture와 보상형 광고 표시 중 배너가 숨겨진다.
 - light/dark theme에서 광고 주변 container가 홈 배경과 어색하게 분리되지 않는다.
-- 보상형 광고는 안내 dialog 뒤에 Google 테스트 creative가 표시되고, reward 완료 시 정확히 1개 생성되며 reward 전 종료 시 생성하지 않는다.
+- 보상형 광고는 안내 dialog 뒤에 실제 creative가 표시되고, reward 완료 시 정확히 1개 생성되며 reward 전 종료 시 생성하지 않는다. 실제 광고는 클릭하지 않는다.
 - 광고 unavailable snackbar 뒤 fail-open 생성만 발생했다면 AdMob 활성화 성공으로 판단하지 않는다.
 
 ## 비범위

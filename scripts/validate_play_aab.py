@@ -68,7 +68,7 @@ def verify_archive(path: Path) -> None:
             fail("AAB base manifest is missing")
 
         test_rewarded_id_found = False
-        production_rewarded_id_found = False
+        production_rewarded_ids_found: set[bytes] = set()
         test_banner_id_found = False
         production_banner_id_found = False
         required_namespace_found = False
@@ -78,8 +78,8 @@ def verify_archive(path: Path) -> None:
                 continue
             content = archive.read(info)
             test_rewarded_id_found = test_rewarded_id_found or TEST_REWARDED_ID in content
-            production_rewarded_id_found = production_rewarded_id_found or any(
-                ad_unit_id in content for ad_unit_id in PRODUCTION_REWARDED_IDS
+            production_rewarded_ids_found.update(
+                ad_unit_id for ad_unit_id in PRODUCTION_REWARDED_IDS if ad_unit_id in content
             )
             test_banner_id_found = test_banner_id_found or TEST_BANNER_ID in content
             production_banner_id_found = production_banner_id_found or PRODUCTION_BANNER_ID in content
@@ -90,14 +90,14 @@ def verify_archive(path: Path) -> None:
                 value in content for value in REMOVED_NAMESPACE
             )
 
-        if not test_rewarded_id_found:
-            fail("official Google rewarded test ad ID is missing")
-        if production_rewarded_id_found:
-            fail("production rewarded ad ID is present")
-        if not test_banner_id_found:
-            fail("official Google banner test ad ID is missing")
-        if production_banner_id_found:
-            fail("production banner ad ID is present")
+        if test_rewarded_id_found:
+            fail("official Google test rewarded ad ID is present")
+        if len(production_rewarded_ids_found) != len(PRODUCTION_REWARDED_IDS):
+            fail("production rewarded ad ID is missing")
+        if test_banner_id_found:
+            fail("official Google test banner ad ID is present")
+        if not production_banner_id_found:
+            fail("production banner ad ID is missing")
         if not required_namespace_found:
             fail("expected Compose resource namespace is missing")
         if removed_namespace_found:

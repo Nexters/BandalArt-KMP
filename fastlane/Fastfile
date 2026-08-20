@@ -194,7 +194,7 @@ def append_github_summary(lines)
 end
 
 platform :android do
-  desc "Build, validate, and upload a test-ad release AAB to Play Internal Testing"
+  desc "Build, validate, and upload a production-ad release AAB to Play Internal Testing"
   lane :internal do
     verify_ci_source!
     service_account_path = required_env!("PLAY_SERVICE_ACCOUNT_PATH")
@@ -221,7 +221,6 @@ platform :android do
     gradle(
       task: "clean :androidApp:bundleRelease",
       project_dir: REPO_ROOT,
-      properties: { "bandalart.useTestAds" => "true" },
       flags: "--no-configuration-cache --stacktrace",
     )
 
@@ -253,7 +252,6 @@ platform :android do
     gradle(
       task: ":androidApp:publishReleaseBundle",
       project_dir: REPO_ROOT,
-      properties: { "bandalart.useTestAds" => "true" },
       flags: "--artifact-dir #{Shellwords.escape(artifact_dir)} --update-priority #{update_priority} --no-configuration-cache --stacktrace",
     )
     UI.user_error!("Uploaded AAB changed after validation") unless Digest::SHA256.file(verified_aab).hexdigest == checksum

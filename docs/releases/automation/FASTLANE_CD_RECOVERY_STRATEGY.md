@@ -13,7 +13,7 @@
 - GitHub Actions `workflow_dispatch`에서 `android`, `ios`, `both`를 선택한다.
 - 배포 소스는 `main`의 최신 커밋으로 제한한다.
 - 상태를 변경하는 Android/iOS lane은 GitHub Actions에서만 실행하고, 로컬에서는 iOS read-only preflight만 허용한다.
-- Android는 공식 Google 테스트 Rewarded·Banner 광고 ID가 포함된 AAB만 Play Internal Testing에 올린다.
+- Android는 운영 Rewarded·Banner 광고 ID가 포함된 AAB만 Play Internal Testing에 올린다.
 - iOS는 App Store Connect Individual API Key와 수동 배포 서명 자산으로 TestFlight에 올린다.
 - 버전 충돌, 서명 자산 누락, 잘못된 광고 ID 또는 잘못된 브랜치는 업로드 전에 실패시킨다.
 - 자격증명은 GitHub Secrets에서 runner 임시 파일로만 복원하고 항상 삭제한다.
@@ -39,9 +39,9 @@
    - Fastlane `android internal`을 실행한다.
    - lane은 전체 Play track의 versionCode를 조회하고 현재 버전이 더 큰지 검증한다.
    - Play API Python 의존성은 exact version과 uv script lock으로 고정하고 `--frozen`으로 실행한다.
-   - clean release AAB를 `bandalart.useTestAds=true`로 생성한다.
-   - bundletool manifest의 package·version, ZIP 무결성, Compose 리소스 namespace, 테스트/운영 Rewarded·Banner 광고 ID를 검사한다.
-   - 같은 속성으로 Gradle Play Publisher의 `publishReleaseBundle`을 실행하고 Internal track 반영을 확인한다.
+   - clean release AAB를 생성한다.
+   - bundletool manifest의 package·version, ZIP 무결성, Compose 리소스 namespace와 운영 Rewarded·Banner 광고 ID 포함 여부를 검사하고 테스트 광고 ID 유입을 차단한다.
+   - 같은 산출물로 Gradle Play Publisher의 `publishReleaseBundle`을 실행하고 Internal track 반영을 확인한다.
 
 2. iOS job (`macos-latest`, `ios-testflight` environment)
    - JDK/Android SDK/Gradle/Ruby를 준비한다. Xcode shell phase가 KMP framework를 만들기 위해 필요하다.
@@ -110,7 +110,7 @@ App Group, App ID, 두 profile과 GitHub Environment secret 등록 절차는 [iO
 - 계산 충돌을 막기 위해 `MINOR`와 `PATCH`는 각각 `0..99` 범위에서 관리한다.
 - 모든 AAB는 Play 전체 track의 기존 최댓값보다 큰 새 versionCode를 사용해야 한다.
 - workflow는 버전을 자동 증가시키거나 source를 커밋하지 않는다. 배포 PR에서 버전과 3개 locale release notes를 함께 변경한다.
-- Internal Testing의 테스트 광고 AAB를 Production으로 승격하지 않는다. 운영 광고 빌드는 새 versionCode로 별도 생성한다.
+- Internal Testing AAB도 운영 광고를 사용하므로 내부 테스트 중 실제 광고를 클릭하지 않는다.
 
 ### iOS
 

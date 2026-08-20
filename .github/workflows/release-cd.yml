@@ -13,7 +13,7 @@ on:
                     - android
                     - ios
             confirm_release:
-                description: I confirm main deployment to Play Internal/TestFlight (Android uses test ads; iOS uses the selected ad mode)
+                description: I confirm main deployment to Play Internal/TestFlight (Android uses production ads; iOS uses the selected ad mode)
                 required: true
                 default: false
                 type: boolean
