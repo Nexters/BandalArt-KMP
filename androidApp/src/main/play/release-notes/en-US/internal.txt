@@ -1,1 +1,1 @@
-• Moved deadline reminders to a new high-importance channel so they can appear prominently at the top of the screen.
+• Reduced unnecessary network usage by checking cloud backups only when needed.
