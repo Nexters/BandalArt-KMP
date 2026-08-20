@@ -27,6 +27,7 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_
 import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_dialog_title
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_message
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_title
+import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDeleteAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.RewardedBandalartAlertDialog
@@ -34,12 +35,13 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun HomeDialogs(
-    state: HomeScreen.State,
+    dialog: HomeScreen.DialogState?,
+    bandalartData: BandalartUiModel?,
     eventSink: (HomeScreen.Event) -> Unit,
 ) {
-    when (val dialog = state.dialog) {
+    when (dialog) {
         is HomeScreen.DialogState.BandalartDelete -> {
-            state.bandalartData?.let { bandalart ->
+            bandalartData?.let { bandalart ->
                 BandalartDeleteAlertDialog(
                     title =
                         if (bandalart.titleText.isEmpty()) {
