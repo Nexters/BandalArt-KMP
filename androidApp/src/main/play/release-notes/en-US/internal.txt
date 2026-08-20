@@ -1,1 +1,1 @@
-• Moved deadline reminders to a new high-importance channel so they can appear prominently at the top of the screen.
+• Made rewarded-ad guidance clearer and improved reliability for cloud backups.
