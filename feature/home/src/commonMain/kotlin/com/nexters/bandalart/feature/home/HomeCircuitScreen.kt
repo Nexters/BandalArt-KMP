@@ -39,7 +39,6 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val bandalartList: ImmutableList<BandalartUiModel> = persistentListOf(),
         val bandalartData: BandalartUiModel? = null,
         val bandalartCellData: BandalartCellEntity? = null,
-        val isLoading: Boolean = true,
         val isBandalartCompleted: Boolean = false,
         val bottomSheet: BottomSheetState? = null,
         val dialog: DialogState? = null,

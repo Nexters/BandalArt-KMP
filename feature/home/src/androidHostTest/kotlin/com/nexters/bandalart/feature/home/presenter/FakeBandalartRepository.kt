@@ -42,6 +42,7 @@ internal class FakeBandalartRepository(
     private val beforeBandalartLoad: suspend (Long) -> Unit = {},
     private val beforeCompletionUpdate: suspend () -> Unit = {},
     private val taskCellUpdateError: Throwable? = null,
+    private val publishEmojiRevisionImmediately: Boolean = false,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
@@ -237,6 +238,17 @@ internal class FakeBandalartRepository(
                 cellId = cellId,
                 entity = updateBandalartEmojiEntity,
             )
+        if (publishEmojiRevisionImmediately) {
+            val updatedBandalart =
+                requireNotNull(details[bandalartId]).copy(
+                    profileEmoji = updateBandalartEmojiEntity.profileEmoji,
+                )
+            details[bandalartId] = updatedBandalart
+            bandalartFlow.value =
+                bandalartFlow.value.map { current ->
+                    if (current.id == bandalartId) updatedBandalart else current
+                }
+        }
     }
 
     override suspend fun deleteBandalartCell(cellId: Long) {

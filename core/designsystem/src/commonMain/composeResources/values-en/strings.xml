@@ -162,11 +162,6 @@
     <string name="network_error_dialog_message">Please try again.</string>
     <string name="network_error_retry_message">Retry</string>
 
-    <!-- BandalartSkeletonScreen.kt-->
-    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
-    <string name="skeleton_complete_ratio">Completion Rate (-%)</string>
-
-
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
     <string name="create_bandalart">Created a new bandalart.</string>
@@ -194,8 +189,6 @@
     <string name="app_icon_description">App Icon</string>
     <string name="gallery_icon">Gallery Icon</string>
 
-    <!--  label -->
-    <string name="skeleton_trans_animate_label">Hamburger Icon</string>
     <string name="server_error_dialog_title">Failed to load Bandalart due to server issues.</string>
     <string name="server_error_dialog_message">Please try again.</string>
     <string name="server_error_retry_message">Retry</string>

@@ -69,7 +69,6 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.yield
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -101,7 +100,6 @@ class HomePresenter(
         var explicitSelectionTargetId by remember { mutableStateOf<Long?>(null) }
         var isExplicitSelectionTargetPending by remember { mutableStateOf(false) }
         var bandalartListRevision by remember { mutableStateOf(0L) }
-        var isLoading by remember { mutableStateOf(true) }
         var isCreatingEmptyBandalart by remember { mutableStateOf(false) }
         val rewardedCreateCoordinator = rememberRetained { RewardedCreateCoordinator() }
         var isUpdatingBandalartEmoji by remember { mutableStateOf(false) }
@@ -213,12 +211,9 @@ class HomePresenter(
             isCompleted: Boolean = false,
             canCommit: () -> Boolean = { true },
         ) {
-            isLoading = true
             val refreshedBandalart = readBandalart(bandalartId, isCompleted)
             if (!canCommit()) return
             loadedBandalart = refreshedBandalart
-            yield()
-            isLoading = false
         }
 
         fun beginSelectionRequest(): Long = ++selectionLoadGeneration[0]
@@ -629,7 +624,6 @@ class HomePresenter(
         }
 
         suspend fun deleteBandalart(bandalartId: Long) {
-            isLoading = true
             bandalartRepository.deleteBandalart(bandalartId)
             bandalartRepository.deleteCompletedBandalartId(bandalartId)
             dialog = null
@@ -816,7 +810,6 @@ class HomePresenter(
             bandalartList = bandalartList,
             bandalartData = bandalartData,
             bandalartCellData = bandalartCellData,
-            isLoading = isLoading,
             isBandalartCompleted = isBandalartCompleted,
             bottomSheet = bottomSheet,
             dialog = dialog,

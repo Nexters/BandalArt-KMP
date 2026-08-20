@@ -73,7 +73,6 @@ import com.nexters.bandalart.feature.home.ui.HomeHeader
 import com.nexters.bandalart.feature.home.ui.HomeShareButton
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
-import com.nexters.bandalart.feature.home.ui.bandalart.BandalartSkeleton
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
@@ -306,6 +305,7 @@ internal fun HomeContent(
     bannerAdHost: BannerAdHost,
     modifier: Modifier = Modifier,
 ) {
+    val isContentReady = state.bandalartCellData != null && state.bandalartData != null
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -332,7 +332,7 @@ internal fun HomeContent(
                             Modifier
                                 .captureBandalartToGraphicsLayer(homeGraphicsLayer),
                     ) {
-                        if (state.bandalartCellData != null && state.bandalartData != null) {
+                        if (isContentReady) {
                             HomeHeader(
                                 bandalartData = state.bandalartData,
                                 cellData = state.bandalartCellData,
@@ -351,22 +351,20 @@ internal fun HomeContent(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    HomeShareButton(
-                        onShareButtonClick = {
-                            state.eventSink(HomeScreen.Event.RequestShare)
-                        },
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                    )
+                    if (isContentReady) {
+                        HomeShareButton(
+                            onShareButtonClick = {
+                                state.eventSink(HomeScreen.Event.RequestShare)
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                        )
+                    }
                 }
 
                 SnackbarHost(
                     hostState = updateSnackbarHostState,
                     modifier = Modifier.align(Alignment.BottomCenter),
                 )
-
-                if (state.isLoading) {
-                    BandalartSkeleton()
-                }
             }
 
             bannerAdHost.Content(
@@ -385,7 +383,8 @@ internal fun Modifier.captureBandalartToGraphicsLayer(graphicsLayer: GraphicsLay
     )
 
 internal fun HomeScreen.State.isBannerCreativeVisible(): Boolean =
-    !isLoading &&
+    bandalartData != null &&
+        bandalartCellData != null &&
         bottomSheet == null &&
         dialog == null &&
         imageRequest == null &&
@@ -401,7 +400,6 @@ private fun HomeScreenPreview() {
                     bandalartList = dummyBandalartList.toImmutableList(),
                     bandalartData = dummyBandalartData,
                     bandalartCellData = dummyBandalartChartData,
-                    isLoading = false,
                     eventSink = {},
                 ),
             homeGraphicsLayer = rememberGraphicsLayer(),

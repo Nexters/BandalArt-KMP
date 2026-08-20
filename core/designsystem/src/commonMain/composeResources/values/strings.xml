@@ -167,11 +167,6 @@
     <string name="server_error_dialog_message">다시 시도해주시기 바랍니다.</string>
     <string name="server_error_retry_message">다시 시도</string>
 
-    <!-- BandalartSkeletonScreen.kt-->
-    <string name="skeleton_title">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
-    <string name="skeleton_complete_ratio">달성률 (-%)</string>
-
-
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
     <string name="create_bandalart">새로운 반다라트를 생성했어요.</string>
@@ -198,9 +193,6 @@
     <string name="delete_description">Delete Icon</string>
     <string name="app_icon_description">App Icon</string>
     <string name="gallery_icon">Gallery Icon</string>
-
-    <!--  label -->
-    <string name="skeleton_trans_animate_label">Hamburger Icon</string>
 
     <!-- deadline reminder -->
     <string name="settings_deadline_reminder_section">알림</string>

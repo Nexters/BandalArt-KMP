@@ -25,10 +25,12 @@ import com.nexters.bandalart.feature.home.model.CellType
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -306,6 +308,44 @@ class HomePresenterEditTest {
         }
 
     @Test
+    fun representativeEmojiUpdateKeepsCurrentContentWhileRefreshing() =
+        runTest {
+            val mainCell = cell(id = 10L, title = "메인")
+            var bandalartLoadCount = 0
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L)),
+                    recentBandalartId = 1L,
+                    mainCells = mapOf(1L to mainCell),
+                    beforeBandalartLoad = {
+                        bandalartLoadCount += 1
+                        if (bandalartLoadCount > 1) delay(1)
+                    },
+                    publishEmojiRevisionImmediately = true,
+                )
+            val presenter = presenter(repository)
+
+            presenter.test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(HomeScreen.Event.OpenEmoji)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.Emoji)
+
+                state.eventSink(HomeScreen.Event.UpdateBandalartEmoji(1L, mainCell.id, "🌟"))
+                do {
+                    state = awaitItem()
+                    assertEquals(1L, state.bandalartData?.id)
+                    assertNotNull(state.bandalartCellData)
+                } while (state.bandalartData?.profileEmoji != "🌟")
+
+                assertNull(state.bottomSheet)
+                assertEquals("🌟", state.bandalartList.single().profileEmoji)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun closingEmojiPickerKeepsCellDraftOpen() =
         runTest {
             val mainCell = cell(id = 10L, title = "기존 목표")
@@ -396,7 +436,7 @@ class HomePresenterEditTest {
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long,): HomeScreen.State {
         var state = awaitItem()
-        while (state.bandalartData?.id != bandalartId || state.isLoading) {
+        while (state.bandalartData?.id != bandalartId) {
             state = awaitItem()
         }
         return state
