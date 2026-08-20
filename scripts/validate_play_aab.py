@@ -13,7 +13,10 @@ from pathlib import Path
 
 PACKAGE_NAME = "com.nexters.bandalart"
 TEST_REWARDED_ID = b"ca-app-pub-3940256099942544/5224354917"
-PRODUCTION_REWARDED_ID = b"ca-app-pub-5570932833347277/6659503579"
+PRODUCTION_REWARDED_IDS = (
+    b"ca-app-pub-5570932833347277/6659503579",
+    b"ca-app-pub-5570932833347277/7686378276",
+)
 TEST_BANNER_ID = b"ca-app-pub-3940256099942544/6300978111"
 PRODUCTION_BANNER_ID = b"ca-app-pub-5570932833347277/1215605203"
 ANDROID_NAMESPACE = "http://schemas.android.com/apk/res/android"
@@ -75,7 +78,9 @@ def verify_archive(path: Path) -> None:
                 continue
             content = archive.read(info)
             test_rewarded_id_found = test_rewarded_id_found or TEST_REWARDED_ID in content
-            production_rewarded_id_found = production_rewarded_id_found or PRODUCTION_REWARDED_ID in content
+            production_rewarded_id_found = production_rewarded_id_found or any(
+                ad_unit_id in content for ad_unit_id in PRODUCTION_REWARDED_IDS
+            )
             test_banner_id_found = test_banner_id_found or TEST_BANNER_ID in content
             production_banner_id_found = production_banner_id_found or PRODUCTION_BANNER_ID in content
             required_namespace_found = required_namespace_found or any(

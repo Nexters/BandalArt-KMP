@@ -143,7 +143,23 @@ class ValidateAabTest(unittest.TestCase):
                     "base/resources.pb",
                     validate_play_aab.TEST_REWARDED_ID
                     + validate_play_aab.TEST_BANNER_ID
-                    + validate_play_aab.PRODUCTION_REWARDED_ID
+                    + b"ca-app-pub-5570932833347277/6659503579"
+                    + validate_play_aab.REQUIRED_NAMESPACE[0],
+                )
+
+            with self.assertRaisesRegex(ValueError, "production rewarded ad ID"):
+                validate_play_aab.verify_archive(aab)
+
+    def test_rejects_production_cloud_backup_rewarded_id(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            aab = Path(directory) / "app.aab"
+            with zipfile.ZipFile(aab, "w") as archive:
+                archive.writestr("base/manifest/AndroidManifest.xml", b"manifest")
+                archive.writestr(
+                    "base/resources.pb",
+                    validate_play_aab.TEST_REWARDED_ID
+                    + validate_play_aab.TEST_BANNER_ID
+                    + b"ca-app-pub-5570932833347277/7686378276"
                     + validate_play_aab.REQUIRED_NAMESPACE[0],
                 )
 

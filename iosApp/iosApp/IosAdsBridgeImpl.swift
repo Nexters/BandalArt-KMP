@@ -26,7 +26,7 @@ private enum AdUnitID {
 #else
     static let banner = "ca-app-pub-5570932833347277/4693940934"
     static let rewardedBandalartCreation = "ca-app-pub-5570932833347277/2754173309"
-    static let rewardedCloudBackup = "ca-app-pub-5570932833347277/2754173309"
+    static let rewardedCloudBackup = "ca-app-pub-5570932833347277/5251786621"
 #endif
 
     static let rewardedUnitIDs = Set([rewardedBandalartCreation, rewardedCloudBackup])
@@ -37,6 +37,8 @@ private enum AdUnitID {
             rewardedBandalartCreation
         case .cloudBackup:
             rewardedCloudBackup
+        default:
+            fatalError("Unsupported rewarded ad purpose")
         }
     }
 }

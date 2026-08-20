@@ -87,7 +87,7 @@ android {
                 if (useTestAds) {
                     "ca-app-pub-3940256099942544/5224354917"
                 } else {
-                    "ca-app-pub-5570932833347277/6659503579"
+                    "ca-app-pub-5570932833347277/7686378276"
                 },
             )
             resValue(
