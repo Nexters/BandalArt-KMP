@@ -26,12 +26,11 @@ class DefaultStartupBackupPolicy(
 ) : StartupBackupPolicy {
     override suspend fun evaluate(): StartupBackupDecision =
         try {
-            if (!repository.isSupported) {
+            if (!repository.isSupported || repository.hasLocalData()) {
                 StartupBackupDecision.Continue
             } else {
-                val hasLocalData = repository.hasLocalData()
                 val backup = repository.findBackup()
-                if (hasLocalData || backup == null) {
+                if (backup == null) {
                     StartupBackupDecision.Continue
                 } else {
                     StartupBackupDecision.OfferRestore(backup)
