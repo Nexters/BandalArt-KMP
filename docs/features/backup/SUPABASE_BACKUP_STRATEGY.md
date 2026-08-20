@@ -24,6 +24,8 @@ Android 또는 iOS 동일 기기에서 앱 데이터 삭제 또는 재설치 후
 - `bandalart_count`: 복원 안내에 표시할 반다라트 개수
 - `updated_at`: 마지막 백업 시각
 
+테마 선택값 `themeMode`(`system`, `light`, `dark`)도 `payload` 안의 DataStore 복원 대상에 포함한다. 백업을 불러오면 현재 기기의 테마 선택을 백업 값으로 덮어쓰고 앱에 즉시 반영한다. `themeMode`가 `null`이면 저장된 선택을 지우고 시스템 설정 모드를 사용한다.
+
 테이블 직접 권한은 닫고 `get_device_backup`, `put_device_backup`, `delete_device_backup` RPC만 공개한다. 이 구조는 SSAID 파생 키를 인증 자격 증명으로 사용한다는 한계를 받아들이는 저민감도 MVP이며 원본 SSAID를 저장하거나 로그에 남기지 않는다.
 
 ## 저장소 구성

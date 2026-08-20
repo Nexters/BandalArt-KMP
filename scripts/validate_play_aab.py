@@ -13,7 +13,10 @@ from pathlib import Path
 
 PACKAGE_NAME = "com.nexters.bandalart"
 TEST_REWARDED_ID = b"ca-app-pub-3940256099942544/5224354917"
-PRODUCTION_REWARDED_ID = b"ca-app-pub-5570932833347277/6659503579"
+PRODUCTION_REWARDED_IDS = (
+    b"ca-app-pub-5570932833347277/6659503579",
+    b"ca-app-pub-5570932833347277/7686378276",
+)
 TEST_BANNER_ID = b"ca-app-pub-3940256099942544/6300978111"
 PRODUCTION_BANNER_ID = b"ca-app-pub-5570932833347277/1215605203"
 ANDROID_NAMESPACE = "http://schemas.android.com/apk/res/android"
@@ -65,7 +68,7 @@ def verify_archive(path: Path) -> None:
             fail("AAB base manifest is missing")
 
         test_rewarded_id_found = False
-        production_rewarded_id_found = False
+        production_rewarded_ids_found: set[bytes] = set()
         test_banner_id_found = False
         production_banner_id_found = False
         required_namespace_found = False
@@ -75,7 +78,9 @@ def verify_archive(path: Path) -> None:
                 continue
             content = archive.read(info)
             test_rewarded_id_found = test_rewarded_id_found or TEST_REWARDED_ID in content
-            production_rewarded_id_found = production_rewarded_id_found or PRODUCTION_REWARDED_ID in content
+            production_rewarded_ids_found.update(
+                ad_unit_id for ad_unit_id in PRODUCTION_REWARDED_IDS if ad_unit_id in content
+            )
             test_banner_id_found = test_banner_id_found or TEST_BANNER_ID in content
             production_banner_id_found = production_banner_id_found or PRODUCTION_BANNER_ID in content
             required_namespace_found = required_namespace_found or any(
@@ -87,7 +92,7 @@ def verify_archive(path: Path) -> None:
 
         if test_rewarded_id_found:
             fail("official Google test rewarded ad ID is present")
-        if not production_rewarded_id_found:
+        if len(production_rewarded_ids_found) != len(PRODUCTION_REWARDED_IDS):
             fail("production rewarded ad ID is missing")
         if test_banner_id_found:
             fail("official Google test banner ad ID is present")

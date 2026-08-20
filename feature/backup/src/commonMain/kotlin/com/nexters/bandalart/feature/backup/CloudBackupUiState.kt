@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.backup
 
 import com.nexters.bandalart.core.domain.backup.BackupMetadata
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -26,7 +27,10 @@ data class CloudBackupUiState(
     val isSupported: Boolean,
     val isLoading: Boolean,
     val metadata: BackupMetadata?,
+    val showCreateBackupConfirmation: Boolean,
     val showRestoreConfirmation: Boolean,
+    val rewardedAdRequestId: Long?,
+    val effect: Effect?,
     val result: Result?,
     val eventSink: (Event) -> Unit,
 ) : CircuitUiState {
@@ -37,10 +41,23 @@ data class CloudBackupUiState(
         ERROR,
     }
 
+    sealed interface Effect {
+        data object ShowAdUnavailableSnackbar : Effect
+    }
+
     sealed interface Event : CircuitUiEvent {
         data object Back : Event
 
         data object CreateBackup : Event
+
+        data object ConfirmCreateBackup : Event
+
+        data object DismissCreateBackupConfirmation : Event
+
+        data class RewardedAdFinished(
+            val requestId: Long,
+            val result: RewardedAdResult,
+        ) : Event
 
         data object RestoreBackup : Event
 
@@ -51,5 +68,7 @@ data class CloudBackupUiState(
         data object StartFresh : Event
 
         data object ConsumeResult : Event
+
+        data object ConsumeEffect : Event
     }
 }

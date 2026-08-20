@@ -67,6 +67,10 @@
     <string name="backup_status_existing">반다라트 %1$d개 · %2$s 백업</string>
     <string name="backup_not_supported">이 기기에서는 클라우드 백업을 사용할 수 없어요.</string>
     <string name="backup_now">지금 백업하기</string>
+    <string name="backup_create_confirm_title">클라우드에 백업할까요?</string>
+    <string name="backup_create_confirm_body">클라우드 백업을 위해 광고를 끝까지 시청해 주세요.</string>
+    <string name="backup_create_confirm">광고 보고 백업하기</string>
+    <string name="backup_create_cancel">취소</string>
     <string name="backup_restore">백업에서 복원</string>
     <string name="backup_start_fresh">새로 시작</string>
     <string name="backup_loading">처리 중이에요…</string>

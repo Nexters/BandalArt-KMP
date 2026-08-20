@@ -50,20 +50,24 @@ class AdsInitializer(
                 )
                 MobileAds.putPublisherFirstPartyIdEnabled(false)
 
-                val adUnitId = context.getString(R.string.admob_rewarded_ad_unit_id)
-                runCatching {
-                    RewardedAdPreloader.start(
-                        adUnitId,
-                        PreloadConfiguration(
-                            AdRequest
-                                .Builder(adUnitId)
-                                .setGoogleExtrasBundle(nonPersonalizedAdExtras())
-                                .build(),
-                        ),
-                    )
-                }.onFailure { exception ->
-                    Log.e("AdsInitializer", "Rewarded ad preloader failed to start", exception)
-                    Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
+                distinctRewardedAdUnitIds(
+                    context.getString(R.string.admob_rewarded_bandalart_creation_ad_unit_id),
+                    context.getString(R.string.admob_rewarded_cloud_backup_ad_unit_id),
+                ).forEach { adUnitId ->
+                    runCatching {
+                        RewardedAdPreloader.start(
+                            adUnitId,
+                            PreloadConfiguration(
+                                AdRequest
+                                    .Builder(adUnitId)
+                                    .setGoogleExtrasBundle(nonPersonalizedAdExtras())
+                                    .build(),
+                            ),
+                        )
+                    }.onFailure { exception ->
+                        Log.e("AdsInitializer", "Rewarded ad preloader failed to start", exception)
+                        Napier.e("Rewarded ad preloader failed to start", exception, tag = "AdsInitializer")
+                    }
                 }
 
                 initialization.complete(true)
@@ -81,3 +85,5 @@ class AdsInitializer(
         return initialization.await()
     }
 }
+
+internal fun distinctRewardedAdUnitIds(vararg adUnitIds: String): Set<String> = adUnitIds.toSet()

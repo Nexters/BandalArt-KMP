@@ -54,8 +54,8 @@ unless workflow.include?("IOS_ADS_MODE: ${{ inputs.ios_ads_mode }}")
   raise "Release CD must pass the selected iOS ad mode to Fastlane"
 end
 
-unless workflow.match?(/ios_ads_mode:.*?default: test.*?- test.*?- production/m)
-  raise "Release CD must default to test ads and offer an explicit production mode"
+unless workflow.match?(/ios_ads_mode:.*?default: production.*?- test.*?- production/m)
+  raise "Release CD must default to production ads and offer an explicit test mode"
 end
 
 puts "iOS TestFlight ad mode configuration test passed"

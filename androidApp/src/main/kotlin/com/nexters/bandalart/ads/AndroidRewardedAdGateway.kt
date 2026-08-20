@@ -30,6 +30,7 @@ import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdEventCallb
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdPreloader
 import com.nexters.bandalart.R
 import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdPurpose
 import com.nexters.bandalart.core.common.RewardedAdResult
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CompletableDeferred
@@ -49,84 +50,99 @@ class AndroidRewardedAdGateway(
     private val application = application
     private val mainHandler = Handler(Looper.getMainLooper())
     private val recordingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val rewardPolicy = AndroidRewardedAdRewardPolicy(recordReward)
     private var resumedActivity = WeakReference<Activity>(null)
-    private val requests = mutableMapOf<Long, CompletableDeferred<RewardedAdResult>>()
-    private val pendingLoadedAds = mutableMapOf<CompletableDeferred<RewardedAdResult>, PendingLoadedAd>()
+    private val requests = mutableMapOf<Long, RewardedAdRequest>()
+    private val pendingLoadedAds = mutableMapOf<RewardedAdRequest, RewardedAd>()
 
     init {
         application.registerActivityLifecycleCallbacks(this)
     }
 
-    override suspend fun show(requestId: Long): RewardedAdResult =
+    override suspend fun show(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): RewardedAdResult =
         withContext(Dispatchers.Main.immediate) {
             if (!awaitAdsInitialized()) return@withContext RewardedAdResult.FAILED
-            requests
-                .getOrPut(requestId) {
-                    CompletableDeferred<RewardedAdResult>().also { result -> load(requestId, result) }
-                }.await()
+            val request =
+                requests[requestId]
+                    ?: RewardedAdRequest(requestId, purpose).also { newRequest ->
+                        requests[requestId] = newRequest
+                        load(newRequest)
+                    }
+            request.result.await()
         }
 
     override fun consume(requestId: Long) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            requests.remove(requestId)
+            consumeOnMain(requestId)
         } else {
-            application.mainExecutor.execute { requests.remove(requestId) }
+            application.mainExecutor.execute { consumeOnMain(requestId) }
         }
     }
 
-    private fun load(
-        requestId: Long,
-        result: CompletableDeferred<RewardedAdResult>,
-    ) {
-        if (resumedActivity.get() == null) {
-            result.complete(RewardedAdResult.FAILED)
-            return
+    private fun consumeOnMain(requestId: Long) {
+        val request = requests[requestId] ?: return
+        when (request.lifecycle.consume()) {
+            RewardedAdConsumeAction.CANCEL -> {
+                requests.remove(requestId, request)
+                pendingLoadedAds.remove(request)
+                request.result.cancel()
+            }
+            RewardedAdConsumeAction.ABANDON_SHOWING,
+            RewardedAdConsumeAction.IGNORE,
+            -> Unit
         }
+    }
 
-        fun finish(rewardedAdResult: RewardedAdResult) {
-            result.complete(rewardedAdResult)
+    private fun load(request: RewardedAdRequest) {
+        if (resumedActivity.get() == null) {
+            finishRequest(request, RewardedAdResult.FAILED)
+            return
         }
 
         val adRequest =
             AdRequest
-                .Builder(application.getString(R.string.admob_rewarded_ad_unit_id))
+                .Builder(application.getString(request.purpose.adUnitResource))
                 .setGoogleExtrasBundle(nonPersonalizedAdExtras())
                 .build()
         val preloadedAd = RewardedAdPreloader.pollAd(adRequest.adUnitId)
         if (preloadedAd != null) {
-            showWhenActivityAvailable(requestId, preloadedAd, result)
+            showWhenActivityAvailable(request, preloadedAd)
             return
         }
         RewardedAd.load(
             adRequest,
             object : AdLoadCallback<RewardedAd> {
                 override fun onAdLoaded(ad: RewardedAd) {
-                    mainHandler.post { showWhenActivityAvailable(requestId, ad, result) }
+                    mainHandler.post { showWhenActivityAvailable(request, ad) }
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mainHandler.post { finish(RewardedAdResult.FAILED) }
+                    mainHandler.post { finishRequest(request, RewardedAdResult.FAILED) }
                 }
             },
         )
     }
 
     private fun showWhenActivityAvailable(
-        requestId: Long,
+        request: RewardedAdRequest,
         ad: RewardedAd,
-        result: CompletableDeferred<RewardedAdResult>,
     ) {
+        if (!isCurrent(request)) return
         val activity = resumedActivity.get()
         if (activity != null) {
-            show(requestId, ad, activity, result::complete)
+            show(request, ad, activity)
             return
         }
 
-        pendingLoadedAds[result] = PendingLoadedAd(requestId, ad)
+        if (!request.lifecycle.tryMarkPendingActivity()) return
+        pendingLoadedAds[request] = ad
         mainHandler.postDelayed(
             {
-                if (pendingLoadedAds.remove(result) != null) {
-                    result.complete(RewardedAdResult.FAILED)
+                if (pendingLoadedAds.remove(request) != null) {
+                    finishRequest(request, RewardedAdResult.FAILED)
                 }
             },
             ACTIVITY_REATTACH_GRACE_PERIOD_MILLIS,
@@ -134,14 +150,14 @@ class AndroidRewardedAdGateway(
     }
 
     private fun show(
-        requestId: Long,
+        request: RewardedAdRequest,
         ad: RewardedAd,
         activity: Activity,
-        finish: (RewardedAdResult) -> Unit,
     ) {
+        if (!isCurrent(request) || !request.lifecycle.tryMarkShowing()) return
         val callbackCoordinator =
             RewardedAdCallbackCoordinator(
-                finish = finish,
+                finish = { result -> finishRequest(request, result) },
                 scheduleDismissed = { action ->
                     mainHandler.postDelayed(action, DISMISS_CALLBACK_GRACE_PERIOD_MILLIS)
                 },
@@ -159,7 +175,9 @@ class AndroidRewardedAdGateway(
         ad.show(activity) {
             mainHandler.post { callbackCoordinator.onRewardRecordingStarted() }
             recordingScope.launch(start = CoroutineStart.UNDISPATCHED) {
-                val recorded = runCatching { recordReward(requestId) }.getOrDefault(false)
+                val recorded =
+                    runCatching { rewardPolicy.complete(request.requestId, request.purpose) }
+                        .getOrDefault(false)
                 withContext(Dispatchers.Main.immediate) {
                     if (recorded) {
                         callbackCoordinator.onRewardEarned()
@@ -175,10 +193,8 @@ class AndroidRewardedAdGateway(
         resumedActivity = WeakReference(activity)
         val adsToShow = pendingLoadedAds.toMap()
         pendingLoadedAds.clear()
-        adsToShow.forEach { (result, pendingAd) ->
-            if (!result.isCompleted) {
-                show(pendingAd.requestId, pendingAd.ad, activity, result::complete)
-            }
+        adsToShow.forEach { (request, ad) ->
+            show(request, ad, activity)
         }
     }
 
@@ -202,15 +218,130 @@ class AndroidRewardedAdGateway(
 
     override fun onActivityDestroyed(activity: Activity) = Unit
 
+    private fun isCurrent(request: RewardedAdRequest): Boolean =
+        requests[request.requestId] === request && request.lifecycle.acceptsPresentationCallbacks
+
+    private fun finishRequest(
+        request: RewardedAdRequest,
+        result: RewardedAdResult,
+    ) {
+        if (requests[request.requestId] !== request) return
+        when (request.lifecycle.finish()) {
+            RewardedAdFinishAction.COMPLETE -> request.result.complete(result)
+            RewardedAdFinishAction.COMPLETE_AND_REMOVE -> {
+                request.result.complete(result)
+                requests.remove(request.requestId, request)
+            }
+            RewardedAdFinishAction.IGNORE -> Unit
+        }
+    }
+
     private companion object {
         const val DISMISS_CALLBACK_GRACE_PERIOD_MILLIS = 1_000L
         const val ACTIVITY_REATTACH_GRACE_PERIOD_MILLIS = 2_000L
     }
 
-    private data class PendingLoadedAd(
+    private class RewardedAdRequest(
         val requestId: Long,
-        val ad: RewardedAd,
-    )
+        val purpose: RewardedAdPurpose,
+    ) {
+        val result = CompletableDeferred<RewardedAdResult>()
+        val lifecycle = RewardedAdRequestLifecycle()
+    }
+}
+
+internal class RewardedAdRequestLifecycle {
+    private var stage = Stage.LOADING
+    private var abandonedWhileShowing = false
+
+    val acceptsPresentationCallbacks: Boolean
+        get() = stage == Stage.LOADING || stage == Stage.PENDING_ACTIVITY
+
+    fun tryMarkPendingActivity(): Boolean {
+        if (stage != Stage.LOADING) return false
+        stage = Stage.PENDING_ACTIVITY
+        return true
+    }
+
+    fun tryMarkShowing(): Boolean {
+        if (stage != Stage.LOADING && stage != Stage.PENDING_ACTIVITY) return false
+        stage = Stage.SHOWING
+        return true
+    }
+
+    fun consume(): RewardedAdConsumeAction =
+        when (stage) {
+            Stage.SHOWING -> {
+                abandonedWhileShowing = true
+                RewardedAdConsumeAction.ABANDON_SHOWING
+            }
+            Stage.CANCELLED -> RewardedAdConsumeAction.IGNORE
+            Stage.LOADING,
+            Stage.PENDING_ACTIVITY,
+            Stage.FINISHED,
+            -> {
+                stage = Stage.CANCELLED
+                RewardedAdConsumeAction.CANCEL
+            }
+        }
+
+    fun finish(): RewardedAdFinishAction =
+        when (stage) {
+            Stage.LOADING,
+            Stage.PENDING_ACTIVITY,
+            Stage.SHOWING,
+            -> {
+                stage = Stage.FINISHED
+                if (abandonedWhileShowing) {
+                    RewardedAdFinishAction.COMPLETE_AND_REMOVE
+                } else {
+                    RewardedAdFinishAction.COMPLETE
+                }
+            }
+            Stage.FINISHED,
+            Stage.CANCELLED,
+            -> RewardedAdFinishAction.IGNORE
+        }
+
+    private enum class Stage {
+        LOADING,
+        PENDING_ACTIVITY,
+        SHOWING,
+        FINISHED,
+        CANCELLED,
+    }
+}
+
+internal enum class RewardedAdConsumeAction {
+    CANCEL,
+    ABANDON_SHOWING,
+    IGNORE,
+}
+
+internal enum class RewardedAdFinishAction {
+    COMPLETE,
+    COMPLETE_AND_REMOVE,
+    IGNORE,
+}
+
+private val RewardedAdPurpose.adUnitResource: Int
+    get() =
+        when (this) {
+            RewardedAdPurpose.BANDALART_CREATION -> R.string.admob_rewarded_bandalart_creation_ad_unit_id
+            RewardedAdPurpose.CLOUD_BACKUP -> R.string.admob_rewarded_cloud_backup_ad_unit_id
+        }
+
+internal class AndroidRewardedAdRewardPolicy(
+    private val recordReward: suspend (Long) -> Boolean,
+) {
+    suspend fun complete(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): Boolean =
+        when (purpose) {
+            RewardedAdPurpose.BANDALART_CREATION -> recordReward(requestId)
+            RewardedAdPurpose.CLOUD_BACKUP -> true
+        }
 }
 
 internal class RewardedAdCallbackCoordinator(

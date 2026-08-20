@@ -95,9 +95,11 @@ class ValidateAabTest(unittest.TestCase):
         self.assertEqual(fixed_size_banner_id.encode(), validate_play_aab.TEST_BANNER_ID)
         self.assertIn(validate_play_aab.TEST_REWARDED_ID.decode(), debug_config)
         self.assertIn(fixed_size_banner_id, debug_config)
-        self.assertNotIn(validate_play_aab.PRODUCTION_REWARDED_ID.decode(), debug_config)
+        for production_rewarded_id in validate_play_aab.PRODUCTION_REWARDED_IDS:
+            self.assertNotIn(production_rewarded_id.decode(), debug_config)
         self.assertNotIn(validate_play_aab.PRODUCTION_BANNER_ID.decode(), debug_config)
-        self.assertIn(validate_play_aab.PRODUCTION_REWARDED_ID.decode(), release_and_later)
+        for production_rewarded_id in validate_play_aab.PRODUCTION_REWARDED_IDS:
+            self.assertIn(production_rewarded_id.decode(), release_and_later)
         self.assertIn(validate_play_aab.PRODUCTION_BANNER_ID.decode(), release_and_later)
         self.assertNotIn(validate_play_aab.TEST_REWARDED_ID.decode(), release_and_later)
         self.assertNotIn(fixed_size_banner_id, release_and_later)
@@ -139,7 +141,7 @@ class ValidateAabTest(unittest.TestCase):
                 archive.writestr("base/manifest/AndroidManifest.xml", b"manifest")
                 archive.writestr(
                     "base/dex/classes.dex",
-                    validate_play_aab.PRODUCTION_REWARDED_ID
+                    b"\0".join(validate_play_aab.PRODUCTION_REWARDED_IDS)
                     + b"\0"
                     + validate_play_aab.PRODUCTION_BANNER_ID
                     + b"\0"
@@ -156,7 +158,7 @@ class ValidateAabTest(unittest.TestCase):
                 archive.writestr(
                     "base/resources.pb",
                     validate_play_aab.TEST_REWARDED_ID
-                    + validate_play_aab.PRODUCTION_REWARDED_ID
+                    + b"\0".join(validate_play_aab.PRODUCTION_REWARDED_IDS)
                     + validate_play_aab.PRODUCTION_BANNER_ID
                     + validate_play_aab.REQUIRED_NAMESPACE[0],
                 )
@@ -171,7 +173,7 @@ class ValidateAabTest(unittest.TestCase):
                 archive.writestr("base/manifest/AndroidManifest.xml", b"manifest")
                 archive.writestr(
                     "base/resources.pb",
-                    validate_play_aab.PRODUCTION_REWARDED_ID
+                    b"\0".join(validate_play_aab.PRODUCTION_REWARDED_IDS)
                     + validate_play_aab.TEST_BANNER_ID
                     + validate_play_aab.PRODUCTION_BANNER_ID
                     + validate_play_aab.REQUIRED_NAMESPACE[0],
@@ -180,14 +182,28 @@ class ValidateAabTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "test banner ad ID"):
                 validate_play_aab.verify_archive(aab)
 
-    def test_requires_production_rewarded_id(self) -> None:
+    def test_requires_each_production_rewarded_id(self) -> None:
+        for missing_rewarded_id in validate_play_aab.PRODUCTION_REWARDED_IDS:
+            present_rewarded_ids = tuple(
+                ad_unit_id
+                for ad_unit_id in validate_play_aab.PRODUCTION_REWARDED_IDS
+                if ad_unit_id != missing_rewarded_id
+            )
+            with self.subTest(missing_rewarded_id=missing_rewarded_id.decode()):
+                self._assert_missing_production_rewarded_id(present_rewarded_ids)
+
+    def _assert_missing_production_rewarded_id(
+        self,
+        present_rewarded_ids: tuple[bytes, ...],
+    ) -> None:
         with tempfile.TemporaryDirectory() as directory:
             aab = Path(directory) / "app.aab"
             with zipfile.ZipFile(aab, "w") as archive:
                 archive.writestr("base/manifest/AndroidManifest.xml", b"manifest")
                 archive.writestr(
                     "base/resources.pb",
-                    validate_play_aab.PRODUCTION_BANNER_ID
+                    b"\0".join(present_rewarded_ids)
+                    + validate_play_aab.PRODUCTION_BANNER_ID
                     + validate_play_aab.REQUIRED_NAMESPACE[0],
                 )
 
@@ -201,7 +217,7 @@ class ValidateAabTest(unittest.TestCase):
                 archive.writestr("base/manifest/AndroidManifest.xml", b"manifest")
                 archive.writestr(
                     "base/resources.pb",
-                    validate_play_aab.PRODUCTION_REWARDED_ID
+                    b"\0".join(validate_play_aab.PRODUCTION_REWARDED_IDS)
                     + validate_play_aab.REQUIRED_NAMESPACE[0],
                 )
 

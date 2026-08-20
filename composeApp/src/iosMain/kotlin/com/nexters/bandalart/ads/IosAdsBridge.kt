@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.ads
 
+import com.nexters.bandalart.core.common.RewardedAdPurpose
 import com.nexters.bandalart.core.common.RewardedAdResult
 import platform.UIKit.UIView
 
@@ -25,6 +26,7 @@ interface IosAdsBridge {
 
     fun showRewarded(
         requestId: Long,
+        purpose: RewardedAdPurpose,
         completion: (RewardedAdResult) -> Unit,
     )
 

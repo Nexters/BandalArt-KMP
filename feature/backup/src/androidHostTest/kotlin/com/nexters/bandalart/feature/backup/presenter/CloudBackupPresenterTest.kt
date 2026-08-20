@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.feature.backup.presenter
 
+import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.backup.BackupMetadata
 import com.nexters.bandalart.core.domain.backup.CloudBackupRepository
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
@@ -27,6 +28,7 @@ import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -69,6 +71,126 @@ class CloudBackupPresenterTest {
                 assertFalse(restored.showRestoreConfirmation)
                 assertEquals(CloudBackupUiState.Result.RESTORED, restored.result)
                 assertEquals(1, repository.restoreCalls)
+            }
+        }
+
+    @Test
+    fun settingsCreateBackupRequiresRewardedAdConfirmation() =
+        runTest {
+            val repository = FakeCloudBackupRepository()
+            val presenter = presenter(CloudBackupScreen.EntryPoint.SETTINGS, repository)
+
+            presenter.test {
+                awaitItem()
+                val state = awaitItem()
+                state.eventSink(CloudBackupUiState.Event.CreateBackup)
+                val confirmation = awaitItem()
+
+                assertTrue(confirmation.showCreateBackupConfirmation)
+                assertEquals(0, repository.createCalls)
+            }
+        }
+
+    @Test
+    fun rewardedAdCreatesBackupExactlyOnce() =
+        runTest {
+            val repository = FakeCloudBackupRepository()
+            val presenter = presenter(CloudBackupScreen.EntryPoint.SETTINGS, repository)
+
+            presenter.test {
+                awaitItem()
+                awaitItem().eventSink(CloudBackupUiState.Event.CreateBackup)
+                val confirmation = awaitItem()
+                confirmation.eventSink(CloudBackupUiState.Event.ConfirmCreateBackup)
+                var awaitingAd = awaitItem()
+                while (awaitingAd.rewardedAdRequestId == null) awaitingAd = awaitItem()
+                val requestId = requireNotNull(awaitingAd.rewardedAdRequestId)
+
+                awaitingAd.eventSink(
+                    CloudBackupUiState.Event.RewardedAdFinished(requestId, RewardedAdResult.REWARDED),
+                )
+                var completed = awaitItem()
+                while (completed.result != CloudBackupUiState.Result.BACKUP_CREATED) completed = awaitItem()
+
+                completed.eventSink(
+                    CloudBackupUiState.Event.RewardedAdFinished(requestId, RewardedAdResult.REWARDED),
+                )
+                yield()
+                assertEquals(1, repository.createCalls)
+            }
+        }
+
+    @Test
+    fun dismissedRewardedAdDoesNotCreateBackup() =
+        runTest {
+            val repository = FakeCloudBackupRepository()
+            val presenter = presenter(CloudBackupScreen.EntryPoint.SETTINGS, repository)
+
+            presenter.test {
+                awaitItem()
+                awaitItem().eventSink(CloudBackupUiState.Event.CreateBackup)
+                val confirmation = awaitItem()
+                confirmation.eventSink(CloudBackupUiState.Event.ConfirmCreateBackup)
+                var awaitingAd = awaitItem()
+                while (awaitingAd.rewardedAdRequestId == null) awaitingAd = awaitItem()
+                val requestId = requireNotNull(awaitingAd.rewardedAdRequestId)
+
+                awaitingAd.eventSink(
+                    CloudBackupUiState.Event.RewardedAdFinished(requestId, RewardedAdResult.DISMISSED),
+                )
+                val dismissed = awaitItem()
+
+                assertEquals(null, dismissed.rewardedAdRequestId)
+                assertEquals(0, repository.createCalls)
+            }
+        }
+
+    @Test
+    fun restoreIsIgnoredWhileRewardedAdIsActive() =
+        runTest {
+            val repository = FakeCloudBackupRepository(existing = BackupMetadata(1, "now"))
+            val presenter = presenter(CloudBackupScreen.EntryPoint.SETTINGS, repository)
+
+            presenter.test {
+                awaitItem()
+                awaitItem().eventSink(CloudBackupUiState.Event.CreateBackup)
+                val confirmation = awaitItem()
+                confirmation.eventSink(CloudBackupUiState.Event.ConfirmCreateBackup)
+                var awaitingAd = awaitItem()
+                while (awaitingAd.rewardedAdRequestId == null) awaitingAd = awaitItem()
+
+                awaitingAd.eventSink(CloudBackupUiState.Event.RestoreBackup)
+                yield()
+
+                expectNoEvents()
+                assertFalse(awaitingAd.showRestoreConfirmation)
+                assertEquals(0, repository.restoreCalls)
+            }
+        }
+
+    @Test
+    fun failedRewardedAdShowsUnavailableMessageAndCreatesBackup() =
+        runTest {
+            val repository = FakeCloudBackupRepository()
+            val presenter = presenter(CloudBackupScreen.EntryPoint.SETTINGS, repository)
+
+            presenter.test {
+                awaitItem()
+                awaitItem().eventSink(CloudBackupUiState.Event.CreateBackup)
+                val confirmation = awaitItem()
+                confirmation.eventSink(CloudBackupUiState.Event.ConfirmCreateBackup)
+                var awaitingAd = awaitItem()
+                while (awaitingAd.rewardedAdRequestId == null) awaitingAd = awaitItem()
+                val requestId = requireNotNull(awaitingAd.rewardedAdRequestId)
+
+                awaitingAd.eventSink(
+                    CloudBackupUiState.Event.RewardedAdFinished(requestId, RewardedAdResult.FAILED),
+                )
+                var completed = awaitItem()
+                while (completed.result != CloudBackupUiState.Result.BACKUP_CREATED) completed = awaitItem()
+
+                assertEquals(CloudBackupUiState.Effect.ShowAdUnavailableSnackbar, completed.effect)
+                assertEquals(1, repository.createCalls)
             }
         }
 
@@ -137,13 +259,18 @@ private class FakeCloudBackupRepository(
     private var existing: BackupMetadata? = null,
 ) : CloudBackupRepository {
     override val isSupported = true
+    var createCalls = 0
     var restoreCalls = 0
 
     override suspend fun hasLocalData(): Boolean = true
 
     override suspend fun findBackup(): BackupMetadata? = existing
 
-    override suspend fun createBackup(): BackupMetadata = BackupMetadata(3, "created").also { existing = it }
+    override suspend fun createBackup(): BackupMetadata =
+        BackupMetadata(3, "created").also {
+            createCalls += 1
+            existing = it
+        }
 
     override suspend fun restoreBackup(): BackupMetadata? {
         restoreCalls += 1

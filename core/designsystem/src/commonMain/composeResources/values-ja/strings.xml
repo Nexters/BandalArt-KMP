@@ -67,6 +67,10 @@
     <string name="backup_status_existing">BandalArt %1$d件・%2$sにバックアップ</string>
     <string name="backup_not_supported">この端末ではクラウドバックアップを利用できません。</string>
     <string name="backup_now">今すぐバックアップ</string>
+    <string name="backup_create_confirm_title">クラウドにバックアップしますか？</string>
+    <string name="backup_create_confirm_body">クラウドバックアップを利用するには、広告を最後まで視聴してください。</string>
+    <string name="backup_create_confirm">広告を見てバックアップ</string>
+    <string name="backup_create_cancel">キャンセル</string>
     <string name="backup_restore">バックアップから復元</string>
     <string name="backup_start_fresh">新しく始める</string>
     <string name="backup_loading">処理中です…</string>

@@ -17,12 +17,16 @@
 package com.nexters.bandalart.ads
 
 import com.nexters.bandalart.core.common.RewardedAdGateway
+import com.nexters.bandalart.core.common.RewardedAdPurpose
 import com.nexters.bandalart.core.common.RewardedAdResult
 
 class DelegatingRewardedAdGateway : RewardedAdGateway {
     lateinit var delegate: RewardedAdGateway
 
-    override suspend fun show(requestId: Long): RewardedAdResult = delegate.show(requestId)
+    override suspend fun show(
+        requestId: Long,
+        purpose: RewardedAdPurpose,
+    ): RewardedAdResult = delegate.show(requestId, purpose)
 
     override fun consume(requestId: Long) {
         delegate.consume(requestId)
