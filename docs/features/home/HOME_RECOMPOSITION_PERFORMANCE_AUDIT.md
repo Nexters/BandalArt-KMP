@@ -27,6 +27,16 @@ Measure the Home scroll path in a release-like target, apply only state-read sco
   -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=Macrobenchmark
 ```
 
+## How to Read This Document
+
+- 최종 판단은 `Final after baseline profile regeneration` 행을 기준으로 한다. 이 행이 state split과 baseline profile 재생성을 모두 반영한 마지막 실기기 측정값이다.
+- `frameDurationCpuMs`는 한 프레임을 그리는 동안 앱이 CPU에서 사용한 시간이다. 낮을수록 좋고, 홈 스크롤 작업 자체가 가벼운지 볼 때 사용한다.
+- `frameOverrunMs`는 프레임 마감 시간을 얼마나 넘겼는지 나타낸다. 0 이하이면 프레임 예산 안에 들어온 것이고, 양수가 커질수록 jank 가능성이 커진다.
+- `P50`, `P90`, `P99`는 각각 전체 프레임 중 50%, 90%, 99% 지점의 값이다. 체감 성능은 평균보다 `P90`과 `P99`를 우선해서 본다.
+- 이번 최종 결과는 `frameDurationCpuMs P90 6.96ms`, `frameOverrunMs P90 0.67ms`로 홈 스크롤 대부분의 프레임이 안정권에 들어온 것으로 해석한다.
+- `frameOverrunMs P99 8.63ms`는 드문 tail frame이 아직 튈 수 있음을 의미한다. 추가 최적화가 필요하면 새 이슈에서 P99/tail 개선을 별도로 측정한다.
+- 같은 기기, 같은 variant, 같은 benchmark journey, 비슷한 frame count끼리만 직접 비교한다. `After bottom sheet/dialog state split` run은 frame count가 달라 직접적인 회귀 판단 근거로 쓰지 않는다.
+
 ## Results
 
 | Scenario | Metric | P50 | P90 | P99 | Notes |
