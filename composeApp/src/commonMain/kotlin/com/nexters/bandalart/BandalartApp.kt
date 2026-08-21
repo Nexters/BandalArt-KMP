@@ -35,8 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.entity.ThemeMode
@@ -79,7 +77,7 @@ fun BandalartApp(appGraph: AppGraph) {
                 CircuitCompositionLocals(appGraph.circuit) {
                     CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
                         Scaffold(
-                            modifier = Modifier.semantics { testTagsAsResourceId = true },
+                            modifier = Modifier.enableTestTagsAsResourceId(),
                             snackbarHost = {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
