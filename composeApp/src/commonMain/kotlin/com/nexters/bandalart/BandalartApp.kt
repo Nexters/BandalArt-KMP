@@ -77,6 +77,7 @@ fun BandalartApp(appGraph: AppGraph) {
                 CircuitCompositionLocals(appGraph.circuit) {
                     CompositionLocalProvider(LocalShowSnackbar provides showSnackbar) {
                         Scaffold(
+                            modifier = Modifier.enableTestTagsAsResourceId(),
                             snackbarHost = {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),

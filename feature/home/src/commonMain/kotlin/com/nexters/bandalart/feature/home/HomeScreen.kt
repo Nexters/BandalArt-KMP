@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bandalart.core.designsystem.generated.resources.Res
@@ -65,7 +66,9 @@ import com.nexters.bandalart.core.common.SupportMailOpenResult
 import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
 import com.nexters.bandalart.core.common.openWithClipboardFallback
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
+import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
+import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
@@ -79,7 +82,6 @@ import dev.zacsweers.metro.Inject
 import io.github.compose.jindong.Jindong
 import io.github.compose.jindong.core.model.HapticIntensity
 import io.github.compose.jindong.dsl.Haptic
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -89,6 +91,7 @@ import org.jetbrains.compose.resources.getString
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val SNACKBAR_DURATION_MILLIS = 1500L
+internal const val HOME_SCROLL_TAG = "home_scroll"
 
 @CircuitInject(HomeScreen::class, AppScope::class)
 @Inject
@@ -154,17 +157,29 @@ internal fun Home(
     )
 
     HomeBottomSheets(
-        state = state,
+        bottomSheet = state.bottomSheet,
+        recentEmojis = state.recentEmojis,
+        bandalartList = state.bandalartList,
+        themeMode = state.themeMode,
+        deadlineReminderEnabled = state.deadlineReminderEnabled,
+        deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
+        deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
         eventSink = state.eventSink,
         appVersion = appVersion,
     )
     HomeDialogs(
-        state = state,
+        dialog = state.dialog,
+        bandalartData = state.bandalartData,
         eventSink = state.eventSink,
     )
 
     HomeContent(
-        state = state,
+        bandalartListSize = state.bandalartList.size,
+        bandalartData = state.bandalartData,
+        bandalartCellData = state.bandalartCellData,
+        isDropDownMenuOpened = state.isDropDownMenuOpened,
+        isBannerCreativeVisible = state.isBannerCreativeVisible(),
+        eventSink = state.eventSink,
         homeGraphicsLayer = homeGraphicsLayer,
         completeGraphicsLayer = completeGraphicsLayer,
         updateSnackbarHostState = updateSnackbarHostState,
@@ -298,14 +313,19 @@ private suspend fun showSnackbarForDuration(
 
 @Composable
 internal fun HomeContent(
-    state: HomeScreen.State,
+    bandalartListSize: Int,
+    bandalartData: BandalartUiModel?,
+    bandalartCellData: BandalartCellEntity?,
+    isDropDownMenuOpened: Boolean,
+    isBannerCreativeVisible: Boolean,
+    eventSink: (HomeScreen.Event) -> Unit,
     homeGraphicsLayer: GraphicsLayer,
     completeGraphicsLayer: GraphicsLayer,
     updateSnackbarHostState: SnackbarHostState,
     bannerAdHost: BannerAdHost,
     modifier: Modifier = Modifier,
 ) {
-    val isContentReady = state.bandalartCellData != null && state.bandalartData != null
+    val isContentReady = bandalartCellData != null && bandalartData != null
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -317,11 +337,12 @@ internal fun HomeContent(
                         Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
+                            .testTag(HOME_SCROLL_TAG)
                             .padding(bottom = 32.dp),
                 ) {
                     HomeTopBar(
-                        bandalartCount = state.bandalartList.size,
-                        onHomeUiAction = state.eventSink,
+                        bandalartCount = bandalartListSize,
+                        onHomeUiAction = eventSink,
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
@@ -334,15 +355,15 @@ internal fun HomeContent(
                     ) {
                         if (isContentReady) {
                             HomeHeader(
-                                bandalartData = state.bandalartData,
-                                cellData = state.bandalartCellData,
-                                isDropDownMenuOpened = state.isDropDownMenuOpened,
-                                onHomeUiAction = state.eventSink,
+                                bandalartData = bandalartData,
+                                cellData = bandalartCellData,
+                                isDropDownMenuOpened = isDropDownMenuOpened,
+                                onHomeUiAction = eventSink,
                             )
                             BandalartChart(
-                                bandalartData = state.bandalartData,
-                                bandalartCellData = state.bandalartCellData,
-                                onHomeUiAction = state.eventSink,
+                                bandalartData = bandalartData,
+                                bandalartCellData = bandalartCellData,
+                                onHomeUiAction = eventSink,
                                 modifier =
                                     Modifier
                                         .captureBandalartToGraphicsLayer(completeGraphicsLayer),
@@ -354,7 +375,7 @@ internal fun HomeContent(
                     if (isContentReady) {
                         HomeShareButton(
                             onShareButtonClick = {
-                                state.eventSink(HomeScreen.Event.RequestShare)
+                                eventSink(HomeScreen.Event.RequestShare)
                             },
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                         )
@@ -368,7 +389,7 @@ internal fun HomeContent(
             }
 
             bannerAdHost.Content(
-                visible = state.isBannerCreativeVisible(),
+                visible = isBannerCreativeVisible,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -395,13 +416,12 @@ internal fun HomeScreen.State.isBannerCreativeVisible(): Boolean =
 private fun HomeScreenPreview() {
     BandalartTheme {
         HomeContent(
-            state =
-                HomeScreen.State(
-                    bandalartList = dummyBandalartList.toImmutableList(),
-                    bandalartData = dummyBandalartData,
-                    bandalartCellData = dummyBandalartChartData,
-                    eventSink = {},
-                ),
+            bandalartListSize = dummyBandalartList.size,
+            bandalartData = dummyBandalartData,
+            bandalartCellData = dummyBandalartChartData,
+            isDropDownMenuOpened = false,
+            isBannerCreativeVisible = true,
+            eventSink = {},
             homeGraphicsLayer = rememberGraphicsLayer(),
             completeGraphicsLayer = rememberGraphicsLayer(),
             updateSnackbarHostState = remember { SnackbarHostState() },

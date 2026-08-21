@@ -20,28 +20,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.TextFieldValue
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.bandalart_list_empty_title
+import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartListBottomSheet
 import com.nexters.bandalart.feature.home.ui.settings.SettingsBottomSheet
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun HomeBottomSheets(
-    state: HomeScreen.State,
+    bottomSheet: HomeScreen.BottomSheetState?,
+    recentEmojis: ImmutableList<String>,
+    bandalartList: ImmutableList<BandalartUiModel>,
+    themeMode: ThemeMode,
+    deadlineReminderEnabled: Boolean,
+    deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
+    deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     eventSink: (HomeScreen.Event) -> Unit,
     appVersion: String,
 ) {
-    when (val bottomSheet = state.bottomSheet) {
+    when (bottomSheet) {
         is HomeScreen.BottomSheetState.Cell -> {
             BandalartBottomSheet(
                 cellType = bottomSheet.cellType,
                 isBlankCell = bottomSheet.initialCellData.title.isNullOrEmpty(),
                 onHomeUiAction = eventSink,
                 bottomSheetData = bottomSheet,
-                recentEmojis = state.recentEmojis,
+                recentEmojis = recentEmojis,
             )
         }
 
@@ -50,14 +60,14 @@ internal fun HomeBottomSheets(
                 bandalartId = bottomSheet.bandalartId,
                 cellId = bottomSheet.cellId,
                 currentEmoji = bottomSheet.currentEmoji,
-                recentEmojis = state.recentEmojis,
+                recentEmojis = recentEmojis,
                 onHomeUiAction = eventSink,
             )
         }
 
         is HomeScreen.BottomSheetState.BandalartList -> {
             BandalartListBottomSheet(
-                bandalartList = updateBandalartListTitles(state.bandalartList).toImmutableList(),
+                bandalartList = updateBandalartListTitles(bandalartList).toImmutableList(),
                 currentBandalartId = bottomSheet.currentBandalartId,
                 isCreationOptionsVisible = bottomSheet.isCreationOptionsVisible,
                 onHomeUiAction = eventSink,
@@ -66,10 +76,10 @@ internal fun HomeBottomSheets(
 
         HomeScreen.BottomSheetState.Settings -> {
             SettingsBottomSheet(
-                themeMode = state.themeMode,
-                deadlineReminderEnabled = state.deadlineReminderEnabled,
-                deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
-                deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
+                themeMode = themeMode,
+                deadlineReminderEnabled = deadlineReminderEnabled,
+                deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
+                deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
                 appVersion = appVersion,
                 onHomeUiAction = eventSink,
             )
