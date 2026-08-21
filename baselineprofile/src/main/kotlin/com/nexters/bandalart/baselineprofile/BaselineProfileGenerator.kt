@@ -24,7 +24,7 @@ class BaselineProfileGenerator {
             includeInStartupProfile = true,
         ) {
             pressHome()
-            startActivityAndWait()
+            startTargetActivity()
             navigateToHomeIfNeeded()
             val homeScroll = device.wait(Until.findObject(By.res(HOME_SCROLL_TAG)), WAIT_TIMEOUT_MILLIS)
                 ?: throw AssertionError("Home scroll target was not found")
