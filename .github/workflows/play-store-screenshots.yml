@@ -1,0 +1,122 @@
+name: Play Store Screenshots
+
+on:
+    workflow_dispatch:
+        inputs:
+            locale:
+                description: BCP-47 locale to upload, or all discovered locales
+                required: true
+                default: all
+                type: string
+            image_type:
+                description: Google Play image type
+                required: true
+                default: all
+                type: choice
+                options:
+                    - all
+                    - phoneScreenshots
+                    - sevenInchScreenshots
+                    - tenInchScreenshots
+                    - featureGraphic
+            confirm_upload:
+                description: I confirm replacement of the selected Play Store images
+                required: true
+                default: false
+                type: boolean
+
+concurrency:
+    group: release-cd
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+jobs:
+    guard:
+        name: Validate screenshot upload source
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   name: Require main and explicit confirmation
+                env:
+                    UPLOAD_REF: ${{ github.ref }}
+                    UPLOAD_CONFIRMED: ${{ inputs.confirm_upload }}
+                run: |
+                    test "$UPLOAD_REF" = "refs/heads/main"
+                    test "$UPLOAD_CONFIRMED" = "true"
+
+    upload:
+        name: Upload Play Store screenshots
+        needs: guard
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        environment: android-internal
+        steps:
+            -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+                with:
+                    fetch-depth: 0
+
+            -   name: Require latest main
+                run: |
+                    git fetch --quiet --no-tags origin main
+                    test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+            -   name: Setup uv
+                uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+
+            -   name: Validate selected assets
+                env:
+                    SELECTED_LOCALE: ${{ inputs.locale }}
+                    SELECTED_IMAGE_TYPE: ${{ inputs.image_type }}
+                run: |
+                    set -euo pipefail
+                    args=()
+                    if test "$SELECTED_LOCALE" != "all"; then
+                        args+=(--locale "$SELECTED_LOCALE")
+                    fi
+                    if test "$SELECTED_IMAGE_TYPE" != "all"; then
+                        args+=(--image-type "$SELECTED_IMAGE_TYPE")
+                    fi
+                    uv run --frozen scripts/upload_play_screenshots.py "${args[@]}"
+
+            -   name: Restore Play service account
+                env:
+                    PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+                    EXPECTED_PLAY_SERVICE_ACCOUNT_EMAIL: bandalart-play-publisher@bandalart-396909.iam.gserviceaccount.com
+                run: |
+                    set -euo pipefail
+                    : "${PLAY_SERVICE_ACCOUNT_JSON:?PLAY_SERVICE_ACCOUNT_JSON is required}"
+                    umask 077
+                    mkdir -p playstore
+                    printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > playstore/service-account-key.json
+                    jq -e --arg expected "$EXPECTED_PLAY_SERVICE_ACCOUNT_EMAIL" \
+                        '.type == "service_account" and .client_email == $expected' \
+                        playstore/service-account-key.json >/dev/null
+
+            -   name: Upload selected assets
+                env:
+                    PLAY_SERVICE_ACCOUNT_PATH: ${{ github.workspace }}/playstore/service-account-key.json
+                    SELECTED_LOCALE: ${{ inputs.locale }}
+                    SELECTED_IMAGE_TYPE: ${{ inputs.image_type }}
+                run: |
+                    set -euo pipefail
+                    args=()
+                    if test "$SELECTED_LOCALE" != "all"; then
+                        args+=(--locale "$SELECTED_LOCALE")
+                    fi
+                    if test "$SELECTED_IMAGE_TYPE" != "all"; then
+                        args+=(--image-type "$SELECTED_IMAGE_TYPE")
+                    fi
+                    uv run --frozen scripts/upload_play_screenshots.py --commit "${args[@]}"
+                    {
+                        echo '## Google Play Store screenshots'
+                        echo "- Source: \`${GITHUB_SHA}\`"
+                        echo "- Locale: \`${SELECTED_LOCALE}\`"
+                        echo "- Image type: \`${SELECTED_IMAGE_TYPE}\`"
+                        echo '- Result: validated and committed'
+                    } >> "$GITHUB_STEP_SUMMARY"
+
+            -   name: Remove Play service account
+                if: always()
+                run: rm -f playstore/service-account-key.json

@@ -230,7 +230,10 @@ jobs:
 
             -   name: Run release CD validation
                 run: |
-                    "$RUNNER_TEMP/actionlint" .github/workflows/android-ci.yml .github/workflows/release-cd.yml
+                    "$RUNNER_TEMP/actionlint" \
+                        .github/workflows/android-ci.yml \
+                        .github/workflows/play-store-screenshots.yml \
+                        .github/workflows/release-cd.yml
                     bundle exec ruby fastlane/test/app_store_connect_builds_test.rb
                     bundle exec ruby fastlane/test/plist_file_test.rb
                     bundle exec ruby fastlane/test/provisioning_profile_test.rb
@@ -238,6 +241,7 @@ jobs:
                     bundle exec ruby fastlane/test/testflight_test_ads_test.rb
                     bundle exec ruby fastlane/test/android_update_priority_test.rb
                     python3 -m unittest scripts.tests.test_play_release_scripts
+                    python3 -m unittest scripts.tests.test_play_screenshot_upload
                     bundle exec fastlane lanes
                     xmllint --noout iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/iosApp.xcscheme
 

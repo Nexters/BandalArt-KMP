@@ -18,9 +18,10 @@ GitHub Actions가 배포 환경과 자격증명을 준비하고 Fastlane lane을
 | 파일 | 역할 | 수정하는 경우 |
 | --- | --- | --- |
 | `.github/workflows/release-cd.yml` | `main`에서 Android Internal Testing, iOS TestFlight 또는 둘 다를 수동 실행한다. GitHub Environment의 secret을 runner 임시 파일로 복원하고 배포 후 삭제한다. | 배포 입력, runner, secret 이름, 환경 준비 또는 cleanup 절차가 바뀔 때 |
+| `.github/workflows/play-store-screenshots.yml` | `main`에서 Google Play 스크린샷 산출물을 검증하고 공식 Publishing API로 선택한 locale/image type을 교체한다. | 스크린샷 업로드 입력, 자격증명 복원 또는 실행 절차가 바뀔 때 |
 | `.github/workflows/android-ci.yml` | PR에서 workflow 문법, Ruby helper, Python 배포 스크립트, Fastlane lane, iOS 공유 scheme을 검증한다. Markdown만 바뀐 PR은 현재 경로 필터에 따라 실행하지 않는다. | CD 검증 항목이나 테스트 파일을 추가·제거할 때 |
 
-`release-cd.yml`은 배포의 진입점이고 `android-ci.yml`은 배포 코드의 회귀를 막는 검증 지점이다. 실제 업로드 동작은 workflow shell에 중복하지 않고 `fastlane/Fastfile`과 하위 도구에 둔다.
+`release-cd.yml`은 binary 배포의 진입점이고 `play-store-screenshots.yml`은 Play listing 이미지 배포의 진입점이다. 두 workflow는 같은 `release-cd` concurrency group을 사용해 Play edit 충돌을 막는다. `android-ci.yml`은 배포 코드의 회귀를 막는 검증 지점이다. 실제 업로드 동작은 workflow shell에 중복하지 않고 `fastlane/Fastfile`과 하위 도구에 둔다.
 
 ## Fastlane 파일
 
@@ -59,8 +60,13 @@ GitHub Actions가 배포 환경과 자격증명을 준비하고 Fastlane lane을
 | `androidApp/src/main/play/release-notes/{ko-KR,en-US,ja-JP}/internal.txt` | Play Internal Testing에 등록할 언어별 변경 사항이다. | Android 버전을 배포할 때 세 파일을 함께 갱신 |
 | `scripts/play_next_version_code.py` | Play의 모든 track을 조회해 현재 최대 versionCode보다 새 버전이 큰지 확인한다. 업로드 후에는 정확한 track, 상태, update priority를 재확인한다. | Play 버전 또는 업로드 결과 검증 규칙이 바뀔 때 |
 | `scripts/play_next_version_code.py.lock` | 위 Python 스크립트의 uv 의존성을 고정한 생성 파일이다. | 스크립트의 Python 의존성을 바꾼 뒤 uv로 lock을 갱신할 때 |
+| `scripts/upload_play_screenshots.py` | Google Play 최종 이미지의 형식·크기·순서를 credential 없이 검증하고, `--commit`에서만 공식 Android Publisher API edit으로 대상 이미지를 교체한다. | Play 이미지 규격, 대상 type 또는 edit 처리 규칙이 바뀔 때 |
+| `scripts/upload_play_screenshots.py.lock` | 스크린샷 업로더의 Google 공식 Python 클라이언트 의존성을 고정한다. | 업로더 의존성을 바꾼 뒤 uv로 lock을 갱신할 때 |
 | `scripts/validate_play_aab.py` | 업로드할 Android App Bundle(AAB)의 package, 버전, ZIP 무결성, 필수 리소스, 테스트·운영 광고 ID, release note를 검사한다. | AAB에 반드시 포함하거나 금지할 항목이 바뀔 때 |
-| `scripts/tests/test_play_release_scripts.py` | Play track 해석과 AAB 검증 규칙의 단위 테스트다. | 위 두 Python 스크립트의 동작을 바꿀 때 |
+| `scripts/tests/test_play_release_scripts.py` | Play track 해석과 AAB 검증 규칙의 단위 테스트다. | Play release Python 스크립트의 동작을 바꿀 때 |
+| `scripts/tests/test_play_screenshot_upload.py` | Play 이미지 탐색·규격 검증과 edit commit/폐기 수명주기의 단위 테스트다. | 스크린샷 업로더 동작을 바꿀 때 |
+
+Google Play에 실제 게시할 이미지 산출물은 `store-assets/screenshots/publish/google-play/{locale}/{imageType}/` 아래에 두며, 원본 캡처와 참고 이미지는 업로드 대상에 포함하지 않는다. 자세한 규약과 첫 실행 절차는 [Google Play 스크린샷 업로드 자동화 전략](PLAY_SCREENSHOT_UPLOAD_AUTOMATION_STRATEGY.md)을 따른다.
 
 ## iOS 배포 파일
 
