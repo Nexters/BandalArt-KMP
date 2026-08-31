@@ -32,6 +32,7 @@ supabase = "3.2.0"
 # Compose & UI
 compose-multiplatform = "1.10.3"
 compose-material-icons = "1.7.3"
+balloon = "2.0.0"
 androidx-core = "1.16.0"
 androidx-datastore = "1.1.4"
 androidx-lifecycle-runtime = "2.9.0-beta01"
@@ -161,6 +162,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "jetbrains-androidx-navigation" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test"}
+balloon = { group = "com.github.skydoves", name = "balloon", version.ref = "balloon" }
 
 # Room Database
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }

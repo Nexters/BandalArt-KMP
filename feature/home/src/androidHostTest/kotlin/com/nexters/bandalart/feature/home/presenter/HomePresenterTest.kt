@@ -355,6 +355,31 @@ class HomePresenterTest {
             }
         }
 
+    @Test
+    fun taskCompletionTooltipIsShownOnlyUntilDismissedInTheHomeSession() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L)),
+                    recentBandalartId = 1L,
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
+
+                assertTrue(state.showTaskCompletionTooltip)
+
+                state.eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
+                do {
+                    state = awaitItem()
+                } while (state.showTaskCompletionTooltip)
+
+                assertFalse(state.showTaskCompletionTooltip)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun bandalart(
         id: Long,
         isCompleted: Boolean = false,

@@ -127,6 +127,7 @@ class HomePresenter(
         var deadlinePermissionRequestId by remember { mutableStateOf<Long?>(null) }
         var nextDeadlinePermissionRequestId by remember { mutableStateOf(0L) }
         var enableDeadlineReminderAfterSettings by rememberRetained { mutableStateOf(false) }
+        var hasDismissedTaskCompletionTooltip by rememberRetained { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
         val selectionLoadGeneration = remember { longArrayOf(0L) }
@@ -823,6 +824,15 @@ class HomePresenter(
             deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
             deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
             deadlinePermissionRequestId = deadlinePermissionRequestId,
+            showTaskCompletionTooltip =
+                !hasDismissedTaskCompletionTooltip &&
+                    bandalartData != null &&
+                    bandalartCellData != null &&
+                    bottomSheet == null &&
+                    dialog == null &&
+                    !isDropDownMenuOpened &&
+                    imageRequest == null &&
+                    rewardedAdRequestId == null,
             effect = effect,
         ) { event ->
             when (event) {
@@ -962,6 +972,9 @@ class HomePresenter(
 
                 is HomeScreen.Event.DeleteCell -> scope.launch { deleteCell(event.cellId) }
                 HomeScreen.Event.ConsumeEffect -> consumeEffect()
+                HomeScreen.Event.DismissTaskCompletionTooltip -> {
+                    hasDismissedTaskCompletionTooltip = true
+                }
                 is HomeScreen.Event.SelectThemeMode -> {
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }
                 }

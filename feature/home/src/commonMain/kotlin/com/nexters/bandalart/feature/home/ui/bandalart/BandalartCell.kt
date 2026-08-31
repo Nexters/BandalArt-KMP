@@ -30,11 +30,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,6 +51,7 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.complete_description
 import bandalart.core.designsystem.generated.resources.home_main_cell
+import bandalart.core.designsystem.generated.resources.home_task_completion_tooltip
 import bandalart.core.designsystem.generated.resources.home_complete_task_long_click
 import bandalart.core.designsystem.generated.resources.home_uncomplete_task_long_click
 import bandalart.core.designsystem.generated.resources.home_sub_cell
@@ -52,6 +62,10 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.rememberBalloonBuilder
+import com.skydoves.balloon.rememberBalloonState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,6 +99,106 @@ fun BandalartCell(
     outerPadding: Dp = 3.dp,
     innerPadding: Dp = 2.dp,
     mainCellPadding: Dp = 1.dp,
+    showTaskCompletionTooltip: Boolean = false,
+    onTaskCompletionTooltipDismissed: () -> Unit = {},
+) {
+    if (showTaskCompletionTooltip) {
+        TaskCompletionTooltip(
+            anchorKey = cellData.id,
+            onDismiss = onTaskCompletionTooltipDismissed,
+            modifier = modifier,
+        ) {
+            BandalartCellAnchor(
+                bandalartData = bandalartData,
+                cellType = cellType,
+                cellData = cellData,
+                onHomeUiAction = onHomeUiAction,
+                cellInfo = cellInfo,
+                outerPadding = outerPadding,
+                innerPadding = innerPadding,
+                mainCellPadding = mainCellPadding,
+            )
+        }
+    } else {
+        BandalartCellAnchor(
+            bandalartData = bandalartData,
+            cellType = cellType,
+            cellData = cellData,
+            onHomeUiAction = onHomeUiAction,
+            modifier = modifier,
+            cellInfo = cellInfo,
+            outerPadding = outerPadding,
+            innerPadding = innerPadding,
+            mainCellPadding = mainCellPadding,
+        )
+    }
+}
+
+@Composable
+private fun TaskCompletionTooltip(
+    anchorKey: Long,
+    onDismiss: () -> Unit,
+    modifier: Modifier,
+    content: @Composable () -> Unit,
+) {
+    val backgroundColor = MaterialTheme.colorScheme.inverseSurface
+    val contentColor = MaterialTheme.colorScheme.inverseOnSurface
+    val style =
+        rememberBalloonBuilder(key = backgroundColor) {
+            setArrowSize(10.dp)
+            setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            setBackgroundColor(backgroundColor)
+            setCornerRadius(8.dp)
+            setPadding(start = 12.dp, top = 10.dp, end = 12.dp, bottom = 10.dp)
+            setMargin(8.dp)
+            setMaxWidth(280.dp)
+            setDismissWhenClicked(true)
+            setDismissWhenTouchOutside(true)
+            setDismissWhenBackPressed(true)
+            setAutoDismissDuration(0L)
+        }
+    val balloonState = rememberBalloonState(style = style, key = anchorKey)
+    val currentOnDismiss by rememberUpdatedState(onDismiss)
+
+    DisposableEffect(balloonState) {
+        balloonState.onDismiss = { currentOnDismiss() }
+        onDispose {
+            balloonState.dismiss()
+            balloonState.onDismiss = null
+        }
+    }
+    LaunchedEffect(balloonState) {
+        withFrameNanos { }
+        balloonState.showAlignTop()
+    }
+
+    Balloon(
+        state = balloonState,
+        modifier = modifier,
+        key = anchorKey,
+        balloonContent = {
+            Text(
+                text = stringResource(Res.string.home_task_completion_tooltip),
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+            )
+        },
+        content = content,
+    )
+}
+
+@Composable
+private fun BandalartCellAnchor(
+    bandalartData: BandalartUiModel,
+    cellType: CellType,
+    cellData: BandalartCellEntity,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
+    modifier: Modifier = Modifier,
+    cellInfo: CellInfo,
+    outerPadding: Dp,
+    innerPadding: Dp,
+    mainCellPadding: Dp,
 ) {
     val onLongClick =
         if (

@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.uri.kmp)
+            implementation(libs.balloon)
             implementation(libs.cmptoast)
             implementation(libs.jindong.core)
             implementation(libs.jindong.compose)

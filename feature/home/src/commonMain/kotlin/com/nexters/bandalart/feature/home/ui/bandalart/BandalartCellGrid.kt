@@ -38,6 +38,8 @@ fun BandalartCellGrid(
     subCell: SubCell,
     rows: Int,
     cols: Int,
+    tooltipTaskCellId: Long? = null,
+    onTaskCompletionTooltipDismissed: () -> Unit = {},
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,6 +57,12 @@ fun BandalartCellGrid(
             ) {
                 repeat(cols) { colIndex ->
                     val isSubCell = rowIndex == subCell.subCellRowIndex && colIndex == subCell.subCellColIndex
+                    val cellData =
+                        if (isSubCell) {
+                            subCell.subCellData!!
+                        } else {
+                            subCell.subCellData!!.children[taskIndex++]
+                        }
                     BandalartCell(
                         modifier = Modifier.weight(1f),
                         bandalartData = bandalartData,
@@ -67,7 +75,9 @@ fun BandalartCellGrid(
                                 colCnt = cols,
                                 rowCnt = rows,
                             ),
-                        cellData = if (isSubCell) subCell.subCellData!! else subCell.subCellData!!.children[taskIndex++],
+                        cellData = cellData,
+                        showTaskCompletionTooltip = cellData.id == tooltipTaskCellId,
+                        onTaskCompletionTooltipDismissed = onTaskCompletionTooltipDismissed,
                         onHomeUiAction = onHomeUiAction,
                     )
                 }
