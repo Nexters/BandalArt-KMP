@@ -53,6 +53,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
         val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
         val deadlinePermissionRequestId: Long? = null,
+        val showTaskCompletionTooltip: Boolean = false,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -225,6 +226,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object ConsumeEffect : Event
+
+        data object DismissTaskCompletionTooltip : Event
 
         data object OpenSettings : Event
 

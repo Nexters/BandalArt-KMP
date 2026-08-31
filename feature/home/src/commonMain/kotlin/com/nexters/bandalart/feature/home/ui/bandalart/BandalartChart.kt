@@ -48,11 +48,21 @@ import androidx.compose.ui.tooling.preview.Preview
 fun BandalartChart(
     bandalartData: BandalartUiModel,
     bandalartCellData: BandalartCellEntity,
+    showTaskCompletionTooltip: Boolean = false,
+    onTaskCompletionTooltipDismissed: () -> Unit = {},
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints {
         val paddedMaxWidth = remember(maxWidth) { maxWidth - (15.dp * 2) }
+        val tooltipTaskCellId =
+            remember(bandalartCellData, showTaskCompletionTooltip) {
+                if (showTaskCompletionTooltip) {
+                    bandalartCellData.firstIncompleteTaskCellId()
+                } else {
+                    null
+                }
+            }
 
         val subCellList =
             persistentListOf(
@@ -81,6 +91,8 @@ fun BandalartChart(
                             subCell = subCellList[index],
                             rows = subCellList[index].rowCnt,
                             cols = subCellList[index].colCnt,
+                            tooltipTaskCellId = tooltipTaskCellId,
+                            onTaskCompletionTooltipDismissed = onTaskCompletionTooltipDismissed,
                             onHomeUiAction = onHomeUiAction,
                         )
                     }
@@ -133,6 +145,14 @@ fun BandalartChart(
         }
     }
 }
+
+internal fun BandalartCellEntity.firstIncompleteTaskCellId(): Long? =
+    children
+        .asSequence()
+        .flatMap { subCell -> subCell.children.asSequence() }
+        .firstOrNull { taskCell ->
+            !taskCell.title.isNullOrBlank() && !taskCell.isCompleted
+        }?.id
 
 // @ComponentPreview
 @Preview

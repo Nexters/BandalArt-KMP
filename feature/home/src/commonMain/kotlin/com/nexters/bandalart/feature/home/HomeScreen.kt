@@ -178,6 +178,7 @@ internal fun Home(
         bandalartData = state.bandalartData,
         bandalartCellData = state.bandalartCellData,
         isDropDownMenuOpened = state.isDropDownMenuOpened,
+        showTaskCompletionTooltip = state.showTaskCompletionTooltip,
         isBannerCreativeVisible = state.isBannerCreativeVisible(),
         eventSink = state.eventSink,
         homeGraphicsLayer = homeGraphicsLayer,
@@ -317,6 +318,7 @@ internal fun HomeContent(
     bandalartData: BandalartUiModel?,
     bandalartCellData: BandalartCellEntity?,
     isDropDownMenuOpened: Boolean,
+    showTaskCompletionTooltip: Boolean,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
     homeGraphicsLayer: GraphicsLayer,
@@ -363,6 +365,10 @@ internal fun HomeContent(
                             BandalartChart(
                                 bandalartData = bandalartData,
                                 bandalartCellData = bandalartCellData,
+                                showTaskCompletionTooltip = showTaskCompletionTooltip,
+                                onTaskCompletionTooltipDismissed = {
+                                    eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
+                                },
                                 onHomeUiAction = eventSink,
                                 modifier =
                                     Modifier
@@ -420,6 +426,7 @@ private fun HomeScreenPreview() {
             bandalartData = dummyBandalartData,
             bandalartCellData = dummyBandalartChartData,
             isDropDownMenuOpened = false,
+            showTaskCompletionTooltip = false,
             isBannerCreativeVisible = true,
             eventSink = {},
             homeGraphicsLayer = rememberGraphicsLayer(),

@@ -1,5 +1,14 @@
 # Third-party notices
 
+## Balloon
+
+- Source: https://github.com/skydoves/Balloon
+- Version: `2.0.0`
+- License: Apache License 2.0 ([local license text](licenses/Apache-2.0.txt))
+- Copyright: skydoves
+
+The application links against Balloon to render Compose Multiplatform tooltips on Android and iOS.
+
 ## Microsoft Fluent UI Emoji
 
 - Source: https://github.com/microsoft/fluentui-emoji
