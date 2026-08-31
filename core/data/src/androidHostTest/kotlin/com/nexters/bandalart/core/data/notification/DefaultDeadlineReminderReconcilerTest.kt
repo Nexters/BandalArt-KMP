@@ -150,6 +150,7 @@ class DefaultDeadlineReminderReconcilerTest {
         override val themeMode: Flow<ThemeMode> = MutableStateFlow(ThemeMode.SYSTEM)
         override val recentEmojis: Flow<List<String>> = MutableStateFlow(emptyList())
         override val deadlineReminderEnabled = MutableStateFlow(false)
+        override val taskCompletionTooltipDismissed: Flow<Boolean> = MutableStateFlow(false)
 
         override suspend fun setThemeMode(themeMode: ThemeMode) = Unit
 
@@ -158,5 +159,7 @@ class DefaultDeadlineReminderReconcilerTest {
         override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
             deadlineReminderEnabled.value = enabled
         }
+
+        override suspend fun dismissTaskCompletionTooltip() = Unit
     }
 }

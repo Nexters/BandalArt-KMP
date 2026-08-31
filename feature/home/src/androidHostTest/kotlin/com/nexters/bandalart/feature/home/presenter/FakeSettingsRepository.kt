@@ -24,18 +24,24 @@ import kotlinx.coroutines.flow.asStateFlow
 class FakeSettingsRepository(
     initialThemeMode: ThemeMode = ThemeMode.SYSTEM,
     initialDeadlineReminderEnabled: Boolean = false,
+    initialTaskCompletionTooltipDismissed: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
 ) : SettingsRepository {
     private val themeModeState = MutableStateFlow(initialThemeMode)
     private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
     private val deadlineReminderEnabledState = MutableStateFlow(initialDeadlineReminderEnabled)
+    private val taskCompletionTooltipDismissedState =
+        MutableStateFlow(initialTaskCompletionTooltipDismissed)
 
     override val themeMode = themeModeState.asStateFlow()
     override val recentEmojis = recentEmojisState.asStateFlow()
     override val deadlineReminderEnabled = deadlineReminderEnabledState.asStateFlow()
+    override val taskCompletionTooltipDismissed = taskCompletionTooltipDismissedState.asStateFlow()
 
     val savedThemeModes = mutableListOf<ThemeMode>()
     val savedRecentEmojis = mutableListOf<String>()
+    var taskCompletionTooltipDismissals = 0
+        private set
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         savedThemeModes += themeMode
@@ -52,5 +58,10 @@ class FakeSettingsRepository(
 
     override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         deadlineReminderEnabledState.value = enabled
+    }
+
+    override suspend fun dismissTaskCompletionTooltip() {
+        taskCompletionTooltipDismissals += 1
+        taskCompletionTooltipDismissedState.value = true
     }
 }

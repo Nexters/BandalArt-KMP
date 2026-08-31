@@ -118,6 +118,8 @@ class HomePresenter(
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
         val deadlineReminderEnabled by settingsRepository.deadlineReminderEnabled.collectAsState(initial = false)
+        val taskCompletionTooltipDismissed by
+            settingsRepository.taskCompletionTooltipDismissed.collectAsState(initial = true)
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
         val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
@@ -127,7 +129,7 @@ class HomePresenter(
         var deadlinePermissionRequestId by remember { mutableStateOf<Long?>(null) }
         var nextDeadlinePermissionRequestId by remember { mutableStateOf(0L) }
         var enableDeadlineReminderAfterSettings by rememberRetained { mutableStateOf(false) }
-        var hasDismissedTaskCompletionTooltip by rememberRetained { mutableStateOf(false) }
+        var isTaskCompletionTooltipDismissalRequested by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
         val selectionLoadGeneration = remember { longArrayOf(0L) }
@@ -141,6 +143,12 @@ class HomePresenter(
                     previousJob?.join()
                     settingsRepository.addRecentEmoji(emoji)
                 }
+        }
+
+        fun dismissTaskCompletionTooltip() {
+            if (taskCompletionTooltipDismissed || isTaskCompletionTooltipDismissalRequested) return
+            isTaskCompletionTooltipDismissalRequested = true
+            scope.launch { settingsRepository.dismissTaskCompletionTooltip() }
         }
 
         fun emitEffect(newEffect: HomeScreen.Effect) {
@@ -564,6 +572,7 @@ class HomePresenter(
             val currentBandalart = bandalartData ?: return
             val currentCell = bandalartCellData?.findTaskCell(requestedCell.id) ?: return
             if (currentCell.title.isNullOrBlank()) return
+            dismissTaskCompletionTooltip()
             if (!togglingTaskCellIds.add(currentCell.id)) return
             val updatedCompletion = !currentCell.isCompleted
 
@@ -825,7 +834,8 @@ class HomePresenter(
             deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
             deadlinePermissionRequestId = deadlinePermissionRequestId,
             showTaskCompletionTooltip =
-                !hasDismissedTaskCompletionTooltip &&
+                !taskCompletionTooltipDismissed &&
+                    !isTaskCompletionTooltipDismissalRequested &&
                     bandalartData != null &&
                     bandalartCellData != null &&
                     bottomSheet == null &&
@@ -973,7 +983,7 @@ class HomePresenter(
                 is HomeScreen.Event.DeleteCell -> scope.launch { deleteCell(event.cellId) }
                 HomeScreen.Event.ConsumeEffect -> consumeEffect()
                 HomeScreen.Event.DismissTaskCompletionTooltip -> {
-                    hasDismissedTaskCompletionTooltip = true
+                    dismissTaskCompletionTooltip()
                 }
                 is HomeScreen.Event.SelectThemeMode -> {
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }

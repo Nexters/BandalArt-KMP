@@ -29,6 +29,8 @@ class DefaultSettingsRepository(
         bandalartDataStore.themeMode.map(ThemeMode::fromStorageValue)
     override val recentEmojis: Flow<List<String>> = bandalartDataStore.recentEmojis
     override val deadlineReminderEnabled: Flow<Boolean> = bandalartDataStore.deadlineReminderEnabled
+    override val taskCompletionTooltipDismissed: Flow<Boolean> =
+        bandalartDataStore.taskCompletionTooltipDismissed
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         bandalartDataStore.setThemeMode(themeMode.storageValue)
@@ -40,5 +42,9 @@ class DefaultSettingsRepository(
 
     override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         bandalartDataStore.setDeadlineReminderEnabled(enabled)
+    }
+
+    override suspend fun dismissTaskCompletionTooltip() {
+        bandalartDataStore.dismissTaskCompletionTooltip()
     }
 }
