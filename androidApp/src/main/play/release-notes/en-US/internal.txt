@@ -1,1 +1,1 @@
-• Made rewarded-ad guidance clearer and improved reliability for cloud backups.
+• Added guidance for completing a task instantly with a long press.
