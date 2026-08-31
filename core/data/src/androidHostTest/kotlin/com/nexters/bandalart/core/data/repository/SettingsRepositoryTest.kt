@@ -37,6 +37,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf("unexpected")
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
 
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -49,6 +50,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.setThemeMode(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -63,6 +65,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(listOf("🎯", "🚀"))
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.addRecentEmoji(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -78,6 +81,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(true)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.setDeadlineReminderEnabled(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
 
@@ -85,5 +89,21 @@ class SettingsRepositoryTest {
             repository.setDeadlineReminderEnabled(false)
 
             coVerify(exactly = 1) { dataStore.setDeadlineReminderEnabled(false) }
+        }
+
+    @Test
+    fun taskCompletionTooltipDismissalIsExposedAndStored() =
+        runTest {
+            every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(true)
+            coEvery { dataStore.dismissTaskCompletionTooltip() } returns Unit
+            val repository = DefaultSettingsRepository(dataStore)
+
+            assertEquals(true, repository.taskCompletionTooltipDismissed.first())
+            repository.dismissTaskCompletionTooltip()
+
+            coVerify(exactly = 1) { dataStore.dismissTaskCompletionTooltip() }
         }
 }

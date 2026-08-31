@@ -35,7 +35,7 @@
     <string name="home_sub_cell">Sub Goal</string>
     <string name="home_complete_task_long_click">Complete goal</string>
     <string name="home_uncomplete_task_long_click">Mark goal incomplete</string>
-    <string name="home_task_completion_tooltip">Press and hold a task to complete it instantly.</string>
+    <string name="home_task_completion_tooltip">Press and hold a task\nto complete it instantly.</string>
     <string name="please_input_main_goal">Please enter the main goal first.</string>
     <string name="please_input_sub_goal">Please enter the sub goal first.</string>
 

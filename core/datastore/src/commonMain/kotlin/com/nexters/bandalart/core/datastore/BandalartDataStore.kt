@@ -42,6 +42,7 @@ class BandalartDataStore(
         private const val THEME_MODE = "theme_mode"
         private const val RECENT_EMOJIS = "recent_emojis"
         private const val DEADLINE_REMINDER_ENABLED = "deadline_reminder_enabled"
+        private const val TASK_COMPLETION_TOOLTIP_DISMISSED_V1 = "task_completion_tooltip_dismissed_v1"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
         private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
         private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
@@ -56,6 +57,8 @@ class BandalartDataStore(
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
     private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
     private val deadlineReminderEnabledKey = booleanPreferencesKey(DEADLINE_REMINDER_ENABLED)
+    private val taskCompletionTooltipDismissedKey =
+        booleanPreferencesKey(TASK_COMPLETION_TOOLTIP_DISMISSED_V1)
     private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
     private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
     private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
@@ -216,6 +219,15 @@ class BandalartDataStore(
                 else
                     throw exception
             }.map { preferences -> preferences[deadlineReminderEnabledKey] ?: false }
+
+    val taskCompletionTooltipDismissed =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences -> preferences[taskCompletionTooltipDismissedKey] ?: false }
 
     val recentBandalartId =
         dataStore.data
@@ -383,6 +395,12 @@ class BandalartDataStore(
     suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[deadlineReminderEnabledKey] = enabled
+        }
+    }
+
+    suspend fun dismissTaskCompletionTooltip() {
+        dataStore.edit { preferences ->
+            preferences[taskCompletionTooltipDismissedKey] = true
         }
     }
 

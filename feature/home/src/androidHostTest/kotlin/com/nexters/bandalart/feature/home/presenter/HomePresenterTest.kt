@@ -356,15 +356,16 @@ class HomePresenterTest {
         }
 
     @Test
-    fun taskCompletionTooltipIsShownOnlyUntilDismissedInTheHomeSession() =
+    fun taskCompletionTooltipIsShownOnlyUntilPermanentlyDismissed() =
         runTest {
             val repository =
                 FakeBandalartRepository(
                     initialBandalarts = listOf(bandalart(1L)),
                     recentBandalartId = 1L,
                 )
+            val settingsRepository = FakeSettingsRepository()
 
-            presenter(repository).test {
+            presenter(repository, settingsRepository = settingsRepository).test {
                 var state = awaitItem()
                 while (state.bandalartData?.id != 1L) state = awaitItem()
 
@@ -374,6 +375,15 @@ class HomePresenterTest {
                 do {
                     state = awaitItem()
                 } while (state.showTaskCompletionTooltip)
+
+                assertFalse(state.showTaskCompletionTooltip)
+                assertEquals(1, settingsRepository.taskCompletionTooltipDismissals)
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            presenter(repository, settingsRepository = settingsRepository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
 
                 assertFalse(state.showTaskCompletionTooltip)
                 cancelAndIgnoreRemainingEvents()
@@ -398,12 +408,13 @@ class HomePresenterTest {
     private fun presenter(
         repository: FakeBandalartRepository,
         widgetLaunchTarget: BandalartWidgetLaunchTarget = BufferedBandalartWidgetLaunchTarget(),
+        settingsRepository: FakeSettingsRepository = FakeSettingsRepository(),
     ) = HomePresenter(
         navigator = FakeNavigator(HomeScreen),
         bandalartRepository = repository,
         bandalartSlotRepository = FakeBandalartSlotRepository(),
         inAppUpdateRepository = FakeInAppUpdateRepository(),
-        settingsRepository = FakeSettingsRepository(),
+        settingsRepository = settingsRepository,
         bandalartWidgetLaunchTarget = widgetLaunchTarget,
     )
 

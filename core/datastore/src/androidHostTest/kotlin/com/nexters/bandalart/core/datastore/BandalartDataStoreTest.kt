@@ -108,6 +108,27 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("태스크 완료 툴팁 설정 테스트")
+    inner class TaskCompletionTooltipPreferenceTest {
+        @Test
+        @DisplayName("최초에는 툴팁을 노출할 수 있어야 한다")
+        fun taskCompletionTooltipIsNotDismissedByDefault() =
+            runTest {
+                assertFalse(bandalartDataStore.taskCompletionTooltipDismissed.first())
+            }
+
+        @Test
+        @DisplayName("툴팁 비활성화 상태는 DataStore에 영구 저장되어야 한다")
+        fun taskCompletionTooltipDismissalIsStored() =
+            runTest {
+                bandalartDataStore.dismissTaskCompletionTooltip()
+
+                val recreatedDataStore = BandalartDataStore(dataStore)
+                assertTrue(recreatedDataStore.taskCompletionTooltipDismissed.first())
+            }
+    }
+
+    @Nested
     @DisplayName("최근 반다라트 ID 관련 테스트")
     inner class RecentBandalartIdTest {
         @Test

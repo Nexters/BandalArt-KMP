@@ -36,6 +36,28 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomePresenterQuickCompletionTest {
     @Test
+    fun validLongPressPermanentlyDismissesTooltip() =
+        runTest {
+            val taskCell = cell(id = 12L, title = "매일 걷기")
+            val repository = repositoryWithTasks(taskCell)
+            val settingsRepository = FakeSettingsRepository()
+
+            presenter(repository, settingsRepository).test {
+                var state = awaitLoadedBandalart()
+                while (!state.showTaskCompletionTooltip) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.ToggleTaskCompletion(taskCell))
+                do {
+                    state = awaitItem()
+                } while (state.effect !is HomeScreen.Effect.PlayTaskCompletionHaptic)
+
+                assertFalse(state.showTaskCompletionTooltip)
+                assertEquals(1, settingsRepository.taskCompletionTooltipDismissals)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun validTaskIsCompletedWithPreservedContentAndOneShotEffect() =
         runTest {
             val taskCell =
@@ -430,14 +452,17 @@ class HomePresenterQuickCompletionTest {
         )
     }
 
-    private fun presenter(repository: FakeBandalartRepository) =
-        HomePresenter(
-            navigator = FakeNavigator(HomeScreen),
-            bandalartRepository = repository,
-            bandalartSlotRepository = FakeBandalartSlotRepository(),
-            inAppUpdateRepository = FakeInAppUpdateRepository(),
-            settingsRepository = FakeSettingsRepository(),
-        )
+    private fun presenter(
+        repository: FakeBandalartRepository,
+        settingsRepository: FakeSettingsRepository =
+            FakeSettingsRepository(initialTaskCompletionTooltipDismissed = true),
+    ) = HomePresenter(
+        navigator = FakeNavigator(HomeScreen),
+        bandalartRepository = repository,
+        bandalartSlotRepository = FakeBandalartSlotRepository(),
+        inAppUpdateRepository = FakeInAppUpdateRepository(),
+        settingsRepository = settingsRepository,
+    )
 
     private suspend fun ReceiveTurbine<HomeScreen.State>.awaitLoadedBandalart(bandalartId: Long = 1L,): HomeScreen.State {
         var state = awaitItem()
