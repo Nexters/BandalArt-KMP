@@ -9,13 +9,19 @@ BandalArt Android release AAB를 Google Play Internal Testing에 업로드한다
 
 ## 절차
 
-### 1. 배포 소스 고정
+### 1. GitHub 계정 고정
+
+1. 배포를 시작하기 전에 `gh auth switch --hostname github.com --user easyhooon`으로 GitHub CLI의 활성 계정을 `easyhooon`으로 전환한다.
+2. `gh api user --jq .login`으로 활성 계정이 `easyhooon`인지 검증한다.
+3. 전환이나 검증에 실패하면 중단한다. 기존 `mps-jihun-lee` 계정으로 배포를 계속하지 않으며 인증 token은 출력하지 않는다.
+
+### 2. 배포 소스 고정
 
 1. 사용자가 지정한 release source branch를 우선한다. 없으면 현재 release 계획과 저장소 기본 branch에서 추론하며 최종 fallback은 `main`이다.
 2. `git fetch --prune origin <branch>` 후 로컬과 `origin/<branch>`의 ahead/behind가 모두 0인지 확인한다.
 3. dirty, unpushed, diverged 상태면 중단한다. 배포 과정에서 branch를 임의로 merge/rebase하지 않는다.
 
-### 2. Android Play 배포 설정 검증
+### 3. Android Play 배포 설정 검증
 
 다음 항목의 실제 존재와 Git ignore 상태를 확인한다.
 
@@ -28,7 +34,7 @@ BandalArt Android release AAB를 Google Play Internal Testing에 업로드한다
 
 service account는 `client_email`만 기대 계정과 일치하는지 검사하고 credential 전체를 출력하지 않는다. 한 항목이라도 없으면 필요한 설정과 예상 책임만 보고하고 중단한다. 실패했던 Fastlane 설정이나 수동 API 구현을 fallback으로 사용하지 않는다.
 
-### 3. release notes와 버전 검증
+### 4. release notes와 버전 검증
 
 1. 실제 Android Play upload 설정이 참조하는 Internal track의 한국어 release notes를 찾는다. legacy module 경로를 추측하지 않는다.
 2. 파일이 없거나 비어 있으면 초안을 제안하고 사용자 확인 전에는 쓰거나 배포하지 않는다. Play release notes의 길이 제한도 확인한다.
@@ -36,7 +42,7 @@ service account는 `client_email`만 기대 계정과 일치하는지 검사하�
 4. Android application module에서 versionName/versionCode를 읽고 AAB에 들어갈 값과 일치하는지 확인한다.
 5. 현재 versionCode가 이미 사용된 최대값 이하면 build와 upload를 실행하지 않는다.
 
-### 4. 최종 확인
+### 5. 최종 확인
 
 실제 업로드 직전에 아래 내용을 표시하고 `Y` 또는 명시적 승인 응답을 받는다.
 
@@ -48,7 +54,7 @@ service account는 `client_email`만 기대 계정과 일치하는지 검사하�
 - release notes
 - 실행할 Android clean bundle 및 upload task
 
-### 5. Android clean AAB 검증과 업로드
+### 6. Android clean AAB 검증과 업로드
 
 1. `./gradlew clean :androidApp:bundleRelease --no-configuration-cache`로 기존 생성물을 제거하고 운영 AdMob 광고 ID가 포함된 release AAB를 먼저 생성한다.
 2. 생성된 AAB의 versionName/versionCode, 크기와 Compose resource namespace를 검사한다.
