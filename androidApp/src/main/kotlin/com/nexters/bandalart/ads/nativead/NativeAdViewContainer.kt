@@ -105,8 +105,26 @@ internal fun NativeAdViewContainer(
     )
 
     val currentNativeAd by rememberUpdatedState(nativeAd)
+    val currentNativeAdView = nativeAdViewRef.value
+    val currentMediaView = mediaView
     SideEffect {
-        nativeAdViewRef.value?.registerNativeAd(currentNativeAd, mediaView)
+        registerNativeAdWhenReady(
+            nativeAdView = currentNativeAdView,
+            nativeAd = currentNativeAd,
+            mediaView = currentMediaView,
+            register = NativeAdView::registerNativeAd,
+        )
+    }
+}
+
+internal inline fun <AdView, Ad, Media> registerNativeAdWhenReady(
+    nativeAdView: AdView?,
+    nativeAd: Ad,
+    mediaView: Media?,
+    register: (AdView, Ad, Media) -> Unit,
+) {
+    if (nativeAdView != null && mediaView != null) {
+        register(nativeAdView, nativeAd, mediaView)
     }
 }
 
