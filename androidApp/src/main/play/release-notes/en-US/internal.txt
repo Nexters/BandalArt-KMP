@@ -1,1 +1,1 @@
-• Added an exit confirmation dialog with a native ad on Android.
+• Fixed the Android exit dialog resizing when its native ad loaded late.
