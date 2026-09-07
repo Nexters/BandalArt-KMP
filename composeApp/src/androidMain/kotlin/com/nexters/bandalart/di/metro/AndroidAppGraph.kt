@@ -22,6 +22,7 @@ import com.nexters.bandalart.backup.AndroidDeviceBackupKeyProvider
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
+import com.nexters.bandalart.core.common.ExitDialogHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -46,6 +47,7 @@ data class AndroidWidgetRecentSelection(
 private class AndroidPlatformBindings(
     application: Application,
     override val bannerAdHost: BannerAdHost,
+    override val exitDialogHost: ExitDialogHost,
     override val rewardedAdGateway: RewardedAdGateway,
     override val backupApiConfig: BackupApiConfig,
 ) : PlatformBindings {
@@ -63,9 +65,19 @@ private class AndroidPlatformBindings(
 fun createAndroidAppGraph(
     application: Application,
     bannerAdHost: BannerAdHost,
+    exitDialogHost: ExitDialogHost,
     rewardedAdGateway: RewardedAdGateway,
     backupApiConfig: BackupApiConfig = BackupApiConfig(url = "", publishableKey = ""),
-): AppGraph = createAppGraph(AndroidPlatformBindings(application, bannerAdHost, rewardedAdGateway, backupApiConfig))
+): AppGraph =
+    createAppGraph(
+        AndroidPlatformBindings(
+            application,
+            bannerAdHost,
+            exitDialogHost,
+            rewardedAdGateway,
+            backupApiConfig,
+        ),
+    )
 
 fun installAndroidDeadlineReminderInfrastructure(
     appGraph: AppGraph,

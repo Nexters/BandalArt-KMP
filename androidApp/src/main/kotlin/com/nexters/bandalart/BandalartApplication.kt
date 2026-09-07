@@ -24,6 +24,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
 import com.nexters.bandalart.ads.AndroidBannerAdHost
+import com.nexters.bandalart.ads.AndroidExitDialogHost
 import com.nexters.bandalart.ads.AndroidRewardedAdGateway
 import com.nexters.bandalart.ads.DelegatingRewardedAdGateway
 import com.nexters.bandalart.core.data.backup.BackupApiConfig
@@ -64,10 +65,12 @@ class BandalartApplication : Application() {
 
         val rewardedAdGateway = DelegatingRewardedAdGateway()
         val bannerAdHost = AndroidBannerAdHost(adsInitializer::awaitInitialized)
+        val exitDialogHost = AndroidExitDialogHost(adsInitializer::awaitInitialized)
         appGraph =
             createAndroidAppGraph(
                 application = this,
                 bannerAdHost = bannerAdHost,
+                exitDialogHost = exitDialogHost,
                 rewardedAdGateway = rewardedAdGateway,
                 backupApiConfig =
                     BackupApiConfig(

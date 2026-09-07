@@ -24,4 +24,8 @@
     <string name="bandalart_widget_config_unnamed_subgoal">이름 없는 세부 목표</string>
     <string name="bandalart_widget_config_saving">저장 중…</string>
     <string name="bandalart_widget_config_save">위젯에 표시</string>
+    <string name="exit_dialog_title">앱을 종료하시겠어요?</string>
+    <string name="exit_dialog_confirm">종료</string>
+    <string name="exit_dialog_cancel">취소</string>
+    <string name="exit_dialog_ad_label">광고</string>
 </resources>
