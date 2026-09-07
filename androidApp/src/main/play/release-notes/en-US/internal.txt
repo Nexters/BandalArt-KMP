@@ -1,1 +1,1 @@
-• Fixed the Android exit dialog resizing when its native ad loaded late.
+• Fixed an issue where the ad image did not appear in the Android exit dialog.
