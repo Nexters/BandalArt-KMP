@@ -1,1 +1,1 @@
-• Improved the quick-complete tip and made it stay dismissed after you view it.
+• Added an exit confirmation dialog with a native ad on Android.
