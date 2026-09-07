@@ -23,6 +23,7 @@ import com.nexters.bandalart.backup.BackupBuildConfig
 import com.nexters.bandalart.backup.IosDeviceBackupKeyBridge
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.ImageHandlerProvider
+import com.nexters.bandalart.core.common.NoOpExitDialogHost
 import com.nexters.bandalart.core.common.IosSupportMailLauncher
 import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -39,6 +40,7 @@ private class IosPlatformBindings(
     override val dataStoreFactory = BandalartDataStoreFactory()
     override val appVersionProvider = AppVersionProvider()
     override val bannerAdHost = IosBannerAdHost(adsBridge)
+    override val exitDialogHost = NoOpExitDialogHost
     override val imageHandlerProvider = ImageHandlerProvider()
     override val supportMailLauncher = IosSupportMailLauncher()
     override val rewardedAdGateway = IosRewardedAdGateway(adsBridge)

@@ -18,6 +18,7 @@ package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
+import com.nexters.bandalart.core.common.ExitDialogHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.common.SupportMailLauncher
@@ -54,6 +55,7 @@ interface PlatformBindings {
     val dataStoreFactory: BandalartDataStoreFactory
     val appVersionProvider: AppVersionProvider
     val bannerAdHost: BannerAdHost
+    val exitDialogHost: ExitDialogHost
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway
@@ -78,6 +80,7 @@ interface AppGraph {
     val inAppUpdateDataStore: InAppUpdateDataStore
     val appVersionProvider: AppVersionProvider
     val bannerAdHost: BannerAdHost
+    val exitDialogHost: ExitDialogHost
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway

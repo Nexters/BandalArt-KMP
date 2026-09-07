@@ -41,6 +41,7 @@ import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.feature.splash.SplashScreen
+import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.ui.BandalartSnackbar
 import io.github.compose.jindong.JindongProvider
 import com.slack.circuit.backstack.rememberSaveableBackStack
@@ -62,6 +63,7 @@ fun BandalartApp(appGraph: AppGraph) {
                 val pendingWidgetLaunchId by
                     appGraph.bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
                 val currentScreen = backStack.topRecord?.screen ?: SplashScreen
+                appGraph.exitDialogHost.Content(enabled = currentScreen is HomeScreen)
                 LaunchedEffect(pendingWidgetLaunchId, currentScreen) {
                     widgetLaunchDestination(currentScreen, pendingWidgetLaunchId)?.let { destination ->
                         navigator.resetRoot(destination)

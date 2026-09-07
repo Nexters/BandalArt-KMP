@@ -141,6 +141,7 @@ app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", v
 # Compose
 compose-material-iconsCore = { group = "org.jetbrains.compose.material", name = "material-icons-core", version.ref = "compose-material-icons" }
 compose-ui-toolingPreview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose-multiplatform" }
+compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "compose-multiplatform" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidx-work" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidx-work" }

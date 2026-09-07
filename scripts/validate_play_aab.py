@@ -19,6 +19,8 @@ PRODUCTION_REWARDED_IDS = (
 )
 TEST_BANNER_ID = b"ca-app-pub-3940256099942544/6300978111"
 PRODUCTION_BANNER_ID = b"ca-app-pub-5570932833347277/1215605203"
+TEST_NATIVE_ID = b"ca-app-pub-3940256099942544/2247696110"
+PRODUCTION_NATIVE_ID = b"ca-app-pub-5570932833347277/1778455797"
 ANDROID_NAMESPACE = "http://schemas.android.com/apk/res/android"
 REQUIRED_NAMESPACE = (
     b"bandalart.core.designsystem.generated.resources",
@@ -71,6 +73,8 @@ def verify_archive(path: Path) -> None:
         production_rewarded_ids_found: set[bytes] = set()
         test_banner_id_found = False
         production_banner_id_found = False
+        test_native_id_found = False
+        production_native_id_found = False
         required_namespace_found = False
         removed_namespace_found = False
         for info in archive.infolist():
@@ -83,6 +87,8 @@ def verify_archive(path: Path) -> None:
             )
             test_banner_id_found = test_banner_id_found or TEST_BANNER_ID in content
             production_banner_id_found = production_banner_id_found or PRODUCTION_BANNER_ID in content
+            test_native_id_found = test_native_id_found or TEST_NATIVE_ID in content
+            production_native_id_found = production_native_id_found or PRODUCTION_NATIVE_ID in content
             required_namespace_found = required_namespace_found or any(
                 value in content for value in REQUIRED_NAMESPACE
             )
@@ -98,6 +104,10 @@ def verify_archive(path: Path) -> None:
             fail("official Google test banner ad ID is present")
         if not production_banner_id_found:
             fail("production banner ad ID is missing")
+        if test_native_id_found:
+            fail("official Google test native ad ID is present")
+        if not production_native_id_found:
+            fail("production native ad ID is missing")
         if not required_namespace_found:
             fail("expected Compose resource namespace is missing")
         if removed_namespace_found:

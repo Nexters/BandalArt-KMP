@@ -23,4 +23,8 @@
     <string name="bandalart_widget_config_unnamed_subgoal">名前のないサブ目標</string>
     <string name="bandalart_widget_config_saving">保存中…</string>
     <string name="bandalart_widget_config_save">ウィジェットに表示</string>
+    <string name="exit_dialog_title">アプリを終了しますか？</string>
+    <string name="exit_dialog_confirm">終了</string>
+    <string name="exit_dialog_cancel">キャンセル</string>
+    <string name="exit_dialog_ad_label">広告</string>
 </resources>

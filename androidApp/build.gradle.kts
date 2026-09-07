@@ -59,6 +59,7 @@ android {
             resValue("string", "admob_rewarded_bandalart_creation_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
             resValue("string", "admob_rewarded_cloud_backup_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/6300978111")
+            resValue("string", "admob_exit_dialog_native_ad_unit_id", "ca-app-pub-3940256099942544/2247696110")
             manifestPlaceholders +=
                 mapOf(
                     "appName" to "@string/app_name_dev",
@@ -74,6 +75,11 @@ android {
             resValue("string", "admob_rewarded_bandalart_creation_ad_unit_id", "ca-app-pub-5570932833347277/6659503579")
             resValue("string", "admob_rewarded_cloud_backup_ad_unit_id", "ca-app-pub-5570932833347277/7686378276")
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-5570932833347277/1215605203")
+            resValue(
+                "string",
+                "admob_exit_dialog_native_ad_unit_id",
+                "ca-app-pub-5570932833347277/1778455797",
+            )
             manifestPlaceholders +=
                 mapOf(
                     "appName" to "@string/app_name",
@@ -108,11 +114,13 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
+    implementation(projects.feature.home)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.profileinstaller)
@@ -122,6 +130,7 @@ dependencies {
     implementation(libs.google.mobile.ads.next.gen)
 
     implementation(libs.cmptoast)
+    implementation(libs.compose.components.resources)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.napier)
     implementation(platform(libs.firebase.bom))

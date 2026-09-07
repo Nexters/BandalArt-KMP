@@ -23,4 +23,8 @@
     <string name="bandalart_widget_config_unnamed_subgoal">Untitled sub-goal</string>
     <string name="bandalart_widget_config_saving">Saving…</string>
     <string name="bandalart_widget_config_save">Show in widget</string>
+    <string name="exit_dialog_title">Exit the app?</string>
+    <string name="exit_dialog_confirm">Exit</string>
+    <string name="exit_dialog_cancel">Cancel</string>
+    <string name="exit_dialog_ad_label">Ad</string>
 </resources>

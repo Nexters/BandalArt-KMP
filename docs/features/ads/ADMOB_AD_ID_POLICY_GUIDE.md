@@ -30,7 +30,7 @@ Android와 iOS 빌드에 Google 테스트 광고 단위 ID와 BandalArt 운영 �
 
 | 플랫폼 | 기준 파일 | 보장하는 계약 |
 | --- | --- | --- |
-| Android | `androidApp/build.gradle.kts` | Debug의 Google 테스트 App·광고 단위 ID와 release의 BandalArt 운영 App·광고 단위 ID를 정의한다. |
+| Android | `androidApp/build.gradle.kts` | Debug의 Google 테스트 App·광고 단위 ID와 release의 BandalArt 운영 App·광고 단위 ID를 정의한다. 종료 다이얼로그 Native ID도 별도 지면으로 분리한다. |
 | Android | `scripts/validate_play_aab.py` | Play에 올릴 AAB에서 프로젝트가 현재 사용하는 Google 테스트 Fixed Banner·Rewarded ID를 거부하고 운영 홈 배너·반다라트 생성 Rewarded·클라우드 백업 Rewarded ID를 모두 요구한다. |
 | iOS | `iosApp/iosApp/IosAdsBridgeImpl.swift` | `DEBUG` 또는 `BANDALART_TEST_ADS` 조건에 따라 Banner와 목적별 Rewarded 광고 단위 ID를 선택한다. |
 | iOS | `fastlane/lib/ios_ads_mode.rb` | `ios_ads_mode=test`일 때만 `BANDALART_TEST_ADS` 조건을 Release archive에 추가한다. |
@@ -74,7 +74,7 @@ Google은 게시자가 자신의 실제 광고를 클릭해 만든 클릭이나 
 ### 스토어 운영 후보 검증
 
 1. 버전과 build 번호를 기록하고 의도한 release/production 빌드인지 확인한다.
-2. Android는 AAB validator로 현재 정의된 운영 광고 단위 ID 3개가 있고 프로젝트가 사용하는 Google 테스트 Fixed Banner·Rewarded ID가 없는지 검사한다.
+2. Android는 AAB validator로 현재 정의된 운영 광고 단위 ID 4개가 있고 프로젝트가 사용하는 Google 테스트 Fixed Banner·Rewarded·Native ID가 없는지 검사한다.
 3. 개발자·테스터 실기기는 AdMob 테스트 기기로 등록한 상태에서 요청과 UI만 확인한다. 운영 ID가 들어 있어도 이 기기에는 테스트 모드 광고가 표시되는 것이 정상이다.
 4. 실제 운영 광고 게재와 수익은 개발자 기기에서 인위적으로 만들지 않고, 배포 뒤 자연 사용자 트래픽과 AdMob 보고서 반영으로 확인한다.
 

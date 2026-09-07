@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.home.ui.bandalart
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -46,16 +49,19 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun BandalartActionAlertDialog(
-    icon: DrawableResource,
+    icon: DrawableResource?,
     iconContentDescription: String?,
     title: String,
-    message: String,
+    message: String?,
     confirmLabel: String,
     cancelLabel: String,
     onConfirmClick: () -> Unit,
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
+    content: (@Composable () -> Unit)? = null,
 ) {
+    val scrollState = rememberScrollState()
+
     Dialog(onDismissRequest = onCancelClick) {
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -65,18 +71,26 @@ fun BandalartActionAlertDialog(
                 modifier =
                     modifier
                         .fillMaxWidth()
-                        .padding(top = 24.dp),
+                        .then(
+                            if (content == null) {
+                                Modifier
+                            } else {
+                                Modifier.verticalScroll(scrollState)
+                            },
+                        ).padding(top = 24.dp),
             ) {
-                Icon(
-                    imageVector = vectorResource(icon),
-                    contentDescription = iconContentDescription,
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterHorizontally),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(modifier = Modifier.height(18.dp))
+                if (icon != null) {
+                    Icon(
+                        imageVector = vectorResource(icon),
+                        contentDescription = iconContentDescription,
+                        modifier =
+                            Modifier
+                                .size(28.dp)
+                                .align(Alignment.CenterHorizontally),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(modifier = Modifier.height(18.dp))
+                }
                 Text(
                     text = title,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -91,21 +105,29 @@ fun BandalartActionAlertDialog(
                     lineHeight = 30.sp,
                     letterSpacing = (-0.4).sp,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = message,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp,
-                    fontFamily = pretendardFontFamily(),
-                    fontWeight = FontWeight.W500,
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 24.dp),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 21.sp,
-                    letterSpacing = (-0.28).sp,
-                )
+                if (!message.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                        fontFamily = pretendardFontFamily(),
+                        fontWeight = FontWeight.W500,
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 24.dp),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 21.sp,
+                        letterSpacing = (-0.28).sp,
+                    )
+                }
+                if (content != null) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        content()
+                    }
+                }
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
                     modifier =
