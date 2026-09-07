@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import com.nexters.bandalart.R
 import com.nexters.bandalart.ads.nativead.NativeAdBodyView
 import com.nexters.bandalart.ads.nativead.NativeAdCallToActionView
@@ -64,6 +65,7 @@ class AndroidExitDialogHost(
         val activity = LocalActivity.current ?: return
         var showDialog by remember { mutableStateOf(false) }
         var hasEnteredHome by remember { mutableStateOf(false) }
+        val adSession = remember { ExitDialogAdSession<NativeAd>() }
 
         LaunchedEffect(enabled) {
             if (enabled) {
@@ -82,6 +84,7 @@ class AndroidExitDialogHost(
 
         BackHandler(enabled = enabled) {
             adPreloader.loadIfNeeded()
+            adSession.open(adPreloader.ad)
             showDialog = true
         }
 
@@ -95,11 +98,12 @@ class AndroidExitDialogHost(
                 cancelLabel = activity.getString(R.string.exit_dialog_cancel),
                 onConfirmClick = activity::finish,
                 onCancelClick = {
+                    val shouldRecycle = adSession.closeAndShouldRecycle()
                     showDialog = false
-                    if (adPreloader.ad != null) adPreloader.recycle()
+                    if (shouldRecycle) adPreloader.recycle()
                 },
                 content =
-                    adPreloader.ad?.let { nativeAd ->
+                    adSession.ad?.let { nativeAd ->
                         {
                             NativeAdViewContainer(
                                 nativeAd = nativeAd,
