@@ -1,0 +1,32 @@
+appId: com.nexters.bandalart.dev
+name: Android completion screen
+---
+- pressKey: HOME
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "달성률 100%"
+    commands:
+      - longPressOn: "last task"
+      - waitForAnimationToEnd
+- stopApp
+- pressKey: HOME
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "달성률 88%"
+    timeout: 15000
+- assertVisible: "last task"
+- longPressOn: "last task"
+- waitForAnimationToEnd
+- assertVisible: "반다라트의 모든 목표를 달성했어요.\\n정말 대단해요!"
+- assertVisible: "달성 완료 반다라트"
+- assertVisible: "완료 화면 테스트"
+- assertVisible: "저장하기"
+- assertVisible: "공유하기"
+- tapOn: "뒤로 가기"
+- waitForAnimationToEnd
+- assertVisible: "완료 화면 테스트"

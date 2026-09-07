@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="R3CY70P3F4H" tests="1" failures="0" time="35.621" timestamp="2026-09-07T13:21:48">
+    <testcase id="Android completion screen" name="Android completion screen" classname="Android completion screen" file=".maestro/android/completion-screen.yaml" time="35.607" timestamp="2026-09-07T13:21:48" status="SUCCESS"/>
+  </testsuite>
+</testsuites>
