@@ -1,0 +1,6 @@
+appId: com.nexters.bandalart
+name: BandalArt launch smoke
+---
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
