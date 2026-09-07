@@ -1,0 +1,11 @@
+appId: com.nexters.bandalart.iosApp
+name: iOS completion screen content
+---
+- assertVisible: "반다라트의 모든 목표를 달성했어요.\\n정말 대단해요!"
+- assertVisible: "달성 완료 반다라트"
+- assertVisible: "완료 화면 테스트"
+- assertVisible: "저장하기"
+- assertVisible: "공유하기"
+- tapOn: "뒤로 가기"
+- waitForAnimationToEnd
+- assertVisible: "완료 화면 테스트"

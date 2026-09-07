@@ -1,0 +1,29 @@
+appId: com.nexters.bandalart.dev
+name: Android deadline reminder settings
+---
+- pressKey: HOME
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
+- tapOn: "설정 아이콘"
+- waitForAnimationToEnd
+- assertVisible: "마감일 알림"
+- tapOn: "마감일 알림"
+- assertVisible: "마감일 알림을 켤까요?"
+- assertVisible: "알림 켜기"
+- tapOn: "알림 켜기"
+- waitForAnimationToEnd
+- tapOn: "시트 닫기"
+- stopApp
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
+- tapOn: "설정 아이콘"
+- waitForAnimationToEnd
+- tapOn: "마감일 알림"
+- assertNotVisible: "마감일 알림을 켤까요?"
+- tapOn: "마감일 알림"
+- assertVisible: "마감일 알림을 켤까요?"
+- tapOn: "취소"
+- tapOn: "시트 닫기"
+- assertVisible: "완료 화면 테스트"
