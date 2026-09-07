@@ -54,8 +54,18 @@ flow는 마감일 알림 활성화 확인창을 거쳐 설정을 켜고, 앱을 
 | 크기 | 2×2 |
 | 시스템 등록 | App widget ID 15 등록 확인 |
 | 마지막 조회 반영 | `완료 화면 테스트`, 100% 표시 성공 |
+| cold-start 전환 | A↔B 10/10 성공 |
+| active-session 전환 | A↔B 6/6 성공 |
+| stale 재현 | 0/16 |
 
-위젯 추가 직후에는 설정 과정에서 선택한 ID 1이 앱의 `recent_bandalart_id`에도 저장되어 `이름 없는 목표`, 0%가 표시됐다. 앱 목록에서 `완료 화면 테스트`를 선택한 뒤 `recent_bandalart_id=3` 저장과 위젯의 `완료 화면 테스트`, 100% 갱신을 확인했다. 따라서 마지막으로 조회한 반다라트를 따라가는 동작은 정상이다.
+위젯 추가 직후에는 설정 과정에서 선택한 ID 1이 앱의 `recent_bandalart_id`에도 저장되어 `이름 없는 목표`, 0%가 표시됐다. 이는 이전 반다라트가 남은 것이 아니라 메인 목표가 비어 있는 ID 1의 정상 fallback 표시다.
+
+마지막 조회 동기화는 ID 1과 ID 3을 교대로 선택해 검증했다. 각 회차에서 앱 목록의 선택 완료, DataStore protobuf의 `recent_bandalart_id`, 홈 이동 3초 후 위젯의 OCR 제목을 차례로 비교했다. ID 1은 `recent_bandalart_id=1`과 `이름 없는 목표`, ID 3은 `recent_bandalart_id=3`과 `완료 화면 테스트`가 일치했다.
+
+- 앱을 매번 종료하고 다시 시작하는 cold-start 경로: 10회 모두 성공
+- 앱 프로세스와 Glance composition을 유지하는 active-session 경로: 6회 모두 성공
+
+현재 브랜치에는 갱신 요청을 직렬화하는 `c888d15b`와 활성 Glance 세션이 최근 선택 Flow를 구독하도록 한 `fe5e615c`가 모두 포함되어 있다. Samsung One UI 실기기에서 16회 동안 이전 대상이 유지되는 현상은 재현되지 않았으므로, 이 동기화 문제를 위한 추가 코드 패치나 긴급 앱 업데이트는 필요하지 않다고 판단한다.
 
 Samsung 런처의 Glance 위젯은 UI hierarchy에 내부 텍스트를 노출하지 않아 Maestro text assertion을 사용할 수 없었다. 화면 OCR로 기대 제목을 판정했으며, 홈 화면의 다른 정보가 포함된 원본 스크린샷은 저장 범위에서 제외했다.
 
