@@ -27,14 +27,20 @@ internal class NativeAdPreloader(
     private val requestAd: (NativeAdLoaderCallback) -> Unit,
     private val dispatchCallback: (() -> Unit) -> Unit,
     private val onAdFailedToLoad: (LoadAdError) -> Unit,
+    private val elapsedRealtime: () -> Long,
+    private val minimumRequestIntervalMillis: Long,
+    private val debugLog: (String) -> Unit = {},
 ) {
     private var destroyed = false
     private var loadingEnabled = false
     private var loading = false
     private var generation = 0L
+    private var lastRequestAtMillis: Long? = null
 
     val ad: NativeAd?
         get() = state.ad
+
+    fun adSnapshotForDisplay(): NativeAd? = state.ad?.also { debugLog("display instance=${it.identity()}") }
 
     fun enableLoading() {
         if (destroyed) return
@@ -44,11 +50,20 @@ internal class NativeAdPreloader(
 
     fun loadIfNeeded() {
         if (destroyed || !loadingEnabled || loading) return
-        if (state.isExpired()) state.clear()
+        if (state.isExpired()) {
+            state.ad?.let { debugLog("expire instance=${it.identity()}") }
+            state.clear()
+        }
         if (state.ad != null) return
+
+        val now = elapsedRealtime()
+        val lastRequestAt = lastRequestAtMillis
+        if (lastRequestAt != null && now - lastRequestAt < minimumRequestIntervalMillis) return
 
         loading = true
         val requestGeneration = ++generation
+        lastRequestAtMillis = now
+        debugLog("request generation=$requestGeneration")
         requestAd(
             object : NativeAdLoaderCallback {
                 private var completed = false
@@ -59,12 +74,16 @@ internal class NativeAdPreloader(
                         if (returnedAd === nativeAd) return@dispatchCallback
                         returnedAd = nativeAd
                         if (completed || destroyed || requestGeneration != generation) {
+                            debugLog(
+                                "discard late generation=$requestGeneration instance=${nativeAd.identity()}",
+                            )
                             nativeAd.destroy()
                             return@dispatchCallback
                         }
                         completed = true
                         loading = false
                         state.store(nativeAd)
+                        debugLog("loaded generation=$requestGeneration instance=${nativeAd.identity()}")
                     }
                 }
 
@@ -73,6 +92,7 @@ internal class NativeAdPreloader(
                         if (completed || destroyed || requestGeneration != generation) return@dispatchCallback
                         completed = true
                         loading = false
+                        debugLog("failed generation=$requestGeneration")
                         onAdFailedToLoad(adError)
                     }
                 }
@@ -80,16 +100,37 @@ internal class NativeAdPreloader(
         )
     }
 
-    fun recycle() {
+    fun disableLoading() {
         if (destroyed) return
+        loadingEnabled = false
+    }
+
+    fun recycleIfEligible() {
+        val nativeAd = state.ad ?: return
+        val lastRequestAt = lastRequestAtMillis ?: return
+        val requestAgeMillis = (elapsedRealtime() - lastRequestAt).coerceAtLeast(0)
+        if (destroyed || requestAgeMillis < minimumRequestIntervalMillis) {
+            debugLog("retain ageMs=$requestAgeMillis instance=${nativeAd.identity()}")
+            return
+        }
+        debugLog("recycle ageMs=$requestAgeMillis instance=${nativeAd.identity()}")
         state.clear()
         loadIfNeeded()
+    }
+
+    fun discard() {
+        if (destroyed) return
+        state.ad?.let { debugLog("discard instance=${it.identity()}") }
+        state.clear()
     }
 
     fun destroy() {
         if (destroyed) return
         destroyed = true
         generation++
+        state.ad?.let { debugLog("destroy instance=${it.identity()}") }
         state.clear()
     }
+
+    private fun NativeAd.identity(): Int = System.identityHashCode(this)
 }

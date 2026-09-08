@@ -64,27 +64,27 @@ class AndroidExitDialogHost(
     override fun Content(enabled: Boolean) {
         val activity = LocalActivity.current ?: return
         var showDialog by remember { mutableStateOf(false) }
-        var hasEnteredHome by remember { mutableStateOf(false) }
         val adSession = remember { ExitDialogAdSession<NativeAd>() }
-
-        LaunchedEffect(enabled) {
-            if (enabled) {
-                hasEnteredHome = true
-            } else {
-                showDialog = false
-            }
-        }
 
         val adPreloader =
             rememberNativeAdPreloader(
                 adUnitId = activity.getString(R.string.admob_exit_dialog_native_ad_unit_id),
                 awaitAdsInitialized = awaitAdsInitialized,
-                preload = hasEnteredHome,
+                preload = enabled,
             )
+
+        LaunchedEffect(enabled, adPreloader) {
+            if (!enabled) {
+                val wasAdDisplayed = adSession.closeAndWasAdDisplayed()
+                showDialog = false
+                adPreloader.disableLoading()
+                if (wasAdDisplayed) adPreloader.discard()
+            }
+        }
 
         BackHandler(enabled = enabled) {
             adPreloader.loadIfNeeded()
-            adSession.open(adPreloader.ad)
+            adSession.open(adPreloader.adSnapshotForDisplay())
             showDialog = true
         }
 
@@ -98,9 +98,9 @@ class AndroidExitDialogHost(
                 cancelLabel = activity.getString(R.string.exit_dialog_cancel),
                 onConfirmClick = activity::finish,
                 onCancelClick = {
-                    val shouldRecycle = adSession.closeAndShouldRecycle()
+                    val wasAdDisplayed = adSession.closeAndWasAdDisplayed()
                     showDialog = false
-                    if (shouldRecycle) adPreloader.recycle()
+                    if (wasAdDisplayed) adPreloader.recycleIfEligible()
                 },
                 content =
                     adSession.ad?.let { nativeAd ->

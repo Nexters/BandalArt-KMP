@@ -24,9 +24,9 @@ internal class ExitDialogAdSession<T> {
         ad = availableAd
     }
 
-    fun closeAndShouldRecycle(): Boolean {
-        val shouldRecycle = ad != null
+    fun closeAndWasAdDisplayed(): Boolean {
+        val wasAdDisplayed = ad != null
         ad = null
-        return shouldRecycle
+        return wasAdDisplayed
     }
 }

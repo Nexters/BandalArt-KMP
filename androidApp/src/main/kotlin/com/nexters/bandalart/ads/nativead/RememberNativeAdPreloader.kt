@@ -37,6 +37,7 @@ import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdRequest
 import com.nexters.bandalart.ads.nonPersonalizedAdExtras
 import io.github.aakira.napier.Napier
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun rememberNativeAdPreloader(
@@ -44,11 +45,12 @@ internal fun rememberNativeAdPreloader(
     awaitAdsInitialized: suspend () -> Boolean,
     preload: Boolean,
 ): NativeAdPreloader {
+    val elapsedRealtime = SystemClock::elapsedRealtime
     val state =
         remember(adUnitId) {
             NativeAdState(
                 ttlMillis = 1.hours.inWholeMilliseconds,
-                elapsedRealtime = SystemClock::elapsedRealtime,
+                elapsedRealtime = elapsedRealtime,
             )
         }
     val previewPreloader =
@@ -58,6 +60,8 @@ internal fun rememberNativeAdPreloader(
                 requestAd = {},
                 dispatchCallback = {},
                 onAdFailedToLoad = {},
+                elapsedRealtime = elapsedRealtime,
+                minimumRequestIntervalMillis = 60.seconds.inWholeMilliseconds,
             )
         }
     if (LocalInspectionMode.current) return previewPreloader
@@ -91,8 +95,15 @@ internal fun rememberNativeAdPreloader(
                         tag = "NativeAd",
                     )
                 },
+                elapsedRealtime = elapsedRealtime,
+                minimumRequestIntervalMillis = 60.seconds.inWholeMilliseconds,
+                debugLog = { message -> Napier.d(message, tag = "NativeAd") },
             )
         }
+
+    LaunchedEffect(preloader, preload) {
+        if (!preload) preloader.disableLoading()
+    }
 
     LifecycleResumeEffect(preloader, preload, isAdsInitialized) {
         if (isAdsInitialized && preload) preloader.enableLoading()
