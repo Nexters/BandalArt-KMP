@@ -38,6 +38,8 @@ class NativeAdPreloaderTest {
                 requestAd = requests::add,
                 dispatchCallback = dispatch,
                 onAdFailedToLoad = {},
+                elapsedRealtime = { elapsedRealtime },
+                minimumRequestIntervalMillis = 60_000L,
             )
 
         fun succeed(ad: NativeAd = mockk(relaxed = true)): NativeAd {
@@ -60,15 +62,73 @@ class NativeAdPreloaderTest {
     }
 
     @Test
-    fun recyclingDisplayedAdDestroysItAndPreloadsTheNextOne() {
+    fun displayedAdIsKeptUntilMinimumRefreshInterval() {
+        val fixture = Fixture()
+        fixture.preloader.enableLoading()
+        val ad = fixture.succeed()
+        fixture.elapsedRealtime = 59_999L
+
+        fixture.preloader.recycleIfEligible()
+
+        verify(exactly = 0) { ad.destroy() }
+        assertSame(ad, fixture.preloader.ad)
+        assertEquals(1, fixture.requests.size)
+    }
+
+    @Test
+    fun displayedAdIsRecycledAfterMinimumRefreshInterval() {
+        val fixture = Fixture()
+        fixture.preloader.enableLoading()
+        val ad = fixture.succeed()
+        fixture.elapsedRealtime = 60_000L
+
+        fixture.preloader.recycleIfEligible()
+
+        verify(exactly = 1) { ad.destroy() }
+        assertNull(fixture.preloader.ad)
+        assertEquals(2, fixture.requests.size)
+    }
+
+    @Test
+    fun failedRequestIsNotRetriedBeforeMinimumRefreshInterval() {
+        val fixture = Fixture()
+        fixture.preloader.enableLoading()
+        fixture.requests.single().onAdFailedToLoad(mockk(relaxed = true))
+
+        fixture.elapsedRealtime = 59_999L
+        fixture.preloader.loadIfNeeded()
+        assertEquals(1, fixture.requests.size)
+
+        fixture.elapsedRealtime = 60_000L
+        fixture.preloader.loadIfNeeded()
+        assertEquals(2, fixture.requests.size)
+    }
+
+    @Test
+    fun discardDestroysAdWithoutPreloadingOffScreen() {
         val fixture = Fixture()
         fixture.preloader.enableLoading()
         val ad = fixture.succeed()
 
-        fixture.preloader.recycle()
+        fixture.preloader.discard()
 
         verify(exactly = 1) { ad.destroy() }
         assertNull(fixture.preloader.ad)
+        assertEquals(1, fixture.requests.size)
+    }
+
+    @Test
+    fun disabledLoadingWaitsForTheNextEnableBeforeRequesting() {
+        val fixture = Fixture()
+        fixture.preloader.enableLoading()
+        fixture.requests.single().onAdFailedToLoad(mockk(relaxed = true))
+        fixture.elapsedRealtime = 60_000L
+
+        fixture.preloader.disableLoading()
+        fixture.preloader.loadIfNeeded()
+        assertEquals(1, fixture.requests.size)
+
+        fixture.preloader.enableLoading()
         assertEquals(2, fixture.requests.size)
     }
 

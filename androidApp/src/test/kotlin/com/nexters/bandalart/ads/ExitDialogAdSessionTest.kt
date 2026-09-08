@@ -32,7 +32,7 @@ class ExitDialogAdSessionTest {
         availableAd = "next ad"
         assertNull(session.ad)
 
-        session.closeAndShouldRecycle()
+        session.closeAndWasAdDisplayed()
         session.open(availableAd)
         assertEquals("next ad", session.ad)
     }
@@ -42,10 +42,10 @@ class ExitDialogAdSessionTest {
         val session = ExitDialogAdSession<String>()
 
         session.open(availableAd = null)
-        assertFalse(session.closeAndShouldRecycle())
+        assertFalse(session.closeAndWasAdDisplayed())
 
         session.open(availableAd = "displayed ad")
-        assertTrue(session.closeAndShouldRecycle())
+        assertTrue(session.closeAndWasAdDisplayed())
         assertNull(session.ad)
     }
 }
