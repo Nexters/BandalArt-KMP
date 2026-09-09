@@ -174,6 +174,8 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 
 여러 Internal 빌드에서 계속 광고가 안 보인다고 해서 환경의 제한으로 결론 내리면 안 된다. 같은 산출물의 설치 버전, 광고 ID, 초기화 로그와 요청 발생 여부를 확인해야 한다.
 
+운영 ID를 포함한 Internal Testing 설치본은 실제 광고로 집계되므로 노출만 확인하고 직접 클릭하거나 반복해서 새로고침하지 않는다. 클릭 동작은 AdMob 테스트 기기 또는 Google 공식 테스트 광고 ID로 검증한다.
+
 ### release 로깅
 
 `runCatching`으로 사용자 크래시는 막았지만, release에서 실패 원인까지 사라졌다. 외부 SDK의 필수 초기화처럼 전체 기능을 차단하는 경계에는 성공 로그가 아니라 최소 실패 로그가 필요하다.
@@ -193,7 +195,7 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 - [ ] Presenter의 fail-open, dismiss, exactly-once, 템플릿 보존 테스트가 통과한다.
 - [ ] Internal AAB에는 반다라트 생성 Rewarded, 클라우드 백업 Rewarded와 Banner 운영 ID가 모두 포함되고 공식 테스트 ID는 포함되지 않는다.
 - [ ] Debug 빌드에는 공식 테스트 ID만 포함한다.
-- [ ] Internal 실기기에서 실제 광고 응답을 확인하되 광고를 클릭하지 않는다.
+- [ ] Internal 실기기에서는 실제 광고 노출만 확인하고, 클릭 동작은 테스트 기기 또는 공식 테스트 ID로 검증한다.
 
 ## 블로그 작성용 구성
 
@@ -219,3 +221,4 @@ Anchored Adaptive 테스트 ID를 Fixed Size Banner 테스트 ID로 맞춘 [#290
 - [GMA Next-Gen MobileAds API](https://developers.google.com/admob/android/next-gen/reference/kotlin/com/google/android/libraries/ads/mobile/sdk/MobileAds)
 - [GMA Next-Gen banner](https://developers.google.com/admob/android/next-gen/banner)
 - [GMA Next-Gen test ads](https://developers.google.com/admob/android/next-gen/test-ads)
+- [AdMob 무효 트래픽 방지](https://support.google.com/admob/answer/3342099?hl=ko)
