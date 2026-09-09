@@ -1,1 +1,1 @@
-• Fixed an issue where the ad image did not appear in the Android exit dialog.
+• Improved ad refresh timing and resource cleanup in the Android exit dialog.
