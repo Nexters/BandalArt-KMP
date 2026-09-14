@@ -41,6 +41,10 @@
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
 - [Circuit 상태 보존과 DatePicker 전략](architecture/state/CIRCUIT_STATE_PRESERVATION_STRATEGY.md)
 
+### Performance
+
+- [Firebase Performance Monitoring 도입 검토](architecture/performance/FIREBASE_PERFORMANCE_ADOPTION_RESEARCH.md)
+
 ### KMP
 
 - [AGP 9 KMP 마이그레이션](architecture/kmp/KMP_AGP_9_MIGRATION_STRATEGY.md)
