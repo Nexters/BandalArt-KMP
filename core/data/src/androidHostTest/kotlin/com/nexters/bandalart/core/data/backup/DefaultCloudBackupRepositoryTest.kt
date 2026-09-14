@@ -76,6 +76,23 @@ class DefaultCloudBackupRepositoryTest {
         }
 
     @Test
+    fun versionOneBackupRemainsRestorable() =
+        runTest {
+            val versionOneSnapshot = validSnapshot().copy(schemaVersion = 1)
+            val local = FakeBackupLocalDataSource(snapshot = validSnapshot())
+            val repository =
+                DefaultCloudBackupRepository(
+                    deviceKeyProvider = FixedDeviceBackupKeyProvider(DEVICE_KEY),
+                    localDataSource = local,
+                    remoteDataSource = FakeBackupRemoteDataSource(RemoteBackup(versionOneSnapshot, METADATA)),
+                )
+
+            repository.restoreBackup()
+
+            assertEquals(versionOneSnapshot, local.restoredSnapshot)
+        }
+
+    @Test
     fun missingRemoteBackupDoesNotMutateLocalData() =
         runTest {
             val local = FakeBackupLocalDataSource(snapshot = validSnapshot())
@@ -115,6 +132,8 @@ class DefaultCloudBackupRepositoryTest {
                         title = "건강한 생활",
                         mainColor = "#FF3FFFBA",
                         subColor = "#FF111827",
+                        dailyResetEnabled = true,
+                        lastDailyResetDate = "2026-09-14",
                     ),
                 ),
             cells =

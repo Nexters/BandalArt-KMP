@@ -40,7 +40,8 @@ class HomePresenterQuickCompletionTest {
         runTest {
             val taskCell = cell(id = 12L, title = "매일 걷기")
             val repository = repositoryWithTasks(taskCell)
-            val settingsRepository = FakeSettingsRepository()
+            val settingsRepository =
+                FakeSettingsRepository(initialRoutineSettingsTooltipDismissed = true)
 
             presenter(repository, settingsRepository).test {
                 var state = awaitLoadedBandalart()

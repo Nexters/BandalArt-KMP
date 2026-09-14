@@ -53,6 +53,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
         val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
         val deadlinePermissionRequestId: Long? = null,
+        val showRoutineSettingsTooltip: Boolean = false,
         val showTaskCompletionTooltip: Boolean = false,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
@@ -81,12 +82,24 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : BottomSheetState
 
         data object Settings : BottomSheetState
+
+        data class RoutineSettings(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+            val dailyResetEnabled: Boolean,
+            val hasCompletedCells: Boolean,
+        ) : BottomSheetState
     }
 
     sealed interface DialogState {
         data object BandalartDelete : DialogState
 
         data object RewardedCreate : DialogState
+
+        data class ResetCompletions(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+        ) : DialogState
 
         data class CellDelete(
             val cellId: Long,
@@ -107,6 +120,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ShowDeadlineReminderTestSentSnackbar : Effect
 
         data object ShowDeadlineReminderTestFailedSnackbar : Effect
+
+        data object ShowCompletionResetSnackbar : Effect
+
+        data object ShowCompletionResetNoChangesSnackbar : Effect
 
         data object ShowMainGoalToast : Effect
 
@@ -228,6 +245,23 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object ConsumeEffect : Event
 
         data object DismissTaskCompletionTooltip : Event
+
+        data object DismissRoutineSettingsTooltip : Event
+
+        data object OpenRoutineSettings : Event
+
+        data class SetDailyResetEnabled(
+            val bandalartId: Long,
+            val enabled: Boolean,
+        ) : Event
+
+        data object OpenResetCompletionsDialog : Event
+
+        data class ConfirmResetCompletions(
+            val bandalartId: Long,
+        ) : Event
+
+        data object CheckDueDailyResets : Event
 
         data object OpenSettings : Event
 

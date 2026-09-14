@@ -27,10 +27,13 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_
 import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_dialog_title
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_message
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_title
+import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_empty_title
+import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_title
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDeleteAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.RewardedBandalartAlertDialog
+import com.nexters.bandalart.feature.home.ui.bandalart.ResetCompletionsAlertDialog
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -63,6 +66,22 @@ internal fun HomeDialogs(
             RewardedBandalartAlertDialog(
                 onConfirmClick = {
                     eventSink(HomeScreen.Event.ConfirmRewardedCreate)
+                },
+                onCancelClick = {
+                    eventSink(HomeScreen.Event.DismissDialog)
+                },
+            )
+        }
+        is HomeScreen.DialogState.ResetCompletions -> {
+            ResetCompletionsAlertDialog(
+                title =
+                    if (dialog.bandalartTitle.isEmpty()) {
+                        stringResource(Res.string.routine_settings_reset_dialog_empty_title)
+                    } else {
+                        stringResource(Res.string.routine_settings_reset_dialog_title, dialog.bandalartTitle)
+                    },
+                onConfirmClick = {
+                    eventSink(HomeScreen.Event.ConfirmResetCompletions(dialog.bandalartId))
                 },
                 onCancelClick = {
                     eventSink(HomeScreen.Event.DismissDialog)

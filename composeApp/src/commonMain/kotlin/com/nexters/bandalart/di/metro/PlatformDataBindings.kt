@@ -20,6 +20,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
+import com.nexters.bandalart.core.database.addBandalartMigrations
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
@@ -35,6 +36,7 @@ object PlatformDataBindings {
     fun provideDatabase(factory: BandalartDatabaseFactory): BandalartDatabase =
         factory
             .create()
+            .addBandalartMigrations()
             .setDriver(BundledSQLiteDriver())
             .build()
 

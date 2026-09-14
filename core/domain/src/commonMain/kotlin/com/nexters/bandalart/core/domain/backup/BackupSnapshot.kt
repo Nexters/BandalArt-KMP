@@ -26,7 +26,8 @@ data class BackupSnapshot(
     val preferences: BackupPreferences,
 ) {
     companion object {
-        const val CURRENT_SCHEMA_VERSION = 1
+        const val MIN_SUPPORTED_SCHEMA_VERSION = 1
+        const val CURRENT_SCHEMA_VERSION = 2
     }
 }
 
@@ -41,6 +42,8 @@ data class BackupBandalart(
     val dueDate: String? = null,
     val isCompleted: Boolean = false,
     val completionRatio: Int = 0,
+    val dailyResetEnabled: Boolean = false,
+    val lastDailyResetDate: String? = null,
 )
 
 @Serializable

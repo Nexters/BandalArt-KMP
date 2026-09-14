@@ -43,6 +43,7 @@ class BandalartDataStore(
         private const val RECENT_EMOJIS = "recent_emojis"
         private const val DEADLINE_REMINDER_ENABLED = "deadline_reminder_enabled"
         private const val TASK_COMPLETION_TOOLTIP_DISMISSED_V1 = "task_completion_tooltip_dismissed_v1"
+        private const val ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1 = "routine_settings_tooltip_dismissed_v1"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
         private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
         private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
@@ -59,6 +60,8 @@ class BandalartDataStore(
     private val deadlineReminderEnabledKey = booleanPreferencesKey(DEADLINE_REMINDER_ENABLED)
     private val taskCompletionTooltipDismissedKey =
         booleanPreferencesKey(TASK_COMPLETION_TOOLTIP_DISMISSED_V1)
+    private val routineSettingsTooltipDismissedKey =
+        booleanPreferencesKey(ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1)
     private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
     private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
     private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
@@ -229,6 +232,12 @@ class BandalartDataStore(
                     throw exception
             }.map { preferences -> preferences[taskCompletionTooltipDismissedKey] ?: false }
 
+    val routineSettingsTooltipDismissed =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences()) else throw exception
+            }.map { preferences -> preferences[routineSettingsTooltipDismissedKey] ?: false }
+
     val recentBandalartId =
         dataStore.data
             .catch { exception ->
@@ -339,6 +348,21 @@ class BandalartDataStore(
         }
     }
 
+    suspend fun markBandalartsIncomplete(bandalartIds: Set<Long>) {
+        if (bandalartIds.isEmpty()) return
+        dataStore.edit { preferences ->
+            val currentList = stringToList(preferences[completedBandalartListKey].orEmpty())
+            val updatedList =
+                currentList.map { (bandalartId, completed) ->
+                    bandalartId to if (bandalartId in bandalartIds) false else completed
+                } +
+                    bandalartIds
+                        .filterNot { targetId -> currentList.any { it.first == targetId } }
+                        .map { it to false }
+            preferences[completedBandalartListKey] = listToString(updatedList)
+        }
+    }
+
     // 목표를 달성하지 못했었는데 이번에 달성한 경우를 검사
     suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean =
         dataStore.data
@@ -401,6 +425,12 @@ class BandalartDataStore(
     suspend fun dismissTaskCompletionTooltip() {
         dataStore.edit { preferences ->
             preferences[taskCompletionTooltipDismissedKey] = true
+        }
+    }
+
+    suspend fun dismissRoutineSettingsTooltip() {
+        dataStore.edit { preferences ->
+            preferences[routineSettingsTooltipDismissedKey] = true
         }
     }
 

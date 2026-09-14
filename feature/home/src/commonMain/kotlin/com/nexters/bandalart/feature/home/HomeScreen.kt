@@ -33,7 +33,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +51,8 @@ import bandalart.core.designsystem.generated.resources.create_bandalart
 import bandalart.core.designsystem.generated.resources.delete_bandalart
 import bandalart.core.designsystem.generated.resources.rewarded_ad_unavailable
 import bandalart.core.designsystem.generated.resources.rewarded_slot_error
+import bandalart.core.designsystem.generated.resources.routine_settings_reset_complete
+import bandalart.core.designsystem.generated.resources.routine_settings_reset_no_changes
 import bandalart.core.designsystem.generated.resources.please_input_main_goal
 import bandalart.core.designsystem.generated.resources.save_bandalart_image
 import bandalart.core.designsystem.generated.resources.settings_contact_body
@@ -109,6 +115,8 @@ internal fun Home(
     val completeGraphicsLayer = rememberGraphicsLayer()
     val updateSnackbarHostState = remember { SnackbarHostState() }
     val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
+    var isAppForeground by remember { mutableStateOf(true) }
+    val currentEventSink by rememberUpdatedState(state.eventSink)
     LaunchedEffect(state.rewardedAdRequestId) {
         val requestId = state.rewardedAdRequestId ?: return@LaunchedEffect
         val result =
@@ -146,6 +154,18 @@ internal fun Home(
     DeadlineReminderForegroundEffect {
         state.eventSink(HomeScreen.Event.DeadlineReminderForegrounded)
     }
+    DailyResetForegroundEffect(
+        onForeground = { isAppForeground = true },
+        onBackground = { isAppForeground = false },
+    )
+    LaunchedEffect(isAppForeground) {
+        if (!isAppForeground) return@LaunchedEffect
+        currentEventSink(HomeScreen.Event.CheckDueDailyResets)
+        while (true) {
+            delay(DAILY_RESET_CHECK_INTERVAL_MILLIS)
+            currentEventSink(HomeScreen.Event.CheckDueDailyResets)
+        }
+    }
 
     HandleHomeEffects(
         state = state,
@@ -178,6 +198,7 @@ internal fun Home(
         bandalartData = state.bandalartData,
         bandalartCellData = state.bandalartCellData,
         isDropDownMenuOpened = state.isDropDownMenuOpened,
+        showRoutineSettingsTooltip = state.showRoutineSettingsTooltip,
         showTaskCompletionTooltip = state.showTaskCompletionTooltip,
         isBannerCreativeVisible = state.isBannerCreativeVisible(),
         eventSink = state.eventSink,
@@ -234,6 +255,14 @@ private fun HandleHomeEffects(
 
             HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar -> {
                 showSnackbarForDuration(getString(Res.string.settings_deadline_reminder_test_failed), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowCompletionResetSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.routine_settings_reset_complete), showSnackbar)
+            }
+
+            HomeScreen.Effect.ShowCompletionResetNoChangesSnackbar -> {
+                showSnackbarForDuration(getString(Res.string.routine_settings_reset_no_changes), showSnackbar)
             }
 
             HomeScreen.Effect.ShowMainGoalToast -> {
@@ -300,6 +329,7 @@ private fun HandleHomeEffects(
 }
 
 private const val TASK_COMPLETION_HAPTIC_MILLIS = 50
+private const val DAILY_RESET_CHECK_INTERVAL_MILLIS = 60_000L
 
 private suspend fun showSnackbarForDuration(
     message: String,
@@ -318,6 +348,7 @@ internal fun HomeContent(
     bandalartData: BandalartUiModel?,
     bandalartCellData: BandalartCellEntity?,
     isDropDownMenuOpened: Boolean,
+    showRoutineSettingsTooltip: Boolean,
     showTaskCompletionTooltip: Boolean,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
@@ -360,6 +391,10 @@ internal fun HomeContent(
                                 bandalartData = bandalartData,
                                 cellData = bandalartCellData,
                                 isDropDownMenuOpened = isDropDownMenuOpened,
+                                showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                                onRoutineSettingsTooltipDismissed = {
+                                    eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
+                                },
                                 onHomeUiAction = eventSink,
                             )
                             BandalartChart(
@@ -426,6 +461,7 @@ private fun HomeScreenPreview() {
             bandalartData = dummyBandalartData,
             bandalartCellData = dummyBandalartChartData,
             isDropDownMenuOpened = false,
+            showRoutineSettingsTooltip = false,
             showTaskCompletionTooltip = false,
             isBannerCreativeVisible = true,
             eventSink = {},

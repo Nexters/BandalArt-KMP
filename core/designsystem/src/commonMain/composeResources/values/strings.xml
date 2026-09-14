@@ -110,7 +110,23 @@
 
     <!-- BandalartDropDownMenu.kt -->
     <string name="dropdown_save">저장하기</string>
+    <string name="dropdown_routine_settings">루틴 설정</string>
     <string name="dropdown_delete">삭제하기</string>
+
+    <!-- RoutineSettingsBottomSheet.kt -->
+    <string name="home_routine_settings_tooltip">매일 반복할 목표라면 루틴으로 설정해보세요</string>
+    <string name="routine_settings_title">루틴 설정</string>
+    <string name="routine_settings_daily_reset_title">매일 새로 시작하기</string>
+    <string name="routine_settings_daily_reset_description">날짜가 바뀐 뒤 앱을 열면 완료 체크가 모두 해제돼요. 목표와 메모는 그대로 유지돼요.</string>
+    <string name="routine_settings_reset_now">지금 완료 체크 초기화</string>
+    <string name="routine_settings_reset_now_description">목표와 메모는 유지하고 완료 체크만 해제해요.</string>
+    <string name="routine_settings_reset_dialog_empty_title">완료 체크를 초기화할까요?</string>
+    <string name="routine_settings_reset_dialog_title">‘%1$s’의 완료 체크를 초기화할까요?</string>
+    <string name="routine_settings_reset_dialog_message">목표와 메모는 그대로 유지되고, 모든 완료 체크가 해제돼요.</string>
+    <string name="routine_settings_reset_cancel">취소</string>
+    <string name="routine_settings_reset_confirm">초기화</string>
+    <string name="routine_settings_reset_complete">완료 체크를 초기화했어요.</string>
+    <string name="routine_settings_reset_no_changes">초기화할 완료 체크가 없어요.</string>
 
     <!--  BandalartBottomSheet.kt -->
     <string name="bottomsheet_header_maincell_enter_title">메인목표 입력</string>

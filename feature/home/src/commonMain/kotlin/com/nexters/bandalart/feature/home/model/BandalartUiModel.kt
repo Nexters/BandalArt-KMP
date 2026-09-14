@@ -28,6 +28,7 @@ data class BandalartUiModel(
     val dueDate: String? = "",
     val isCompleted: Boolean = false,
     val completionRatio: Int = 0,
+    val dailyResetEnabled: Boolean = false,
     val isGeneratedTitle: Boolean = false,
 ) {
     val titleText: String

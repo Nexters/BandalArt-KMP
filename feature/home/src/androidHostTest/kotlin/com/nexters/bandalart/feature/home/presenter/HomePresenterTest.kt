@@ -363,7 +363,8 @@ class HomePresenterTest {
                     initialBandalarts = listOf(bandalart(1L)),
                     recentBandalartId = 1L,
                 )
-            val settingsRepository = FakeSettingsRepository()
+            val settingsRepository =
+                FakeSettingsRepository(initialRoutineSettingsTooltipDismissed = true)
 
             presenter(repository, settingsRepository = settingsRepository).test {
                 var state = awaitItem()
@@ -390,9 +391,153 @@ class HomePresenterTest {
             }
         }
 
+    @Test
+    fun routineSettingsOpenForTheCurrentBandalartAndDismissDiscovery() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L, dailyResetEnabled = true)),
+                    recentBandalartId = 2L,
+                )
+            val settingsRepository =
+                FakeSettingsRepository(
+                    initialRoutineSettingsTooltipDismissed = false,
+                    initialTaskCompletionTooltipDismissed = false,
+                )
+
+            presenter(repository, settingsRepository = settingsRepository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 2L || !state.showRoutineSettingsTooltip) {
+                    state = awaitItem()
+                }
+
+                assertFalse(state.showTaskCompletionTooltip)
+                state.eventSink(HomeScreen.Event.OpenDropDownMenu)
+                do {
+                    state = awaitItem()
+                } while (!state.isDropDownMenuOpened)
+
+                assertFalse(state.showRoutineSettingsTooltip)
+                assertEquals(1, settingsRepository.routineSettingsTooltipDismissals)
+
+                state.eventSink(HomeScreen.Event.OpenRoutineSettings)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.RoutineSettings)
+
+                val sheet = state.bottomSheet
+                assertEquals(2L, sheet.bandalartId)
+                assertTrue(sheet.dailyResetEnabled)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun routineSettingsToggleUpdatesOnlyItsBandalart() =
+        runTest {
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L), bandalart(2L)),
+                    recentBandalartId = 2L,
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 2L) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.OpenRoutineSettings)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.RoutineSettings)
+
+                state.eventSink(HomeScreen.Event.SetDailyResetEnabled(bandalartId = 2L, enabled = true))
+                do {
+                    state = awaitItem()
+                } while (
+                    repository.dailyResetUpdates.isEmpty() ||
+                    (state.bottomSheet as? HomeScreen.BottomSheetState.RoutineSettings)?.dailyResetEnabled != true
+                )
+
+                assertEquals(listOf(2L to true), repository.dailyResetUpdates)
+                assertTrue(state.bandalartData?.dailyResetEnabled == true)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun resettingCompletionRequiresConfirmationAndReportsSuccess() =
+        runTest {
+            val mainCell = cell(id = 10L, parentId = null).copy(isCompleted = true)
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L, isCompleted = true)),
+                    recentBandalartId = 1L,
+                    mainCells = mapOf(1L to mainCell),
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.OpenRoutineSettings)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet !is HomeScreen.BottomSheetState.RoutineSettings)
+                assertTrue(state.bottomSheet.hasCompletedCells)
+
+                state.eventSink(HomeScreen.Event.OpenResetCompletionsDialog)
+                do {
+                    state = awaitItem()
+                } while (state.dialog !is HomeScreen.DialogState.ResetCompletions)
+
+                val dialog = state.dialog
+                assertEquals(1L, dialog.bandalartId)
+                assertTrue(repository.completionResetIds.isEmpty())
+
+                state.eventSink(HomeScreen.Event.ConfirmResetCompletions(dialog.bandalartId))
+                do {
+                    state = awaitItem()
+                } while (state.effect != HomeScreen.Effect.ShowCompletionResetSnackbar)
+
+                assertEquals(listOf(1L), repository.completionResetIds)
+                assertNull(state.bottomSheet)
+                assertNull(state.dialog)
+                assertEquals(0, requireNotNull(state.bandalartData).completionRatio)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun dueDailyResetCheckRefreshesTheCurrentBandalart() =
+        runTest {
+            val mainCell = cell(id = 10L, parentId = null).copy(isCompleted = true)
+            val repository =
+                FakeBandalartRepository(
+                    initialBandalarts = listOf(bandalart(1L, isCompleted = true, dailyResetEnabled = true)),
+                    recentBandalartId = 1L,
+                    mainCells = mapOf(1L to mainCell),
+                    dueDailyResetIds = setOf(1L),
+                )
+
+            presenter(repository).test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.CheckDueDailyResets)
+                do {
+                    state = awaitItem()
+                } while (repository.dueDailyResetChecks == 0 || state.bandalartData?.completionRatio != 0)
+
+                assertFalse(state.bandalartData.isCompleted)
+                assertEquals(1, repository.dueDailyResetChecks)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun bandalart(
         id: Long,
         isCompleted: Boolean = false,
+        dailyResetEnabled: Boolean = false,
     ) = BandalartEntity(
         id = id,
         mainColor = "#3FFFBA",
@@ -403,6 +548,7 @@ class HomePresenterTest {
         dueDate = null,
         isCompleted = isCompleted,
         completionRatio = if (isCompleted) 100 else 0,
+        dailyResetEnabled = dailyResetEnabled,
     )
 
     private fun presenter(

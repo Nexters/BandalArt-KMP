@@ -110,7 +110,23 @@
 
     <!-- BandalartDropDownMenu.kt -->
     <string name="dropdown_save">保存</string>
+    <string name="dropdown_routine_settings">ルーティン設定</string>
     <string name="dropdown_delete">削除</string>
+
+    <!-- RoutineSettingsBottomSheet.kt -->
+    <string name="home_routine_settings_tooltip">毎日繰り返す目標をルーティンに設定できます</string>
+    <string name="routine_settings_title">ルーティン設定</string>
+    <string name="routine_settings_daily_reset_title">毎日新しく始める</string>
+    <string name="routine_settings_daily_reset_description">日付が変わってからアプリを開くと、すべての完了チェックが解除されます。目標とメモはそのまま残ります。</string>
+    <string name="routine_settings_reset_now">今すぐ完了チェックをリセット</string>
+    <string name="routine_settings_reset_now_description">目標とメモは残し、完了チェックだけを解除します。</string>
+    <string name="routine_settings_reset_dialog_empty_title">完了チェックをリセットしますか？</string>
+    <string name="routine_settings_reset_dialog_title">「%1$s」の完了チェックをリセットしますか？</string>
+    <string name="routine_settings_reset_dialog_message">目標とメモはそのまま残り、すべての完了チェックが解除されます。</string>
+    <string name="routine_settings_reset_cancel">キャンセル</string>
+    <string name="routine_settings_reset_confirm">リセット</string>
+    <string name="routine_settings_reset_complete">完了チェックをリセットしました。</string>
+    <string name="routine_settings_reset_no_changes">リセットする完了チェックがありません。</string>
 
     <!--  BandalartBottomSheet.kt -->
     <string name="bottomsheet_header_maincell_enter_title">メイン目標を入力</string>

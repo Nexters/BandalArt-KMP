@@ -29,6 +29,8 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
 import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import io.mockk.coEvery
@@ -36,7 +38,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -52,8 +56,61 @@ class DefaultBandalartRepositoryTest {
     fun setUp() {
         mockBandalartDao = mockk()
         mockBandalartDataStore = mockk()
+        coEvery { mockBandalartDao.applyDueDailyResets(any()) } returns emptyList()
+        coEvery { mockBandalartDao.getPendingCompletionResetSyncIds() } returns emptyList()
         bandalartRepository = DefaultBandalartRepository(mockBandalartDataStore, mockBandalartDao)
     }
+
+    @Test
+    fun dueDailyResetsSynchronizeCompletionHistoryAndReminders() =
+        runTest {
+            val reconciler = mockk<DeadlineReminderReconciler>()
+            coEvery { mockBandalartDao.applyDueDailyResets("2026-09-15") } returns listOf(1L, 2L)
+            coEvery { mockBandalartDao.getPendingCompletionResetSyncIds() } returns listOf(1L, 2L)
+            coEvery { mockBandalartDao.clearCompletionResetSyncPending(listOf(1L, 2L)) } returns Unit
+            coEvery { mockBandalartDataStore.markBandalartsIncomplete(setOf(1L, 2L)) } returns Unit
+            coEvery { reconciler.reconcileAll() } returns Unit
+            val repository =
+                DefaultBandalartRepository(
+                    bandalartDataStore = mockBandalartDataStore,
+                    bandalartDao = mockBandalartDao,
+                    deadlineReminderReconciler = reconciler,
+                    dailyResetDateProvider = DailyResetDateProvider { LocalDate(2026, 9, 15) },
+                )
+
+            assertEquals(setOf(1L, 2L), repository.applyDueDailyResets())
+            coVerify(exactly = 1) { mockBandalartDataStore.markBandalartsIncomplete(setOf(1L, 2L)) }
+            coVerify(exactly = 1) { mockBandalartDao.clearCompletionResetSyncPending(listOf(1L, 2L)) }
+            coVerify(exactly = 1) { reconciler.reconcileAll() }
+        }
+
+    @Test
+    fun pendingCompletionHistorySyncIsRetriedAfterDataStoreFailure() =
+        runTest {
+            val reconciler = mockk<DeadlineReminderReconciler>()
+            coEvery { mockBandalartDao.applyDueDailyResets(any()) } returnsMany
+                listOf(listOf(1L), emptyList())
+            coEvery { mockBandalartDao.getPendingCompletionResetSyncIds() } returns listOf(1L)
+            coEvery { mockBandalartDataStore.markBandalartsIncomplete(setOf(1L)) } throws
+                IllegalStateException("temporary write failure") andThen Unit
+            coEvery { mockBandalartDao.clearCompletionResetSyncPending(listOf(1L)) } returns Unit
+            coEvery { reconciler.reconcileAll() } returns Unit
+            val repository =
+                DefaultBandalartRepository(
+                    bandalartDataStore = mockBandalartDataStore,
+                    bandalartDao = mockBandalartDao,
+                    deadlineReminderReconciler = reconciler,
+                )
+
+            val firstAttempt = runCatching { repository.applyDueDailyResets() }
+            val secondAttempt = repository.applyDueDailyResets()
+
+            assertFalse(firstAttempt.isSuccess)
+            assertEquals(emptySet<Long>(), secondAttempt)
+            coVerify(exactly = 2) { mockBandalartDataStore.markBandalartsIncomplete(setOf(1L)) }
+            coVerify(exactly = 1) { mockBandalartDao.clearCompletionResetSyncPending(listOf(1L)) }
+            coVerify(exactly = 1) { reconciler.reconcileAll() }
+        }
 
     @Test
     @DisplayName("템플릿 ID를 원자 생성용 DB draft로 변환해야 한다")

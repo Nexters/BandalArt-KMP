@@ -71,6 +71,8 @@ private fun BandalartDBEntity.toBackup() =
         dueDate = dueDate,
         isCompleted = isCompleted,
         completionRatio = completionRatio,
+        dailyResetEnabled = dailyResetEnabled,
+        lastDailyResetDate = lastDailyResetDate,
     )
 
 private fun BandalartCellDBEntity.toBackup() =
@@ -107,6 +109,8 @@ private fun BackupBandalart.toDatabase() =
         dueDate = dueDate,
         isCompleted = isCompleted,
         completionRatio = completionRatio,
+        dailyResetEnabled = dailyResetEnabled,
+        lastDailyResetDate = lastDailyResetDate,
     )
 
 private fun BackupCell.toDatabase() =

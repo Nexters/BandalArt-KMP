@@ -50,7 +50,7 @@ fun openExistingSharedBandalartDatabase(): BandalartDatabase? {
     val fileManager = NSFileManager.defaultManager
     val databasePath = "${sharedDirectory(fileManager)}/${BandalartDatabase.DB_NAME}"
     if (!fileManager.fileExistsAtPath(databasePath)) return null
-    return databaseBuilder(databasePath).build()
+    return databaseBuilder(databasePath).addBandalartMigrations().build()
 }
 
 private fun databaseBuilder(path: String): RoomDatabase.Builder<BandalartDatabase> =

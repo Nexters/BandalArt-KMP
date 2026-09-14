@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartWidgetSnapshotDto
 import com.nexters.bandalart.core.database.openExistingSharedBandalartDatabase
+import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
 import kotlinx.coroutines.flow.first
 import platform.Foundation.NSUserDefaults
 
@@ -30,6 +31,7 @@ class IosWidgetDataBridge {
 
     suspend fun getRecentSnapshot(): IosWidgetSnapshot? {
         val dao = database()?.bandalartDao ?: return null
+        dao.applyDueDailyResets(SystemDailyResetDateProvider.today().toString())
         val defaults = NSUserDefaults(suiteName = IOS_WIDGET_APP_GROUP_IDENTIFIER)
         val bandalartId =
             dao
@@ -65,6 +67,7 @@ class IosWidgetDataBridge {
     ): IosWidgetSnapshot? {
         if (bandalartId <= 0L || subGoalId <= 0L || taskId <= 0L) return null
         val dao = database()?.bandalartDao ?: return null
+        dao.applyDueDailyResets(SystemDailyResetDateProvider.today().toString())
         val wasUpdated =
             dao.setTaskCompletedIfOwned(
                 bandalartId = bandalartId,

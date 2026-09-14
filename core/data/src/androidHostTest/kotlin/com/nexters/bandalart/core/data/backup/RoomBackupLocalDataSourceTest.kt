@@ -41,7 +41,13 @@ class RoomBackupLocalDataSourceTest {
     @Test
     fun createSnapshotMapsAllRoomRowsAndDurablePreferences() =
         runTest {
-            val bandalart = BandalartDBEntity(id = 1L, title = "목표")
+            val bandalart =
+                BandalartDBEntity(
+                    id = 1L,
+                    title = "목표",
+                    dailyResetEnabled = true,
+                    lastDailyResetDate = "2026-09-14",
+                )
             val cell = BandalartCellDBEntity(id = 10L, bandalartId = 1L, title = "목표")
             coEvery { dao.getAllBandalarts() } returns listOf(bandalart)
             coEvery { dao.getAllCells() } returns listOf(cell)
@@ -50,7 +56,19 @@ class RoomBackupLocalDataSourceTest {
 
             val snapshot = source.createSnapshot()
 
-            assertEquals(listOf(BackupBandalart(id = 1L, title = "목표", mainColor = "#FF3FFFBA", subColor = "#FF111827")), snapshot.bandalarts)
+            assertEquals(
+                listOf(
+                    BackupBandalart(
+                        id = 1L,
+                        title = "목표",
+                        mainColor = "#FF3FFFBA",
+                        subColor = "#FF111827",
+                        dailyResetEnabled = true,
+                        lastDailyResetDate = "2026-09-14",
+                    ),
+                ),
+                snapshot.bandalarts,
+            )
             assertEquals(listOf(BackupCell(id = 10L, bandalartId = 1L, title = "목표")), snapshot.cells)
             assertEquals(1L, snapshot.preferences.recentBandalartId)
             assertEquals(listOf(BackupCompletedBandalart(1L, true)), snapshot.preferences.completedBandalarts)
@@ -70,7 +88,15 @@ class RoomBackupLocalDataSourceTest {
             coVerifyOrder {
                 dao.getAllBandalarts()
                 dao.replaceAllForBackup(
-                    bandalarts = listOf(BandalartDBEntity(id = 1L, title = "목표")),
+                    bandalarts =
+                        listOf(
+                            BandalartDBEntity(
+                                id = 1L,
+                                title = "목표",
+                                dailyResetEnabled = true,
+                                lastDailyResetDate = "2026-09-14",
+                            ),
+                        ),
                     cells = listOf(BandalartCellDBEntity(id = 10L, bandalartId = 1L, title = "목표")),
                 )
                 dataStore.restoreBackupPreferences(
@@ -90,7 +116,17 @@ class RoomBackupLocalDataSourceTest {
 
     private fun validSnapshot() =
         BackupSnapshot(
-            bandalarts = listOf(BackupBandalart(id = 1L, title = "목표", mainColor = "#FF3FFFBA", subColor = "#FF111827")),
+            bandalarts =
+                listOf(
+                    BackupBandalart(
+                        id = 1L,
+                        title = "목표",
+                        mainColor = "#FF3FFFBA",
+                        subColor = "#FF111827",
+                        dailyResetEnabled = true,
+                        lastDailyResetDate = "2026-09-14",
+                    ),
+                ),
             cells = listOf(BackupCell(id = 10L, bandalartId = 1L, title = "목표")),
             preferences =
                 BackupPreferences(

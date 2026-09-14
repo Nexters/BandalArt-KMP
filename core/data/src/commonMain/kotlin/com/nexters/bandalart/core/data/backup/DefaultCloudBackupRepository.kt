@@ -84,7 +84,7 @@ class InvalidBackupSnapshotException(
 ) : IllegalArgumentException(message)
 
 private fun BackupSnapshot.validate() {
-    if (schemaVersion != BackupSnapshot.CURRENT_SCHEMA_VERSION) {
+    if (schemaVersion !in BackupSnapshot.MIN_SUPPORTED_SCHEMA_VERSION..BackupSnapshot.CURRENT_SCHEMA_VERSION) {
         throw InvalidBackupSnapshotException("Unsupported backup schema version: $schemaVersion")
     }
     val bandalartIds = bandalarts.map { it.id }

@@ -30,16 +30,21 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
+import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class DefaultBandalartRepository(
     private val bandalartDataStore: BandalartDataStore,
     private val bandalartDao: BandalartDao,
     private val deadlineReminderReconciler: DeadlineReminderReconciler = NoOpDeadlineReminderReconciler,
+    private val dailyResetDateProvider: DailyResetDateProvider = SystemDailyResetDateProvider,
 ) : BandalartRepository {
     override suspend fun createBandalart(templateId: BandalartTemplateId?): BandalartEntity {
         val template = templateId?.let(BandalartTemplateCatalog::find)
@@ -50,11 +55,19 @@ class DefaultBandalartRepository(
     }
 
     override fun getBandalartList(): Flow<List<BandalartEntity>> =
-        bandalartDao
-            .getBandalartList()
-            .map { list -> list.map { it.toEntity() } }
+        flow {
+            applyDueDailyResets()
+            emitAll(
+                bandalartDao
+                    .getBandalartList()
+                    .map { list -> list.map { it.toEntity() } },
+            )
+        }
 
-    override suspend fun getBandalart(bandalartId: Long): BandalartEntity = bandalartDao.getBandalart(bandalartId).toEntity()
+    override suspend fun getBandalart(bandalartId: Long): BandalartEntity {
+        applyDueDailyResets()
+        return bandalartDao.getBandalart(bandalartId).toEntity()
+    }
 
     override suspend fun deleteBandalart(bandalartId: Long) {
         val mainCell = bandalartDao.getBandalartMainCell(bandalartId).cell
@@ -125,6 +138,46 @@ class DefaultBandalartRepository(
     override suspend fun deleteBandalartCell(cellId: Long) {
         bandalartDao.deleteCellOrReset(cellId)
         deadlineReminderReconciler.reconcileAll()
+    }
+
+    override suspend fun setDailyResetEnabled(
+        bandalartId: Long,
+        enabled: Boolean,
+    ) {
+        bandalartDao.setDailyResetEnabled(
+            bandalartId = bandalartId,
+            enabled = enabled,
+            today = dailyResetDateProvider.today().toString(),
+        )
+    }
+
+    override suspend fun resetCompletionsNow(bandalartId: Long): Boolean {
+        val wasReset =
+            bandalartDao.resetCompletionsNow(
+                bandalartId = bandalartId,
+                today = dailyResetDateProvider.today().toString(),
+            )
+        val synchronizedPendingReset = syncPendingCompletionResets()
+        if (wasReset || synchronizedPendingReset) deadlineReminderReconciler.reconcileAll()
+        return wasReset
+    }
+
+    override suspend fun applyDueDailyResets(): Set<Long> {
+        val resetIds =
+            bandalartDao
+                .applyDueDailyResets(dailyResetDateProvider.today().toString())
+                .toSet()
+        val synchronizedPendingReset = syncPendingCompletionResets()
+        if (resetIds.isNotEmpty() || synchronizedPendingReset) deadlineReminderReconciler.reconcileAll()
+        return resetIds
+    }
+
+    private suspend fun syncPendingCompletionResets(): Boolean {
+        val pendingIds = bandalartDao.getPendingCompletionResetSyncIds()
+        if (pendingIds.isEmpty()) return false
+        bandalartDataStore.markBandalartsIncomplete(pendingIds.toSet())
+        bandalartDao.clearCompletionResetSyncPending(pendingIds)
+        return true
     }
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) {

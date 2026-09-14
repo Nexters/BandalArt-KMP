@@ -181,6 +181,49 @@ class BandalartDaoTest {
     @DisplayName("반다라트 셀 업데이트 테스트")
     inner class CellUpdateTest {
         @Test
+        @DisplayName("일일 초기화 대상은 다음 날 완료 상태만 트랜잭션으로 초기화해야 한다")
+        fun dueDailyResetClearsOnlyCompletionState() =
+            runTest {
+                val bandalartId = bandalartDao.createEmptyBandalart()
+                val mainCell = bandalartDao.getBandalartMainCell(bandalartId)
+                val subCell = mainCell.children.first()
+                val taskCell = bandalartDao.getChildCells(subCell.id!!).first()
+                bandalartDao.updateTaskCellWithDto(
+                    taskCell.id!!,
+                    UpdateBandalartTaskCellDto(
+                        title = "매일 걷기",
+                        description = "30분",
+                        dueDate = "2026-09-30T00:00",
+                        isCompleted = true,
+                    ),
+                )
+                bandalartDao.setDailyResetEnabled(bandalartId, enabled = true, today = "2026-09-14")
+
+                val resetIds = bandalartDao.applyDueDailyResets(today = "2026-09-15")
+
+                val updatedTask = bandalartDao.getCell(taskCell.id)
+                val updatedBandalart = bandalartDao.getBandalart(bandalartId)
+                assertEquals(listOf(bandalartId), resetIds)
+                assertFalse(updatedTask.isCompleted)
+                assertEquals("매일 걷기", updatedTask.title)
+                assertEquals("30분", updatedTask.description)
+                assertEquals("2026-09-30T00:00", updatedTask.dueDate)
+                assertFalse(updatedBandalart.isCompleted)
+                assertEquals(0, updatedBandalart.completionRatio)
+                assertTrue(updatedBandalart.dailyResetEnabled)
+                assertEquals("2026-09-15", updatedBandalart.lastDailyResetDate)
+                assertTrue(updatedBandalart.completionResetSyncPending)
+                assertEquals(listOf(bandalartId), bandalartDao.getPendingCompletionResetSyncIds())
+
+                assertEquals(emptyList<Long>(), bandalartDao.applyDueDailyResets(today = "2026-09-15"))
+                assertEquals(emptyList<Long>(), bandalartDao.applyDueDailyResets(today = "2026-09-14"))
+                assertEquals("2026-09-15", bandalartDao.getBandalart(bandalartId).lastDailyResetDate)
+
+                bandalartDao.clearCompletionResetSyncPending(listOf(bandalartId))
+                assertFalse(bandalartDao.getBandalart(bandalartId).completionResetSyncPending)
+            }
+
+        @Test
         @DisplayName("메인 셀 업데이트 시 반다라트 정보도 함께 업데이트되어야 한다")
         fun testUpdateMainCell() =
             runTest {

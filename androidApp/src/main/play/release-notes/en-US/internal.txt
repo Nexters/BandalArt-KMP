@@ -1,1 +1,2 @@
-• Improved ad refresh timing and resource cleanup in the Android exit dialog.
+• Reset completion checks now or automatically each day from ⋮ > Routine settings on Home.
+• Added a one-time tip to help you discover the new routine feature.

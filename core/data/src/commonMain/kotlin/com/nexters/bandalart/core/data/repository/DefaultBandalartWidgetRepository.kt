@@ -14,6 +14,14 @@ class DefaultBandalartWidgetRepository(
         bandalartId: Long,
         subGoalId: Long?,
     ): BandalartWidgetSnapshot? {
+        bandalartRepository.applyDueDailyResets()
+        return readSnapshot(bandalartId, subGoalId)
+    }
+
+    private suspend fun readSnapshot(
+        bandalartId: Long,
+        subGoalId: Long?,
+    ): BandalartWidgetSnapshot? {
         val storedSnapshot = bandalartDao.findWidgetSnapshot(bandalartId, subGoalId) ?: return null
         return BandalartWidgetSnapshot(
             bandalartId = bandalartId,
@@ -39,12 +47,13 @@ class DefaultBandalartWidgetRepository(
         taskId: Long,
         completed: Boolean,
     ): BandalartWidgetSnapshot? {
+        bandalartRepository.applyDueDailyResets()
         bandalartRepository.setTaskCompleted(
             bandalartId = bandalartId,
             subGoalId = subGoalId,
             taskId = taskId,
             completed = completed,
         )
-        return getSnapshot(bandalartId, subGoalId)
+        return readSnapshot(bandalartId, subGoalId)
     }
 }

@@ -70,6 +70,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 @AssistedInject
@@ -120,6 +122,8 @@ class HomePresenter(
         val deadlineReminderEnabled by settingsRepository.deadlineReminderEnabled.collectAsState(initial = false)
         val taskCompletionTooltipDismissed by
             settingsRepository.taskCompletionTooltipDismissed.collectAsState(initial = true)
+        val routineSettingsTooltipDismissed by
+            settingsRepository.routineSettingsTooltipDismissed.collectAsState(initial = true)
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
         val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
@@ -130,10 +134,12 @@ class HomePresenter(
         var nextDeadlinePermissionRequestId by remember { mutableStateOf(0L) }
         var enableDeadlineReminderAfterSettings by rememberRetained { mutableStateOf(false) }
         var isTaskCompletionTooltipDismissalRequested by remember { mutableStateOf(false) }
+        var isRoutineSettingsTooltipDismissalRequested by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         val recentEmojiSaveJobs = remember { mutableListOf<kotlinx.coroutines.Job>() }
         val selectionLoadGeneration = remember { longArrayOf(0L) }
         val handledCompletionRevision = remember { longArrayOf(-1L) }
+        val dailyResetCheckMutex = remember { Mutex() }
 
         fun recordRecentEmoji(emoji: String) {
             val previousJob = recentEmojiSaveJobs.lastOrNull()
@@ -149,6 +155,12 @@ class HomePresenter(
             if (taskCompletionTooltipDismissed || isTaskCompletionTooltipDismissalRequested) return
             isTaskCompletionTooltipDismissalRequested = true
             scope.launch { settingsRepository.dismissTaskCompletionTooltip() }
+        }
+
+        fun dismissRoutineSettingsTooltip() {
+            if (routineSettingsTooltipDismissed || isRoutineSettingsTooltipDismissalRequested) return
+            isRoutineSettingsTooltipDismissalRequested = true
+            scope.launch { settingsRepository.dismissRoutineSettingsTooltip() }
         }
 
         fun emitEffect(newEffect: HomeScreen.Effect) {
@@ -633,6 +645,78 @@ class HomePresenter(
             )
         }
 
+        suspend fun setDailyResetEnabled(
+            bandalartId: Long,
+            enabled: Boolean,
+        ) {
+            bandalartRepository.setDailyResetEnabled(bandalartId, enabled)
+            loadedBandalart =
+                loadedBandalart?.let { current ->
+                    if (current.bandalartData.id == bandalartId) {
+                        current.copy(
+                            bandalartData = current.bandalartData.copy(dailyResetEnabled = enabled),
+                        )
+                    } else {
+                        current
+                    }
+                }
+            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.RoutineSettings
+            if (currentSheet?.bandalartId == bandalartId) {
+                bottomSheet = currentSheet.copy(dailyResetEnabled = enabled)
+            }
+        }
+
+        suspend fun resetCompletionsNow(bandalartId: Long) {
+            val changed =
+                runCatching { bandalartRepository.resetCompletionsNow(bandalartId) }
+                    .onFailure { exception ->
+                        if (exception is CancellationException) throw exception
+                        Napier.e("Failed to reset Bandalart completions", exception, tag = "HomePresenter")
+                    }.getOrNull() ?: return
+
+            if (changed && loadedBandalart?.bandalartData?.id == bandalartId) {
+                val selectionGeneration = selectionLoadGeneration[0]
+                loadBandalart(
+                    bandalartId = bandalartId,
+                    canCommit = {
+                        selectionLoadGeneration[0] == selectionGeneration &&
+                            loadedBandalart?.bandalartData?.id == bandalartId
+                    },
+                )
+            }
+            dialog = null
+            bottomSheet = null
+            emitEffect(
+                if (changed) {
+                    HomeScreen.Effect.ShowCompletionResetSnackbar
+                } else {
+                    HomeScreen.Effect.ShowCompletionResetNoChangesSnackbar
+                },
+            )
+        }
+
+        suspend fun checkDueDailyResets() {
+            dailyResetCheckMutex.withLock {
+                val resetIds =
+                    runCatching { bandalartRepository.applyDueDailyResets() }
+                        .onFailure { exception ->
+                            if (exception is CancellationException) throw exception
+                            Napier.e("Failed to apply due daily resets", exception, tag = "HomePresenter")
+                        }.getOrNull() ?: return@withLock
+                val currentBandalartId = loadedBandalart?.bandalartData?.id
+                if (currentBandalartId != null && currentBandalartId in resetIds) {
+                    val selectionGeneration = selectionLoadGeneration[0]
+                    loadBandalart(
+                        bandalartId = currentBandalartId,
+                        canCommit = {
+                            selectionLoadGeneration[0] == selectionGeneration &&
+                                loadedBandalart?.bandalartData?.id == currentBandalartId
+                        },
+                    )
+                }
+            }
+        }
+
         suspend fun deleteBandalart(bandalartId: Long) {
             bandalartRepository.deleteBandalart(bandalartId)
             bandalartRepository.deleteCompletedBandalartId(bandalartId)
@@ -833,8 +917,19 @@ class HomePresenter(
             deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
             deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
             deadlinePermissionRequestId = deadlinePermissionRequestId,
+            showRoutineSettingsTooltip =
+                !routineSettingsTooltipDismissed &&
+                    !isRoutineSettingsTooltipDismissalRequested &&
+                    bandalartData != null &&
+                    bandalartCellData != null &&
+                    bottomSheet == null &&
+                    dialog == null &&
+                    !isDropDownMenuOpened &&
+                    imageRequest == null &&
+                    rewardedAdRequestId == null,
             showTaskCompletionTooltip =
-                !taskCompletionTooltipDismissed &&
+                (routineSettingsTooltipDismissed || isRoutineSettingsTooltipDismissalRequested) &&
+                    !taskCompletionTooltipDismissed &&
                     !isTaskCompletionTooltipDismissalRequested &&
                     bandalartData != null &&
                     bandalartCellData != null &&
@@ -908,7 +1003,10 @@ class HomePresenter(
                     }
                 }
 
-                HomeScreen.Event.OpenDropDownMenu -> isDropDownMenuOpened = true
+                HomeScreen.Event.OpenDropDownMenu -> {
+                    isDropDownMenuOpened = true
+                    dismissRoutineSettingsTooltip()
+                }
                 HomeScreen.Event.DismissDropDownMenu -> isDropDownMenuOpened = false
                 HomeScreen.Event.DismissBottomSheet -> bottomSheet = null
                 HomeScreen.Event.DismissDialog -> {
@@ -984,6 +1082,53 @@ class HomePresenter(
                 HomeScreen.Event.ConsumeEffect -> consumeEffect()
                 HomeScreen.Event.DismissTaskCompletionTooltip -> {
                     dismissTaskCompletionTooltip()
+                }
+                HomeScreen.Event.DismissRoutineSettingsTooltip -> {
+                    dismissRoutineSettingsTooltip()
+                }
+                HomeScreen.Event.OpenRoutineSettings -> {
+                    dismissRoutineSettingsTooltip()
+                    val currentBandalart = bandalartData
+                    if (currentBandalart != null) {
+                        isDropDownMenuOpened = false
+                        bottomSheet =
+                            HomeScreen.BottomSheetState.RoutineSettings(
+                                bandalartId = currentBandalart.id,
+                                bandalartTitle = currentBandalart.titleText,
+                                dailyResetEnabled = currentBandalart.dailyResetEnabled,
+                                hasCompletedCells = currentBandalart.completionRatio > 0,
+                            )
+                    }
+                }
+                is HomeScreen.Event.SetDailyResetEnabled -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.RoutineSettings
+                    if (currentSheet?.bandalartId == event.bandalartId) {
+                        scope.launch {
+                            setDailyResetEnabled(
+                                bandalartId = event.bandalartId,
+                                enabled = event.enabled,
+                            )
+                        }
+                    }
+                }
+                HomeScreen.Event.OpenResetCompletionsDialog -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.RoutineSettings
+                    if (currentSheet?.hasCompletedCells == true) {
+                        dialog =
+                            HomeScreen.DialogState.ResetCompletions(
+                                bandalartId = currentSheet.bandalartId,
+                                bandalartTitle = currentSheet.bandalartTitle,
+                            )
+                    }
+                }
+                is HomeScreen.Event.ConfirmResetCompletions -> {
+                    val currentDialog = dialog as? HomeScreen.DialogState.ResetCompletions
+                    if (currentDialog?.bandalartId == event.bandalartId) {
+                        scope.launch { resetCompletionsNow(event.bandalartId) }
+                    }
+                }
+                HomeScreen.Event.CheckDueDailyResets -> {
+                    scope.launch { checkDueDailyResets() }
                 }
                 is HomeScreen.Event.SelectThemeMode -> {
                     scope.launch { settingsRepository.setThemeMode(event.themeMode) }

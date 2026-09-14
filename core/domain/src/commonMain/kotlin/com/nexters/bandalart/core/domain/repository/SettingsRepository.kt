@@ -24,6 +24,7 @@ interface SettingsRepository {
     val recentEmojis: Flow<List<String>>
     val deadlineReminderEnabled: Flow<Boolean>
     val taskCompletionTooltipDismissed: Flow<Boolean>
+    val routineSettingsTooltipDismissed: Flow<Boolean>
 
     suspend fun setThemeMode(themeMode: ThemeMode)
 
@@ -32,4 +33,6 @@ interface SettingsRepository {
     suspend fun setDeadlineReminderEnabled(enabled: Boolean)
 
     suspend fun dismissTaskCompletionTooltip()
+
+    suspend fun dismissRoutineSettingsTooltip()
 }
