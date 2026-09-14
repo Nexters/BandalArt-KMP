@@ -53,6 +53,11 @@
 - 복구된 GitHub Actions/Fastlane CD는 `main`에 병합된 현재 workflow만 사용하며, Git history의 legacy Fastlane 설정은 배포 근거나 fallback으로 사용하지 않는다.
 - credential 파일과 값은 출력하거나 Git에 추가하지 않는다.
 
+## 출시노트
+
+- Play Store·App Store 공개 출시노트, Play Internal Testing 출시노트 또는 TestFlight 테스트 안내 작성 요청은 `plugins/bandalart/skills/write-release-notes/SKILL.md`를 따른다.
+- 구현 세부사항을 나열하지 않고 사용자가 이해할 수 있는 기능과 효용 중심으로 작성한다.
+
 ## 리뷰와 새 작업
 
 - 로컬 리뷰 요청은 `plugins/bandalart/skills/review/SKILL.md`를 따른다.

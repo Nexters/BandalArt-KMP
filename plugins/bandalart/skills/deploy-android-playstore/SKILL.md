@@ -36,11 +36,13 @@ service account는 `client_email`만 기대 계정과 일치하는지 검사하�
 
 ### 4. release notes와 버전 검증
 
-1. 실제 Android Play upload 설정이 참조하는 Internal track의 한국어 release notes를 찾는다. legacy module 경로를 추측하지 않는다.
-2. 파일이 없거나 비어 있으면 초안을 제안하고 사용자 확인 전에는 쓰거나 배포하지 않는다. Play release notes의 길이 제한도 확인한다.
-3. 저장소 script로 Play Developer API의 모든 track 최대 versionCode와 다음 사용 가능한 값을 조회한다.
-4. Android application module에서 versionName/versionCode를 읽고 AAB에 들어갈 값과 일치하는지 확인한다.
-5. 현재 versionCode가 이미 사용된 최대값 이하면 build와 upload를 실행하지 않는다.
+1. `plugins/bandalart/skills/write-release-notes/SKILL.md`를 읽고 그 문체와 검수 규칙을 적용한다.
+2. 실제 Android Play upload 설정이 참조하는 Internal track의 한국어·영어·일본어 release notes를 찾는다. legacy module 경로를 추측하지 않는다.
+3. 세 언어의 파일이 모두 비어 있지 않고, 실제 배포 변경 범위와 사용자 효용이 일치하며, 언어별 기능 범위가 같은지 검수한다.
+4. 파일이 없거나 비어 있거나 개발 구현을 그대로 나열하거나 실제 변경과 맞지 않으면 초안을 제안하고 사용자 확인 전에는 쓰거나 배포하지 않는다. Play release notes의 길이 제한도 확인한다.
+5. 저장소 script로 Play Developer API의 모든 track 최대 versionCode와 다음 사용 가능한 값을 조회한다.
+6. Android application module에서 versionName/versionCode를 읽고 AAB에 들어갈 값과 일치하는지 확인한다.
+7. 현재 versionCode가 이미 사용된 최대값 이하면 build와 upload를 실행하지 않는다.
 
 ### 5. 최종 확인
 
