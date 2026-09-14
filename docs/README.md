@@ -12,6 +12,7 @@
 ## 현재 기준 가이드
 
 - [AdMob 광고 ID와 운영 검증 가이드](features/ads/ADMOB_AD_ID_POLICY_GUIDE.md)
+- [iOS를 Xcode 화면 없이 빌드·아카이브하는 방법](releases/ios/IOS_CLI_BUILD_AND_ARCHIVE_GUIDE.md)
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
 - [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
 - [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
@@ -118,6 +119,7 @@
 ### iOS
 
 - [Firebase iOS 통합 조사](releases/ios/FIREBASE_IOS_INTEGRATION_RESEARCH.md)
+- [iOS CLI 빌드·아카이브 가이드](releases/ios/IOS_CLI_BUILD_AND_ARCHIVE_GUIDE.md)
 - [iOS 1.2.0 App Store 출시 자료](releases/ios/IOS_1_2_0_APP_STORE_RELEASE.md)
 - [iOS release size baseline](releases/ios/IOS_RELEASE_SIZE_BASELINE.md)
 - [iOS 앱 크기 최적화 적용 상태 감사](releases/ios/IOS_APP_SIZE_OPTIMIZATION_AUDIT.md)
