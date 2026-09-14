@@ -27,9 +27,11 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.dropdown_delete
+import bandalart.core.designsystem.generated.resources.dropdown_routine_settings
 import bandalart.core.designsystem.generated.resources.dropdown_save
 import bandalart.core.designsystem.generated.resources.ic_gallery
 import bandalart.core.designsystem.generated.resources.ic_trash
@@ -106,6 +109,41 @@ fun BandalartDropDownMenu(
             },
             onClick = {
                 onAction(HomeScreen.Event.RequestSave)
+            },
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        DropdownMenuItem(
+            modifier =
+                Modifier
+                    .wrapContentSize()
+                    .padding(horizontal = 7.dp),
+            text = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .align(CenterVertically),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = stringResource(Res.string.dropdown_routine_settings),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.W500,
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .padding(start = 13.dp)
+                                .align(CenterVertically),
+                        fontFamily = pretendardFontFamily(),
+                    )
+                }
+            },
+            onClick = {
+                onAction(HomeScreen.Event.OpenRoutineSettings)
             },
         )
         Spacer(modifier = Modifier.height(2.dp))

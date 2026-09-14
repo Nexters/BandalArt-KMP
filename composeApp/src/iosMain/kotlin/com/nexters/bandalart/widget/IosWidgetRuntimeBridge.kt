@@ -64,6 +64,7 @@ class IosWidgetRuntimeBridge(
         val graph = appGraph ?: return
         graph.database.invalidationTracker.refreshAsync()
         scope.launch {
+            graph.bandalartRepository.applyDueDailyResets()
             graph.deadlineReminderReconciler.reconcileAll()
             timelineReloader.reloadTimelines()
         }

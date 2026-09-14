@@ -87,6 +87,16 @@ class BandalartDataStoreTest {
             }
     }
 
+    @Test
+    fun markingBandalartsIncompleteUpdatesAndCreatesCompletionSnapshots() =
+        runTest {
+            bandalartDataStore.upsertBandalartId(1L, true)
+
+            bandalartDataStore.markBandalartsIncomplete(setOf(1L, 2L))
+
+            assertEquals(listOf(1L to false, 2L to false), bandalartDataStore.getPrevBandalartList())
+        }
+
     @Nested
     @DisplayName("마감일 알림 설정 테스트")
     inner class DeadlineReminderPreferenceTest {
@@ -125,6 +135,21 @@ class BandalartDataStoreTest {
 
                 val recreatedDataStore = BandalartDataStore(dataStore)
                 assertTrue(recreatedDataStore.taskCompletionTooltipDismissed.first())
+            }
+    }
+
+    @Nested
+    @DisplayName("루틴 설정 툴팁 테스트")
+    inner class RoutineSettingsTooltipPreferenceTest {
+        @Test
+        fun routineSettingsTooltipDismissalIsStored() =
+            runTest {
+                assertFalse(bandalartDataStore.routineSettingsTooltipDismissed.first())
+
+                bandalartDataStore.dismissRoutineSettingsTooltip()
+
+                val recreatedDataStore = BandalartDataStore(dataStore)
+                assertTrue(recreatedDataStore.routineSettingsTooltipDismissed.first())
             }
     }
 

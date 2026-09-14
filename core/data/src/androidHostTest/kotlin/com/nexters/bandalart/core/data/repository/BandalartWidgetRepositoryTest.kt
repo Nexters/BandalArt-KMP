@@ -25,9 +25,11 @@ import com.nexters.bandalart.core.database.entity.CreateBandalartDto
 import com.nexters.bandalart.core.database.entity.CreateBandalartSubGoalDto
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -314,6 +316,33 @@ class BandalartWidgetRepositoryTest {
             assertNull(snapshot?.subGoalId)
             assertNull(snapshot?.subGoalTitle)
             assertEquals(emptyList<String>(), snapshot?.tasks?.map { it.title })
+        }
+
+    @Test
+    fun snapshotAppliesDueDailyResetBeforeReadingTasks() =
+        runTest {
+            val bandalartId = createBandalart()
+            val subGoalId =
+                dao
+                    .getBandalartMainCell(bandalartId)
+                    .children
+                    .first()
+                    .id!!
+            val taskId = dao.getChildCells(subGoalId).first().id!!
+            dao.setTaskCompletedIfOwned(bandalartId, subGoalId, taskId, completed = true)
+            dao.setDailyResetEnabled(bandalartId, enabled = true, today = "2026-09-14")
+            bandalartRepository =
+                DefaultBandalartRepository(
+                    bandalartDataStore = mockk(relaxed = true),
+                    bandalartDao = dao,
+                    dailyResetDateProvider = DailyResetDateProvider { LocalDate(2026, 9, 15) },
+                )
+            repository = DefaultBandalartWidgetRepository(bandalartRepository, dao)
+
+            val snapshot = repository.getSnapshot(bandalartId, subGoalId)
+
+            assertFalse(snapshot?.tasks?.single()?.isCompleted ?: true)
+            assertEquals(0, snapshot?.completionRatio)
         }
 
     private suspend fun createBandalart(): Long =

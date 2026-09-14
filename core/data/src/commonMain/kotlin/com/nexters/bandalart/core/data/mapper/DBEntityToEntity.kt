@@ -32,6 +32,7 @@ fun BandalartDBEntity.toEntity() =
         dueDate = dueDate,
         isCompleted = isCompleted,
         completionRatio = completionRatio,
+        dailyResetEnabled = dailyResetEnabled,
     )
 
 fun BandalartCellDBEntity.toEntity() =

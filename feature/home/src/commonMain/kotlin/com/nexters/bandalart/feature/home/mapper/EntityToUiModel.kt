@@ -30,4 +30,5 @@ fun BandalartEntity.toUiModel() =
         dueDate = dueDate,
         isCompleted = isCompleted,
         completionRatio = completionRatio,
+        dailyResetEnabled = dailyResetEnabled,
     )

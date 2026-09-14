@@ -43,6 +43,7 @@ internal class FakeBandalartRepository(
     private val beforeCompletionUpdate: suspend () -> Unit = {},
     private val taskCellUpdateError: Throwable? = null,
     private val publishEmojiRevisionImmediately: Boolean = false,
+    private val dueDailyResetIds: Set<Long> = emptySet(),
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
@@ -69,6 +70,10 @@ internal class FakeBandalartRepository(
     val deletedCellIds = mutableListOf<Long>()
     val deletedCompletionIds = mutableListOf<Long>()
     val emojiUpdates = mutableListOf<EmojiUpdate>()
+    val dailyResetUpdates = mutableListOf<Pair<Long, Boolean>>()
+    val completionResetIds = mutableListOf<Long>()
+    var dueDailyResetChecks: Int = 0
+        private set
     var mainCellUpdate: MainCellUpdate? = null
         private set
     var subCellUpdate: SubCellUpdate? = null
@@ -255,6 +260,48 @@ internal class FakeBandalartRepository(
         deletedCellIds += cellId
     }
 
+    override suspend fun setDailyResetEnabled(
+        bandalartId: Long,
+        enabled: Boolean,
+    ) {
+        dailyResetUpdates += bandalartId to enabled
+        publishBandalartRevision(requireNotNull(details[bandalartId]).copy(dailyResetEnabled = enabled))
+    }
+
+    override suspend fun resetCompletionsNow(bandalartId: Long): Boolean {
+        completionResetIds += bandalartId
+        val current = requireNotNull(details[bandalartId])
+        val hadCompletions = current.completionRatio > 0 || current.isCompleted
+        if (!hadCompletions) return false
+
+        mainCells[bandalartId] = mainCells[bandalartId]?.withoutCompletions() ?: return false
+        childCells.replaceAll { _, cells -> cells.map { it.withoutCompletions() } }
+        publishBandalartRevision(
+            current.copy(
+                isCompleted = false,
+                completionRatio = 0,
+            ),
+            mainCell = mainCells[bandalartId],
+        )
+        return true
+    }
+
+    override suspend fun applyDueDailyResets(): Set<Long> {
+        dueDailyResetChecks += 1
+        dueDailyResetIds.forEach { bandalartId ->
+            val current = details[bandalartId] ?: return@forEach
+            if (current.completionRatio > 0 || current.isCompleted) {
+                mainCells[bandalartId] = mainCells[bandalartId]?.withoutCompletions() ?: return@forEach
+                childCells.replaceAll { _, cells -> cells.map { it.withoutCompletions() } }
+                publishBandalartRevision(
+                    current.copy(isCompleted = false, completionRatio = 0),
+                    mainCell = mainCells[bandalartId],
+                )
+            }
+        }
+        return dueDailyResetIds
+    }
+
     override suspend fun checkCompletedBandalartId(bandalartId: Long): Boolean = error("Not used")
 
     override suspend fun deleteCompletedBandalartId(bandalartId: Long) {
@@ -293,4 +340,10 @@ internal class FakeBandalartRepository(
             }
         }
     }
+
+    private fun BandalartCellEntity.withoutCompletions(): BandalartCellEntity =
+        copy(
+            isCompleted = false,
+            children = children.map { it.withoutCompletions() },
+        )
 }

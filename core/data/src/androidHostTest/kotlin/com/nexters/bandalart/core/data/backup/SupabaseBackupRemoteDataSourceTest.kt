@@ -38,7 +38,7 @@ class SupabaseBackupRemoteDataSourceTest {
                 FakeBackupRpcClient(
                     getResult =
                         BackupRpcRow(
-                            schemaVersion = 1,
+                            schemaVersion = snapshot.schemaVersion,
                             payload = json.encodeToJsonElement(snapshot).jsonObject,
                             bandalartCount = 1,
                             updatedAt = "2026-08-18T01:02:03Z",
@@ -63,22 +63,64 @@ class SupabaseBackupRemoteDataSourceTest {
         runTest {
             val rpcClient =
                 FakeBackupRpcClient(
-                    putResult = BackupRpcMetadataRow(1, 1, "2026-08-18T01:02:03Z"),
+                    putResult = BackupRpcMetadataRow(BackupSnapshot.CURRENT_SCHEMA_VERSION, 1, "2026-08-18T01:02:03Z"),
                 )
             val snapshot = snapshot()
 
             val metadata = SupabaseBackupRemoteDataSource(rpcClient, json).putBackup(DEVICE_KEY, snapshot)
 
             assertEquals(DEVICE_KEY, rpcClient.putDeviceKey)
-            assertEquals(1, rpcClient.putSchemaVersion)
+            assertEquals(BackupSnapshot.CURRENT_SCHEMA_VERSION, rpcClient.putSchemaVersion)
             assertEquals(json.encodeToJsonElement(snapshot).jsonObject, rpcClient.putPayload)
             assertEquals(1, rpcClient.putBandalartCount)
             assertEquals("2026-08-18T01:02:03Z", metadata.updatedAt)
         }
 
+    @Test
+    fun versionOneBackupDefaultsDailyResetFields() =
+        runTest {
+            val payload =
+                json
+                    .parseToJsonElement(
+                        """
+                        {
+                          "bandalarts": [{"id": 1, "mainColor": "#FF3FFFBA", "subColor": "#FF111827"}],
+                          "cells": [],
+                          "preferences": {
+                            "recentBandalartId": 1,
+                            "recentSubGoalIds": {},
+                            "completedBandalarts": [],
+                            "onboardingCompleted": true,
+                            "themeMode": null,
+                            "recentEmojis": [],
+                            "deadlineReminderEnabled": false,
+                            "maxBandalartSlots": 1
+                          }
+                        }
+                        """.trimIndent(),
+                    ).jsonObject
+            val source =
+                SupabaseBackupRemoteDataSource(
+                    FakeBackupRpcClient(
+                        getResult = BackupRpcRow(1, payload, 1, "2026-08-18T01:02:03Z"),
+                    ),
+                    json,
+                )
+
+            val snapshot = requireNotNull(source.getBackup(DEVICE_KEY)?.snapshot)
+            val bandalart = snapshot.bandalarts.single()
+
+            assertEquals(1, snapshot.schemaVersion)
+            assertEquals(false, bandalart.dailyResetEnabled)
+            assertEquals(null, bandalart.lastDailyResetDate)
+        }
+
     private fun snapshot() =
         BackupSnapshot(
-            bandalarts = listOf(BackupBandalart(id = 1L, mainColor = "#FF3FFFBA", subColor = "#FF111827")),
+            bandalarts =
+                listOf(
+                    BackupBandalart(id = 1L, mainColor = "#FF3FFFBA", subColor = "#FF111827"),
+                ),
             cells = emptyList(),
             preferences =
                 BackupPreferences(

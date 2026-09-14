@@ -27,7 +27,7 @@ import com.nexters.bandalart.core.database.entity.BandalartDBEntity
         BandalartDBEntity::class,
         BandalartCellDBEntity::class,
     ],
-    version = 1,
+    version = 2,
 )
 @ConstructedBy(BandalartDatabaseConstructor::class)
 abstract class BandalartDatabase : RoomDatabase() {

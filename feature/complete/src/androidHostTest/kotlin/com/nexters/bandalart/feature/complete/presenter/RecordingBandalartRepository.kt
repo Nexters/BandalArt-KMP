@@ -93,6 +93,15 @@ internal class RecordingBandalartRepository : BandalartRepository {
 
     override suspend fun deleteBandalartCell(cellId: Long) = error("Not used")
 
+    override suspend fun setDailyResetEnabled(
+        bandalartId: Long,
+        enabled: Boolean,
+    ) = error("Not used")
+
+    override suspend fun resetCompletionsNow(bandalartId: Long): Boolean = error("Not used")
+
+    override suspend fun applyDueDailyResets(): Set<Long> = emptySet()
+
     override suspend fun setRecentBandalartId(recentBandalartId: Long) = error("Not used")
 
     override suspend fun getRecentBandalartId(): Long = error("Not used")

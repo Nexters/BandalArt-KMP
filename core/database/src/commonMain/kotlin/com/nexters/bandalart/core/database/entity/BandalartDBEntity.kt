@@ -42,4 +42,10 @@ data class BandalartDBEntity(
     val isCompleted: Boolean = false,
     @ColumnInfo(name = "completionRatio")
     val completionRatio: Int = 0,
+    @ColumnInfo(name = "dailyResetEnabled", defaultValue = "0")
+    val dailyResetEnabled: Boolean = false,
+    @ColumnInfo(name = "lastDailyResetDate")
+    val lastDailyResetDate: String? = null,
+    @ColumnInfo(name = "completionResetSyncPending", defaultValue = "0")
+    val completionResetSyncPending: Boolean = false,
 )

@@ -115,6 +115,15 @@ interface BandalartRepository {
      */
     suspend fun deleteBandalartCell(cellId: Long)
 
+    suspend fun setDailyResetEnabled(
+        bandalartId: Long,
+        enabled: Boolean,
+    )
+
+    suspend fun resetCompletionsNow(bandalartId: Long): Boolean
+
+    suspend fun applyDueDailyResets(): Set<Long>
+
     /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)
 

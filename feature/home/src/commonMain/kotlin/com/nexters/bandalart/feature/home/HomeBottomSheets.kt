@@ -27,6 +27,7 @@ import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartListBottomSheet
+import com.nexters.bandalart.feature.home.ui.bandalart.RoutineSettingsBottomSheet
 import com.nexters.bandalart.feature.home.ui.settings.SettingsBottomSheet
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -82,6 +83,13 @@ internal fun HomeBottomSheets(
                 deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
                 appVersion = appVersion,
                 onHomeUiAction = eventSink,
+            )
+        }
+
+        is HomeScreen.BottomSheetState.RoutineSettings -> {
+            RoutineSettingsBottomSheet(
+                state = bottomSheet,
+                onAction = eventSink,
             )
         }
 

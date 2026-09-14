@@ -110,7 +110,23 @@
 
     <!-- BandalartDropDownMenu.kt -->
     <string name="dropdown_save">Save</string>
+    <string name="dropdown_routine_settings">Routine settings</string>
     <string name="dropdown_delete">Delete</string>
+
+    <!-- RoutineSettingsBottomSheet.kt -->
+    <string name="home_routine_settings_tooltip">Turn repeating goals into a daily routine</string>
+    <string name="routine_settings_title">Routine settings</string>
+    <string name="routine_settings_daily_reset_title">Start fresh every day</string>
+    <string name="routine_settings_daily_reset_description">When you open the app on a new day, all completion checks are cleared. Goals and notes stay unchanged.</string>
+    <string name="routine_settings_reset_now">Clear completion checks now</string>
+    <string name="routine_settings_reset_now_description">Keep goals and notes, and clear completion checks only.</string>
+    <string name="routine_settings_reset_dialog_empty_title">Clear completion checks?</string>
+    <string name="routine_settings_reset_dialog_title">Clear completion checks for ‘%1$s’?</string>
+    <string name="routine_settings_reset_dialog_message">Goals and notes stay unchanged, and all completion checks are cleared.</string>
+    <string name="routine_settings_reset_cancel">Cancel</string>
+    <string name="routine_settings_reset_confirm">Clear</string>
+    <string name="routine_settings_reset_complete">Completion checks cleared.</string>
+    <string name="routine_settings_reset_no_changes">There are no completion checks to clear.</string>
 
     <!--  BandalartBottomSheet.kt -->
     <string name="bottomsheet_header_maincell_enter_title">Enter Main Goal</string>

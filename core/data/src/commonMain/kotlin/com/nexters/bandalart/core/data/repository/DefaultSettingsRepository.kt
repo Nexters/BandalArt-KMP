@@ -31,6 +31,8 @@ class DefaultSettingsRepository(
     override val deadlineReminderEnabled: Flow<Boolean> = bandalartDataStore.deadlineReminderEnabled
     override val taskCompletionTooltipDismissed: Flow<Boolean> =
         bandalartDataStore.taskCompletionTooltipDismissed
+    override val routineSettingsTooltipDismissed: Flow<Boolean> =
+        bandalartDataStore.routineSettingsTooltipDismissed
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         bandalartDataStore.setThemeMode(themeMode.storageValue)
@@ -46,5 +48,9 @@ class DefaultSettingsRepository(
 
     override suspend fun dismissTaskCompletionTooltip() {
         bandalartDataStore.dismissTaskCompletionTooltip()
+    }
+
+    override suspend fun dismissRoutineSettingsTooltip() {
+        bandalartDataStore.dismissRoutineSettingsTooltip()
     }
 }

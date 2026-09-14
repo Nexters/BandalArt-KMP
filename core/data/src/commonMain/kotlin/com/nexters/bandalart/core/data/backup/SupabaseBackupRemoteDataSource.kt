@@ -22,6 +22,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
@@ -32,7 +33,13 @@ class SupabaseBackupRemoteDataSource(
 ) : BackupRemoteDataSource {
     override suspend fun getBackup(deviceKey: String): RemoteBackup? {
         val row = rpcClient.getBackup(deviceKey) ?: return null
-        val snapshot = json.decodeFromJsonElement<BackupSnapshot>(row.payload)
+        val payload =
+            if ("schemaVersion" in row.payload) {
+                row.payload
+            } else {
+                JsonObject(row.payload + ("schemaVersion" to JsonPrimitive(row.schemaVersion)))
+            }
+        val snapshot = json.decodeFromJsonElement<BackupSnapshot>(payload)
         if (snapshot.schemaVersion != row.schemaVersion) {
             throw InvalidBackupSnapshotException("Backup schema version does not match its payload")
         }

@@ -23,4 +23,5 @@ data class BandalartEntity(
     val dueDate: String?,
     val isCompleted: Boolean,
     val completionRatio: Int,
+    val dailyResetEnabled: Boolean = false,
 )

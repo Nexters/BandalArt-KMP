@@ -40,10 +40,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +62,7 @@ import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.home_complete
 import bandalart.core.designsystem.generated.resources.home_complete_ratio
 import bandalart.core.designsystem.generated.resources.home_empty_title
+import bandalart.core.designsystem.generated.resources.home_routine_settings_tooltip
 import bandalart.core.designsystem.generated.resources.ic_edit
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import bandalart.core.designsystem.generated.resources.ic_option
@@ -71,6 +80,10 @@ import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDropDownMenu
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.rememberBalloonBuilder
+import com.skydoves.balloon.rememberBalloonState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,6 +95,8 @@ fun HomeHeader(
     cellData: BandalartCellEntity,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
+    showRoutineSettingsTooltip: Boolean = false,
+    onRoutineSettingsTooltipDismissed: () -> Unit = {},
 ) {
     Column(modifier.padding(horizontal = 16.dp)) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -154,15 +169,18 @@ fun HomeHeader(
                             },
                     letterSpacing = (-0.4).sp,
                 )
-                Icon(
-                    imageVector = vectorResource(Res.drawable.ic_option),
-                    contentDescription = stringResource(Res.string.option_description),
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterEnd)
-                            .clickable { onHomeUiAction(HomeScreen.Event.OpenDropDownMenu) },
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+                    if (showRoutineSettingsTooltip) {
+                        RoutineSettingsTooltip(
+                            anchorKey = bandalartData.id,
+                            onDismiss = onRoutineSettingsTooltipDismissed,
+                        ) {
+                            RoutineSettingsMenuAnchor(onHomeUiAction)
+                        }
+                    } else {
+                        RoutineSettingsMenuAnchor(onHomeUiAction)
+                    }
+                }
                 BandalartDropDownMenu(
                     isDropDownMenuOpened = isDropDownMenuOpened,
                     onAction = onHomeUiAction,
@@ -235,6 +253,68 @@ fun HomeHeader(
         )
         Spacer(modifier = Modifier.height(18.dp))
     }
+}
+
+@Composable
+private fun RoutineSettingsMenuAnchor(onHomeUiAction: (HomeScreen.Event) -> Unit) {
+    Icon(
+        imageVector = vectorResource(Res.drawable.ic_option),
+        contentDescription = stringResource(Res.string.option_description),
+        modifier = Modifier.clickable { onHomeUiAction(HomeScreen.Event.OpenDropDownMenu) },
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun RoutineSettingsTooltip(
+    anchorKey: Long,
+    onDismiss: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val backgroundColor = MaterialTheme.colorScheme.inverseSurface
+    val contentColor = MaterialTheme.colorScheme.inverseOnSurface
+    val style =
+        rememberBalloonBuilder(key = backgroundColor) {
+            setArrowSize(10.dp)
+            setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            setBackgroundColor(backgroundColor)
+            setCornerRadius(8.dp)
+            setPadding(start = 12.dp, top = 10.dp, end = 12.dp, bottom = 10.dp)
+            setMargin(8.dp)
+            setMaxWidth(280.dp)
+            setDismissWhenClicked(true)
+            setDismissWhenTouchOutside(true)
+            setDismissWhenBackPressed(true)
+            setAutoDismissDuration(0L)
+        }
+    val balloonState = rememberBalloonState(style = style, key = anchorKey)
+    val currentOnDismiss by rememberUpdatedState(onDismiss)
+
+    DisposableEffect(balloonState) {
+        balloonState.onDismiss = { currentOnDismiss() }
+        onDispose {
+            balloonState.dismiss()
+            balloonState.onDismiss = null
+        }
+    }
+    LaunchedEffect(balloonState) {
+        withFrameNanos { }
+        balloonState.showAlignBottom()
+    }
+
+    Balloon(
+        state = balloonState,
+        key = anchorKey,
+        balloonContent = {
+            Text(
+                text = stringResource(Res.string.home_routine_settings_tooltip),
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+            )
+        },
+        content = content,
+    )
 }
 
 // @ComponentPreview

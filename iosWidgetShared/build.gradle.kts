@@ -21,6 +21,7 @@ kotlin {
     sourceSets {
         iosMain.dependencies {
             implementation(projects.core.database)
+            implementation(projects.core.domain)
             implementation(libs.kotlinx.coroutines.core)
         }
 

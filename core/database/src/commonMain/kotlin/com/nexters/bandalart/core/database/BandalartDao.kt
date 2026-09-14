@@ -223,6 +223,88 @@ interface BandalartDao {
     @Update
     suspend fun updateBandalart(bandalart: BandalartDBEntity)
 
+    @Transaction
+    suspend fun setDailyResetEnabled(
+        bandalartId: Long,
+        enabled: Boolean,
+        today: String,
+    ) {
+        val bandalart = findBandalart(bandalartId) ?: return
+        updateBandalart(
+            bandalart.copy(
+                dailyResetEnabled = enabled,
+                lastDailyResetDate = if (enabled) today else null,
+            ),
+        )
+    }
+
+    @Transaction
+    suspend fun resetCompletionsNow(
+        bandalartId: Long,
+        today: String,
+    ): Boolean {
+        val bandalart = findBandalart(bandalartId) ?: return false
+        val hadCompletion =
+            bandalart.isCompleted ||
+                bandalart.completionRatio > 0 ||
+                countCompletedCells(bandalartId) > 0
+        if (!hadCompletion) return false
+
+        clearCellCompletions(bandalartId)
+        updateBandalart(
+            bandalart.copy(
+                isCompleted = false,
+                completionRatio = 0,
+                lastDailyResetDate = if (bandalart.dailyResetEnabled) today else bandalart.lastDailyResetDate,
+                completionResetSyncPending = true,
+            ),
+        )
+        return true
+    }
+
+    @Transaction
+    suspend fun applyDueDailyResets(today: String): List<Long> {
+        val resetIds = mutableListOf<Long>()
+        getDailyResetBandalarts().forEach { bandalart ->
+            val bandalartId = bandalart.id ?: return@forEach
+            val anchor = bandalart.lastDailyResetDate
+            when {
+                anchor == null -> {
+                    updateBandalart(bandalart.copy(lastDailyResetDate = today))
+                }
+
+                today > anchor -> {
+                    clearCellCompletions(bandalartId)
+                    updateBandalart(
+                        bandalart.copy(
+                            isCompleted = false,
+                            completionRatio = 0,
+                            lastDailyResetDate = today,
+                            completionResetSyncPending = true,
+                        ),
+                    )
+                    resetIds += bandalartId
+                }
+            }
+        }
+        return resetIds
+    }
+
+    @Query("SELECT * FROM bandalarts WHERE dailyResetEnabled = 1")
+    suspend fun getDailyResetBandalarts(): List<BandalartDBEntity>
+
+    @Query("SELECT COUNT(*) FROM bandalart_cells WHERE bandalartId = :bandalartId AND isCompleted = 1")
+    suspend fun countCompletedCells(bandalartId: Long): Int
+
+    @Query("UPDATE bandalart_cells SET isCompleted = 0 WHERE bandalartId = :bandalartId")
+    suspend fun clearCellCompletions(bandalartId: Long)
+
+    @Query("SELECT id FROM bandalarts WHERE completionResetSyncPending = 1")
+    suspend fun getPendingCompletionResetSyncIds(): List<Long>
+
+    @Query("UPDATE bandalarts SET completionResetSyncPending = 0 WHERE id IN (:bandalartIds)")
+    suspend fun clearCompletionResetSyncPending(bandalartIds: List<Long>)
+
     // Update - 셀
 
     /** 메인 셀 정보 업데이트 */
