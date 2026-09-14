@@ -53,6 +53,13 @@
 - 복구된 GitHub Actions/Fastlane CD는 `main`에 병합된 현재 workflow만 사용하며, Git history의 legacy Fastlane 설정은 배포 근거나 fallback으로 사용하지 않는다.
 - credential 파일과 값은 출력하거나 Git에 추가하지 않는다.
 
+## iOS 배포
+
+- iOS TestFlight 배포 요청은 `plugins/bandalart/skills/deploy-ios-testflight/SKILL.md`를 따른다.
+- 앱 업데이트·출시 후보는 운영 광고 빌드로 배포하며, 단순히 내부 테스트라는 이유로 테스트 광고 모드를 선택하지 않는다.
+- 이 workflow는 iOS archive와 TestFlight 업로드만 다룬다. Android 재배포, App Store 심사 제출 또는 공개 출시는 포함하지 않는다.
+- credential 파일과 값을 출력하거나 Git에 추가하지 않는다.
+
 ## 출시노트
 
 - Play Store·App Store 공개 출시노트, Play Internal Testing 출시노트 또는 TestFlight 테스트 안내 작성 요청은 `plugins/bandalart/skills/write-release-notes/SKILL.md`를 따른다.
