@@ -3,6 +3,7 @@ ci_workflow = File.read(File.join(repo_root, ".github/workflows/android-ci.yml")
 release_workflow = File.read(File.join(repo_root, ".github/workflows/release-cd.yml"))
 fastfile = File.read(File.join(repo_root, "fastlane/Fastfile"))
 gradle_properties = File.read(File.join(repo_root, "gradle.properties"))
+kmp_cache_script = File.read(File.join(repo_root, "fastlane/scripts/prepare_cached_kmp_frameworks.rb"))
 
 [ci_workflow, release_workflow].each do |workflow|
   unless workflow.include?("IOS_DERIVED_DATA_PATH") &&
@@ -41,6 +42,13 @@ end
 
 unless ci_workflow.include?("cache-read-only: false")
   raise "PR iOS CI must persist Gradle caches for Kotlin/Native task reuse"
+end
+
+unless ci_workflow.include?("Reuse cached Kotlin frameworks") &&
+       ci_workflow.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED") &&
+       kmp_cache_script.include?("ComposeApp.framework") &&
+       kmp_cache_script.include?("IosWidgetShared.framework")
+  raise "Exact iOS build cache hits must skip duplicate Kotlin framework builds"
 end
 
 puts "iOS CI cache configuration test passed"

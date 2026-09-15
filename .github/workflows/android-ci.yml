@@ -239,6 +239,10 @@ jobs:
                     restore-keys: |
                         ios-simulator-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
+            -   name: Reuse cached Kotlin frameworks
+                if: steps.ios-build-cache.outputs.cache-hit == 'true'
+                run: ruby fastlane/scripts/prepare_cached_kmp_frameworks.rb iosApp/iosApp.xcodeproj/project.pbxproj
+
             -   name: Generate build properties
                 env:
                     SERVER_BASE_URL: ${{ secrets.SERVER_BASE_URL }}
@@ -279,6 +283,7 @@ jobs:
                         -showBuildTimingSummary \
                         ARCHS=arm64 \
                         CODE_SIGNING_ALLOWED=NO \
+                        OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED="${{ steps.ios-build-cache.outputs.cache-hit == 'true' && 'YES' || 'NO' }}" \
                         build 2>&1 | tee "$RUNNER_TEMP/ios-xcodebuild.log"
 
             -   name: Report iOS build performance
