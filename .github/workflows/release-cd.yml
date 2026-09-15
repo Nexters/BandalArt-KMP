@@ -184,6 +184,8 @@ jobs:
         runs-on: macos-latest
         timeout-minutes: 90
         environment: ios-testflight
+        env:
+            IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
         steps:
             -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
                 with:
@@ -214,7 +216,33 @@ jobs:
                     bundler-cache: true
 
             -   name: Show Xcode version
-                run: xcodebuild -version
+                id: xcode-version
+                run: |
+                    xcodebuild -version
+                    printf 'hash=%s\n' "$(xcodebuild -version | shasum -a 256 | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+            -   name: Restore iOS dependency cache
+                id: ios-dependency-cache
+                uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ~/.konan
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
+                    key: ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+
+            -   name: Restore iOS build cache
+                id: ios-build-cache
+                uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
+                    key: ios-device-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
+                    restore-keys: |
+                        ios-device-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
             -   name: Restore iOS release credentials
                 env:
@@ -244,6 +272,7 @@ jobs:
                     printf 'SERVER_BASE_URL=%s\n' "$SERVER_BASE_URL" > secrets.properties
 
             -   name: Deploy iOS TestFlight
+                id: deploy-ios
                 env:
                     IOS_CERTIFICATE_PATH: ${{ runner.temp }}/bandalart-distribution.p12
                     IOS_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
@@ -255,6 +284,7 @@ jobs:
                     BANDALART_SUPABASE_URL: ${{ secrets.BANDALART_SUPABASE_URL }}
                     BANDALART_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.BANDALART_SUPABASE_PUBLISHABLE_KEY }}
                 run: |
+                    printf 'IOS_BUILD_STARTED=%s\n' "$(date +%s)" >> "$GITHUB_ENV"
                     : "${BANDALART_SUPABASE_URL:?BANDALART_SUPABASE_URL is required}"
                     : "${BANDALART_SUPABASE_PUBLISHABLE_KEY:?BANDALART_SUPABASE_PUBLISHABLE_KEY is required}"
                     case "$BANDALART_SUPABASE_URL" in
@@ -284,3 +314,52 @@ jobs:
                     rm -f "$RUNNER_TEMP/bandalart-widget-appstore.mobileprovision"
                     rm -f "$RUNNER_TEMP/unused-android-keystore.jks"
                     rm -f keystore.properties secrets.properties
+
+            -   name: Report iOS release performance
+                if: always()
+                env:
+                    DEPENDENCY_CACHE_HIT: ${{ steps.ios-dependency-cache.outputs.cache-hit }}
+                    DEPENDENCY_CACHE_KEY: ${{ steps.ios-dependency-cache.outputs.cache-matched-key }}
+                    BUILD_CACHE_HIT: ${{ steps.ios-build-cache.outputs.cache-hit }}
+                    BUILD_CACHE_KEY: ${{ steps.ios-build-cache.outputs.cache-matched-key }}
+                run: |
+                    cache_state() {
+                        if test "$1" = "true"; then
+                            printf 'exact hit'
+                        elif test -n "$2"; then
+                            printf 'fallback hit'
+                        else
+                            printf 'miss'
+                        fi
+                    }
+                    if test -n "${IOS_BUILD_STARTED:-}"; then
+                        ELAPSED_SECONDS=$(($(date +%s) - IOS_BUILD_STARTED))
+                        ELAPSED_LABEL=$(printf '%dm %02ds' "$((ELAPSED_SECONDS / 60))" "$((ELAPSED_SECONDS % 60))")
+                    else
+                        ELAPSED_LABEL='not started'
+                    fi
+                    {
+                        printf '## iOS release performance\n'
+                        printf -- '- Build and upload: `%s`\n' "$ELAPSED_LABEL"
+                        printf -- '- Dependencies: `%s`\n' "$(cache_state "$DEPENDENCY_CACHE_HIT" "$DEPENDENCY_CACHE_KEY")"
+                        printf -- '- Build intermediates: `%s`\n' "$(cache_state "$BUILD_CACHE_HIT" "$BUILD_CACHE_KEY")"
+                    } >> "$GITHUB_STEP_SUMMARY"
+
+            -   name: Save iOS dependency cache
+                if: ${{ success() && steps.ios-dependency-cache.outputs.cache-hit != 'true' }}
+                uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ~/.konan
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
+                    key: ${{ steps.ios-dependency-cache.outputs.cache-primary-key }}
+
+            -   name: Save iOS build cache
+                if: ${{ success() && steps.ios-build-cache.outputs.cache-hit != 'true' }}
+                uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
+                    key: ${{ steps.ios-build-cache.outputs.cache-primary-key }}

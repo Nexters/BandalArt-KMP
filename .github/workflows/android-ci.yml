@@ -17,6 +17,48 @@ permissions:
     contents: read
 
 jobs:
+    changes:
+        name: Detect iOS changes
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        outputs:
+            ios: ${{ steps.ios.outputs.changed }}
+
+        steps:
+            -   uses: actions/checkout@v7
+                with:
+                    fetch-depth: 0
+
+            -   name: Detect iOS build inputs
+                id: ios
+                env:
+                    BASE_SHA: ${{ github.event.pull_request.base.sha }}
+                    HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+                run: |
+                    set +e
+                    git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- \
+                        .github/workflows/android-ci.yml \
+                        build-logic \
+                        composeApp \
+                        core \
+                        feature \
+                        gradle \
+                        iosApp \
+                        iosWidgetShared \
+                        build.gradle.kts \
+                        gradle.properties \
+                        settings.gradle.kts
+                    DIFF_STATUS=$?
+                    set -e
+                    case "$DIFF_STATUS" in
+                        0) IOS_CHANGED=false ;;
+                        1) IOS_CHANGED=true ;;
+                        *) exit "$DIFF_STATUS" ;;
+                    esac
+                    printf 'changed=%s\n' "$IOS_CHANGED" >> "$GITHUB_OUTPUT"
+                    printf '## iOS change detection\n- Build required: `%s`\n' "$IOS_CHANGED" >> "$GITHUB_STEP_SUMMARY"
+
     quality:
         name: Code quality
         runs-on: ubuntu-latest
@@ -141,9 +183,12 @@ jobs:
 
     ios:
         name: iOS host app build
+        needs: changes
         runs-on: macos-latest
         timeout-minutes: 60
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') && needs.changes.outputs.ios == 'true' }}
+        env:
+            IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
 
         steps:
             -   uses: actions/checkout@v7
@@ -161,6 +206,42 @@ jobs:
 
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@v6
+                with:
+                    # PR reruns must be able to reuse Kotlin/Native task outputs.
+                    cache-read-only: false
+
+            -   name: Read Xcode cache version
+                id: xcode-version
+                run: |
+                    xcodebuild -version
+                    printf 'hash=%s\n' "$(xcodebuild -version | shasum -a 256 | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+            -   name: Restore iOS dependency cache
+                id: ios-dependency-cache
+                uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ~/.konan
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
+                    key: ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+
+            -   name: Restore iOS build cache
+                id: ios-build-cache
+                uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
+                    key: ios-simulator-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
+                    restore-keys: |
+                        ios-simulator-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+
+            -   name: Reuse cached Kotlin frameworks
+                if: steps.ios-build-cache.outputs.cache-hit == 'true'
+                run: ruby fastlane/scripts/prepare_cached_kmp_frameworks.rb iosApp/iosApp.xcodeproj/project.pbxproj
 
             -   name: Generate build properties
                 env:
@@ -190,20 +271,59 @@ jobs:
 
             -   name: Build iOS host app
                 run: |
+                    printf 'IOS_BUILD_STARTED=%s\n' "$(date +%s)" >> "$GITHUB_ENV"
+                    set -o pipefail
                     xcodebuild \
                         -project iosApp/iosApp.xcodeproj \
                         -scheme iosApp \
                         -configuration Release \
                         -sdk iphonesimulator \
                         -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
-                        -derivedDataPath "$RUNNER_TEMP/bandalart-derived-data" \
+                        -derivedDataPath "$IOS_DERIVED_DATA_PATH" \
+                        -showBuildTimingSummary \
                         ARCHS=arm64 \
                         CODE_SIGNING_ALLOWED=NO \
-                        build
+                        OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED="${{ steps.ios-build-cache.outputs.cache-hit == 'true' && 'YES' || 'NO' }}" \
+                        build 2>&1 | tee "$RUNNER_TEMP/ios-xcodebuild.log"
+
+            -   name: Report iOS build performance
+                if: always()
+                env:
+                    DEPENDENCY_CACHE_HIT: ${{ steps.ios-dependency-cache.outputs.cache-hit }}
+                    DEPENDENCY_CACHE_KEY: ${{ steps.ios-dependency-cache.outputs.cache-matched-key }}
+                    BUILD_CACHE_HIT: ${{ steps.ios-build-cache.outputs.cache-hit }}
+                    BUILD_CACHE_KEY: ${{ steps.ios-build-cache.outputs.cache-matched-key }}
+                run: |
+                    cache_state() {
+                        if test "$1" = "true"; then
+                            printf 'exact hit'
+                        elif test -n "$2"; then
+                            printf 'fallback hit'
+                        else
+                            printf 'miss'
+                        fi
+                    }
+                    if test -n "${IOS_BUILD_STARTED:-}"; then
+                        ELAPSED_SECONDS=$(($(date +%s) - IOS_BUILD_STARTED))
+                        ELAPSED_LABEL=$(printf '%dm %02ds' "$((ELAPSED_SECONDS / 60))" "$((ELAPSED_SECONDS % 60))")
+                    else
+                        ELAPSED_LABEL='not started'
+                    fi
+                    {
+                        printf '## iOS build performance\n'
+                        printf -- '- Elapsed: `%s`\n' "$ELAPSED_LABEL"
+                        printf -- '- Dependencies: `%s`\n' "$(cache_state "$DEPENDENCY_CACHE_HIT" "$DEPENDENCY_CACHE_KEY")"
+                        printf -- '- Build intermediates: `%s`\n' "$(cache_state "$BUILD_CACHE_HIT" "$BUILD_CACHE_KEY")"
+                        if test -f "$RUNNER_TEMP/ios-xcodebuild.log"; then
+                            printf '\n```text\n'
+                            sed -n '/Build Timing Summary/,$p' "$RUNNER_TEMP/ios-xcodebuild.log" | head -40
+                            printf '```\n'
+                        fi
+                    } >> "$GITHUB_STEP_SUMMARY"
 
             -   name: Verify notification localizations
                 run: |
-                    APP_BUNDLE="$RUNNER_TEMP/bandalart-derived-data/Build/Products/Release-iphonesimulator/iosApp.app"
+                    APP_BUNDLE="$IOS_DERIVED_DATA_PATH/Build/Products/Release-iphonesimulator/iosApp.app"
                     test -d "$APP_BUNDLE"
                     for locale in en ja ko; do
                         test -f "$APP_BUNDLE/$locale.lproj/Localizable.strings"
@@ -211,7 +331,7 @@ jobs:
 
             -   name: Launch iOS app
                 run: |
-                    APP_BUNDLE="$RUNNER_TEMP/bandalart-derived-data/Build/Products/Release-iphonesimulator/iosApp.app"
+                    APP_BUNDLE="$IOS_DERIVED_DATA_PATH/Build/Products/Release-iphonesimulator/iosApp.app"
                     xcrun simctl install "$SIMULATOR_UDID" "$APP_BUNDLE"
                     LAUNCH_OUTPUT="$(xcrun simctl launch --terminate-running-process "$SIMULATOR_UDID" com.nexters.bandalart.iosApp)"
                     APP_PID="${LAUNCH_OUTPUT##*: }"
@@ -220,6 +340,25 @@ jobs:
                         sleep 1
                     done
                     xcrun simctl terminate "$SIMULATOR_UDID" com.nexters.bandalart.iosApp
+
+            -   name: Save iOS dependency cache
+                if: ${{ success() && steps.ios-dependency-cache.outputs.cache-hit != 'true' }}
+                uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ~/.konan
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
+                    key: ${{ steps.ios-dependency-cache.outputs.cache-primary-key }}
+
+            -   name: Save iOS build cache
+                if: ${{ success() && steps.ios-build-cache.outputs.cache-hit != 'true' }}
+                uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
+                    key: ${{ steps.ios-build-cache.outputs.cache-primary-key }}
 
     release_cd:
         name: Release CD validation
@@ -271,6 +410,7 @@ jobs:
                     bundle exec ruby fastlane/test/provisioning_profile_test.rb
                     bundle exec ruby fastlane/test/signing_configuration_test.rb
                     bundle exec ruby fastlane/test/testflight_test_ads_test.rb
+                    bundle exec ruby fastlane/test/ios_ci_cache_test.rb
                     bundle exec ruby fastlane/test/android_update_priority_test.rb
                     python3 -m unittest scripts.tests.test_play_release_scripts
                     python3 -m unittest scripts.tests.test_play_screenshot_upload
@@ -282,6 +422,7 @@ jobs:
         runs-on: ubuntu-latest
         if: ${{ always() && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
         needs:
+            - changes
             - quality
             - unit_tests
             - android
@@ -296,9 +437,14 @@ jobs:
                     ANDROID_RESULT: ${{ needs.android.result }}
                     IOS_RESULT: ${{ needs.ios.result }}
                     RELEASE_CD_RESULT: ${{ needs.release_cd.result }}
+                    CHANGES_RESULT: ${{ needs.changes.result }}
                 run: |
+                    test "$CHANGES_RESULT" = "success"
                     test "$QUALITY_RESULT" = "success"
                     test "$UNIT_TESTS_RESULT" = "success"
                     test "$ANDROID_RESULT" = "success"
-                    test "$IOS_RESULT" = "success"
+                    case "$IOS_RESULT" in
+                        success|skipped) ;;
+                        *) exit 1 ;;
+                    esac
                     test "$RELEASE_CD_RESULT" = "success"
