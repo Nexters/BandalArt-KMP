@@ -39,4 +39,8 @@ unless gradle_properties.include?("org.gradle.caching=true")
   raise "Gradle build cache must be enabled for Kotlin/Native task reuse"
 end
 
+unless ci_workflow.include?("cache-read-only: false")
+  raise "PR iOS CI must persist Gradle caches for Kotlin/Native task reuse"
+end
+
 puts "iOS CI cache configuration test passed"
