@@ -3,6 +3,13 @@
     <string name="app_name">バンダラート</string>
     <string name="app_name_dev">バンダラート.dev</string>
 
+    <!-- Common actions -->
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_save">保存</string>
+    <string name="action_share">共有</string>
+    <string name="action_delete">削除</string>
+    <string name="action_retry">再試行</string>
+
     <!-- OnBoardingScreen.kt -->
     <string name="onboarding_first_title">複雑で手に負えない\nマンダラートにさようなら！</string>
     <string name="onboarding_second_title">今からバンダラートと一緒に\n気軽に計画を立ててみましょう</string>
@@ -11,8 +18,6 @@
     <!-- CompleteScreen.kt -->
     <string name="complete_title">バンダラートのすべての目標を達成しました。\n素晴らしいですね！</string>
     <string name="complete_chart">達成完了バンダラート</string>
-    <string name="complete_save">保存</string>
-    <string name="complete_share">共有</string>
 
     <!--  HomeScreen.kt -->
     <string name="home_default_emoji">default emoji</string>
@@ -20,7 +25,6 @@
     <string name="home_empty_title">メイン目標を入力してください</string>
     <string name="home_complete_ratio">達成率 %1$d%</string>
     <string name="home_complete">達成完了！</string>
-    <string name="home_share">共有</string>
 
     <!-- BandalartChart.kt -->
     <string name="home_layout_id">Sub %1$d</string>
@@ -51,7 +55,6 @@
     <string name="settings_theme_system">システム設定</string>
     <string name="settings_theme_light">ライトモード</string>
     <string name="settings_theme_dark">ダークモード</string>
-    <string name="settings_cloud_backup">クラウドバックアップ</string>
     <string name="settings_cloud_backup_body">データをバックアップ、またはバックアップから復元します</string>
     <string name="settings_app_info">アプリ情報</string>
     <string name="settings_contact">お問い合わせ</string>
@@ -71,7 +74,6 @@
     <string name="backup_create_confirm_title">クラウドにバックアップしますか？</string>
     <string name="backup_create_confirm_body">クラウドバックアップを利用するには、広告を最後まで視聴してください。</string>
     <string name="backup_create_confirm">広告を見てバックアップ</string>
-    <string name="backup_create_cancel">キャンセル</string>
     <string name="backup_restore">バックアップから復元</string>
     <string name="backup_start_fresh">新しく始める</string>
     <string name="backup_loading">処理中です…</string>
@@ -82,7 +84,6 @@
     <string name="backup_restore_confirm_title">バックアップから復元しますか？</string>
     <string name="backup_restore_confirm_body">現在のアプリデータはバックアップのデータに置き換わります。</string>
     <string name="backup_restore_confirm">復元</string>
-    <string name="backup_restore_cancel">キャンセル</string>
     <string name="backup_back">戻る</string>
 
     <!--  BandalartListBottomSheet.kt -->
@@ -108,11 +109,6 @@
     <string name="emoji_picker_category_symbols">記号</string>
     <string name="emoji_picker_category_flags">旗</string>
 
-    <!-- BandalartDropDownMenu.kt -->
-    <string name="dropdown_save">保存</string>
-    <string name="dropdown_routine_settings">ルーティン設定</string>
-    <string name="dropdown_delete">削除</string>
-
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">毎日繰り返す目標をルーティンに設定できます</string>
     <string name="routine_settings_title">ルーティン設定</string>
@@ -123,7 +119,6 @@
     <string name="routine_settings_reset_dialog_empty_title">完了チェックをリセットしますか？</string>
     <string name="routine_settings_reset_dialog_title">「%1$s」の完了チェックをリセットしますか？</string>
     <string name="routine_settings_reset_dialog_message">目標とメモはそのまま残り、すべての完了チェックが解除されます。</string>
-    <string name="routine_settings_reset_cancel">キャンセル</string>
     <string name="routine_settings_reset_confirm">リセット</string>
     <string name="routine_settings_reset_complete">完了チェックをリセットしました。</string>
     <string name="routine_settings_reset_no_changes">リセットする完了チェックがありません。</string>
@@ -171,18 +166,11 @@
     <string name="delete_bandalart_taskcell_dialog_title">「%1$s」\nタスクを削除しますか？</string>
     <string name="delete_bandalart_taskcell_dialog_message">""</string>
 
-    <string name="delete_bandalart_delete">削除</string>
-    <string name="delete_bandalart_cancel">キャンセル</string>
-
     <!-- NetworkErrorAlertDialog -->
     <string name="network_error_dialog_title">ネットワークの問題で表を\n読み込めませんでした</string>
-    <string name="network_error_dialog_message">もう一度お試しください。</string>
-    <string name="network_error_retry_message">再試行</string>
 
     <!-- ServerErrorAlertDialog -->
     <string name="server_error_dialog_title">サーバーの問題で表を\n読み込めませんでした</string>
-    <string name="server_error_dialog_message">もう一度お試しください。</string>
-    <string name="server_error_retry_message">再試行</string>
 
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">リクエストは成功しましたがデータの検証に失敗しました</string>
@@ -190,7 +178,6 @@
     <string name="rewarded_create_dialog_title">新しいバンダラートを追加しますか？</string>
     <string name="rewarded_create_dialog_message">広告を最後まで見ると、バンダラートのスロットを1つ追加して使い続けられます。</string>
     <string name="rewarded_create_dialog_confirm">広告を見て追加</string>
-    <string name="rewarded_create_dialog_cancel">キャンセル</string>
     <string name="rewarded_ad_unavailable">広告を読み込めなかったため、広告なしで続けます。</string>
     <string name="rewarded_slot_error">バンダラートのスロットを更新できませんでした。もう一度お試しください。</string>
     <string name="save_bandalart_image">バンダラートがギャラリーに保存されました。</string>
@@ -221,7 +208,6 @@
     <string name="settings_deadline_reminder_dialog_title">締切日リマインダーをオンにしますか？</string>
     <string name="settings_deadline_reminder_dialog_body">目標のタイトルがロック画面に表示される場合があります。締切日当日の午前9時以降、端末の状態に応じて通知されます。</string>
     <string name="settings_deadline_reminder_confirm">オンにする</string>
-    <string name="settings_deadline_reminder_cancel">キャンセル</string>
     <string name="settings_deadline_reminder_test_sent">テスト通知を送信しました。</string>
     <string name="settings_deadline_reminder_test_failed">テスト通知を送信できませんでした。システムの通知設定を確認してください。</string>
     <string name="settings_deadline_reminder_test">テスト通知を送信</string>

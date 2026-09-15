@@ -38,8 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.complete_save
-import bandalart.core.designsystem.generated.resources.complete_share
+import bandalart.core.designsystem.generated.resources.action_save
+import bandalart.core.designsystem.generated.resources.action_share
 import bandalart.core.designsystem.generated.resources.complete_title
 import com.eygraber.uri.Uri
 import com.nexters.bandalart.core.common.ImageHandlerProvider
@@ -177,7 +177,7 @@ internal fun CompleteContent(
                                     ),
                                 )
                             },
-                            text = stringResource(Res.string.complete_save),
+                            text = stringResource(Res.string.action_save),
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
@@ -193,7 +193,7 @@ internal fun CompleteContent(
                                     ),
                                 )
                             },
-                            text = stringResource(Res.string.complete_share),
+                            text = stringResource(Res.string.action_share),
                             modifier =
                                 Modifier
                                     .fillMaxWidth()

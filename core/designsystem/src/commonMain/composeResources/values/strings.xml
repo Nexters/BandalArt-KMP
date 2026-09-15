@@ -3,6 +3,13 @@
     <string name="app_name">반다라트</string>
     <string name="app_name_dev">반다라트.dev</string>
 
+    <!-- Common actions -->
+    <string name="action_cancel">취소</string>
+    <string name="action_save">저장하기</string>
+    <string name="action_share">공유하기</string>
+    <string name="action_delete">삭제하기</string>
+    <string name="action_retry">다시 시도</string>
+
     <!-- OnBoardingScreen.kt -->
     <string name="onboarding_first_title">복잡하고 막막한\n만다라트 계획표는 이제 안녕!</string>
     <string name="onboarding_second_title">이제 반다라트와 함께\n부담 없이 계획을 세워봐요</string>
@@ -11,8 +18,6 @@
     <!-- CompleteScreen.kt -->
     <string name="complete_title">반다라트의 모든 목표를 달성했어요.\n정말 대단해요!</string>
     <string name="complete_chart">달성 완료 반다라트</string>
-    <string name="complete_save">저장하기</string>
-    <string name="complete_share">공유하기</string>
 
     <!--  HomeScreen.kt -->
     <string name="home_default_emoji">default emoji</string>
@@ -20,7 +25,6 @@
     <string name="home_empty_title">메인목표를 입력해주세요</string>
     <string name="home_complete_ratio">달성률 %1$d%</string>
     <string name="home_complete">달성 완료!</string>
-    <string name="home_share">공유하기</string>
 
     <!-- BandalartChart.kt -->
     <string name="home_layout_id">Sub %1$d</string>
@@ -51,7 +55,6 @@
     <string name="settings_theme_system">시스템 설정</string>
     <string name="settings_theme_light">라이트 모드</string>
     <string name="settings_theme_dark">다크 모드</string>
-    <string name="settings_cloud_backup">클라우드 백업</string>
     <string name="settings_cloud_backup_body">데이터를 백업하거나 백업에서 복원해요</string>
     <string name="settings_app_info">앱 정보</string>
     <string name="settings_contact">문의하기</string>
@@ -71,7 +74,6 @@
     <string name="backup_create_confirm_title">클라우드에 백업할까요?</string>
     <string name="backup_create_confirm_body">클라우드 백업을 위해 광고를 끝까지 시청해 주세요.</string>
     <string name="backup_create_confirm">광고 보고 백업하기</string>
-    <string name="backup_create_cancel">취소</string>
     <string name="backup_restore">백업에서 복원</string>
     <string name="backup_start_fresh">새로 시작</string>
     <string name="backup_loading">처리 중이에요…</string>
@@ -82,7 +84,6 @@
     <string name="backup_restore_confirm_title">백업에서 복원할까요?</string>
     <string name="backup_restore_confirm_body">현재 앱 데이터가 백업 데이터로 교체돼요.</string>
     <string name="backup_restore_confirm">복원</string>
-    <string name="backup_restore_cancel">취소</string>
     <string name="backup_back">뒤로가기</string>
 
     <!--  BandalartListBottomSheet.kt -->
@@ -108,11 +109,6 @@
     <string name="emoji_picker_category_symbols">기호</string>
     <string name="emoji_picker_category_flags">깃발</string>
 
-    <!-- BandalartDropDownMenu.kt -->
-    <string name="dropdown_save">저장하기</string>
-    <string name="dropdown_routine_settings">루틴 설정</string>
-    <string name="dropdown_delete">삭제하기</string>
-
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">매일 반복할 목표라면 루틴으로 설정해보세요</string>
     <string name="routine_settings_title">루틴 설정</string>
@@ -123,7 +119,6 @@
     <string name="routine_settings_reset_dialog_empty_title">완료 체크를 초기화할까요?</string>
     <string name="routine_settings_reset_dialog_title">‘%1$s’의 완료 체크를 초기화할까요?</string>
     <string name="routine_settings_reset_dialog_message">목표와 메모는 그대로 유지되고, 모든 완료 체크가 해제돼요.</string>
-    <string name="routine_settings_reset_cancel">취소</string>
     <string name="routine_settings_reset_confirm">초기화</string>
     <string name="routine_settings_reset_complete">완료 체크를 초기화했어요.</string>
     <string name="routine_settings_reset_no_changes">초기화할 완료 체크가 없어요.</string>
@@ -171,18 +166,11 @@
     <string name="delete_bandalart_taskcell_dialog_title">\&apos;%1$s\&apos;\n태스크를 삭제하시겠어요?</string>
     <string name="delete_bandalart_taskcell_dialog_message">""</string>
 
-    <string name="delete_bandalart_delete">삭제하기</string>
-    <string name="delete_bandalart_cancel">취소</string>
-
     <!-- NetworkErrorAlertDialog -->
     <string name="network_error_dialog_title">네트워크 문제로 표를\n불러오지 못했어요</string>
-    <string name="network_error_dialog_message">다시 시도해주시기 바랍니다.</string>
-    <string name="network_error_retry_message">다시 시도</string>
 
     <!-- ServerErrorAlertDialog -->
     <string name="server_error_dialog_title">서버 문제로 표를\n불러오지 못했어요</string>
-    <string name="server_error_dialog_message">다시 시도해주시기 바랍니다.</string>
-    <string name="server_error_retry_message">다시 시도</string>
 
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
@@ -190,7 +178,6 @@
     <string name="rewarded_create_dialog_title">새 반다라트를 더 만들까요?</string>
     <string name="rewarded_create_dialog_message">광고를 끝까지 보면 새 반다라트 슬롯 1개를 계속 사용할 수 있어요.</string>
     <string name="rewarded_create_dialog_confirm">광고 보고 추가하기</string>
-    <string name="rewarded_create_dialog_cancel">취소</string>
     <string name="rewarded_ad_unavailable">광고를 불러오지 못해 광고 없이 계속할게요.</string>
     <string name="rewarded_slot_error">반다라트 슬롯을 확인하지 못했어요. 다시 시도해 주세요.</string>
     <string name="save_bandalart_image">반다라트가 갤러리에 저장되었어요.</string>
@@ -221,7 +208,6 @@
     <string name="settings_deadline_reminder_dialog_title">마감일 알림을 켤까요?</string>
     <string name="settings_deadline_reminder_dialog_body">목표 제목이 잠금 화면에 보일 수 있으며, 마감일 당일 오전 9시부터 기기 상태에 따라 알림이 전달돼요.</string>
     <string name="settings_deadline_reminder_confirm">알림 켜기</string>
-    <string name="settings_deadline_reminder_cancel">취소</string>
     <string name="settings_deadline_reminder_test_sent">테스트 알림을 보냈어요.</string>
     <string name="settings_deadline_reminder_test_failed">테스트 알림을 보내지 못했어요. 시스템 알림 설정을 확인해 주세요.</string>
     <string name="settings_deadline_reminder_test">테스트 알림 보내기</string>

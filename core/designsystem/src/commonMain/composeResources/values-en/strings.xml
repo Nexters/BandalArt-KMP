@@ -3,6 +3,13 @@
     <string name="app_name">Bandalart</string>
     <string name="app_name_dev">Bandalart.dev</string>
 
+    <!-- Common actions -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_share">Share</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_retry">Retry</string>
+
     <!-- OnBoardingScreen.kt -->
     <string name="onboarding_first_title">Say goodbye to complex and\noverwhelming Mandalart!</string>
     <string name="onboarding_second_title">Now, plan effortlessly\nwith Bandalart!</string>
@@ -11,8 +18,6 @@
     <!-- CompleteScreen.kt -->
     <string name="complete_title">You\'ve achieved all the goals in Bandalart. Truly amazing!</string>
     <string name="complete_chart">Completed Bandalart</string>
-    <string name="complete_save">Save</string>
-    <string name="complete_share">Share</string>
 
     <!--  HomeScreen.kt -->
     <string name="home_default_emoji">default emoji</string>
@@ -20,7 +25,6 @@
     <string name="home_empty_title">Please enter your main goal</string>
     <string name="home_complete_ratio">Completion Rate %1$d%</string>
     <string name="home_complete">All Goals Completed!</string>
-    <string name="home_share">Share</string>
 
     <!-- BandalartChart.kt -->
     <string name="home_layout_id">Sub %1$d</string>
@@ -51,7 +55,6 @@
     <string name="settings_theme_system">System default</string>
     <string name="settings_theme_light">Light mode</string>
     <string name="settings_theme_dark">Dark mode</string>
-    <string name="settings_cloud_backup">Cloud backup</string>
     <string name="settings_cloud_backup_body">Back up data or restore from a backup</string>
     <string name="settings_app_info">App info</string>
     <string name="settings_contact">Contact us</string>
@@ -71,7 +74,6 @@
     <string name="backup_create_confirm_title">Back up to the cloud?</string>
     <string name="backup_create_confirm_body">To use cloud backup, please watch the ad to the end.</string>
     <string name="backup_create_confirm">Watch ad and back up</string>
-    <string name="backup_create_cancel">Cancel</string>
     <string name="backup_restore">Restore from backup</string>
     <string name="backup_start_fresh">Start fresh</string>
     <string name="backup_loading">Working…</string>
@@ -82,7 +84,6 @@
     <string name="backup_restore_confirm_title">Restore from backup?</string>
     <string name="backup_restore_confirm_body">Your current app data will be replaced with the backup.</string>
     <string name="backup_restore_confirm">Restore</string>
-    <string name="backup_restore_cancel">Cancel</string>
     <string name="backup_back">Back</string>
 
     <!--  BandalartListBottomSheet.kt -->
@@ -108,11 +109,6 @@
     <string name="emoji_picker_category_symbols">Symbols</string>
     <string name="emoji_picker_category_flags">Flags</string>
 
-    <!-- BandalartDropDownMenu.kt -->
-    <string name="dropdown_save">Save</string>
-    <string name="dropdown_routine_settings">Routine settings</string>
-    <string name="dropdown_delete">Delete</string>
-
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">Turn repeating goals into a daily routine</string>
     <string name="routine_settings_title">Routine settings</string>
@@ -123,7 +119,6 @@
     <string name="routine_settings_reset_dialog_empty_title">Clear completion checks?</string>
     <string name="routine_settings_reset_dialog_title">Clear completion checks for ‘%1$s’?</string>
     <string name="routine_settings_reset_dialog_message">Goals and notes stay unchanged, and all completion checks are cleared.</string>
-    <string name="routine_settings_reset_cancel">Cancel</string>
     <string name="routine_settings_reset_confirm">Clear</string>
     <string name="routine_settings_reset_complete">Completion checks cleared.</string>
     <string name="routine_settings_reset_no_changes">There are no completion checks to clear.</string>
@@ -171,13 +166,8 @@
     <string name="delete_bandalart_taskcell_dialog_title">Do you want to delete\nthe task\n\&apos;%1$s\&apos;?</string>
     <string name="delete_bandalart_taskcell_dialog_message">""</string>
 
-    <string name="delete_bandalart_delete">Delete</string>
-    <string name="delete_bandalart_cancel">Cancel</string>
-
     <!-- NetworkErrorAlertDialog -->
     <string name="network_error_dialog_title">Failed to load Bandalart due to network issues.</string>
-    <string name="network_error_dialog_message">Please try again.</string>
-    <string name="network_error_retry_message">Retry</string>
 
     <!-- HomeScreenViewModel.kt, BandalartBottomSheetViewModel.kt -->
     <string name="data_validation">Request succeeded but data validation failed</string>
@@ -185,7 +175,6 @@
     <string name="rewarded_create_dialog_title">Create another Bandalart?</string>
     <string name="rewarded_create_dialog_message">Finish watching an ad to keep one additional Bandalart slot.</string>
     <string name="rewarded_create_dialog_confirm">Watch ad and add</string>
-    <string name="rewarded_create_dialog_cancel">Cancel</string>
     <string name="rewarded_ad_unavailable">The ad could not be loaded, so we’ll continue without it.</string>
     <string name="rewarded_slot_error">Couldn’t update your Bandalart slots. Please try again.</string>
     <string name="save_bandalart_image">Bandalart has been saved to the gallery.</string>
@@ -207,8 +196,6 @@
     <string name="gallery_icon">Gallery Icon</string>
 
     <string name="server_error_dialog_title">Failed to load Bandalart due to server issues.</string>
-    <string name="server_error_dialog_message">Please try again.</string>
-    <string name="server_error_retry_message">Retry</string>
 
     <!-- deadline reminder -->
     <string name="settings_deadline_reminder_section">Notifications</string>
@@ -220,7 +207,6 @@
     <string name="settings_deadline_reminder_dialog_title">Turn on deadline reminders?</string>
     <string name="settings_deadline_reminder_dialog_body">Goal titles may appear on your lock screen. Reminders are delivered from 9 AM on the due date depending on device conditions.</string>
     <string name="settings_deadline_reminder_confirm">Turn on</string>
-    <string name="settings_deadline_reminder_cancel">Cancel</string>
     <string name="settings_deadline_reminder_test_sent">Test notification sent.</string>
     <string name="settings_deadline_reminder_test_failed">Couldn’t send a test notification. Check system notification settings.</string>
     <string name="settings_deadline_reminder_test">Send test notification</string>

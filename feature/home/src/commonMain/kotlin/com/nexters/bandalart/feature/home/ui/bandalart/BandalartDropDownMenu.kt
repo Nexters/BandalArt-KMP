@@ -41,12 +41,12 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.action_delete
+import bandalart.core.designsystem.generated.resources.action_save
 import bandalart.core.designsystem.generated.resources.delete_description
-import bandalart.core.designsystem.generated.resources.dropdown_delete
-import bandalart.core.designsystem.generated.resources.dropdown_routine_settings
-import bandalart.core.designsystem.generated.resources.dropdown_save
 import bandalart.core.designsystem.generated.resources.ic_gallery
 import bandalart.core.designsystem.generated.resources.ic_trash
+import bandalart.core.designsystem.generated.resources.routine_settings_title
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Error
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
@@ -94,7 +94,7 @@ fun BandalartDropDownMenu(
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
-                        text = stringResource(Res.string.dropdown_save),
+                        text = stringResource(Res.string.action_save),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
@@ -129,7 +129,7 @@ fun BandalartDropDownMenu(
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
-                        text = stringResource(Res.string.dropdown_routine_settings),
+                        text = stringResource(Res.string.routine_settings_title),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
@@ -164,7 +164,7 @@ fun BandalartDropDownMenu(
                         tint = Color.Unspecified,
                     )
                     Text(
-                        text = stringResource(Res.string.dropdown_delete),
+                        text = stringResource(Res.string.action_delete),
                         color = Error,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,

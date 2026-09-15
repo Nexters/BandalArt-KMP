@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.delete_bandalart_cancel
-import bandalart.core.designsystem.generated.resources.delete_bandalart_delete
+import bandalart.core.designsystem.generated.resources.action_cancel
+import bandalart.core.designsystem.generated.resources.action_delete
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_delete
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
@@ -126,7 +126,7 @@ fun BandalartDeleteAlertDialog(
                             ),
                     ) {
                         Text(
-                            text = stringResource(Res.string.delete_bandalart_cancel),
+                            text = stringResource(Res.string.action_cancel),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -148,7 +148,7 @@ fun BandalartDeleteAlertDialog(
                             ),
                     ) {
                         Text(
-                            text = stringResource(Res.string.delete_bandalart_delete),
+                            text = stringResource(Res.string.action_delete),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,

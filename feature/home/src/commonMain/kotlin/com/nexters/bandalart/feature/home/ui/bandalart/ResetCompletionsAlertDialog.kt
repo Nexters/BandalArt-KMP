@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.routine_settings_reset_cancel
+import bandalart.core.designsystem.generated.resources.action_cancel
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_confirm
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_message
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
@@ -116,7 +116,7 @@ internal fun ResetCompletionsAlertDialog(
                                 .height(56.dp),
                     ) {
                         Text(
-                            text = stringResource(Res.string.routine_settings_reset_cancel),
+                            text = stringResource(Res.string.action_cancel),
                             fontFamily = pretendardFontFamily(),
                             fontWeight = FontWeight.W600,
                         )

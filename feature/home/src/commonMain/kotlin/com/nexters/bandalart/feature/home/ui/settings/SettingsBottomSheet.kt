@@ -56,17 +56,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.action_cancel
+import bandalart.core.designsystem.generated.resources.backup_title
 import bandalart.core.designsystem.generated.resources.clear_description
 import bandalart.core.designsystem.generated.resources.ic_cloud_download
 import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.settings_app_info
 import bandalart.core.designsystem.generated.resources.settings_appearance
-import bandalart.core.designsystem.generated.resources.settings_cloud_backup
 import bandalart.core.designsystem.generated.resources.settings_cloud_backup_body
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_body
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_blocked
-import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_cancel
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_confirm
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_degraded
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_dialog_body
@@ -110,7 +110,7 @@ internal fun SettingsBottomSheet(
             title = stringResource(Res.string.settings_deadline_reminder_dialog_title),
             message = stringResource(Res.string.settings_deadline_reminder_dialog_body),
             confirmLabel = stringResource(Res.string.settings_deadline_reminder_confirm),
-            cancelLabel = stringResource(Res.string.settings_deadline_reminder_cancel),
+            cancelLabel = stringResource(Res.string.action_cancel),
             onConfirmClick = {
                 showDeadlineReminderConfirmation = false
                 onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
@@ -236,7 +236,7 @@ private fun SettingsCloudBackupRow(onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(Res.string.settings_cloud_backup),
+                text = stringResource(Res.string.backup_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp,
                 fontFamily = pretendardFontFamily(),

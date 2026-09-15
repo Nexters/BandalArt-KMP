@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.home_share
+import bandalart.core.designsystem.generated.resources.action_share
 import bandalart.core.designsystem.generated.resources.ic_share
 import bandalart.core.designsystem.generated.resources.share_description
 import com.nexters.bandalart.core.common.extension.clickableSingle
@@ -66,7 +66,7 @@ fun HomeShareButton(
                 tint = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = stringResource(Res.string.home_share),
+                text = stringResource(Res.string.action_share),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.W700,
