@@ -30,7 +30,7 @@ import androidx.core.content.FileProvider
 import com.eygraber.uri.Uri
 import io.github.aakira.napier.Napier
 import android.graphics.Bitmap.CompressFormat.PNG
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import java.io.File
 import java.io.FileOutputStream
 

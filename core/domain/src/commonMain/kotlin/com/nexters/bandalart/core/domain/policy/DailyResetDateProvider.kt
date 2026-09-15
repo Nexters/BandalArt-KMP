@@ -27,8 +27,8 @@ fun interface DailyResetDateProvider {
 
 object SystemDailyResetDateProvider : DailyResetDateProvider {
     override fun today(): LocalDate =
-        kotlinx.datetime.Instant
-            .fromEpochMilliseconds(Clock.System.now().toEpochMilliseconds())
+        Clock.System
+            .now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date
 }

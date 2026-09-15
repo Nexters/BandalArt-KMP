@@ -30,7 +30,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduling
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
 import com.nexters.bandalart.shared.R
 import kotlinx.coroutines.CancellationException
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone

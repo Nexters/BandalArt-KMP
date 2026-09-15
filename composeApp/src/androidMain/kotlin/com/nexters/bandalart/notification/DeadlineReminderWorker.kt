@@ -28,7 +28,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderDueDateParser
 import com.nexters.bandalart.shared.R
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
