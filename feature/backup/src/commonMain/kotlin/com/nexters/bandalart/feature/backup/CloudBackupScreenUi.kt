@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.backup_back
 import bandalart.core.designsystem.generated.resources.backup_created
-import bandalart.core.designsystem.generated.resources.backup_create_cancel
+import bandalart.core.designsystem.generated.resources.action_cancel
 import bandalart.core.designsystem.generated.resources.backup_create_confirm
 import bandalart.core.designsystem.generated.resources.backup_create_confirm_body
 import bandalart.core.designsystem.generated.resources.backup_create_confirm_title
@@ -62,7 +62,6 @@ import bandalart.core.designsystem.generated.resources.backup_not_found
 import bandalart.core.designsystem.generated.resources.backup_not_supported
 import bandalart.core.designsystem.generated.resources.backup_now
 import bandalart.core.designsystem.generated.resources.backup_restore
-import bandalart.core.designsystem.generated.resources.backup_restore_cancel
 import bandalart.core.designsystem.generated.resources.backup_restore_confirm
 import bandalart.core.designsystem.generated.resources.backup_restore_confirm_body
 import bandalart.core.designsystem.generated.resources.backup_restore_confirm_title
@@ -299,7 +298,7 @@ private fun RestoreConfirmationDialog(eventSink: (CloudBackupUiState.Event) -> U
         title = stringResource(Res.string.backup_restore_confirm_title),
         message = stringResource(Res.string.backup_restore_confirm_body),
         confirmLabel = stringResource(Res.string.backup_restore_confirm),
-        cancelLabel = stringResource(Res.string.backup_restore_cancel),
+        cancelLabel = stringResource(Res.string.action_cancel),
         onConfirmClick = { eventSink(CloudBackupUiState.Event.ConfirmRestore) },
         onCancelClick = { eventSink(CloudBackupUiState.Event.DismissRestoreConfirmation) },
     )
@@ -313,7 +312,7 @@ private fun CreateBackupConfirmationDialog(eventSink: (CloudBackupUiState.Event)
         title = stringResource(Res.string.backup_create_confirm_title),
         message = stringResource(Res.string.backup_create_confirm_body),
         confirmLabel = stringResource(Res.string.backup_create_confirm),
-        cancelLabel = stringResource(Res.string.backup_create_cancel),
+        cancelLabel = stringResource(Res.string.action_cancel),
         onConfirmClick = { eventSink(CloudBackupUiState.Event.ConfirmCreateBackup) },
         onCancelClick = { eventSink(CloudBackupUiState.Event.DismissCreateBackupConfirmation) },
     )

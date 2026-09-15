@@ -19,9 +19,9 @@ package com.nexters.bandalart.feature.home.ui.bandalart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.action_cancel
 import bandalart.core.designsystem.generated.resources.add_description
 import bandalart.core.designsystem.generated.resources.ic_add_circle_outlined
-import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_cancel
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_confirm
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_message
 import bandalart.core.designsystem.generated.resources.rewarded_create_dialog_title
@@ -39,7 +39,7 @@ fun RewardedBandalartAlertDialog(
         title = stringResource(Res.string.rewarded_create_dialog_title),
         message = stringResource(Res.string.rewarded_create_dialog_message),
         confirmLabel = stringResource(Res.string.rewarded_create_dialog_confirm),
-        cancelLabel = stringResource(Res.string.rewarded_create_dialog_cancel),
+        cancelLabel = stringResource(Res.string.action_cancel),
         onConfirmClick = onConfirmClick,
         onCancelClick = onCancelClick,
         modifier = modifier,

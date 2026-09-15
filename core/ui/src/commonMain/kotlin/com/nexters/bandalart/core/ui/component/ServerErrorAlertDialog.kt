@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bandalart.core.designsystem.generated.resources.Res
+import bandalart.core.designsystem.generated.resources.action_retry
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_circle_cross
-import bandalart.core.designsystem.generated.resources.network_error_retry_message
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
@@ -47,9 +47,10 @@ fun ServerErrorAlertDialog(
             color = White,
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
             ) {
                 Icon(
                     imageVector = vectorResource(Res.drawable.ic_circle_cross),
@@ -80,22 +81,24 @@ fun ServerErrorAlertDialog(
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
                         onClick = onConfirmClick,
                         colors = ButtonDefaults.buttonColors(containerColor = Gray900),
                     ) {
                         Text(
-                            text = stringResource(Res.string.network_error_retry_message),
+                            text = stringResource(Res.string.action_retry),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,
                             color = White,
