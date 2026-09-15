@@ -47,9 +47,10 @@ fun ServerErrorAlertDialog(
             color = White,
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
             ) {
                 Icon(
                     imageVector = vectorResource(Res.drawable.ic_circle_cross),
@@ -80,17 +81,19 @@ fun ServerErrorAlertDialog(
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
                         onClick = onConfirmClick,
                         colors = ButtonDefaults.buttonColors(containerColor = Gray900),
                     ) {
