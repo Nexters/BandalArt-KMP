@@ -99,6 +99,8 @@ jobs:
 
             -   name: Setup Android SDK
                 uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+                with:
+                    packages: platform-tools
 
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@4733eaac7c1b0da527e4206b7671e0061de1ce37 # v6
@@ -200,6 +202,8 @@ jobs:
 
             -   name: Setup Android SDK
                 uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+                with:
+                    packages: platform-tools
 
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@4733eaac7c1b0da527e4206b7671e0061de1ce37 # v6

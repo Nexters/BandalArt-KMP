@@ -100,6 +100,7 @@ kotlin {
 
             implementation(libs.cmptoast)
             implementation(libs.jindong.compose)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.napier)
         }

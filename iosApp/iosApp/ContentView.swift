@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import ComposeApp
+import FirebaseCrashlytics
 
 struct ComposeView: UIViewControllerRepresentable {
     let notificationLaunchBridge: DeadlineNotificationLaunchBridge
@@ -18,7 +19,10 @@ struct ComposeView: UIViewControllerRepresentable {
     let widgetRuntimeBridge: IosWidgetRuntimeBridge
 
     func makeUIViewController(context: Context) -> UIViewController {
-        MainViewControllerKt.MainViewController(
+        let crashlytics = Crashlytics.crashlytics()
+        crashlytics.setCustomValue("main_view_controller", forKey: "startup_phase")
+        crashlytics.log("Creating Compose main view controller")
+        let viewController = MainViewControllerKt.MainViewController(
             notificationLaunchBridge: notificationLaunchBridge,
             deadlineReminderLifecycleBridge: deadlineReminderLifecycleBridge,
             adsBridge: adsBridge,
@@ -26,6 +30,9 @@ struct ComposeView: UIViewControllerRepresentable {
             widgetLaunchBridge: widgetLaunchBridge,
             widgetRuntimeBridge: widgetRuntimeBridge
         )
+        crashlytics.setCustomValue("ready", forKey: "startup_phase")
+        crashlytics.log("Compose main view controller created")
+        return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}

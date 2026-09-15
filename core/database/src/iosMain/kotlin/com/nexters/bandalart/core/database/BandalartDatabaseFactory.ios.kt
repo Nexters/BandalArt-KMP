@@ -27,8 +27,12 @@ import platform.Foundation.NSUserDomainMask
 actual class BandalartDatabaseFactory {
     actual fun create(): RoomDatabase.Builder<BandalartDatabase> {
         val fileManager = NSFileManager.defaultManager
-        val sharedDirectory = sharedDirectory(fileManager)
-        migrateLegacyDatabase(fileManager, documentDirectory(fileManager), sharedDirectory)
+        val documentDirectory = documentDirectory(fileManager)
+        val sharedDirectory = sharedDirectoryOrNull(fileManager)
+        if (sharedDirectory == null) {
+            return databaseBuilder("$documentDirectory/${BandalartDatabase.DB_NAME}")
+        }
+        migrateLegacyDatabase(fileManager, documentDirectory, sharedDirectory)
         return databaseBuilder("$sharedDirectory/${BandalartDatabase.DB_NAME}")
     }
 
@@ -48,7 +52,8 @@ actual class BandalartDatabaseFactory {
 
 fun openExistingSharedBandalartDatabase(): BandalartDatabase? {
     val fileManager = NSFileManager.defaultManager
-    val databasePath = "${sharedDirectory(fileManager)}/${BandalartDatabase.DB_NAME}"
+    val sharedDirectory = sharedDirectoryOrNull(fileManager) ?: return null
+    val databasePath = "$sharedDirectory/${BandalartDatabase.DB_NAME}"
     if (!fileManager.fileExistsAtPath(databasePath)) return null
     return databaseBuilder(databasePath).addBandalartMigrations().build()
 }
@@ -59,10 +64,8 @@ private fun databaseBuilder(path: String): RoomDatabase.Builder<BandalartDatabas
         .setDriver(BundledSQLiteDriver())
 
 @OptIn(ExperimentalForeignApi::class)
-private fun sharedDirectory(fileManager: NSFileManager): String =
-    requireNotNull(
-        fileManager.containerURLForSecurityApplicationGroupIdentifier(IOS_APP_GROUP_IDENTIFIER)?.path,
-    ) { "Missing App Group container: $IOS_APP_GROUP_IDENTIFIER" }
+private fun sharedDirectoryOrNull(fileManager: NSFileManager): String? =
+    fileManager.containerURLForSecurityApplicationGroupIdentifier(IOS_APP_GROUP_IDENTIFIER)?.path
 
 @OptIn(ExperimentalForeignApi::class)
 private fun migrateLegacyDatabase(

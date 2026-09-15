@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import ComposeApp
 import Firebase
+import FirebaseCrashlytics
 import UserNotifications
 import WidgetKit
 
@@ -35,6 +36,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
+        let crashlytics = Crashlytics.crashlytics()
+        crashlytics.setCustomValue("firebase_configured", forKey: "startup_phase")
+        crashlytics.setCustomValue(
+            FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: widgetAppGroupIdentifier
+            ) != nil,
+            forKey: "app_group_container_available"
+        )
+        crashlytics.log("Application did finish launching")
         adsBridge.start()
         UNUserNotificationCenter.current().delegate = self
         timeZoneObserver = NotificationCenter.default.addObserver(

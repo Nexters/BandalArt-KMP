@@ -28,7 +28,7 @@ import androidx.work.testing.WorkManagerTestInitHelper
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
