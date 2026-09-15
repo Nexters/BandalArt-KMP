@@ -333,6 +333,7 @@ platform :ios do
       [
         ads_xcargs,
         "CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{version}",
+        "-showBuildTimingSummary",
       ].compact.join(" ")
     UI.message("iOS release #{version} (#{build_number}) -> TestFlight")
     UI.message("IOS_ADS_MODE=#{ads_mode}")
@@ -389,13 +390,20 @@ platform :ios do
     )
 
     output_directory = File.join(REPO_ROOT, "build/ios-release")
+    derived_data_path =
+      ENV.fetch(
+        "IOS_DERIVED_DATA_PATH",
+        File.join(REPO_ROOT, "build/ios-derived-data"),
+      )
     FileUtils.rm_rf(output_directory)
+    archive_started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     ipa_path = build_app(
       project: project_path,
       scheme: "iosApp",
       configuration: "Release",
       xcargs: build_xcargs,
-      clean: true,
+      clean: false,
+      derived_data_path: derived_data_path,
       export_method: "app-store",
       output_directory: output_directory,
       output_name: "BandalArt-#{version}-#{build_number}.ipa",
@@ -413,6 +421,8 @@ platform :ios do
         manageAppVersionAndBuildNumber: false,
       },
     )
+    archive_duration_seconds =
+      (Process.clock_gettime(Process::CLOCK_MONOTONIC) - archive_started_at).round
     verify_ipa!(ipa_path, version, build_number)
     verify_ci_source!
     what_to_test = File.read(File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test.txt")).strip
@@ -421,6 +431,7 @@ platform :ios do
         File.join(REPO_ROOT, "fastlane/metadata/ios/what_to_test_#{ads_mode}_ads.txt"),
       ).strip
 
+    upload_started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     upload_to_testflight(
       api_key: api_key,
       app_identifier: IOS_BUNDLE_ID,
@@ -430,6 +441,8 @@ platform :ios do
       distribute_external: false,
       skip_waiting_for_build_processing: false,
     )
+    upload_duration_seconds =
+      (Process.clock_gettime(Process::CLOCK_MONOTONIC) - upload_started_at).round
     uploaded_build_exists = false
     6.times do |attempt|
       uploaded_build_exists = app_store_build_exists!(
@@ -449,6 +462,8 @@ platform :ios do
         "- Bundle ID: `#{IOS_BUNDLE_ID}`",
         "- Version: `#{version} (#{build_number})`",
         "- Ads: `#{ads_mode}`",
+        "- Archive: `#{archive_duration_seconds}s`",
+        "- Upload and processing: `#{upload_duration_seconds}s`",
         "- Result: exact build verified",
       ],
     )
