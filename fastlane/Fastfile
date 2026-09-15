@@ -333,6 +333,8 @@ platform :ios do
       [
         ads_xcargs,
         "CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{version}",
+        ENV["IOS_REUSE_CACHED_KMP_FRAMEWORKS"] == "true" ?
+          "OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED=YES" : nil,
         "-showBuildTimingSummary",
       ].compact.join(" ")
     UI.message("iOS release #{version} (#{build_number}) -> TestFlight")

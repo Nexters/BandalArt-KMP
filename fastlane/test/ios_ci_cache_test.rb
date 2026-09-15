@@ -51,4 +51,11 @@ unless ci_workflow.include?("Reuse cached Kotlin frameworks") &&
   raise "Exact iOS build cache hits must skip duplicate Kotlin framework builds"
 end
 
+unless release_workflow.include?("Reuse cached Kotlin frameworks") &&
+       release_workflow.include?("IOS_REUSE_CACHED_KMP_FRAMEWORKS") &&
+       fastfile.include?('ENV["IOS_REUSE_CACHED_KMP_FRAMEWORKS"] == "true"') &&
+       fastfile.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED=YES")
+  raise "Exact TestFlight build cache hits must reuse cached Kotlin frameworks"
+end
+
 puts "iOS CI cache configuration test passed"

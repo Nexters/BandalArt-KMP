@@ -244,6 +244,10 @@ jobs:
                     restore-keys: |
                         ios-device-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
+            -   name: Reuse cached Kotlin frameworks
+                if: steps.ios-build-cache.outputs.cache-hit == 'true'
+                run: ruby fastlane/scripts/prepare_cached_kmp_frameworks.rb iosApp/iosApp.xcodeproj/project.pbxproj
+
             -   name: Restore iOS release credentials
                 env:
                     CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
@@ -281,6 +285,7 @@ jobs:
                     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
                     APP_STORE_CONNECT_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_P8_BASE64 }}
                     IOS_ADS_MODE: ${{ inputs.ios_ads_mode }}
+                    IOS_REUSE_CACHED_KMP_FRAMEWORKS: ${{ steps.ios-build-cache.outputs.cache-hit }}
                     BANDALART_SUPABASE_URL: ${{ secrets.BANDALART_SUPABASE_URL }}
                     BANDALART_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.BANDALART_SUPABASE_PUBLISHABLE_KEY }}
                 run: |
