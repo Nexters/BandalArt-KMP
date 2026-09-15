@@ -142,7 +142,7 @@ jobs:
     ios:
         name: iOS host app build
         runs-on: macos-latest
-        timeout-minutes: 30
+        timeout-minutes: 60
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
