@@ -31,7 +31,7 @@ GitHub는 기본 브랜치 캐시를 신뢰 가능한 `push` workflow에서 유�
 
 ### 4.2 KMP framework cache
 
-아래 simulator framework를 별도 캐시한다.
+아래 simulator framework의 Gradle 실산출물과 DerivedData product link를 함께 별도 캐시한다. DerivedData의 framework는 `composeApp/build/xcode-frameworks/Release` 또는 `iosWidgetShared/build/xcode-frameworks/Release`를 가리키는 link이므로 link만 저장하면 새 runner에서 재사용할 수 없다.
 
 - `ComposeApp.framework`
 - `IosWidgetShared.framework`

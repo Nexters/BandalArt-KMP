@@ -237,12 +237,14 @@ jobs:
                 uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
                 with:
                     path: |
+                        composeApp/build/xcode-frameworks/Release
+                        iosWidgetShared/build/xcode-frameworks/Release
                         ${{ env.IOS_DERIVED_DATA_PATH }}/Build
                         ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
-                    key: ios-device-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
+                    key: ios-device-build-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
                     restore-keys: |
-                        ios-device-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+                        ios-device-build-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
             -   name: Reuse cached Kotlin frameworks
                 if: steps.ios-build-cache.outputs.cache-hit == 'true'
@@ -364,6 +366,8 @@ jobs:
                 uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
                 with:
                     path: |
+                        composeApp/build/xcode-frameworks/Release
+                        iosWidgetShared/build/xcode-frameworks/Release
                         ${{ env.IOS_DERIVED_DATA_PATH }}/Build
                         ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
