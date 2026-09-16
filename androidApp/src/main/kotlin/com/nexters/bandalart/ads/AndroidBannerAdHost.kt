@@ -38,6 +38,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
 import com.google.android.libraries.ads.mobile.sdk.banner.AdView
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRefreshCallback
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
@@ -92,6 +93,7 @@ class AndroidBannerAdHost(
                 LaunchedEffect(adView, isPreviewMode) {
                     if (isPreviewMode || !awaitAdsInitialized()) return@LaunchedEffect
 
+                    Napier.d("Banner ad request phase=initial", tag = "BannerAd")
                     adView.loadAd(
                         BannerAdRequest
                             .Builder(activity.getString(R.string.admob_banner_ad_unit_id), adSize)
@@ -104,9 +106,38 @@ class AndroidBannerAdHost(
                                         ad.destroy()
                                     } else {
                                         isLoaded = true
+                                        ad.bannerAdRefreshCallback =
+                                            object : BannerAdRefreshCallback {
+                                                override fun onAdRefreshed() {
+                                                    if (released.get()) return
+                                                    val refreshedAd = adView.getBannerAd()
+                                                    Napier.d(
+                                                        "Banner ad response phase=refresh " +
+                                                            "responseId=" +
+                                                            "${refreshedAd?.getResponseInfo()?.responseId} " +
+                                                            "instance=${refreshedAd?.identity()}",
+                                                        tag = "BannerAd",
+                                                    )
+                                                }
+
+                                                override fun onAdFailedToRefresh(adError: LoadAdError) {
+                                                    if (released.get()) return
+                                                    Log.w("BannerAd", "Banner ad refresh failed: $adError")
+                                                    Napier.w(
+                                                        "Banner ad response phase=refresh_failed " +
+                                                            "error=$adError",
+                                                        tag = "BannerAd",
+                                                    )
+                                                }
+                                            }
+                                        Napier.d(
+                                            "Banner ad response phase=initial " +
+                                                "responseId=${ad.getResponseInfo().responseId} " +
+                                                "instance=${ad.identity()}",
+                                            tag = "BannerAd",
+                                        )
                                     }
                                 }
-                                Napier.d("Banner ad loaded", tag = "BannerAd")
                             }
 
                             override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -128,3 +159,5 @@ private const val FIXED_BANNER_WIDTH_DP = 320
 private const val FIXED_BANNER_HEIGHT_DP = 50
 
 internal fun supportsFixedBanner(availableWidthDp: Float): Boolean = availableWidthDp >= FIXED_BANNER_WIDTH_DP
+
+private fun BannerAd.identity(): Int = System.identityHashCode(this)
