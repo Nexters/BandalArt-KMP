@@ -180,6 +180,7 @@ circuit-runtime = { group = "com.slack.circuit", name = "circuit-runtime", versi
 circuit-runtime-presenter = { group = "com.slack.circuit", name = "circuit-runtime-presenter", version.ref = "circuit" }
 circuit-runtime-ui = { group = "com.slack.circuit", name = "circuit-runtime-ui", version.ref = "circuit" }
 circuit-test = { group = "com.slack.circuit", name = "circuit-test", version.ref = "circuit" }
+circuitx-effects = { group = "com.slack.circuit", name = "circuitx-effects", version.ref = "circuit" }
 
 # Image Load
 coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }

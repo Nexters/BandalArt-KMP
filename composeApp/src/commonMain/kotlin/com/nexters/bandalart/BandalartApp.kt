@@ -63,6 +63,7 @@ fun BandalartApp(appGraph: AppGraph) {
                 val pendingWidgetLaunchId by
                     appGraph.bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
                 val currentScreen = backStack.topRecord?.screen ?: SplashScreen
+                TrackScreenView(currentScreen)
                 appGraph.exitDialogHost.Content(enabled = currentScreen is HomeScreen)
                 LaunchedEffect(pendingWidgetLaunchId, currentScreen) {
                     widgetLaunchDestination(currentScreen, pendingWidgetLaunchId)?.let { destination ->
