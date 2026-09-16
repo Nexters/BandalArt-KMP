@@ -205,6 +205,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
 private final class IosBannerAdView: UIView, BannerViewDelegate {
     private let bannerView = BannerView(adSize: AdSizeBanner)
     private var hasRequestedAd = false
+    private var successfulResponseCount = 0
 
     init(adUnitID: String) {
         super.init(frame: .zero)
@@ -230,15 +231,29 @@ private final class IosBannerAdView: UIView, BannerViewDelegate {
     func loadAdIfNeeded() {
         guard !hasRequestedAd else { return }
         hasRequestedAd = true
+        logBanner("request phase=initial")
         bannerView.load(Request())
     }
 
     func bannerViewDidReceiveAd(_ bannerView: BannerView) {
+        successfulResponseCount += 1
         bannerView.isHidden = false
+        let phase = successfulResponseCount == 1 ? "initial" : "refresh"
+        let responseID = bannerView.responseInfo?.responseIdentifier ?? "unknown"
+        logBanner("response phase=\(phase) responseId=\(responseID)")
     }
 
     func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
-        bannerView.isHidden = true
-        NSLog("Banner ad failed to load: %@", error.localizedDescription)
+        let phase = successfulResponseCount == 0 ? "initial_failed" : "refresh_failed"
+        if successfulResponseCount == 0 {
+            bannerView.isHidden = true
+        }
+        NSLog("Banner ad response phase=%@ error=%@", phase, error.localizedDescription)
+    }
+
+    private func logBanner(_ message: String) {
+#if DEBUG || BANDALART_TEST_ADS
+        NSLog("Banner ad %@", message)
+#endif
     }
 }
