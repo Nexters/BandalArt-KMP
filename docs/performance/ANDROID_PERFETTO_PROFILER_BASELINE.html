@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>반다라트 Android 성능 측정 기준선</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: light-dark(#f7f8fa, #121417);
+      --surface: light-dark(#ffffff, #1b1f24);
+      --foreground: light-dark(#17191d, #f1f3f5);
+      --muted: light-dark(#5f6670, #a8b0ba);
+      --border: light-dark(#dde1e6, #343a42);
+      --accent: light-dark(#2168d5, #73a7ff);
+      --accent-soft: light-dark(#e7f0ff, #1d3354);
+      --warning: light-dark(#b54708, #ffb86b);
+      --warning-soft: light-dark(#fff1e6, #4b2b16);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 56px;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(1.65rem, 4vw, 2.35rem); }
+    h2 { margin-bottom: 6px; font-size: 1.15rem; }
+
+    .meta, .caption, footer {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      margin-bottom: 28px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .metric-label { color: var(--muted); font-size: 0.9rem; }
+    .metric-value { margin: 5px 0 2px; font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .metric-detail { font-size: 0.88rem; }
+
+    .panels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .rows { display: grid; gap: 17px; margin-top: 18px; }
+    .row { display: grid; gap: 7px; }
+
+    .row-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.92rem;
+    }
+
+    .value { font-variant-numeric: tabular-nums; text-align: right; }
+
+    .track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: var(--accent-soft);
+    }
+
+    .bar {
+      height: 100%;
+      min-width: 4px;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    .result {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-top: 20px;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      font-size: 0.92rem;
+    }
+
+    .result.warning { background: var(--warning-soft); }
+
+    .dot {
+      flex: 0 0 auto;
+      width: 9px;
+      height: 9px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .warning .dot { background: var(--warning); }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .detail {
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .detail strong { display: block; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p { margin-bottom: 7px; }
+    a { color: var(--accent); }
+
+    @media (max-width: 760px) {
+      .metrics, .panels { grid-template-columns: 1fr; }
+      .details { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      main { width: min(100% - 22px, 1080px); padding-top: 24px; }
+      .row-head { grid-template-columns: 1fr; gap: 1px; }
+      .value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>반다라트 Android 성능 측정 기준선</h1>
+      <div class="meta" aria-label="측정 환경">
+        <span>릴리스 2.5.0 (20500)</span>
+        <span>SM-S936N · Android API 36</span>
+        <span>Perfetto + Android Profiler</span>
+        <span>2026-09-16</span>
+      </div>
+    </header>
+
+    <section class="metrics" aria-label="핵심 측정값">
+      <article class="metric">
+        <div class="metric-label">콜드 스타트</div>
+        <div class="metric-value">179.8 ms</div>
+        <div class="metric-detail">릴리스 첫 화면 표시</div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">포그라운드 메모리</div>
+        <div class="metric-value">182.5 MiB</div>
+        <div class="metric-detail">익명 메모리(RSS + 스왑) 최대</div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">백그라운드 메모리</div>
+        <div class="metric-value">110.0 MiB</div>
+        <div class="metric-detail">익명 메모리(RSS + 스왑) 최대</div>
+      </article>
+    </section>
+
+    <section class="panels">
+      <article class="panel">
+        <h2>Play 메모리 기준 대비</h2>
+        <p class="caption">실측 최대값 / 해당 기기 RAM 등급 기준</p>
+
+        <div class="rows">
+          <div class="row">
+            <div class="row-head"><span>포그라운드</span><span class="value">182.5 MiB / 3.25 GB · 약 5.5%</span></div>
+            <div class="track" role="progressbar" aria-label="포그라운드 메모리 기준 사용률" aria-valuenow="5.5" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:5.5%"></div></div>
+          </div>
+          <div class="row">
+            <div class="row-head"><span>백그라운드</span><span class="value">110.0 MiB / 1.75 GB · 약 6.1%</span></div>
+            <div class="track" role="progressbar" aria-label="백그라운드 메모리 기준 사용률" aria-valuenow="6.1" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:6.1%"></div></div>
+          </div>
+          <div class="row">
+            <div class="row-head"><span>백그라운드 비트맵</span><span class="value">1.86 MiB / 200 MB · 약 0.9%</span></div>
+            <div class="track" role="progressbar" aria-label="백그라운드 비트맵 기준 사용률" aria-valuenow="0.9" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:0.9%"></div></div>
+          </div>
+        </div>
+
+        <div class="result"><span class="dot" aria-hidden="true"></span><strong>현재 실측에서 메모리 위험 신호 없음</strong></div>
+      </article>
+
+      <article class="panel">
+        <h2>콜드 스타트 주요 구간</h2>
+        <p class="caption">179.8ms 전체 대비 · 구간은 일부 중첩 가능</p>
+
+        <div class="rows">
+          <div class="row">
+            <div class="row-head"><span>액티비티 재개</span><span class="value">54.4 ms</span></div>
+            <div class="track" role="progressbar" aria-label="액티비티 재개 시간 비율" aria-valuenow="30.3" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:30.3%"></div></div>
+          </div>
+          <div class="row">
+            <div class="row-head"><span>애플리케이션 바인딩</span><span class="value">34.6 ms</span></div>
+            <div class="track" role="progressbar" aria-label="애플리케이션 바인딩 시간 비율" aria-valuenow="19.2" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:19.2%"></div></div>
+          </div>
+          <div class="row">
+            <div class="row-head"><span>DEX 열기</span><span class="value">32.5 ms</span></div>
+            <div class="track" role="progressbar" aria-label="DEX 열기 시간 비율" aria-valuenow="18.1" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:18.1%"></div></div>
+          </div>
+          <div class="row">
+            <div class="row-head"><span>첫 Compose 순회</span><span class="value">27.9 ms</span></div>
+            <div class="track" role="progressbar" aria-label="첫 Compose 순회 시간 비율" aria-valuenow="15.5" aria-valuemin="0" aria-valuemax="100"><div class="bar" style="width:15.5%"></div></div>
+          </div>
+        </div>
+
+        <div class="result warning"><span class="dot" aria-hidden="true"></span><span><strong>첫 프레임 27.4ms · 버벅임 발생</strong><br>광고 SDK WebView 백그라운드 대기 최대 63.9ms</span></div>
+      </article>
+    </section>
+
+    <section class="details" aria-label="보조 측정값">
+      <div class="detail"><strong>58.8 → 12.1 MiB</strong><span class="caption">홈 전환 후 그래픽 메모리</span></div>
+      <div class="detail"><strong>10.2 ms</strong><span class="caption">시작 중 메인 스레드 입출력 대기</span></div>
+      <div class="detail"><strong>누수 0건</strong><span class="caption">디버그 힙 87 MiB 단일 스냅샷</span></div>
+    </section>
+
+    <footer>
+      <p><strong>다음 측정 후보:</strong> 광고 SDK 초기화를 첫 광고 요청 시점까지 지연한 전후 추적 비교. 기준 프로필(Baseline Profile)은 기존 적용 상태를 유지하며 이번 작업 범위에서 제외한다.</p>
+      <p>단일 실기기·단일 실행 기준으로, Play Console의 28일간 90백분위수(P90) 통계를 대체하지 않는다. 캐시 상태는 이번 측정 범위에 포함하지 않았다.</p>
+      <p>기준: <a href="https://support.google.com/googleplay/android-developer/answer/17492799?hl=ko">Google Play 기술 품질 요구사항</a></p>
+    </footer>
+  </main>
+</body>
+</html>
