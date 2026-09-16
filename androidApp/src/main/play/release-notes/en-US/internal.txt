@@ -1,2 +1,2 @@
-• Reset completion checks now or automatically each day from ⋮ > Routine settings on Home.
-• Added a one-time tip to help you discover the new routine feature.
+• Verify that the Home banner refreshes reliably and remains visible if a refresh fails.
+• Improved screen usage, app startup, and network performance monitoring.
