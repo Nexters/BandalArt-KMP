@@ -97,6 +97,7 @@ kotlin {
             implementation(libs.circuit.foundation)
             implementation(libs.circuit.runtime.presenter)
             implementation(libs.circuit.runtime.ui)
+            implementation(libs.circuitx.effects)
 
             implementation(libs.cmptoast)
             implementation(libs.jindong.compose)
