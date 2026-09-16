@@ -141,7 +141,7 @@
 
 - [문서 정보 구조 정리 전략](project/DOCS_INFORMATION_ARCHITECTURE_STRATEGY.md)
 
-## Performance
+## 성능
 
 - [Android Perfetto·Profiler 측정 기준선](performance/ANDROID_PERFETTO_PROFILER_BASELINE.html)
 
