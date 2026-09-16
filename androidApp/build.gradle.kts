@@ -8,6 +8,7 @@ plugins {
     id("bandalart.kotest")
     alias(libs.plugins.google.service)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.performance)
     alias(libs.plugins.baselineprofile)
     alias(libs.plugins.play.publisher)
 }
@@ -127,6 +128,7 @@ dependencies {
     implementation(libs.app.update)
 
     implementation(libs.firebase.common)
+    implementation(libs.firebase.performance)
     implementation(libs.google.mobile.ads.next.gen)
 
     implementation(libs.cmptoast)
