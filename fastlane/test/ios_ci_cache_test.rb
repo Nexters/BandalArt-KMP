@@ -1,5 +1,6 @@
 repo_root = File.expand_path("../..", __dir__)
 ci_workflow = File.read(File.join(repo_root, ".github/workflows/android-ci.yml"))
+seed_workflow = File.read(File.join(repo_root, ".github/workflows/ios-cache-seed.yml"))
 release_workflow = File.read(File.join(repo_root, ".github/workflows/release-cd.yml"))
 fastfile = File.read(File.join(repo_root, "fastlane/Fastfile"))
 gradle_properties = File.read(File.join(repo_root, "gradle.properties"))
@@ -17,6 +18,7 @@ kmp_cache_script = File.read(File.join(repo_root, "fastlane/scripts/prepare_cach
 end
 
 unless ci_workflow.include?("Detect iOS build inputs") &&
+       ci_workflow.include?(".github/workflows/ios-cache-seed.yml") &&
        ci_workflow.include?("needs.changes.outputs.ios == 'true'") &&
        ci_workflow.match?(/success\|skipped/)
   raise "PR CI must skip the iOS build only when iOS inputs are unchanged"
@@ -45,10 +47,24 @@ unless ci_workflow.include?("cache-read-only: false")
 end
 
 unless ci_workflow.include?("Reuse cached Kotlin frameworks") &&
+       ci_workflow.include?("Restore KMP framework cache") &&
+       ci_workflow.include?("ios-kmp-frameworks-v1-") &&
+       ci_workflow.include?("steps.kmp-framework-cache.outputs.cache-hit") &&
        ci_workflow.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED") &&
        kmp_cache_script.include?("ComposeApp.framework") &&
        kmp_cache_script.include?("IosWidgetShared.framework")
   raise "Exact iOS build cache hits must skip duplicate Kotlin framework builds"
+end
+
+unless seed_workflow.include?("iOS Cache Seed") &&
+       seed_workflow.include?("branches:") &&
+       seed_workflow.include?("- main") &&
+       seed_workflow.include?("workflow_dispatch:") &&
+       seed_workflow.include?("Restore KMP framework cache") &&
+       seed_workflow.include?("Save KMP framework cache") &&
+       seed_workflow.include?("ios-kmp-frameworks-v1-") &&
+       seed_workflow.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED")
+  raise "Trusted main builds must seed the shared iOS and KMP caches"
 end
 
 unless release_workflow.include?("Reuse cached Kotlin frameworks") &&

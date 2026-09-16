@@ -39,9 +39,11 @@ jobs:
                     set +e
                     git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- \
                         .github/workflows/android-ci.yml \
+                        .github/workflows/ios-cache-seed.yml \
                         build-logic \
                         composeApp \
                         core \
+                        fastlane/scripts/prepare_cached_kmp_frameworks.rb \
                         feature \
                         gradle \
                         iosApp \
@@ -235,12 +237,21 @@ jobs:
                         ${{ env.IOS_DERIVED_DATA_PATH }}/Build
                         ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
-                    key: ios-simulator-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
+                    key: ios-xcode-simulator-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
                     restore-keys: |
-                        ios-simulator-build-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+                        ios-xcode-simulator-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+
+            -   name: Restore KMP framework cache
+                id: kmp-framework-cache
+                uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/ComposeApp.framework
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/IosWidgetShared.framework
+                    key: ios-kmp-frameworks-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**', 'gradle.properties') }}
 
             -   name: Reuse cached Kotlin frameworks
-                if: steps.ios-build-cache.outputs.cache-hit == 'true'
+                if: steps.kmp-framework-cache.outputs.cache-hit == 'true'
                 run: ruby fastlane/scripts/prepare_cached_kmp_frameworks.rb iosApp/iosApp.xcodeproj/project.pbxproj
 
             -   name: Generate build properties
@@ -283,7 +294,7 @@ jobs:
                         -showBuildTimingSummary \
                         ARCHS=arm64 \
                         CODE_SIGNING_ALLOWED=NO \
-                        OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED="${{ steps.ios-build-cache.outputs.cache-hit == 'true' && 'YES' || 'NO' }}" \
+                        OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED="${{ steps.kmp-framework-cache.outputs.cache-hit == 'true' && 'YES' || 'NO' }}" \
                         build 2>&1 | tee "$RUNNER_TEMP/ios-xcodebuild.log"
 
             -   name: Report iOS build performance
@@ -293,6 +304,8 @@ jobs:
                     DEPENDENCY_CACHE_KEY: ${{ steps.ios-dependency-cache.outputs.cache-matched-key }}
                     BUILD_CACHE_HIT: ${{ steps.ios-build-cache.outputs.cache-hit }}
                     BUILD_CACHE_KEY: ${{ steps.ios-build-cache.outputs.cache-matched-key }}
+                    KMP_CACHE_HIT: ${{ steps.kmp-framework-cache.outputs.cache-hit }}
+                    KMP_CACHE_KEY: ${{ steps.kmp-framework-cache.outputs.cache-matched-key }}
                 run: |
                     cache_state() {
                         if test "$1" = "true"; then
@@ -314,6 +327,7 @@ jobs:
                         printf -- '- Elapsed: `%s`\n' "$ELAPSED_LABEL"
                         printf -- '- Dependencies: `%s`\n' "$(cache_state "$DEPENDENCY_CACHE_HIT" "$DEPENDENCY_CACHE_KEY")"
                         printf -- '- Build intermediates: `%s`\n' "$(cache_state "$BUILD_CACHE_HIT" "$BUILD_CACHE_KEY")"
+                        printf -- '- KMP frameworks: `%s`\n' "$(cache_state "$KMP_CACHE_HIT" "$KMP_CACHE_KEY")"
                         if test -f "$RUNNER_TEMP/ios-xcodebuild.log"; then
                             printf '\n```text\n'
                             sed -n '/Build Timing Summary/,$p' "$RUNNER_TEMP/ios-xcodebuild.log" | head -40
@@ -360,6 +374,15 @@ jobs:
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
                     key: ${{ steps.ios-build-cache.outputs.cache-primary-key }}
 
+            -   name: Save KMP framework cache
+                if: ${{ success() && steps.kmp-framework-cache.outputs.cache-hit != 'true' }}
+                uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+                with:
+                    path: |
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/ComposeApp.framework
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/IosWidgetShared.framework
+                    key: ${{ steps.kmp-framework-cache.outputs.cache-primary-key }}
+
     release_cd:
         name: Release CD validation
         runs-on: macos-latest
@@ -403,6 +426,7 @@ jobs:
                 run: |
                     "$RUNNER_TEMP/actionlint" \
                         .github/workflows/android-ci.yml \
+                        .github/workflows/ios-cache-seed.yml \
                         .github/workflows/play-store-screenshots.yml \
                         .github/workflows/release-cd.yml
                     bundle exec ruby fastlane/test/app_store_connect_builds_test.rb
