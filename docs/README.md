@@ -136,6 +136,7 @@
 - [Fastlane Android/iOS CD 복구](releases/automation/FASTLANE_CD_RECOVERY_STRATEGY.md)
 - [Google Play 스크린샷 업로드 자동화](releases/automation/PLAY_SCREENSHOT_UPLOAD_AUTOMATION_STRATEGY.md)
 - [iOS CI 캐시 최적화 결과](releases/automation/IOS_CI_CACHE_RESULTS.html)
+- [iOS CI 공유 캐시 전략](releases/automation/IOS_CI_SHARED_CACHE_STRATEGY.md)
 - [Xcode Cloud 도입 검토](releases/automation/XCODE_CLOUD_ADOPTION_RESEARCH.md)
 
 ## Project
