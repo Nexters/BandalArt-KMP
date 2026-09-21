@@ -77,6 +77,7 @@
 - [AdMob 광고 ID와 운영 검증 가이드](features/ads/ADMOB_AD_ID_POLICY_GUIDE.md)
 - [Android 종료 다이얼로그 광고 구조 결정](features/ads/ANDROID_EXIT_DIALOG_NATIVE_AD_ARCHITECTURE_STRATEGY.md)
 - [Android AdMob 미노출 트러블슈팅](features/ads/ADMOB_ANDROID_TROUBLESHOOTING.md)
+- [iOS AdMob app-ads.txt 인증 조사](features/ads/IOS_ADMOB_APP_ADS_TXT_VERIFICATION_RESEARCH.md)
 - [AdMob 홈 하단 배너](features/ads/ADMOB_HOME_BANNER_STRATEGY.md)
 - [AdMob 광고 갱신 검증](features/ads/ADMOB_AD_REFRESH_VERIFICATION.md)
 - [AdMob 보상형 생성 gate](features/ads/ADMOB_REWARDED_CREATE_GATE_STRATEGY.md)
