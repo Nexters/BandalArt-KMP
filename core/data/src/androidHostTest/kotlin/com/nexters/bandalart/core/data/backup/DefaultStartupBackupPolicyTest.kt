@@ -21,17 +21,18 @@ import com.nexters.bandalart.core.domain.backup.CloudBackupRepository
 import com.nexters.bandalart.core.domain.backup.StartupBackupDecision
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class DefaultStartupBackupPolicyTest {
     @Test
-    fun localDataStillChecksTheRemoteBackupWithoutOfferingRestore() =
+    fun localDataSkipsTheRemoteBackupCheck() =
         runTest {
             val repository = FakeCloudBackupRepository(hasLocalData = true, backup = METADATA)
 
             assertEquals(StartupBackupDecision.Continue, DefaultStartupBackupPolicy(repository).evaluate())
-            assertTrue(repository.findBackupCalled)
+            assertFalse(repository.findBackupCalled)
         }
 
     @Test
