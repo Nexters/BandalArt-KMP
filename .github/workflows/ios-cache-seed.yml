@@ -105,13 +105,11 @@ jobs:
 
             -   name: Generate build properties
                 env:
-                    SERVER_BASE_URL: ${{ secrets.SERVER_BASE_URL }}
                     STORE_FILE: ${{ secrets.STORE_FILE }}
                     STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
                     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
                     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
                 run: |
-                    printf 'SERVER_BASE_URL=%s\n' "$SERVER_BASE_URL" > secrets.properties
                     printf 'STORE_FILE=%s\n' "$STORE_FILE" > keystore.properties
                     printf 'STORE_PASSWORD=%s\n' "$STORE_PASSWORD" >> keystore.properties
                     printf 'KEY_ALIAS=%s\n' "$KEY_ALIAS" >> keystore.properties

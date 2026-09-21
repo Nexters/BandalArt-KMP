@@ -64,7 +64,6 @@
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
 - `PLAY_SERVICE_ACCOUNT_JSON`: Play Console 서비스 계정 JSON 원문
-- `SERVER_BASE_URL`
 
 기존 `STORE_FILE`은 runner가 안전한 임시 경로를 직접 쓰므로 CD에서는 사용하지 않는다.
 
