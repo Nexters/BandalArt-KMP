@@ -345,6 +345,8 @@ Parcelize plugin을 활성화하는 annotation을 `expect`/`actual typealias`로
 
 참고: [Parcelize setup for Kotlin Multiplatform](https://developer.android.com/kotlin/parcelize#setup_parcelize_for_kotlin_multiplatform)
 
+`@Parcelize`와의 차이, `ParcelableScreen`·`StaticScreen`의 역할, 새 Screen 추가 체크리스트는 [Circuit Screen과 CommonParcelize 가이드](../circuit/CIRCUIT_SCREEN_PARCELIZE_GUIDE.md)를 따른다.
+
 ## 17. `rememberCircuitNavigator`의 Android 전용 기본 root pop
 
 ### 증상
