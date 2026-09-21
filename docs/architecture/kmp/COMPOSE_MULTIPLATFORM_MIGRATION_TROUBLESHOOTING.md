@@ -86,7 +86,7 @@ UI composable은 `stringResource()`를 사용하고 effect나 suspend 경로는 
 현재 예시는 다음 위치에서 확인한다:
 
 - `feature/complete/src/commonMain/kotlin/com/nexters/bandalart/feature/complete/HandleCompleteEffects.kt`: effect handler에서 `getString()` 후 toast 표시
-- `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/HomeScreen.kt`: UI effect에서 `getString()` 후 toast, snackbar, 공유 문구 처리
+- `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/Home.kt`: UI effect에서 `getString()` 후 toast, snackbar, 공유 문구 처리
 - `feature/home/src/androidMain/kotlin/com/nexters/bandalart/feature/home/FlexibleUpdateEffect.android.kt`: Android update 메시지 처리
 
 resource Application Programming Interface (API)는 [Compose Multiplatform resources](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources.html)를 기준으로 사용한다. CMPToast의 하단 여백과 시각 디자인은 resource 접근 문제와 다른 제품 개선이므로 별도 이슈로 다룬다.

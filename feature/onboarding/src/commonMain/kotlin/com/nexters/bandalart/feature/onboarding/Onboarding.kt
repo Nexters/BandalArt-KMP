@@ -55,14 +55,10 @@ import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray50
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
-import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.core.ui.component.BandalartButton
 import com.nexters.bandalart.core.ui.component.LottieImage
 import com.nexters.bandalart.core.ui.component.PagerIndicator
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.ParcelableScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.stringResource
@@ -70,17 +66,6 @@ import org.jetbrains.compose.resources.vectorResource
 
 private const val ONBOARDING_KR_LOTTIE_FILE = "files/onboarding_kr.json"
 private const val ONBOARDING_EN_LOTTIE_FILE = "files/onboarding_en.json"
-
-@CommonParcelize
-data object OnboardingScreen : ParcelableScreen {
-    data class State(
-        val eventSink: (Event) -> Unit,
-    ) : CircuitUiState
-
-    sealed interface Event : CircuitUiEvent {
-        data object NavigateToHome : Event
-    }
-}
 
 @CircuitInject(OnboardingScreen::class, AppScope::class)
 @Inject

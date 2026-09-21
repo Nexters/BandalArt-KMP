@@ -160,7 +160,7 @@ Home이 여러 dialog와 bottom sheet를 nullable state로 관리한다. Circuit
 - [Circuit 0.35.1 `ContentWithOverlays`](https://github.com/slackhq/circuit/blob/2b5819a716a0fa9861501ba35aa51cb64068c366/circuit-overlay/src/commonMain/kotlin/com/slack/circuit/overlay/ContentWithOverlays.kt#L38-L94)
 - [Circuit Overlay와 PopResult 비교](https://github.com/slackhq/circuit/blob/2b5819a716a0fa9861501ba35aa51cb64068c366/docs/docs/overlays.md#L73-L88)
 - [Circuit Overlay 테스트 recipe](https://github.com/slackhq/circuit/blob/2b5819a716a0fa9861501ba35aa51cb64068c366/docs/recipes/test-an-overlay.md#L3-L9)
-- `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/HomeCircuitScreen.kt`
+- `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/HomeScreen.kt`
 - `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/presenter/HomePresenter.kt`
 - `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/HomeBottomSheets.kt`
 - `feature/home/src/commonMain/kotlin/com/nexters/bandalart/feature/home/HomeDialogs.kt`

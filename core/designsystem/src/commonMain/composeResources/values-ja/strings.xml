@@ -10,16 +10,16 @@
     <string name="action_delete">削除</string>
     <string name="action_retry">再試行</string>
 
-    <!-- OnBoardingScreen.kt -->
+    <!-- Onboarding.kt -->
     <string name="onboarding_first_title">複雑で手に負えない\nマンダラートにさようなら！</string>
     <string name="onboarding_second_title">今からバンダラートと一緒に\n気軽に計画を立ててみましょう</string>
     <string name="onboarding_start">始める</string>
 
-    <!-- CompleteScreen.kt -->
+    <!-- Complete.kt -->
     <string name="complete_title">バンダラートのすべての目標を達成しました。\n素晴らしいですね！</string>
     <string name="complete_chart">達成完了バンダラート</string>
 
-    <!--  HomeScreen.kt -->
+    <!--  Home.kt -->
     <string name="home_default_emoji">default emoji</string>
     <string name="home_share_url">私が作ったバンダラートを見に来てください！\n%1$s</string>
     <string name="home_empty_title">メイン目標を入力してください</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 easyhooon
+ * Copyright 2025 easyhooon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nexters.bandalart.feature.splash
+package com.nexters.bandalart.feature.onboarding
 
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -22,12 +22,12 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.ParcelableScreen
 
 @CommonParcelize
-data object SplashScreen : ParcelableScreen {
+data object OnboardingScreen : ParcelableScreen {
     data class State(
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
-        data object CheckOnboardingStatus : Event
+        data object NavigateToHome : Event
     }
 }
