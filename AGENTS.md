@@ -21,6 +21,13 @@
 - base는 명시된 값이 우선이며, 없으면 브랜치 이력과 이슈 계획에서 추론하고 최종 fallback은 `main`이다.
 - 관련 없는 변경을 같은 브랜치나 PR에 섞지 않는다.
 
+## GitHub 계정
+
+- 이 프로젝트의 GitHub 작업은 `easyhooon` 계정으로 수행한다.
+- remote push, PR 생성·수정·머지, issue 생성·수정, release와 workflow 실행 전에 `gh auth switch --hostname github.com --user easyhooon`을 실행한다.
+- 계정 전환 후 `gh api user --jq .login` 결과가 `easyhooon`인지 확인한다. 전환이나 검증에 실패하면 원격 작업을 중단한다.
+- 프로젝트 작업이 끝나도 다른 GitHub 계정으로 자동 복구하지 않는다.
+
 ## 커밋과 push
 
 - 요청받지 않은 경우 커밋하거나 push하지 않는다.

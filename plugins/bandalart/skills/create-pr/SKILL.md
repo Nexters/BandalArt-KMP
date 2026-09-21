@@ -18,7 +18,7 @@ description: BandalArt PR 템플릿을 보존해 GitHub PR을 생성한다. 사�
 3. base를 fetch하고 commit 목록과 `git diff origin/{base}...{head} --stat`을 확인한다.
 4. branch, commit, 문서와 대화에서 관련 GitHub issue를 찾는다. 불확실하면 issue 번호를 만들지 않는다.
 5. `.github/PULL_REQUEST_TEMPLATE.md`를 완전히 읽고 HTML 주석과 section 구조를 유지한다.
-6. 작업 설명과 실제 검증 결과만 작성한다. umbrella issue의 일부 단계라면 `Close` 대신 `#번호`로 연결한다.
+6. 작업 설명과 실제 검증 결과만 작성한다. 본문 bullet은 짧은 명사형으로 쓰고 `~했습니다`, `~합니다`, `~습니다` 같은 서술형 종결을 반복하지 않는다. umbrella issue의 일부 단계라면 `Close` 대신 `#번호`로 연결한다.
 7. 다음 중 실제 존재하는 label 하나를 선택한다.
    - `feat:` → `feature`
    - `fix:` → `hotfix`
