@@ -3,7 +3,8 @@
 - 문서 유형: `STRATEGY`
 - 대상 독자: Android 광고 기능을 수정하거나 검증하는 개발자
 - 결정일: 2026-09-08
-- 상태: 현재 구조 유지, 후속 수명주기 수정 필요
+- 상태: 현재 구조 유지, 후속 수명주기 수정은 #390(PR #391)에서 반영, `onRelease` 정리는 미결정
+- 갱신일: 2026-09-21
 - 검토 기준: BandalArt `origin/main` `5303c721c0ea221302aedcdc47a37272ea914ee1`, YeoBee PR #522 `6e9daada6fa49ef0c54748af48de25e618e6b146`
 
 이 문서는 Android 종료 다이얼로그 네이티브 광고에 YeoBee PR #522의 구조를 적용할지 결정한다. BandalArt는 백버튼 시점의 광고를 고정하는 단발 로드 구조를 유지하고, YeoBee의 다중 지면 갱신 상태 머신은 도입하지 않는다.
@@ -62,13 +63,13 @@ YeoBee의 검토 버전은 홈 14s와 종료 다이얼로그 10s를 기본 갱�
 
 근거는 [Google AdMob 구현 가이드](https://support.google.com/admob/answer/2936217)다. 네이티브 광고 캐시는 1시간 뒤 교체하고 사용이 끝난 광고는 `destroy()`해야 한다는 기준은 [Android 네이티브 광고 로드 가이드](https://developers.google.com/admob/android/next-gen/native)의 수명주기와 일치한다.
 
-BandalArt도 광고를 표시한 뒤 취소하면 `recycle()`에서 다음 광고를 즉시 요청한다. 빠른 반복 진입에서는 요청 간격이 60s보다 짧아질 수 있다. 자동 갱신 타이머를 추가하지 않고 최소 요청 간격만 보장할지 후속 이슈에서 결정한다.
+BandalArt도 광고를 표시한 뒤 취소하면 `recycle()`에서 다음 광고를 즉시 요청한다. 빠른 반복 진입에서는 요청 간격이 60s보다 짧아질 수 있다. 자동 갱신 타이머를 추가하지 않고 최소 요청 간격만 보장할지 후속 이슈에서 결정한다. 이 결정은 이슈 #390(PR #391)에서 최소 60s 요청 간격 적용으로 반영됐다.
 
 ## 수명주기 리뷰 결과
 
 현재 구현은 중복 요청, 만료 광고, 늦은 callback, 교체와 화면 파기 경로를 처리한다. `generation`이 오래된 callback을 무효화하며, 저장하지 않는 광고도 `destroy()`한다.
 
-다음 결함은 별도 수정이 필요하다:
+리뷰 시점에는 다음 결함이 있었고 이슈 #390(PR #391)에서 수정했다. 2026-09-21 기준 `origin/main`의 `AndroidExitDialogHost`는 `enabled=false`에서 세션을 닫고 표시된 광고를 `discard()`한다:
 
 - `androidApp/src/main/kotlin/com/nexters/bandalart/ads/AndroidExitDialogHost.kt:70`에서 `enabled=false`가 되면 `showDialog`만 내리고 `ExitDialogAdSession`을 닫지 않는다
 - 위젯 또는 외부 navigation이 Home을 교체하면 이미 노출된 광고가 preloader에 남을 수 있다
@@ -103,8 +104,8 @@ BandalArt도 광고를 표시한 뒤 취소하면 `recycle()`에서 다음 광�
 
 ## 후속 작업과 미결정 사항
 
-후속 작업은 현재 문제를 닫은 뒤 각각 독립적으로 진행한다:
+후속 작업은 현재 문제를 닫은 뒤 각각 독립적으로 진행한다. 반영 상태는 2026-09-21 기준이다:
 
-1. `enabled=false` 경로에서 광고 세션을 종료하고 off-screen 재요청을 막는다.
-2. 광고 요청 사이에 60s 최소 간격을 둘지 광고 요청 로그와 반복 진입 동작으로 결정한다.
-3. 네이티브 광고 컨테이너를 다시 수정할 때 `AndroidView.onRelease` 명시적 정리를 검토한다.
+1. `enabled=false` 경로에서 광고 세션을 종료하고 off-screen 재요청을 막는다. 반영됨(#390, PR #391)
+2. 광고 요청 사이에 60s 최소 간격을 둘지 광고 요청 로그와 반복 진입 동작으로 결정한다. 최소 60s 간격 적용(#390, PR #391)
+3. 네이티브 광고 컨테이너를 다시 수정할 때 `AndroidView.onRelease` 명시적 정리를 검토한다. 미결정. `onRelease`는 현재 `AndroidBannerAdHost`에만 있고 네이티브 광고 컨테이너에는 없다.
