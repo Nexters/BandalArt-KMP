@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>BandalArt 앱 통계 · 2026-09-15</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #eef2f8;
+      --text: #19202a;
+      --muted: #687386;
+      --line: #dfe5ee;
+      --ios: #147ce5;
+      --android: #168b50;
+      --accent: #6b5ce7;
+      --warning-bg: #fff7dd;
+      --warning-text: #775c00;
+      --shadow: 0 12px 34px rgba(28, 39, 56, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101319;
+        --surface: #191e27;
+        --surface-soft: #222936;
+        --text: #f1f4f9;
+        --muted: #aab4c4;
+        --line: #323a48;
+        --ios: #64a8ff;
+        --android: #59d28e;
+        --accent: #a69cff;
+        --warning-bg: #3b3219;
+        --warning-text: #ffe49a;
+        --shadow: 0 16px 38px rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 48px auto 72px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.18;
+      letter-spacing: -0.035em;
+    }
+
+    h2 {
+      margin-bottom: 18px;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .as-of {
+      flex: none;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .hero,
+    .panel,
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 42px;
+      align-items: center;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .hero-label,
+    .metric-label,
+    .bar-meta,
+    .caption {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-value {
+      margin: 2px 0 4px;
+      font-size: clamp(52px, 8vw, 76px);
+      font-weight: 750;
+      line-height: 1;
+      letter-spacing: -0.055em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-note {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .bars {
+      display: grid;
+      gap: 20px;
+    }
+
+    .bar-heading,
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bar-heading {
+      margin-bottom: 8px;
+      font-weight: 650;
+    }
+
+    .track {
+      height: 12px;
+      overflow: hidden;
+      background: var(--surface-soft);
+      border-radius: 999px;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .fill.ios {
+      width: 45.6%;
+      background: var(--ios);
+    }
+
+    .fill.android {
+      width: 54.4%;
+      background: var(--android);
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .panel {
+      padding: 26px;
+    }
+
+    .platform-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot.ios {
+      background: var(--ios);
+    }
+
+    .dot.android {
+      background: var(--android);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      min-height: 138px;
+      padding: 18px;
+      border-radius: 16px;
+      box-shadow: none;
+    }
+
+    .metric-value {
+      margin: 12px 0 4px;
+      font-size: 31px;
+      font-weight: 730;
+      line-height: 1;
+      letter-spacing: -0.035em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-context {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .data-panel {
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.03em;
+    }
+
+    td:nth-child(2),
+    th:nth-child(2) {
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .notice {
+      padding: 18px 20px;
+      background: var(--warning-bg);
+      border-radius: 14px;
+      color: var(--warning-text);
+      font-size: 14px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      main {
+        margin-top: 28px;
+      }
+
+      header,
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .as-of {
+        text-align: left;
+      }
+
+      .hero,
+      .platform-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        gap: 28px;
+        padding: 24px;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">BandalArt Store Metrics</p>
+        <h1>앱 설치·사용 지표</h1>
+      </div>
+      <p class="as-of">기록일 2026-09-15 KST<br>콘솔 최신 완료값 기준</p>
+    </header>
+
+    <section class="hero" aria-labelledby="download-summary">
+      <div>
+        <p class="hero-label" id="download-summary">플랫폼별 누적 신규 다운로드</p>
+        <p class="hero-value">1,710</p>
+        <p class="hero-note">iOS와 Android 수치의 단순 합계</p>
+      </div>
+      <div class="bars" aria-label="플랫폼별 누적 신규 다운로드 비교">
+        <div>
+          <div class="bar-heading"><span>iOS</span><span>780</span></div>
+          <div class="track" role="progressbar" aria-label="iOS 다운로드 비중" aria-valuenow="45.6" aria-valuemin="0" aria-valuemax="100">
+            <div class="fill ios"></div>
+          </div>
+          <div class="bar-meta"><span>최초 다운로드</span><span>45.6%</span></div>
+        </div>
+        <div>
+          <div class="bar-heading"><span>Android</span><span>930</span></div>
+          <div class="track" role="progressbar" aria-label="Android 다운로드 비중" aria-valuenow="54.4" aria-valuemin="0" aria-valuemax="100">
+            <div class="fill android"></div>
+          </div>
+          <div class="bar-meta"><span>신규 사용자 획득</span><span>54.4%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="platform-grid">
+      <section class="panel" aria-labelledby="ios-title">
+        <h2 class="platform-title" id="ios-title"><span class="dot ios" aria-hidden="true"></span>iOS</h2>
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="metric-label">최초 다운로드</div>
+            <div class="metric-value">780</div>
+            <p class="metric-context">신규 사용자 규모</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">전체 다운로드</div>
+            <div class="metric-value">819</div>
+            <p class="metric-context">재다운로드 39회 포함</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">최근 30일 활성</div>
+            <div class="metric-value">14대</div>
+            <p class="metric-context">옵트인 기기만 집계</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="android-title">
+        <h2 class="platform-title" id="android-title"><span class="dot android" aria-hidden="true"></span>Android</h2>
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="metric-label">신규 다운로드</div>
+            <div class="metric-value">930</div>
+            <p class="metric-context">누적 신규 사용자 획득</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">설치한 사용자</div>
+            <div class="metric-value">269명</div>
+            <p class="metric-context">활성 기기에 설치 유지</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">월간 활성</div>
+            <div class="metric-value">122대</div>
+            <p class="metric-context">최근 28일 실행 기기</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel data-panel" aria-labelledby="details-title">
+      <h2 id="details-title">집계 상세</h2>
+      <table>
+        <thead>
+          <tr><th>지표</th><th>값</th><th>기준</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>iOS 최초 다운로드</td><td>780</td><td>2025-03-12~2026-09-13</td></tr>
+          <tr><td>iOS 전체 다운로드</td><td>819</td><td>2025-03-12~2026-09-13</td></tr>
+          <tr><td>iOS 지난 30일 활성 상태</td><td>14대</td><td>2026-09-13 최신값</td></tr>
+          <tr><td>Android 신규 사용자 획득</td><td>930</td><td>누적 · 2026-09-12 최신값</td></tr>
+          <tr><td>Android 대한민국 신규 사용자</td><td>859</td><td>전체 Android 신규 사용자의 92.37%</td></tr>
+          <tr><td>Android 설치한 사용자</td><td>269명</td><td>2026-09-12 최신값</td></tr>
+          <tr><td>Android 월간 활성 기기</td><td>122대</td><td>2026-09-15 관측 · 최근 28일</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <aside class="notice">
+      플랫폼마다 사용자 식별 방식과 데이터 완료일이 다릅니다. 특히 iOS 사용 지표는 분석 공유에 동의한 기기만 포함하므로 플랫폼 간 활성 수치를 직접 비교하지 않습니다.
+    </aside>
+
+    <footer>
+      <span>출처: App Store Connect · Google Play Console</span>
+      <a href="./APP_INSTALL_METRICS_2026_09_15_BASELINE.md">원본 Markdown 기록 보기</a>
+    </footer>
+  </main>
+</body>
+</html>

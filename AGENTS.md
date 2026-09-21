@@ -67,6 +67,10 @@
 - Compose와 Circuit 상태의 소유권·수명, `remember*` API와 영속 저장 선택은 `docs/architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md`를 따른다.
 - 새 문서는 `docs/README.md`의 분류 규칙에 따라 주제 폴더에 두고, `docs/` 루트에는 인덱스와 백로그만 둔다.
 
+## 앱 통계 기록
+
+- App Store Connect와 Google Play Console의 다운로드·설치·활성 사용자 통계 기록 요청은 `plugins/bandalart/skills/record-app-metrics/SKILL.md`를 따른다.
+
 ## MCP 설정
 
 - Codex MCP 설정은 `~/.codex/config.toml`의 `mcp_servers`에서 관리한다.
