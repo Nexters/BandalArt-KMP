@@ -10,16 +10,16 @@
     <string name="action_delete">삭제하기</string>
     <string name="action_retry">다시 시도</string>
 
-    <!-- OnBoardingScreen.kt -->
+    <!-- Onboarding.kt -->
     <string name="onboarding_first_title">복잡하고 막막한\n만다라트 계획표는 이제 안녕!</string>
     <string name="onboarding_second_title">이제 반다라트와 함께\n부담 없이 계획을 세워봐요</string>
     <string name="onboarding_start">시작하기</string>
 
-    <!-- CompleteScreen.kt -->
+    <!-- Complete.kt -->
     <string name="complete_title">반다라트의 모든 목표를 달성했어요.\n정말 대단해요!</string>
     <string name="complete_chart">달성 완료 반다라트</string>
 
-    <!--  HomeScreen.kt -->
+    <!--  Home.kt -->
     <string name="home_default_emoji">default emoji</string>
     <string name="home_share_url">제가 만든 반다라트를 구경하러오세요!\n%1$s</string>
     <string name="home_empty_title">메인목표를 입력해주세요</string>

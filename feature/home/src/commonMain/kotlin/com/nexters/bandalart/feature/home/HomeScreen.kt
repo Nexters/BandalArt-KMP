@@ -16,459 +16,289 @@
 
 package com.nexters.bandalart.feature.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.create_bandalart
-import bandalart.core.designsystem.generated.resources.delete_bandalart
-import bandalart.core.designsystem.generated.resources.rewarded_ad_unavailable
-import bandalart.core.designsystem.generated.resources.rewarded_slot_error
-import bandalart.core.designsystem.generated.resources.routine_settings_reset_complete
-import bandalart.core.designsystem.generated.resources.routine_settings_reset_no_changes
-import bandalart.core.designsystem.generated.resources.please_input_main_goal
-import bandalart.core.designsystem.generated.resources.save_bandalart_image
-import bandalart.core.designsystem.generated.resources.settings_contact_body
-import bandalart.core.designsystem.generated.resources.settings_contact_fallback
-import bandalart.core.designsystem.generated.resources.settings_contact_subject
-import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_sent
-import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_failed
-import com.nexters.bandalart.core.common.AppVersionProvider
-import com.nexters.bandalart.core.common.BannerAdHost
-import com.nexters.bandalart.core.common.ImageHandlerProvider
-import com.nexters.bandalart.core.common.RewardedAdGateway
-import com.nexters.bandalart.core.common.RewardedAdPurpose
+import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
-import com.nexters.bandalart.core.common.SupportMailDraft
-import com.nexters.bandalart.core.common.SupportMailLauncher
-import com.nexters.bandalart.core.common.SupportMailOpenResult
-import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
-import com.nexters.bandalart.core.common.openWithClipboardFallback
-import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
-import com.nexters.bandalart.core.ui.LocalShowSnackbar
+import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import com.nexters.bandalart.core.domain.template.BandalartTemplateId
+import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
-import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
-import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
-import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
-import com.nexters.bandalart.feature.home.ui.HomeHeader
-import com.nexters.bandalart.feature.home.ui.HomeShareButton
-import com.nexters.bandalart.feature.home.ui.HomeTopBar
-import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
-import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.Inject
-import io.github.compose.jindong.Jindong
-import io.github.compose.jindong.core.model.HapticIntensity
-import io.github.compose.jindong.dsl.Haptic
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import multiplatform.network.cmptoast.showToast
-import org.jetbrains.compose.resources.getString
-import kotlin.time.Duration.Companion.milliseconds
+import com.nexters.bandalart.feature.home.model.CellType
+import com.slack.circuit.runtime.CircuitUiEvent
+import com.slack.circuit.runtime.CircuitUiState
+import com.slack.circuit.runtime.screen.ParcelableScreen
+import com.slack.circuit.runtime.screen.StaticScreen
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
-private const val SNACKBAR_DURATION_MILLIS = 1500L
-internal const val HOME_SCROLL_TAG = "home_scroll"
+@CommonParcelize
+data object HomeScreen : ParcelableScreen, StaticScreen {
+    data class State(
+        val bandalartList: ImmutableList<BandalartUiModel> = persistentListOf(),
+        val bandalartData: BandalartUiModel? = null,
+        val bandalartCellData: BandalartCellEntity? = null,
+        val isBandalartCompleted: Boolean = false,
+        val bottomSheet: BottomSheetState? = null,
+        val dialog: DialogState? = null,
+        val isDropDownMenuOpened: Boolean = false,
+        val imageRequest: ImageRequest? = null,
+        val updateVersionCode: Int? = null,
+        val themeMode: ThemeMode = ThemeMode.SYSTEM,
+        val recentEmojis: ImmutableList<String> = persistentListOf(),
+        val rewardedAdRequestId: Long? = null,
+        val deadlineReminderEnabled: Boolean = false,
+        val deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus =
+            DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
+        val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
+        val deadlinePermissionRequestId: Long? = null,
+        val showRoutineSettingsTooltip: Boolean = false,
+        val showTaskCompletionTooltip: Boolean = false,
+        val effect: Effect? = null,
+        val eventSink: (Event) -> Unit,
+    ) : CircuitUiState
 
-@CircuitInject(HomeScreen::class, AppScope::class)
-@Inject
-@Composable
-internal fun Home(
-    state: HomeScreen.State,
-    modifier: Modifier,
-    appVersionProvider: AppVersionProvider,
-    imageHandlerProvider: ImageHandlerProvider,
-    supportMailLauncher: SupportMailLauncher,
-    bannerAdHost: BannerAdHost,
-    rewardedAdGateway: RewardedAdGateway,
-) {
-    val homeGraphicsLayer = rememberGraphicsLayer()
-    val completeGraphicsLayer = rememberGraphicsLayer()
-    val updateSnackbarHostState = remember { SnackbarHostState() }
-    val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
-    var isAppForeground by remember { mutableStateOf(true) }
-    val currentEventSink by rememberUpdatedState(state.eventSink)
-    LaunchedEffect(state.rewardedAdRequestId) {
-        val requestId = state.rewardedAdRequestId ?: return@LaunchedEffect
-        val result =
-            try {
-                rewardedAdGateway.show(requestId, RewardedAdPurpose.BANDALART_CREATION)
-            } catch (exception: CancellationException) {
-                throw exception
-            } catch (_: Exception) {
-                RewardedAdResult.FAILED
-            }
-        state.eventSink(
-            HomeScreen.Event.RewardedAdFinished(
-                requestId = requestId,
-                result = result,
-            ),
-        )
-        rewardedAdGateway.consume(requestId)
+    sealed interface BottomSheetState {
+        data class Cell(
+            val cellType: CellType,
+            val initialCellData: BandalartCellEntity,
+            val cellData: BandalartCellEntity,
+            val initialBandalartData: BandalartUiModel,
+            val bandalartData: BandalartUiModel,
+            val isDatePickerOpened: Boolean = false,
+            val isEmojiPickerOpened: Boolean = false,
+        ) : BottomSheetState
+
+        data class BandalartList(
+            val currentBandalartId: Long,
+            val isCreationOptionsVisible: Boolean = false,
+        ) : BottomSheetState
+
+        data class Emoji(
+            val bandalartId: Long,
+            val cellId: Long,
+            val currentEmoji: String?,
+        ) : BottomSheetState
+
+        data object Settings : BottomSheetState
+
+        data class RoutineSettings(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+            val dailyResetEnabled: Boolean,
+            val hasCompletedCells: Boolean,
+        ) : BottomSheetState
     }
 
-    FlexibleUpdateEffect(
-        updateVersionCode = state.updateVersionCode,
-        snackbarHostState = updateSnackbarHostState,
-        onUpdateAvailable = { versionCode ->
-            state.eventSink(HomeScreen.Event.CheckForUpdate(versionCode))
-        },
-        onUpdateCanceled = {
-            state.eventSink(HomeScreen.Event.CancelUpdate)
-        },
-    )
+    sealed interface DialogState {
+        data object BandalartDelete : DialogState
 
-    DeadlineReminderPermissionEffect(
-        requestId = state.deadlinePermissionRequestId,
-        onResult = { state.eventSink(HomeScreen.Event.DeadlineReminderPermissionResult) },
-    )
-    DeadlineReminderForegroundEffect {
-        state.eventSink(HomeScreen.Event.DeadlineReminderForegrounded)
-    }
-    DailyResetForegroundEffect(
-        onForeground = { isAppForeground = true },
-        onBackground = { isAppForeground = false },
-    )
-    LaunchedEffect(isAppForeground) {
-        if (!isAppForeground) return@LaunchedEffect
-        currentEventSink(HomeScreen.Event.CheckDueDailyResets)
-        while (true) {
-            delay(DAILY_RESET_CHECK_INTERVAL_MILLIS)
-            currentEventSink(HomeScreen.Event.CheckDueDailyResets)
-        }
+        data object RewardedCreate : DialogState
+
+        data class ResetCompletions(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+        ) : DialogState
+
+        data class CellDelete(
+            val cellId: Long,
+            val cellType: CellType,
+            val cellTitle: String?,
+        ) : DialogState
     }
 
-    HandleHomeEffects(
-        state = state,
-        homeGraphicsLayer = homeGraphicsLayer,
-        completeGraphicsLayer = completeGraphicsLayer,
-        imageHandlerProvider = imageHandlerProvider,
-        appVersion = appVersion,
-        supportMailLauncher = supportMailLauncher,
-    )
+    sealed interface Effect {
+        data object ShowCreateSnackbar : Effect
 
-    HomeBottomSheets(
-        bottomSheet = state.bottomSheet,
-        recentEmojis = state.recentEmojis,
-        bandalartList = state.bandalartList,
-        themeMode = state.themeMode,
-        deadlineReminderEnabled = state.deadlineReminderEnabled,
-        deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
-        deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
-        eventSink = state.eventSink,
-        appVersion = appVersion,
-    )
-    HomeDialogs(
-        dialog = state.dialog,
-        bandalartData = state.bandalartData,
-        eventSink = state.eventSink,
-    )
+        data object ShowDeleteSnackbar : Effect
 
-    HomeContent(
-        bandalartListSize = state.bandalartList.size,
-        bandalartData = state.bandalartData,
-        bandalartCellData = state.bandalartCellData,
-        isDropDownMenuOpened = state.isDropDownMenuOpened,
-        showRoutineSettingsTooltip = state.showRoutineSettingsTooltip,
-        showTaskCompletionTooltip = state.showTaskCompletionTooltip,
-        isBannerCreativeVisible = state.isBannerCreativeVisible(),
-        eventSink = state.eventSink,
-        homeGraphicsLayer = homeGraphicsLayer,
-        completeGraphicsLayer = completeGraphicsLayer,
-        updateSnackbarHostState = updateSnackbarHostState,
-        bannerAdHost = bannerAdHost,
-        modifier = modifier,
-    )
-}
+        data object ShowAdUnavailableSnackbar : Effect
 
-@Composable
-private fun HandleHomeEffects(
-    state: HomeScreen.State,
-    homeGraphicsLayer: GraphicsLayer,
-    completeGraphicsLayer: GraphicsLayer,
-    imageHandlerProvider: ImageHandlerProvider,
-    appVersion: String,
-    supportMailLauncher: SupportMailLauncher,
-) {
-    val showSnackbar = LocalShowSnackbar.current
-    val hapticEffect = state.effect as? HomeScreen.Effect.PlayTaskCompletionHaptic
+        data object ShowSlotErrorSnackbar : Effect
 
-    if (hapticEffect != null) {
-        Jindong(hapticEffect.taskCellId) {
-            Haptic(
-                duration = TASK_COMPLETION_HAPTIC_MILLIS.milliseconds,
-                intensity = HapticIntensity.MEDIUM,
-            )
-        }
+        data object ShowDeadlineReminderTestSentSnackbar : Effect
+
+        data object ShowDeadlineReminderTestFailedSnackbar : Effect
+
+        data object ShowCompletionResetSnackbar : Effect
+
+        data object ShowCompletionResetNoChangesSnackbar : Effect
+
+        data object ShowMainGoalToast : Effect
+
+        data object OpenSupportMail : Effect
+
+        data class PlayTaskCompletionHaptic(
+            val taskCellId: Long,
+        ) : Effect
     }
 
-    LaunchedEffect(state.effect) {
-        when (state.effect) {
-            HomeScreen.Effect.ShowCreateSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.create_bandalart), showSnackbar)
-            }
+    sealed interface ImageRequest {
+        data object Share : ImageRequest
 
-            HomeScreen.Effect.ShowDeleteSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.delete_bandalart), showSnackbar)
-            }
+        data object Save : ImageRequest
 
-            HomeScreen.Effect.ShowAdUnavailableSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.rewarded_ad_unavailable), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowSlotErrorSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.rewarded_slot_error), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowDeadlineReminderTestSentSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.settings_deadline_reminder_test_sent), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowDeadlineReminderTestFailedSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.settings_deadline_reminder_test_failed), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowCompletionResetSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.routine_settings_reset_complete), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowCompletionResetNoChangesSnackbar -> {
-                showSnackbarForDuration(getString(Res.string.routine_settings_reset_no_changes), showSnackbar)
-            }
-
-            HomeScreen.Effect.ShowMainGoalToast -> {
-                showToast(getString(Res.string.please_input_main_goal))
-            }
-
-            HomeScreen.Effect.OpenSupportMail -> {
-                val result =
-                    supportMailLauncher.openWithClipboardFallback(
-                        SupportMailDraft(
-                            subject = getString(Res.string.settings_contact_subject),
-                            body =
-                                getString(
-                                    Res.string.settings_contact_body,
-                                    appVersion,
-                                    supportMailLauncher.platformName,
-                                ),
-                        ),
-                    )
-                if (result != SupportMailOpenResult.OPENED) {
-                    showSnackbarForDuration(
-                        getString(Res.string.settings_contact_fallback),
-                        showSnackbar,
-                    )
-                }
-            }
-
-            is HomeScreen.Effect.PlayTaskCompletionHaptic -> Unit
-
-            null -> Unit
-        }
-
-        if (state.effect != null) {
-            state.eventSink(HomeScreen.Event.ConsumeEffect)
-        }
+        data class Complete(
+            val bandalartId: Long,
+            val bandalartTitle: String,
+            val bandalartProfileEmoji: String,
+        ) : ImageRequest
     }
 
-    LaunchedEffect(state.imageRequest) {
-        val request = state.imageRequest ?: return@LaunchedEffect
-        withFrameNanos { }
+    sealed interface Event : CircuitUiEvent {
+        data class SelectBandalart(
+            val bandalartId: Long,
+        ) : Event
 
-        when (request) {
-            HomeScreen.ImageRequest.Share -> {
-                imageHandlerProvider.externalShareForBitmap(homeGraphicsLayer.toImageBitmap())
-                state.eventSink(HomeScreen.Event.ImageRequestHandled)
-            }
+        data object AddBandalart : Event
 
-            HomeScreen.ImageRequest.Save -> {
-                imageHandlerProvider.saveImageToGallery(completeGraphicsLayer.toImageBitmap())
-                showToast(getString(Res.string.save_bandalart_image))
-                state.eventSink(HomeScreen.Event.ImageRequestHandled)
-            }
+        data object OpenBandalartCreationOptions : Event
 
-            is HomeScreen.ImageRequest.Complete -> {
-                val imageUri = imageHandlerProvider.bitmapToFileUri(completeGraphicsLayer.toImageBitmap())
-                if (imageUri != null) {
-                    state.eventSink(HomeScreen.Event.CaptureFinished(imageUri.toString()))
-                } else {
-                    state.eventSink(HomeScreen.Event.ImageRequestHandled)
-                }
-            }
-        }
-    }
-}
+        data object CloseBandalartCreationOptions : Event
 
-private const val TASK_COMPLETION_HAPTIC_MILLIS = 50
-private const val DAILY_RESET_CHECK_INTERVAL_MILLIS = 60_000L
+        data class CreateBandalartFromTemplate(
+            val templateId: BandalartTemplateId,
+        ) : Event
 
-private suspend fun showSnackbarForDuration(
-    message: String,
-    showSnackbar: suspend (String) -> Boolean,
-) {
-    coroutineScope {
-        val snackbarJob = launch { showSnackbar(message) }
-        delay(SNACKBAR_DURATION_MILLIS)
-        snackbarJob.cancel()
-    }
-}
+        data object ConfirmRewardedCreate : Event
 
-@Composable
-internal fun HomeContent(
-    bandalartListSize: Int,
-    bandalartData: BandalartUiModel?,
-    bandalartCellData: BandalartCellEntity?,
-    isDropDownMenuOpened: Boolean,
-    showRoutineSettingsTooltip: Boolean,
-    showTaskCompletionTooltip: Boolean,
-    isBannerCreativeVisible: Boolean,
-    eventSink: (HomeScreen.Event) -> Unit,
-    homeGraphicsLayer: GraphicsLayer,
-    completeGraphicsLayer: GraphicsLayer,
-    updateSnackbarHostState: SnackbarHostState,
-    bannerAdHost: BannerAdHost,
-    modifier: Modifier = Modifier,
-) {
-    val isContentReady = bandalartCellData != null && bandalartData != null
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(1f)) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .testTag(HOME_SCROLL_TAG)
-                            .padding(bottom = 32.dp),
-                ) {
-                    HomeTopBar(
-                        bandalartCount = bandalartListSize,
-                        onHomeUiAction = eventSink,
-                    )
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                    )
-                    Column(
-                        modifier =
-                            Modifier
-                                .captureBandalartToGraphicsLayer(homeGraphicsLayer),
-                    ) {
-                        if (isContentReady) {
-                            HomeHeader(
-                                bandalartData = bandalartData,
-                                cellData = bandalartCellData,
-                                isDropDownMenuOpened = isDropDownMenuOpened,
-                                showRoutineSettingsTooltip = showRoutineSettingsTooltip,
-                                onRoutineSettingsTooltipDismissed = {
-                                    eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
-                                },
-                                onHomeUiAction = eventSink,
-                            )
-                            BandalartChart(
-                                bandalartData = bandalartData,
-                                bandalartCellData = bandalartCellData,
-                                showTaskCompletionTooltip = showTaskCompletionTooltip,
-                                onTaskCompletionTooltipDismissed = {
-                                    eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
-                                },
-                                onHomeUiAction = eventSink,
-                                modifier =
-                                    Modifier
-                                        .captureBandalartToGraphicsLayer(completeGraphicsLayer),
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    if (isContentReady) {
-                        HomeShareButton(
-                            onShareButtonClick = {
-                                eventSink(HomeScreen.Event.RequestShare)
-                            },
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                        )
-                    }
-                }
+        data class RewardedAdFinished(
+            val requestId: Long,
+            val result: RewardedAdResult,
+        ) : Event
 
-                SnackbarHost(
-                    hostState = updateSnackbarHostState,
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                )
-            }
+        data object OpenBandalartList : Event
 
-            bannerAdHost.Content(
-                visible = isBannerCreativeVisible,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    }
-}
+        data object OpenEmoji : Event
 
-@Composable
-internal fun Modifier.captureBandalartToGraphicsLayer(graphicsLayer: GraphicsLayer): Modifier =
-    captureToGraphicsLayer(
-        graphicsLayer = graphicsLayer,
-        captureBackgroundColor = MaterialTheme.colorScheme.background,
-    )
+        data class OpenCell(
+            val cellType: CellType,
+            val isMainCellTitleEmpty: Boolean,
+            val cellData: BandalartCellEntity,
+        ) : Event
 
-internal fun HomeScreen.State.isBannerCreativeVisible(): Boolean =
-    bandalartData != null &&
-        bandalartCellData != null &&
-        bottomSheet == null &&
-        dialog == null &&
-        imageRequest == null &&
-        rewardedAdRequestId == null
+        data class ToggleTaskCompletion(
+            val cellData: BandalartCellEntity,
+        ) : Event
 
-@Preview
-@Composable
-private fun HomeScreenPreview() {
-    BandalartTheme {
-        HomeContent(
-            bandalartListSize = dummyBandalartList.size,
-            bandalartData = dummyBandalartData,
-            bandalartCellData = dummyBandalartChartData,
-            isDropDownMenuOpened = false,
-            showRoutineSettingsTooltip = false,
-            showTaskCompletionTooltip = false,
-            isBannerCreativeVisible = true,
-            eventSink = {},
-            homeGraphicsLayer = rememberGraphicsLayer(),
-            completeGraphicsLayer = rememberGraphicsLayer(),
-            updateSnackbarHostState = remember { SnackbarHostState() },
-            bannerAdHost = com.nexters.bandalart.core.common.NoOpBannerAdHost,
-        )
+        data object OpenBandalartDeleteDialog : Event
+
+        data object OpenCellDeleteDialog : Event
+
+        data object OpenDropDownMenu : Event
+
+        data object DismissDropDownMenu : Event
+
+        data object DismissBottomSheet : Event
+
+        data object DismissDialog : Event
+
+        data class UpdateCellTitle(
+            val title: String,
+            val language: Language,
+        ) : Event
+
+        data class UpdateDescription(
+            val description: String,
+        ) : Event
+
+        data class UpdateDueDate(
+            val dueDate: String,
+        ) : Event
+
+        data class UpdateCompletion(
+            val isCompleted: Boolean,
+        ) : Event
+
+        data class UpdateEmojiDraft(
+            val emoji: String,
+        ) : Event
+
+        data class UpdateThemeColor(
+            val mainColor: String,
+            val subColor: String,
+        ) : Event
+
+        data object OpenDatePicker : Event
+
+        data object OpenEmojiPicker : Event
+
+        data object CloseEmojiPicker : Event
+
+        data object SaveCell : Event
+
+        data class UpdateBandalartEmoji(
+            val bandalartId: Long,
+            val cellId: Long,
+            val emoji: String?,
+        ) : Event
+
+        data class DeleteBandalart(
+            val bandalartId: Long,
+        ) : Event
+
+        data class DeleteCell(
+            val cellId: Long,
+        ) : Event
+
+        data object ConsumeEffect : Event
+
+        data object DismissTaskCompletionTooltip : Event
+
+        data object DismissRoutineSettingsTooltip : Event
+
+        data object OpenRoutineSettings : Event
+
+        data class SetDailyResetEnabled(
+            val bandalartId: Long,
+            val enabled: Boolean,
+        ) : Event
+
+        data object OpenResetCompletionsDialog : Event
+
+        data class ConfirmResetCompletions(
+            val bandalartId: Long,
+        ) : Event
+
+        data object CheckDueDailyResets : Event
+
+        data object OpenSettings : Event
+
+        data object OpenCloudBackup : Event
+
+        data class SelectThemeMode(
+            val themeMode: ThemeMode,
+        ) : Event
+
+        data class SetDeadlineReminderEnabled(
+            val enabled: Boolean,
+        ) : Event
+
+        data object ConfirmDeadlineReminderPermission : Event
+
+        data object DeadlineReminderPermissionResult : Event
+
+        data object DeadlineReminderForegrounded : Event
+
+        data object SendDeadlineReminderTestNotification : Event
+
+        data object ContactSupport : Event
+
+        data object RequestShare : Event
+
+        data object RequestSave : Event
+
+        data object ImageRequestHandled : Event
+
+        data class CaptureFinished(
+            val imageUri: String,
+        ) : Event
+
+        data class CheckForUpdate(
+            val versionCode: Int,
+        ) : Event
+
+        data object CancelUpdate : Event
     }
 }

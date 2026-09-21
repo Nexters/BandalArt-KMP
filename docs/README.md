@@ -14,6 +14,7 @@
 - [AdMob 광고 ID와 운영 검증 가이드](features/ads/ADMOB_AD_ID_POLICY_GUIDE.md)
 - [Compose와 Circuit 상태 수명 가이드](architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md)
 - [Coordinator 패턴과 현재 적용 위치](architecture/coordinator/COORDINATOR_PATTERN_GUIDE.md)
+- [Circuit Screen과 CommonParcelize 가이드](architecture/circuit/CIRCUIT_SCREEN_PARCELIZE_GUIDE.md)
 - [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
 - [KMP 테스트 소스셋과 Circuit Presenter 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
 - [Maestro UI 테스트 가이드](testing/MAESTRO_UI_TEST_GUIDE.md)
@@ -31,6 +32,7 @@
 ### Circuit
 
 - [Circuit 전체 마이그레이션 전략](architecture/circuit/CIRCUIT_COMPLETE_MIGRATION_STRATEGY.md)
+- [Circuit Screen과 CommonParcelize 가이드](architecture/circuit/CIRCUIT_SCREEN_PARCELIZE_GUIDE.md)
 - [Circuit Home 편집 마이그레이션](architecture/circuit/CIRCUIT_HOME_EDIT_MIGRATION_STRATEGY.md)
 - [Circuit Home 읽기 마이그레이션](architecture/circuit/CIRCUIT_HOME_READ_MIGRATION_STRATEGY.md)
 - [Circuit Home 런타임 마이그레이션](architecture/circuit/CIRCUIT_HOME_RUNTIME_MIGRATION_STRATEGY.md)

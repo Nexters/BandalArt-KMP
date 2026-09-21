@@ -10,16 +10,16 @@
     <string name="action_delete">Delete</string>
     <string name="action_retry">Retry</string>
 
-    <!-- OnBoardingScreen.kt -->
+    <!-- Onboarding.kt -->
     <string name="onboarding_first_title">Say goodbye to complex and\noverwhelming Mandalart!</string>
     <string name="onboarding_second_title">Now, plan effortlessly\nwith Bandalart!</string>
     <string name="onboarding_start">Get Started</string>
 
-    <!-- CompleteScreen.kt -->
+    <!-- Complete.kt -->
     <string name="complete_title">You\'ve achieved all the goals in Bandalart. Truly amazing!</string>
     <string name="complete_chart">Completed Bandalart</string>
 
-    <!--  HomeScreen.kt -->
+    <!--  Home.kt -->
     <string name="home_default_emoji">default emoji</string>
     <string name="home_share_url">Come and see the Bandalart I made!\n%1$s</string>
     <string name="home_empty_title">Please enter your main goal</string>
