@@ -1,2 +1,2 @@
-• Reset completion checks now or automatically each day from ⋮ > Routine settings on Home.
-• Added a one-time tip to help you discover the new routine feature.
+• Buttons on the completion and onboarding screens now appear gray in dark mode.
+• The goal title on the completion screen is now easier to read in dark mode.
