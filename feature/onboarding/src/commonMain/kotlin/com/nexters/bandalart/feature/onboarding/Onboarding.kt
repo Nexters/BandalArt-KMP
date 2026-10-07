@@ -207,7 +207,7 @@ internal fun Onboarding(
                                         .align(Alignment.BottomCenter)
                                         .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
                                         .clip(shape = RoundedCornerShape(50.dp))
-                                        .background(MaterialTheme.colorScheme.primary),
+                                        .background(MaterialTheme.colorScheme.secondary),
                             )
 //                            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                                BandalartButton(

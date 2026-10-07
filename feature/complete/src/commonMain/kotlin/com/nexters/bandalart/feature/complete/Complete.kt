@@ -138,7 +138,7 @@ internal fun CompleteContent(
                                     .fillMaxWidth()
                                     .padding(horizontal = 24.dp, vertical = 8.dp)
                                     .clip(shape = RoundedCornerShape(50.dp))
-                                    .background(MaterialTheme.colorScheme.primary),
+                                    .background(MaterialTheme.colorScheme.secondary),
                         )
                         BandalartButton(
                             onClick = {
@@ -158,7 +158,7 @@ internal fun CompleteContent(
                                         start = 24.dp,
                                         end = 24.dp,
                                     ).clip(shape = RoundedCornerShape(50.dp))
-                                    .background(MaterialTheme.colorScheme.primary),
+                                    .background(MaterialTheme.colorScheme.secondary),
                         )
                     }
                 }

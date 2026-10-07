@@ -32,7 +32,7 @@ fun BandalartButton(
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSecondary,
             fontSize = 16.sp,
             fontWeight = FontWeight.W700,
             modifier = Modifier.padding(horizontal = 32.dp),
