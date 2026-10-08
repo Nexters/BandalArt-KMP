@@ -201,12 +201,14 @@
     <!-- deadline reminder -->
     <string name="settings_deadline_reminder_section">알림</string>
     <string name="settings_deadline_reminder">마감일 알림</string>
-    <string name="settings_deadline_reminder_body">마감일 당일 오전 9시부터 알려드려요.</string>
+    <string name="settings_deadline_reminder_body">마감일 당일 설정한 시간부터 알려드려요.</string>
+    <string name="settings_deadline_reminder_time">알림 시간</string>
+    <string name="settings_deadline_reminder_time_dialog_title">알림 시간 선택</string>
     <string name="settings_deadline_reminder_blocked">시스템 알림이 꺼져 있어요. 누르면 설정으로 이동해요.</string>
     <string name="settings_deadline_reminder_overflow">먼 날짜 알림 %1$d개는 아직 예약되지 않았어요.</string>
     <string name="settings_deadline_reminder_degraded">일부 알림을 예약하지 못했어요. 앱을 다시 열면 다시 시도해요.</string>
     <string name="settings_deadline_reminder_dialog_title">마감일 알림을 켤까요?</string>
-    <string name="settings_deadline_reminder_dialog_body">목표 제목이 잠금 화면에 보일 수 있으며, 마감일 당일 오전 9시부터 기기 상태에 따라 알림이 전달돼요.</string>
+    <string name="settings_deadline_reminder_dialog_body">목표 제목이 잠금 화면에 보일 수 있으며, 마감일 당일 설정한 시간(기본 오전 9시)부터 기기 상태에 따라 알림이 전달돼요.</string>
     <string name="settings_deadline_reminder_confirm">알림 켜기</string>
     <string name="settings_deadline_reminder_test_sent">테스트 알림을 보냈어요.</string>
     <string name="settings_deadline_reminder_test_failed">테스트 알림을 보내지 못했어요. 시스템 알림 설정을 확인해 주세요.</string>

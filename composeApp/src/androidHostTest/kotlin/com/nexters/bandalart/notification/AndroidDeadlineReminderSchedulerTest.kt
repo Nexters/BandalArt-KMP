@@ -26,10 +26,11 @@ import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.flow.first
 import kotlin.time.Clock
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -71,8 +72,8 @@ class AndroidDeadlineReminderSchedulerTest {
                     .date
             val batch = DeadlineReminderBatch(bandalartId = 3, dueDate = dueDate, items = emptyList())
 
-            scheduler.replaceAll(listOf(batch))
-            scheduler.replaceAll(listOf(batch))
+            scheduler.replaceAll(listOf(batch), LocalTime(hour = 9, minute = 0))
+            scheduler.replaceAll(listOf(batch), LocalTime(hour = 9, minute = 0))
 
             val active =
                 workManager
@@ -100,7 +101,7 @@ class AndroidDeadlineReminderSchedulerTest {
                     .toLocalDateTime(TimeZone.currentSystemDefault())
                     .date
             val batch = DeadlineReminderBatch(bandalartId = 3, dueDate = dueDate, items = emptyList())
-            scheduler.replaceAll(listOf(batch))
+            scheduler.replaceAll(listOf(batch), LocalTime(hour = 9, minute = 0))
 
             val result = scheduler.postTestNotification()
 

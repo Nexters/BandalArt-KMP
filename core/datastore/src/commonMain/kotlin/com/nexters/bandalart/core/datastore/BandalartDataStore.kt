@@ -42,6 +42,7 @@ class BandalartDataStore(
         private const val THEME_MODE = "theme_mode"
         private const val RECENT_EMOJIS = "recent_emojis"
         private const val DEADLINE_REMINDER_ENABLED = "deadline_reminder_enabled"
+        private const val DEADLINE_REMINDER_MINUTE_OF_DAY = "deadline_reminder_minute_of_day"
         private const val TASK_COMPLETION_TOOLTIP_DISMISSED_V1 = "task_completion_tooltip_dismissed_v1"
         private const val ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1 = "routine_settings_tooltip_dismissed_v1"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
@@ -58,6 +59,7 @@ class BandalartDataStore(
     private val themeModeKey = stringPreferencesKey(THEME_MODE)
     private val recentEmojisKey = stringPreferencesKey(RECENT_EMOJIS)
     private val deadlineReminderEnabledKey = booleanPreferencesKey(DEADLINE_REMINDER_ENABLED)
+    private val deadlineReminderMinuteOfDayKey = intPreferencesKey(DEADLINE_REMINDER_MINUTE_OF_DAY)
     private val taskCompletionTooltipDismissedKey =
         booleanPreferencesKey(TASK_COMPLETION_TOOLTIP_DISMISSED_V1)
     private val routineSettingsTooltipDismissedKey =
@@ -159,6 +161,8 @@ class BandalartDataStore(
                     ?.let { Json.decodeFromString<List<String>>(it) }
                     ?: emptyList(),
             deadlineReminderEnabled = preferences[deadlineReminderEnabledKey] ?: false,
+            deadlineReminderMinuteOfDay =
+                preferences[deadlineReminderMinuteOfDayKey] ?: DEFAULT_DEADLINE_REMINDER_MINUTE_OF_DAY,
             maxBandalartSlots = preferences[maxBandalartSlotsKey] ?: bandalartIds.size,
         )
     }
@@ -184,6 +188,7 @@ class BandalartDataStore(
             }
             preferences[recentEmojisKey] = Json.encodeToString(backup.recentEmojis)
             preferences[deadlineReminderEnabledKey] = backup.deadlineReminderEnabled
+            preferences[deadlineReminderMinuteOfDayKey] = backup.deadlineReminderMinuteOfDay
             preferences[maxBandalartSlotsKey] = backup.maxBandalartSlots
             preferences.remove(pendingRewardedRequestIdKey)
             preferences.remove(pendingRewardedTargetSlotsKey)
@@ -222,6 +227,17 @@ class BandalartDataStore(
                 else
                     throw exception
             }.map { preferences -> preferences[deadlineReminderEnabledKey] ?: false }
+
+    val deadlineReminderMinuteOfDay =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences ->
+                preferences[deadlineReminderMinuteOfDayKey] ?: DEFAULT_DEADLINE_REMINDER_MINUTE_OF_DAY
+            }
 
     val taskCompletionTooltipDismissed =
         dataStore.data
@@ -422,6 +438,12 @@ class BandalartDataStore(
         }
     }
 
+    suspend fun setDeadlineReminderMinuteOfDay(minuteOfDay: Int) {
+        dataStore.edit { preferences ->
+            preferences[deadlineReminderMinuteOfDayKey] = minuteOfDay
+        }
+    }
+
     suspend fun dismissTaskCompletionTooltip() {
         dataStore.edit { preferences ->
             preferences[taskCompletionTooltipDismissedKey] = true
@@ -469,4 +491,7 @@ data class BandalartBackupPreferences(
     val recentEmojis: List<String>,
     val deadlineReminderEnabled: Boolean,
     val maxBandalartSlots: Int,
+    val deadlineReminderMinuteOfDay: Int = DEFAULT_DEADLINE_REMINDER_MINUTE_OF_DAY,
 )
+
+const val DEFAULT_DEADLINE_REMINDER_MINUTE_OF_DAY = 9 * 60
