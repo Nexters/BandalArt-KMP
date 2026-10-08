@@ -86,6 +86,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
+import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -94,6 +95,7 @@ import org.jetbrains.compose.resources.vectorResource
 internal fun SettingsBottomSheet(
     themeMode: ThemeMode,
     deadlineReminderEnabled: Boolean,
+    deadlineReminderTime: LocalTime,
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     appVersion: String,
@@ -102,6 +104,18 @@ internal fun SettingsBottomSheet(
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showDeadlineReminderConfirmation by remember { mutableStateOf(false) }
+    var showDeadlineReminderTimePicker by remember { mutableStateOf(false) }
+
+    if (showDeadlineReminderTimePicker) {
+        DeadlineReminderTimePickerDialog(
+            initialTime = deadlineReminderTime,
+            onConfirm = { time ->
+                showDeadlineReminderTimePicker = false
+                onHomeUiAction(HomeScreen.Event.SetDeadlineReminderTime(time))
+            },
+            onDismiss = { showDeadlineReminderTimePicker = false },
+        )
+    }
 
     if (showDeadlineReminderConfirmation) {
         BandalartActionAlertDialog(
@@ -170,6 +184,12 @@ internal fun SettingsBottomSheet(
                         }
                     },
                 )
+                if (deadlineReminderEnabled) {
+                    DeadlineReminderTimeRow(
+                        time = deadlineReminderTime,
+                        onClick = { showDeadlineReminderTimePicker = true },
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,

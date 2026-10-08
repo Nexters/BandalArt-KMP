@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.core.domain.backup
 
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -67,6 +68,7 @@ data class BackupPreferences(
     val recentEmojis: List<String>,
     val deadlineReminderEnabled: Boolean,
     val maxBandalartSlots: Int,
+    val deadlineReminderMinuteOfDay: Int = DeadlineReminderTime.DEFAULT_MINUTE_OF_DAY,
 )
 
 @Serializable

@@ -18,9 +18,11 @@ package com.nexters.bandalart.core.data.repository
 
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalTime
 
 class DefaultSettingsRepository(
     private val bandalartDataStore: BandalartDataStore,
@@ -29,6 +31,9 @@ class DefaultSettingsRepository(
         bandalartDataStore.themeMode.map(ThemeMode::fromStorageValue)
     override val recentEmojis: Flow<List<String>> = bandalartDataStore.recentEmojis
     override val deadlineReminderEnabled: Flow<Boolean> = bandalartDataStore.deadlineReminderEnabled
+
+    override val deadlineReminderTime: Flow<LocalTime> =
+        bandalartDataStore.deadlineReminderMinuteOfDay.map(DeadlineReminderTime::fromMinuteOfDay)
     override val taskCompletionTooltipDismissed: Flow<Boolean> =
         bandalartDataStore.taskCompletionTooltipDismissed
     override val routineSettingsTooltipDismissed: Flow<Boolean> =
@@ -44,6 +49,10 @@ class DefaultSettingsRepository(
 
     override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         bandalartDataStore.setDeadlineReminderEnabled(enabled)
+    }
+
+    override suspend fun setDeadlineReminderTime(time: LocalTime) {
+        bandalartDataStore.setDeadlineReminderMinuteOfDay(DeadlineReminderTime.toMinuteOfDay(time))
     }
 
     override suspend fun dismissTaskCompletionTooltip() {

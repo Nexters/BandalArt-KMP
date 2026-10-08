@@ -18,11 +18,14 @@ package com.nexters.bandalart.core.domain.repository
 
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalTime
 
 interface SettingsRepository {
     val themeMode: Flow<ThemeMode>
     val recentEmojis: Flow<List<String>>
     val deadlineReminderEnabled: Flow<Boolean>
+
+    val deadlineReminderTime: Flow<LocalTime>
     val taskCompletionTooltipDismissed: Flow<Boolean>
     val routineSettingsTooltipDismissed: Flow<Boolean>
 
@@ -31,6 +34,8 @@ interface SettingsRepository {
     suspend fun addRecentEmoji(emoji: String)
 
     suspend fun setDeadlineReminderEnabled(enabled: Boolean)
+
+    suspend fun setDeadlineReminderTime(time: LocalTime)
 
     suspend fun dismissTaskCompletionTooltip()
 

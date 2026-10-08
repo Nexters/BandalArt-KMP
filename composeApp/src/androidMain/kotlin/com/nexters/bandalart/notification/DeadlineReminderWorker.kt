@@ -88,8 +88,9 @@ class DeadlineReminderWorker(
             return Result.success()
         }
 
+        val reminderTime = dependencies.settingsRepository.deadlineReminderTime.first()
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        if (now.date != dueDate || now.hour < 9) return Result.success()
+        if (now.date != dueDate || now.time < reminderTime) return Result.success()
         val items =
             dependencies.deadlineReminderProjectionRepository
                 .getCandidates()

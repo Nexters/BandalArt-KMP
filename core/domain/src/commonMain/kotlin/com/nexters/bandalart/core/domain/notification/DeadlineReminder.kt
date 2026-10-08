@@ -17,6 +17,7 @@
 package com.nexters.bandalart.core.domain.notification
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 
 const val MAX_SCHEDULED_DEADLINE_REMINDER_BATCH_COUNT = 32
 
@@ -44,6 +45,7 @@ data class DeadlineReminderBatch(
 data class DeadlineReminderPlan(
     val batches: List<DeadlineReminderBatch>,
     val overflowCount: Int,
+    val reminderTime: LocalTime = DeadlineReminderTime.Default,
 )
 
 enum class DeadlineReminderSchedulingErrorCategory {

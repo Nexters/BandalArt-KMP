@@ -16,17 +16,17 @@
 
 package com.nexters.bandalart.feature.home.presenter
 
-import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificationLaunchTarget
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
-import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingErrorCategory
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
-import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -34,8 +34,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -364,6 +365,31 @@ class HomePresenterDeadlineReminderTest {
         }
 
     @Test
+    fun selectingReminderTimeSavesItAndReconciles() =
+        runTest {
+            val settings = FakeSettingsRepository(initialDeadlineReminderEnabled = true)
+            val reconciler = RecordingReconciler()
+            val presenter =
+                presenter(
+                    repository = repository(),
+                    settings = settings,
+                    authorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.GRANTED),
+                    reconciler = reconciler,
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                val reconcileCallsBefore = reconciler.reconcileCalls
+                state.eventSink(HomeScreen.Event.SetDeadlineReminderTime(LocalTime(hour = 7, minute = 30)))
+                while (state.deadlineReminderTime != LocalTime(hour = 7, minute = 30)) state = awaitItem()
+
+                assertEquals(LocalTime(hour = 7, minute = 30), settings.deadlineReminderTime.value)
+                assertTrue(reconciler.reconcileCalls > reconcileCallsBefore)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun foregroundAfterSystemSettingsRefreshesGrantAndReconcilesEnabledPreference() =
         runTest {
             val settings = FakeSettingsRepository(initialDeadlineReminderEnabled = true)
@@ -593,7 +619,10 @@ class HomePresenterDeadlineReminderTest {
     ) : DeadlineReminderScheduler {
         var testNotificationCalls = 0
 
-        override suspend fun replaceAll(batches: List<DeadlineReminderBatch>) = DeadlineReminderSchedulingResult(scheduledCount = batches.size)
+        override suspend fun replaceAll(
+            batches: List<DeadlineReminderBatch>,
+            reminderTime: LocalTime,
+        ) = DeadlineReminderSchedulingResult(scheduledCount = batches.size)
 
         override suspend fun clearAll() = DeadlineReminderSchedulingResult(scheduledCount = 0)
 

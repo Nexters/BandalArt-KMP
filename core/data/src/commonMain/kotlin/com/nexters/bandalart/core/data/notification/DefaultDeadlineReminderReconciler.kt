@@ -72,8 +72,14 @@ class DefaultDeadlineReminderReconciler(
                     return@withLock
                 }
 
-                val plan = planner.plan(projectionRepository.getCandidates(), isEnabled = true)
-                val result = scheduler.replaceAll(plan.batches)
+                val reminderTime = settingsRepository.deadlineReminderTime.first()
+                val plan =
+                    planner.plan(
+                        candidates = projectionRepository.getCandidates(),
+                        isEnabled = true,
+                        reminderTime = reminderTime,
+                    )
+                val result = scheduler.replaceAll(plan.batches, plan.reminderTime)
                 mutableSchedulingHealth.value =
                     DeadlineReminderSchedulingHealth(
                         scheduledCount = result.scheduledCount,

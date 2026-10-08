@@ -17,13 +17,16 @@
 package com.nexters.bandalart.feature.home.presenter
 
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.datetime.LocalTime
 
 class FakeSettingsRepository(
     initialThemeMode: ThemeMode = ThemeMode.SYSTEM,
     initialDeadlineReminderEnabled: Boolean = false,
+    initialDeadlineReminderTime: LocalTime = DeadlineReminderTime.Default,
     initialTaskCompletionTooltipDismissed: Boolean = false,
     initialRoutineSettingsTooltipDismissed: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
@@ -31,6 +34,7 @@ class FakeSettingsRepository(
     private val themeModeState = MutableStateFlow(initialThemeMode)
     private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
     private val deadlineReminderEnabledState = MutableStateFlow(initialDeadlineReminderEnabled)
+    private val deadlineReminderTimeState = MutableStateFlow(initialDeadlineReminderTime)
     private val taskCompletionTooltipDismissedState =
         MutableStateFlow(initialTaskCompletionTooltipDismissed)
     private val routineSettingsTooltipDismissedState =
@@ -39,6 +43,7 @@ class FakeSettingsRepository(
     override val themeMode = themeModeState.asStateFlow()
     override val recentEmojis = recentEmojisState.asStateFlow()
     override val deadlineReminderEnabled = deadlineReminderEnabledState.asStateFlow()
+    override val deadlineReminderTime = deadlineReminderTimeState.asStateFlow()
     override val taskCompletionTooltipDismissed = taskCompletionTooltipDismissedState.asStateFlow()
     override val routineSettingsTooltipDismissed = routineSettingsTooltipDismissedState.asStateFlow()
 
@@ -64,6 +69,10 @@ class FakeSettingsRepository(
 
     override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         deadlineReminderEnabledState.value = enabled
+    }
+
+    override suspend fun setDeadlineReminderTime(time: LocalTime) {
+        deadlineReminderTimeState.value = time
     }
 
     override suspend fun dismissTaskCompletionTooltip() {

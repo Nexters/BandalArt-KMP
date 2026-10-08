@@ -182,6 +182,7 @@ internal fun Home(
         bandalartList = state.bandalartList,
         themeMode = state.themeMode,
         deadlineReminderEnabled = state.deadlineReminderEnabled,
+        deadlineReminderTime = state.deadlineReminderTime,
         deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
         deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
         eventSink = state.eventSink,

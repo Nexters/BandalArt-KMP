@@ -25,18 +25,20 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderPlanner
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingErrorCategory
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTimeZoneProvider
 import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 class DefaultDeadlineReminderReconcilerTest {
     private val settings = FakeSettingsRepository()
@@ -84,6 +86,18 @@ class DefaultDeadlineReminderReconcilerTest {
         }
 
     @Test
+    fun selectedReminderTimeIsPassedToThePlatformScheduler() =
+        runTest {
+            settings.setDeadlineReminderEnabled(true)
+            settings.setDeadlineReminderTime(LocalTime(hour = 21, minute = 30))
+            authorization.status = DeadlineNotificationAuthorizationStatus.GRANTED
+
+            reconciler.reconcileAll()
+
+            assertEquals(LocalTime(hour = 21, minute = 30), scheduler.replacedReminderTime)
+        }
+
+    @Test
     fun blockedAuthorizationClearsPlatformStateWithoutLosingUserPreference() =
         runTest {
             settings.setDeadlineReminderEnabled(true)
@@ -119,11 +133,16 @@ class DefaultDeadlineReminderReconcilerTest {
     private class RecordingScheduler : DeadlineReminderScheduler {
         var clearCalls = 0
         var replacedBatches = emptyList<DeadlineReminderBatch>()
+        var replacedReminderTime: LocalTime? = null
         var scheduledCount: Int? = null
         var lastErrorCategory: DeadlineReminderSchedulingErrorCategory? = null
 
-        override suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult {
+        override suspend fun replaceAll(
+            batches: List<DeadlineReminderBatch>,
+            reminderTime: LocalTime,
+        ): DeadlineReminderSchedulingResult {
             replacedBatches = batches
+            replacedReminderTime = reminderTime
             return DeadlineReminderSchedulingResult(
                 scheduledCount = scheduledCount ?: batches.size,
                 lastErrorCategory = lastErrorCategory,
@@ -150,6 +169,7 @@ class DefaultDeadlineReminderReconcilerTest {
         override val themeMode: Flow<ThemeMode> = MutableStateFlow(ThemeMode.SYSTEM)
         override val recentEmojis: Flow<List<String>> = MutableStateFlow(emptyList())
         override val deadlineReminderEnabled = MutableStateFlow(false)
+        override val deadlineReminderTime = MutableStateFlow(DeadlineReminderTime.Default)
         override val taskCompletionTooltipDismissed: Flow<Boolean> = MutableStateFlow(false)
         override val routineSettingsTooltipDismissed: Flow<Boolean> = MutableStateFlow(false)
 
@@ -159,6 +179,10 @@ class DefaultDeadlineReminderReconcilerTest {
 
         override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
             deadlineReminderEnabled.value = enabled
+        }
+
+        override suspend fun setDeadlineReminderTime(time: LocalTime) {
+            deadlineReminderTime.value = time
         }
 
         override suspend fun dismissTaskCompletionTooltip() = Unit

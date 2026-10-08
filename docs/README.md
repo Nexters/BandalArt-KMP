@@ -100,6 +100,7 @@
 - [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
 - [마감일 기반 로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
 - [Android 마감 알림 시작 복구](features/notifications/ANDROID_DEADLINE_REMINDER_STARTUP_RECOVERY.md)
+- [마감일 알림 시간 선택·시간대 대응 전략](features/notifications/DEADLINE_REMINDER_TIME_SELECTION_STRATEGY.md)
 - [이메일 문의](features/settings/EMAIL_INQUIRY_STRATEGY.md)
 - [설정 bottom sheet typography](features/settings/SETTINGS_BOTTOM_SHEET_TYPOGRAPHY_STRATEGY.md)
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)

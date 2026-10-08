@@ -23,6 +23,7 @@ import bandalart.core.designsystem.generated.resources.bandalart_list_empty_titl
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import kotlinx.datetime.LocalTime
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
@@ -40,6 +41,7 @@ internal fun HomeBottomSheets(
     bandalartList: ImmutableList<BandalartUiModel>,
     themeMode: ThemeMode,
     deadlineReminderEnabled: Boolean,
+    deadlineReminderTime: LocalTime,
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     eventSink: (HomeScreen.Event) -> Unit,
@@ -79,6 +81,7 @@ internal fun HomeBottomSheets(
             SettingsBottomSheet(
                 themeMode = themeMode,
                 deadlineReminderEnabled = deadlineReminderEnabled,
+                deadlineReminderTime = deadlineReminderTime,
                 deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
                 deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
                 appVersion = appVersion,
