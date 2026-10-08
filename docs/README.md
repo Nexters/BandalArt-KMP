@@ -18,6 +18,7 @@
 - [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
 - [KMP 테스트 소스셋과 Circuit Presenter 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
 - [Maestro UI 테스트 가이드](testing/MAESTRO_UI_TEST_GUIDE.md)
+- [마감일 알림 정책 가이드](features/notifications/DEADLINE_NOTIFICATION_POLICY_GUIDE.md)
 
 ## Testing
 
@@ -95,6 +96,7 @@
 
 - [태스크 셀 햅틱 완료](features/home/TASK_CELL_HAPTIC_COMPLETION_STRATEGY.md)
 - [반다라트 템플릿 catalog v1](features/templates/BANDALART_TEMPLATE_CATALOG_V1_STRATEGY.md)
+- [마감일 알림 정책 가이드](features/notifications/DEADLINE_NOTIFICATION_POLICY_GUIDE.md)
 - [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
 - [마감일 기반 로컬 알림 구현 전략](features/notifications/LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
 - [Android 마감 알림 시작 복구](features/notifications/ANDROID_DEADLINE_REMINDER_STARTUP_RECOVERY.md)
