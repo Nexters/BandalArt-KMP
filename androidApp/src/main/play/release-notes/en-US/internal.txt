@@ -1,2 +1,2 @@
-• Buttons on the completion and onboarding screens now appear gray in dark mode.
-• The goal title on the completion screen is now easier to read in dark mode.
+• You can now choose the time of day for deadline reminders in Settings.
+• Your reminder time is included in cloud backups.
