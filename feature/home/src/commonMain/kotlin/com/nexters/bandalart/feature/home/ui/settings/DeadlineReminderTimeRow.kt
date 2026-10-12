@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.home.ui.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -94,10 +95,15 @@ internal fun DeadlineReminderTimePickerDialog(
         onConfirmClick = { onConfirm(selectedTime) },
         onCancelClick = onDismiss,
     ) {
-        DeadlineReminderTimePicker(
-            initialTime = initialTime,
-            onTimeChange = { selectedTime = it },
-        )
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            DeadlineReminderTimePicker(
+                initialTime = initialTime,
+                onTimeChange = { selectedTime = it },
+            )
+        }
     }
 }
 
