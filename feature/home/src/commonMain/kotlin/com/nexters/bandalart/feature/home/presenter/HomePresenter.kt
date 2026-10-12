@@ -41,6 +41,7 @@ import com.nexters.bandalart.core.domain.notification.BufferedDeadlineNotificati
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
@@ -120,6 +121,9 @@ class HomePresenter(
         val themeMode by settingsRepository.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
         val recentEmojis by settingsRepository.recentEmojis.collectAsState(initial = emptyList())
         val deadlineReminderEnabled by settingsRepository.deadlineReminderEnabled.collectAsState(initial = false)
+        val deadlineReminderTime by settingsRepository.deadlineReminderTime.collectAsState(
+            initial = DeadlineReminderTime.Default,
+        )
         val taskCompletionTooltipDismissed by
             settingsRepository.taskCompletionTooltipDismissed.collectAsState(initial = true)
         val routineSettingsTooltipDismissed by
@@ -914,6 +918,7 @@ class HomePresenter(
             recentEmojis = recentEmojis.toPersistentList(),
             rewardedAdRequestId = rewardedAdRequestId,
             deadlineReminderEnabled = deadlineReminderEnabled,
+            deadlineReminderTime = deadlineReminderTime,
             deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
             deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
             deadlinePermissionRequestId = deadlinePermissionRequestId,
@@ -1140,6 +1145,13 @@ class HomePresenter(
                             settingsRepository.setDeadlineReminderEnabled(false)
                             deadlineReminderReconciler.reconcileAll()
                         }
+                    }
+                }
+
+                is HomeScreen.Event.SetDeadlineReminderTime -> {
+                    scope.launch {
+                        settingsRepository.setDeadlineReminderTime(event.time)
+                        deadlineReminderReconciler.reconcileAll()
                     }
                 }
 

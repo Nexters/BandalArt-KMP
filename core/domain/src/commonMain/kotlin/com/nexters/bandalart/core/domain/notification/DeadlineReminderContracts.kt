@@ -19,9 +19,13 @@ package com.nexters.bandalart.core.domain.notification
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.datetime.LocalTime
 
 interface DeadlineReminderScheduler {
-    suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult
+    suspend fun replaceAll(
+        batches: List<DeadlineReminderBatch>,
+        reminderTime: LocalTime,
+    ): DeadlineReminderSchedulingResult
 
     suspend fun clearAll(): DeadlineReminderSchedulingResult
 
@@ -33,7 +37,10 @@ interface DeadlineReminderScheduler {
 }
 
 object NoOpDeadlineReminderScheduler : DeadlineReminderScheduler {
-    override suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult =
+    override suspend fun replaceAll(
+        batches: List<DeadlineReminderBatch>,
+        reminderTime: LocalTime,
+    ): DeadlineReminderSchedulingResult =
         DeadlineReminderSchedulingResult(
             scheduledCount = 0,
             lastErrorCategory = DeadlineReminderSchedulingErrorCategory.UNSUPPORTED,

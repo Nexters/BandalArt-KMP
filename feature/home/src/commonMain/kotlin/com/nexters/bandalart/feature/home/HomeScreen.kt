@@ -22,6 +22,8 @@ import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
+import kotlinx.datetime.LocalTime
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
@@ -49,6 +51,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val recentEmojis: ImmutableList<String> = persistentListOf(),
         val rewardedAdRequestId: Long? = null,
         val deadlineReminderEnabled: Boolean = false,
+        val deadlineReminderTime: LocalTime = DeadlineReminderTime.Default,
         val deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus =
             DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
         val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
@@ -273,6 +276,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data class SetDeadlineReminderEnabled(
             val enabled: Boolean,
+        ) : Event
+
+        data class SetDeadlineReminderTime(
+            val time: LocalTime,
         ) : Event
 
         data object ConfirmDeadlineReminderPermission : Event

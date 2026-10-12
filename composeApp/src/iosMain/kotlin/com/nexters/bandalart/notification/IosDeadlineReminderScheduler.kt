@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderBatch
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingErrorCategory
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingResult
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.number
 import platform.Foundation.NSBundle
 import platform.Foundation.NSCalendar
@@ -44,12 +45,15 @@ import platform.UserNotifications.UNUserNotificationCenter
 class IosDeadlineReminderScheduler(
     private val notificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.currentNotificationCenter(),
 ) : DeadlineReminderScheduler {
-    override suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult {
+    override suspend fun replaceAll(
+        batches: List<DeadlineReminderBatch>,
+        reminderTime: LocalTime,
+    ): DeadlineReminderSchedulingResult {
         clearFeatureNotifications()
         var scheduledCount = 0
         batches.forEach { batch ->
             val request =
-                batch.toNotificationRequest()
+                batch.toNotificationRequest(reminderTime)
                     ?: return DeadlineReminderSchedulingResult(
                         scheduledCount = scheduledCount,
                         lastErrorCategory = DeadlineReminderSchedulingErrorCategory.SCHEDULING,
@@ -111,7 +115,7 @@ class IosDeadlineReminderScheduler(
     }
 }
 
-private fun DeadlineReminderBatch.toNotificationRequest(): UNNotificationRequest? {
+private fun DeadlineReminderBatch.toNotificationRequest(reminderTime: LocalTime): UNNotificationRequest? {
     // NSTimeZone.localTimeZone is Foundation's auto-updating local-time-zone proxy.
     val autoupdatingTimeZone = NSTimeZone.localTimeZone()
     val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
@@ -123,8 +127,8 @@ private fun DeadlineReminderBatch.toNotificationRequest(): UNNotificationRequest
             year = dueDate.year.toLong()
             month = dueDate.month.number.toLong()
             day = dueDate.day.toLong()
-            hour = DEADLINE_REMINDER_HOUR
-            minute = 0
+            hour = reminderTime.hour.toLong()
+            minute = reminderTime.minute.toLong()
             second = 0
         }
     val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(components, repeats = false)
@@ -179,7 +183,6 @@ private fun isDeadlineReminderIdentifier(identifier: String): Boolean = identifi
 
 internal const val DEADLINE_BANDALART_ID_KEY = "deadline_bandalart_id"
 private const val DEADLINE_REMINDER_IDENTIFIER_PREFIX = "deadline.v1."
-private const val DEADLINE_REMINDER_HOUR = 9L
 private const val DEADLINE_REMINDER_TITLE_KEY = "deadline_reminder_title"
 private const val DEADLINE_REMINDER_SINGLE_BODY_KEY = "deadline_reminder_single_body"
 private const val DEADLINE_REMINDER_MULTIPLE_BODY_KEY = "deadline_reminder_multiple_body"

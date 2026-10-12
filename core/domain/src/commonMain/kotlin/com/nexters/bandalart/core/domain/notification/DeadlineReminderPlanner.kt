@@ -41,8 +41,9 @@ class DeadlineReminderPlanner(
     fun plan(
         candidates: List<DeadlineReminderCandidate>,
         isEnabled: Boolean,
+        reminderTime: LocalTime = DeadlineReminderTime.Default,
     ): DeadlineReminderPlan {
-        if (!isEnabled) return DeadlineReminderPlan(emptyList(), overflowCount = 0)
+        if (!isEnabled) return DeadlineReminderPlan(emptyList(), overflowCount = 0, reminderTime = reminderTime)
 
         val now =
             kotlinx.datetime.Instant
@@ -52,7 +53,7 @@ class DeadlineReminderPlanner(
             candidates
                 .asSequence()
                 .filterNot(DeadlineReminderCandidate::isCompleted)
-                .mapNotNull { candidate -> candidate.toNormalizedItem(now) }
+                .mapNotNull { candidate -> candidate.toNormalizedItem(now, reminderTime) }
                 .groupBy { item -> item.bandalartId to item.dueDate }
                 .map { (key, items) ->
                     DeadlineReminderBatch(
@@ -73,15 +74,19 @@ class DeadlineReminderPlanner(
         return DeadlineReminderPlan(
             batches = batches.take(MAX_SCHEDULED_DEADLINE_REMINDER_BATCH_COUNT),
             overflowCount = (batches.size - MAX_SCHEDULED_DEADLINE_REMINDER_BATCH_COUNT).coerceAtLeast(0),
+            reminderTime = reminderTime,
         )
     }
 
-    private fun DeadlineReminderCandidate.toNormalizedItem(now: LocalDateTime,): NormalizedDeadlineReminderItem? {
+    private fun DeadlineReminderCandidate.toNormalizedItem(
+        now: LocalDateTime,
+        reminderTime: LocalTime,
+    ): NormalizedDeadlineReminderItem? {
         val normalizedTitle = title?.trim().orEmpty()
         if (normalizedTitle.isEmpty()) return null
 
         val normalizedDueDate = DeadlineReminderDueDateParser.parse(dueDate) ?: return null
-        val targetDateTime = LocalDateTime(normalizedDueDate, LocalTime(hour = 9, minute = 0))
+        val targetDateTime = LocalDateTime(normalizedDueDate, reminderTime)
         if (targetDateTime <= now) return null
 
         return NormalizedDeadlineReminderItem(

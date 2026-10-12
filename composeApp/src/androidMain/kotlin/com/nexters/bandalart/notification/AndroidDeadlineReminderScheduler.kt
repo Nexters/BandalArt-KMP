@@ -45,14 +45,17 @@ class AndroidDeadlineReminderScheduler(
     private val workManager: WorkManager
         get() = configuredWorkManager ?: WorkManager.getInstance(application)
 
-    override suspend fun replaceAll(batches: List<DeadlineReminderBatch>): DeadlineReminderSchedulingResult {
+    override suspend fun replaceAll(
+        batches: List<DeadlineReminderBatch>,
+        reminderTime: LocalTime,
+    ): DeadlineReminderSchedulingResult {
         clearFeatureState()
 
         var scheduledCount = 0
         return try {
             batches.forEach { batch ->
                 val target =
-                    LocalDateTime(batch.dueDate, LocalTime(hour = 9, minute = 0))
+                    LocalDateTime(batch.dueDate, reminderTime)
                         .toInstant(TimeZone.currentSystemDefault())
                 val delay = target - Clock.System.now()
                 if (delay.isPositive()) {

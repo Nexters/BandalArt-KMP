@@ -1,6 +1,6 @@
 # 마감일 알림 정책 가이드
 
-- 기준 commit: `53664a60` (Android 2.5.2, iOS 1.4.2)
+- 기준: #429 알림 시간 선택 반영 (Android 2.5.2, iOS 1.4.2 이후)
 - 관련 이슈: [#211 목표 마감일 기반 로컬 알림 도입](https://github.com/Nexters/BandalArt-KMP/issues/211)
 - 도입 근거: [마감일 기반 로컬 알림 조사](LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md), [구현 전략](LOCAL_DEADLINE_NOTIFICATION_STRATEGY.md)
 
@@ -10,7 +10,7 @@
 
 | 항목 | 현재 정책 | 근거 코드 |
 |---|---|---|
-| 알림 시각 | 마감일 당일 **오전 9시 고정**. 사용자가 바꿀 수 없다 | `DeadlineReminderPlanner`, `AndroidDeadlineReminderScheduler`, `DeadlineReminderWorker`, `IosDeadlineReminderScheduler` |
+| 알림 시각 | 마감일 당일 **설정한 시각**(기본 09:00). 설정 시트에서 시·분 단위로 바꿀 수 있다 | `DeadlineReminderPlanner`, `AndroidDeadlineReminderScheduler`, `DeadlineReminderWorker`, `IosDeadlineReminderScheduler` |
 | 시간대 | **기기 현지 시간대**. 서울 고정이 아니다 | `TimeZone.currentSystemDefault()`, `NSTimeZone.localTimeZone()` |
 | 대상 | 미완료이고 제목과 마감일이 있는 모든 셀(메인·서브·태스크) | `DeadlineReminderPlanner.plan` |
 | 묶음 단위 | 같은 반다라트 + 같은 마감일 = 알림 1개 | `DeadlineReminderBatch.id` |
@@ -26,22 +26,25 @@
 1. `isCompleted == false`
 2. 앞뒤 공백을 제거한 제목이 비어 있지 않다.
 3. `dueDate`가 `LocalDateTime` 형식으로 파싱된다. 파싱에 실패하면 조용히 제외한다.
-4. 마감일 오전 9시가 현재 시각(기기 시간대)보다 뒤에 있다. 오늘 9시가 이미 지났으면 오늘 마감 셀도 제외한다.
+4. 마감일의 설정 시각이 현재 시각(기기 시간대)보다 뒤에 있다. 오늘 설정 시각이 이미 지났으면 오늘 마감 셀도 제외한다.
 
 메인·서브·태스크 셀을 구분하지 않는다. 마감일이 있는 서브목표와 그 아래 태스크가 같은 날 마감이면 같은 알림에 함께 집계된다.
 
 ## 2. 알림 시각과 시간대
 
-- 알림 시각은 마감일 당일 `09:00`이며 코드 상수다. 설정 화면이나 저장소 값으로 바꿀 수 없다.
+- 알림 시각은 설정 시트의 "알림 시간"에서 시·분 단위로 고른다. 기본값은 `09:00`이다.
+- DataStore `deadline_reminder_minute_of_day`에 자정 기준 분(0~1439)으로 저장한다. 범위 밖 값은 09:00으로 취급한다(`DeadlineReminderTime`).
+- 클라우드 백업에 포함된다. 값이 없는 기존 백업은 09:00으로 복원한다.
+- 시각을 바꾸면 즉시 전체 재조정한다.
 - 마감일은 시간대 정보가 없는 `LocalDateTime` 문자열로 저장되고, 알림 계산에서는 날짜만 사용한다.
-- 9시는 알림을 계산하는 시점의 기기 현지 시간대로 해석한다.
+- 설정 시각은 알림을 계산하는 시점의 기기 현지 시간대로 해석한다.
   - 공통 planner: `DeadlineReminderTimeZoneProvider(TimeZone::currentSystemDefault)`
-  - Android: `LocalDateTime(dueDate, 09:00).toInstant(TimeZone.currentSystemDefault())`로 절대 시각을 계산해 WorkManager 지연 시간으로 쓴다.
+  - Android: `LocalDateTime(dueDate, 설정 시각).toInstant(TimeZone.currentSystemDefault())`로 절대 시각을 계산해 WorkManager 지연 시간으로 쓴다.
   - iOS: `NSTimeZone.localTimeZone()`(자동 갱신 프록시)을 지정한 `NSDateComponents`로 `UNCalendarNotificationTrigger`를 만든다.
 - 시간대가 바뀌면 다시 예약한다.
   - Android: `DeadlineReminderTimeChangeReceiver`가 `TIME_SET`, `TIMEZONE_CHANGED`를 받아 `DeadlineReminderReconcileWorker`로 전체 재조정한다.
   - iOS: `NSSystemTimeZoneDidChange`, `applicationSignificantTimeChange`에서 재조정한다.
-- 결과적으로 서울에서 예약한 뒤 뉴욕으로 이동하면 뉴욕 기준 마감일 오전 9시에 알림이 온다.
+- 결과적으로 서울에서 예약한 뒤 뉴욕으로 이동하면 뉴욕 기준 마감일의 설정 시각에 알림이 온다.
 
 ## 3. 묶음과 상한
 
@@ -85,10 +88,10 @@
 ### Android
 
 - 묶음마다 `OneTimeWorkRequest`를 `ExistingWorkPolicy.REPLACE`로 예약한다. 태그는 `deadline.v1`과 묶음 ID다.
-- WorkManager는 정확한 시각을 보장하지 않는다. 9시 이후 시스템이 허용하는 시점에 실행될 수 있다. exact alarm은 쓰지 않는다.
+- WorkManager는 정확한 시각을 보장하지 않는다. 설정 시각 이후 시스템이 허용하는 시점에 실행될 수 있다. exact alarm은 쓰지 않는다.
 - Worker는 실행 시점에 다시 검사하고, 조건이 맞지 않으면 알림 없이 성공 처리한다.
   - 설정 ON, `GRANTED`
-  - 오늘이 마감일이고 현재 9시 이후
+  - 오늘이 마감일이고 현재 시각이 설정 시각 이후 (실행 시점에 설정을 다시 읽는다)
   - 해당 반다라트의 그 날짜 미완료 셀이 남아 있음
 - 채널 `deadline_reminder_v2`, 중요도 `IMPORTANCE_HIGH`
 
@@ -122,9 +125,7 @@
 
 | 제약 | 영향 | 후속 |
 |---|---|---|
-| 알림 시각 9시 고정 | 아침 9시가 맞지 않는 사용자가 바꿀 수 없다 | 알림 시간 선택 기능 |
-| 9시 값이 4곳에 중복 | 시각을 바꾸려면 planner, Android scheduler, Worker, iOS 상수를 함께 고쳐야 한다 | 설정값 하나로 통합 |
-| 마감일에 시간대 정보 없음 | 마감일 자체는 어느 나라에서든 같은 날짜로 취급된다. 이동 후에는 새 현지 날짜 기준으로 알림이 온다 | 시간대 정책을 제품 관점에서 확정 |
-| Android 발송 지연 가능 | Doze 등으로 9시 정각보다 늦을 수 있다 | 정확도 요구 시 exact alarm 검토 |
+| 마감일에 시간대 정보 없음 | 마감일 자체는 어느 나라에서든 같은 날짜로 취급된다. 이동 후에는 새 현지 날짜 기준으로 알림이 온다 | 현재 정책으로 확정([전략](DEADLINE_REMINDER_TIME_SELECTION_STRATEGY.md)) |
+| Android 발송 지연 가능 | Doze 등으로 설정 시각보다 늦을 수 있다. 분 단위 선택이라 지연이 더 눈에 띌 수 있다 | 정확도 요구 시 exact alarm 검토 |
 | 32개 초과 묶음 미예약 | 먼 날짜 알림은 가까운 묶음이 지나갈 때까지 예약되지 않는다 | 재조정 시점마다 다시 채워지므로 현재는 유지 |
 | iOS 발송 직전 재확인 없음 | 앱이 재조정하지 못한 채 완료된 셀이 알림에 남을 수 있다 | 셀 변경 시 재조정으로 대부분 방지 |

@@ -96,6 +96,7 @@ private fun BandalartBackupPreferences.toBackup() =
         recentEmojis = recentEmojis,
         deadlineReminderEnabled = deadlineReminderEnabled,
         maxBandalartSlots = maxBandalartSlots,
+        deadlineReminderMinuteOfDay = deadlineReminderMinuteOfDay,
     )
 
 private fun BackupBandalart.toDatabase() =
@@ -134,4 +135,5 @@ private fun BackupPreferences.toDataStore() =
         recentEmojis = recentEmojis,
         deadlineReminderEnabled = deadlineReminderEnabled,
         maxBandalartSlots = maxBandalartSlots,
+        deadlineReminderMinuteOfDay = deadlineReminderMinuteOfDay,
     )

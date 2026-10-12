@@ -51,6 +51,10 @@ kotlin {
             implementation(libs.napier)
         }
 
+        iosMain.dependencies {
+            implementation(libs.compose.hig)
+        }
+
         androidHostTest.dependencies {
             implementation(libs.bundles.android.unit.test)
             implementation(libs.androidx.compose.ui.test)

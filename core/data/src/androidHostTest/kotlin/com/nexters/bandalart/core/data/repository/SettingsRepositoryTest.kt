@@ -25,6 +25,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -37,6 +38,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf("unexpected")
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
 
@@ -51,6 +53,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.setThemeMode(any()) } returns Unit
@@ -67,6 +70,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(listOf("🎯", "🚀"))
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.addRecentEmoji(any()) } returns Unit
@@ -84,6 +88,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(true)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.setDeadlineReminderEnabled(any()) } returns Unit
@@ -96,11 +101,30 @@ class SettingsRepositoryTest {
         }
 
     @Test
+    fun deadlineReminderTimeIsMappedFromMinuteOfDayAndStored() =
+        runTest {
+            every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(true)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(450)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
+            every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            coEvery { dataStore.setDeadlineReminderMinuteOfDay(any()) } returns Unit
+            val repository = DefaultSettingsRepository(dataStore)
+
+            assertEquals(LocalTime(hour = 7, minute = 30), repository.deadlineReminderTime.first())
+            repository.setDeadlineReminderTime(LocalTime(hour = 21, minute = 15))
+
+            coVerify(exactly = 1) { dataStore.setDeadlineReminderMinuteOfDay(1275) }
+        }
+
+    @Test
     fun taskCompletionTooltipDismissalIsExposedAndStored() =
         runTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(true)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
             coEvery { dataStore.dismissTaskCompletionTooltip() } returns Unit
@@ -118,6 +142,7 @@ class SettingsRepositoryTest {
             every { dataStore.themeMode } returns flowOf(null)
             every { dataStore.recentEmojis } returns flowOf(emptyList())
             every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(true)
             coEvery { dataStore.dismissRoutineSettingsTooltip() } returns Unit

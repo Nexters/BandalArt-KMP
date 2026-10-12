@@ -16,14 +16,15 @@
 
 package com.nexters.bandalart.core.domain.notification
 
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 class DeadlineReminderPlannerTest {
     @Test
@@ -159,6 +160,26 @@ class DeadlineReminderPlannerTest {
 
         assertTrue(plan.batches.isEmpty())
         assertEquals(0, plan.overflowCount)
+    }
+
+    @Test
+    fun plannerUsesTheSelectedReminderTimeAsTheCutoff() {
+        val planner = plannerAt("2026-08-09T20:00:00Z")
+        val candidates = listOf(candidate(1, 10, "오늘 목표", "2026-08-09T00:00"))
+
+        val passed = planner.plan(candidates, isEnabled = true, reminderTime = LocalTime(hour = 20, minute = 0))
+        val upcoming = planner.plan(candidates, isEnabled = true, reminderTime = LocalTime(hour = 20, minute = 1))
+
+        assertTrue(passed.batches.isEmpty())
+        assertEquals(1, upcoming.batches.size)
+        assertEquals(LocalTime(hour = 20, minute = 1), upcoming.reminderTime)
+    }
+
+    @Test
+    fun plannerDefaultsToNineAm() {
+        val plan = plannerAt("2026-08-09T00:00:00Z").plan(emptyList(), isEnabled = true)
+
+        assertEquals(LocalTime(hour = 9, minute = 0), plan.reminderTime)
     }
 
     private fun plannerAt(instant: String): DeadlineReminderPlanner =
