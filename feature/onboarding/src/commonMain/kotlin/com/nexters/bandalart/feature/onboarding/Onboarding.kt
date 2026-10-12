@@ -157,23 +157,26 @@ internal fun Onboarding(
                     }
 
                     1 -> {
-                        Box {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Text(
+                                text = stringResource(Res.string.onboarding_second_title),
+                                modifier = modifier,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontFamily = pretendardFontFamily(),
+                                fontWeight = FontWeight.W700,
+                                fontSize = 22.sp,
+                                lineHeight = 30.8.sp,
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Box(
+                                modifier = Modifier.weight(1f).fillMaxWidth(),
+                                contentAlignment = Alignment.TopCenter,
                             ) {
-                                Spacer(modifier = Modifier.height(50.dp))
-                                Text(
-                                    text = stringResource(Res.string.onboarding_second_title),
-                                    modifier = modifier,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    fontFamily = pretendardFontFamily(),
-                                    fontWeight = FontWeight.W700,
-                                    fontSize = 22.sp,
-                                    lineHeight = 30.8.sp,
-                                    textAlign = TextAlign.Center,
-                                )
-                                Spacer(modifier = Modifier.height(50.dp))
                                 Card(
                                     shape = RoundedCornerShape(16.dp),
                                     modifier = Modifier.padding(16.dp),
@@ -204,7 +207,6 @@ internal fun Onboarding(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .align(Alignment.BottomCenter)
                                         .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
                                         .clip(shape = RoundedCornerShape(50.dp))
                                         .background(MaterialTheme.colorScheme.secondary),

@@ -95,6 +95,7 @@
 ### Home, Settings, Updates
 
 - [태스크 셀 햅틱 완료](features/home/TASK_CELL_HAPTIC_COMPLETION_STRATEGY.md)
+- [넓은 화면 반다라트 표 레이아웃](features/home/WIDE_SCREEN_BOARD_LAYOUT_STRATEGY.md)
 - [반다라트 템플릿 catalog v1](features/templates/BANDALART_TEMPLATE_CATALOG_V1_STRATEGY.md)
 - [마감일 알림 정책 가이드](features/notifications/DEADLINE_NOTIFICATION_POLICY_GUIDE.md)
 - [마감일 기반 로컬 알림 조사](features/notifications/LOCAL_DEADLINE_NOTIFICATION_RESEARCH.md)
