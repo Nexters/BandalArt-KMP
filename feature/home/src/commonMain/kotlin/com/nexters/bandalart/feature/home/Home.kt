@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -439,7 +440,7 @@ internal fun HomeContent(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                             .testTag(HOME_SCROLL_TAG)
-                            .padding(bottom = if (isWide) 16.dp else 32.dp),
+                            .padding(bottom = if (isWide) 0.dp else 32.dp),
                 ) {
                     Column(modifier = Modifier.onSizeChanged { topBarHeight = with(density) { it.height.toDp() } }) {
                         HomeTopBar(
@@ -459,24 +460,39 @@ internal fun HomeContent(
                                 viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
                             )
                         val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
-                        Box(modifier = Modifier.padding(top = 16.dp)) {
-                            Row(modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer)) {
-                                Column(modifier = Modifier.width(infoWidth)) {
-                                    header(Modifier)
-                                    Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
+                        // 정보 영역은 표 높이 기준 세로 가운데에 두고, 공유 버튼은 정보 영역의 헤더 바로 아래에 겹친다.
+                        val infoHeight = headerHeight + 16.dp + shareButtonHeight
+                        val infoTop = max((boardSize - infoHeight) / 2, 0.dp)
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = viewportHeight - topBarHeight)
+                                    .padding(vertical = 16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Box {
+                                Row(
+                                    modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Column(modifier = Modifier.width(infoWidth)) {
+                                        header(Modifier)
+                                        Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
+                                    }
+                                    Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
+                                        chart(boardSize)
+                                    }
                                 }
-                                Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
-                                    chart(boardSize)
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .width(infoWidth)
+                                            .padding(top = infoTop + headerHeight + 16.dp),
+                                    contentAlignment = Alignment.TopCenter,
+                                ) {
+                                    shareButton(Modifier)
                                 }
-                            }
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .width(infoWidth)
-                                        .padding(top = headerHeight + 16.dp),
-                                contentAlignment = Alignment.TopCenter,
-                            ) {
-                                shareButton(Modifier)
                             }
                         }
                     } else {
