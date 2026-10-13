@@ -18,11 +18,13 @@
 - [Compose Multiplatform 마이그레이션 문제 해결](architecture/kmp/COMPOSE_MULTIPLATFORM_MIGRATION_TROUBLESHOOTING.md)
 - [KMP 테스트 소스셋과 Circuit Presenter 테스트 가이드](architecture/kmp/KMP_TESTING_GUIDE.md)
 - [Maestro UI 테스트 가이드](testing/MAESTRO_UI_TEST_GUIDE.md)
+- [iPhone Duo 시뮬레이터 테스트 가이드](testing/IPHONE_DUO_SIMULATOR_GUIDE.md)
 - [마감일 알림 정책 가이드](features/notifications/DEADLINE_NOTIFICATION_POLICY_GUIDE.md)
 
 ## Testing
 
 - [Maestro UI 테스트 가이드](testing/MAESTRO_UI_TEST_GUIDE.md)
+- [iPhone Duo 시뮬레이터 테스트 가이드](testing/IPHONE_DUO_SIMULATOR_GUIDE.md)
 
 ## Architecture
 
