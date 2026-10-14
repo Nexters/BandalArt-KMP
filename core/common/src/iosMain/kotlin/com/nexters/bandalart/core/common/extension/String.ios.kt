@@ -42,12 +42,14 @@ actual class LocalDateTime(
     actual companion object {
         actual fun now(): LocalDateTime = LocalDateTime(NSDate())
 
+        // 저장 형식(toString)은 초가 없고, 이전 데이터나 백업에는 초가 붙을 수 있어 둘 다 해석한다.
+        // Android의 java.time ISO 파서와 같은 범위를 받는다.
         actual fun parse(date: String): LocalDateTime {
-            val formatter =
-                NSDateFormatter().apply {
-                    dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            val parsed =
+                ISO_PATTERNS.firstNotNullOfOrNull { pattern ->
+                    NSDateFormatter().apply { dateFormat = pattern }.dateFromString(date)
                 }
-            return LocalDateTime(formatter.dateFromString(date) ?: NSDate())
+            return LocalDateTime(parsed ?: NSDate())
         }
 
         actual fun parse(
@@ -62,6 +64,8 @@ actual class LocalDateTime(
         }
     }
 }
+
+private val ISO_PATTERNS = listOf("yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm")
 
 actual fun String.toColor(): Color {
     // iOS에서 hex 문자열을 Color로 변환하는 로직
