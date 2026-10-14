@@ -183,6 +183,20 @@ class LocalDateTimeTest {
                 }
             assertEquals("2025年 4月 15日", dateString.toStringLocalDateTime(japaneseLocale))
         }
+
+        @Test
+        @DisplayName("초가 붙은 값도 날짜를 올바르게 변환해야 한다")
+        fun testToStringLocalDateTimeWithSeconds() {
+            // given
+            val dateString = "2025-04-15T14:30:00"
+            val koreanLocale =
+                object : Locale {
+                    override val language = Language.KOREAN
+                }
+
+            // when & then
+            assertEquals("2025년 4월 15일", dateString.toStringLocalDateTime(koreanLocale))
+        }
     }
 
     @Nested
