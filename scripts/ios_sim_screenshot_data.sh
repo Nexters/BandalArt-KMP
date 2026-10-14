@@ -8,6 +8,7 @@
 #   scripts/ios_sim_screenshot_data.sh [-d <udid>] shot <inner|outer> <name> [out_dir]
 #
 # -d를 생략하면 부팅된 첫 시뮬레이터를 사용한다.
+# Duo 접기·펼치기는 Xcode 27.1 Device Hub 하단 자세 버튼으로 바꾼다. docs/testing/IPHONE_DUO_SIMULATOR_GUIDE.md 참고.
 # 앱을 종료한 뒤 DB를 수정하고 다시 실행한다. Room은 프로세스 밖의 변경을 감지하지 못하기 때문이다.
 # complete는 앱이 저장해 둔 이전 완료 상태(미완료)와 DB의 완료 상태를 비교해 완료 화면을 띄우는 동작을 이용한다.
 # 따라서 complete 전에 앱이 해당 반다라트를 미완료 상태로 한 번 이상 로드한 적이 있어야 한다.
@@ -123,7 +124,7 @@ case "$cmd" in
     sips -g pixelWidth -g pixelHeight "$out_dir/$name.png" | tail -2 | tr -s ' \n' ' '; echo
     ;;
   *)
-    sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'
     exit 1
     ;;
 esac

@@ -23,13 +23,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.home_layout_id
 import bandalart.core.designsystem.generated.resources.home_main_id
@@ -52,9 +55,11 @@ fun BandalartChart(
     onTaskCompletionTooltipDismissed: () -> Unit = {},
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
+    maxBoardSize: Dp = Dp.Infinity,
 ) {
     BoxWithConstraints {
-        val paddedMaxWidth = remember(maxWidth) { maxWidth - (15.dp * 2) }
+        val paddedMaxWidth = remember(maxWidth, maxBoardSize) { min(maxWidth - (15.dp * 2), maxBoardSize) }
+        val cellTextScale = cellTextScaleFor(paddedMaxWidth)
         val tooltipTaskCellId =
             remember(bandalartCellData, showTaskCompletionTooltip) {
                 if (showTaskCompletionTooltip) {
@@ -72,79 +77,89 @@ fun BandalartChart(
                 SubCell(2, 3, 0, 1, bandalartCellData.children[3]),
             )
 
-        Layout(
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp)),
-            content = {
-                for (index in subCellList.indices) {
+        CompositionLocalProvider(LocalCellTextScale provides cellTextScale) {
+            Layout(
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp)),
+                content = {
+                    for (index in subCellList.indices) {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .layoutId(stringResource(Res.string.home_layout_id, index + 1))
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(color = MaterialTheme.colorScheme.surfaceContainer),
+                        ) {
+                            BandalartCellGrid(
+                                bandalartData = bandalartData,
+                                subCell = subCellList[index],
+                                rows = subCellList[index].rowCnt,
+                                cols = subCellList[index].colCnt,
+                                tooltipTaskCellId = tooltipTaskCellId,
+                                onTaskCompletionTooltipDismissed = onTaskCompletionTooltipDismissed,
+                                onHomeUiAction = onHomeUiAction,
+                            )
+                        }
+                    }
                     Box(
                         modifier =
                             Modifier
-                                .layoutId(stringResource(Res.string.home_layout_id, index + 1))
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(color = MaterialTheme.colorScheme.surfaceContainer),
+                                .layoutId(stringResource(Res.string.home_main_id))
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(color = bandalartData.mainColor.toColor()),
                     ) {
-                        BandalartCellGrid(
+                        BandalartCell(
+                            cellType = CellType.MAIN,
                             bandalartData = bandalartData,
-                            subCell = subCellList[index],
-                            rows = subCellList[index].rowCnt,
-                            cols = subCellList[index].colCnt,
-                            tooltipTaskCellId = tooltipTaskCellId,
-                            onTaskCompletionTooltipDismissed = onTaskCompletionTooltipDismissed,
+                            cellData = bandalartCellData,
                             onHomeUiAction = onHomeUiAction,
                         )
                     }
+                },
+            ) { measurables, constraints ->
+                val sub1 = measurables.first { it.layoutId == "Sub 1" }
+                val sub2 = measurables.first { it.layoutId == "Sub 2" }
+                val sub3 = measurables.first { it.layoutId == "Sub 3" }
+                val sub4 = measurables.first { it.layoutId == "Sub 4" }
+                val main = measurables.first { it.layoutId == "Main" }
+
+                val chartWidth = paddedMaxWidth.roundToPx()
+                val mainWidth = chartWidth / 5
+                val padding = 1.dp.roundToPx()
+
+                val mainConstraints = Constraints.fixed(width = mainWidth, height = mainWidth)
+                val sub1Constraints = Constraints.fixed(width = mainWidth * 3 - padding, height = mainWidth * 2 - padding)
+                val sub2Constraints = Constraints.fixed(width = mainWidth * 2 - padding, height = mainWidth * 3 - padding)
+                val sub3Constraints = Constraints.fixed(width = mainWidth * 2 - padding, height = mainWidth * 3 - padding)
+                val sub4Constraints = Constraints.fixed(width = mainWidth * 3 - padding, height = mainWidth * 2 - padding)
+
+                val mainPlaceable = main.measure(mainConstraints)
+                val sub1Placeable = sub1.measure(sub1Constraints)
+                val sub2Placeable = sub2.measure(sub2Constraints)
+                val sub3Placeable = sub3.measure(sub3Constraints)
+                val sub4Placeable = sub4.measure(sub4Constraints)
+
+                layout(width = chartWidth, height = chartWidth) {
+                    mainPlaceable.place(x = mainWidth * 2, y = mainWidth * 2)
+                    sub1Placeable.place(x = 0, y = 0)
+                    sub2Placeable.place(x = mainWidth * 3 + padding, y = 0)
+                    sub3Placeable.place(x = 0, y = mainWidth * 2 + padding)
+                    sub4Placeable.place(x = mainWidth * 2 + padding, y = mainWidth * 3 + padding)
                 }
-                Box(
-                    modifier =
-                        Modifier
-                            .layoutId(stringResource(Res.string.home_main_id))
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(color = bandalartData.mainColor.toColor()),
-                ) {
-                    BandalartCell(
-                        cellType = CellType.MAIN,
-                        bandalartData = bandalartData,
-                        cellData = bandalartCellData,
-                        onHomeUiAction = onHomeUiAction,
-                    )
-                }
-            },
-        ) { measurables, constraints ->
-            val sub1 = measurables.first { it.layoutId == "Sub 1" }
-            val sub2 = measurables.first { it.layoutId == "Sub 2" }
-            val sub3 = measurables.first { it.layoutId == "Sub 3" }
-            val sub4 = measurables.first { it.layoutId == "Sub 4" }
-            val main = measurables.first { it.layoutId == "Main" }
-
-            val chartWidth = paddedMaxWidth.roundToPx()
-            val mainWidth = chartWidth / 5
-            val padding = 1.dp.roundToPx()
-
-            val mainConstraints = Constraints.fixed(width = mainWidth, height = mainWidth)
-            val sub1Constraints = Constraints.fixed(width = mainWidth * 3 - padding, height = mainWidth * 2 - padding)
-            val sub2Constraints = Constraints.fixed(width = mainWidth * 2 - padding, height = mainWidth * 3 - padding)
-            val sub3Constraints = Constraints.fixed(width = mainWidth * 2 - padding, height = mainWidth * 3 - padding)
-            val sub4Constraints = Constraints.fixed(width = mainWidth * 3 - padding, height = mainWidth * 2 - padding)
-
-            val mainPlaceable = main.measure(mainConstraints)
-            val sub1Placeable = sub1.measure(sub1Constraints)
-            val sub2Placeable = sub2.measure(sub2Constraints)
-            val sub3Placeable = sub3.measure(sub3Constraints)
-            val sub4Placeable = sub4.measure(sub4Constraints)
-
-            layout(width = chartWidth, height = chartWidth) {
-                mainPlaceable.place(x = mainWidth * 2, y = mainWidth * 2)
-                sub1Placeable.place(x = 0, y = 0)
-                sub2Placeable.place(x = mainWidth * 3 + padding, y = 0)
-                sub3Placeable.place(x = 0, y = mainWidth * 2 + padding)
-                sub4Placeable.place(x = mainWidth * 2 + padding, y = mainWidth * 3 + padding)
             }
         }
     }
 }
+
+// 세로 휴대폰의 표 한 변(300~400dp)에서는 글자 크기를 바꾸지 않는다.
+internal fun cellTextScaleFor(boardSize: Dp): Float =
+    when {
+        boardSize > 400.dp -> (boardSize / 400.dp).coerceAtMost(1.5f)
+        boardSize < 300.dp -> (boardSize / 300.dp).coerceAtLeast(0.85f)
+        else -> 1f
+    }
 
 internal fun BandalartCellEntity.firstIncompleteTaskCellId(): Long? =
     children

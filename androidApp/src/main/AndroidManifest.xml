@@ -62,7 +62,6 @@
             android:name="com.nexters.bandalart.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bandalart.Splash">
 
             <intent-filter>

@@ -19,6 +19,7 @@ package com.nexters.bandalart.feature.home.ui.bandalart
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 //    wordBreak = LineBreak.WordBreak.Phrase,
 // )
 
+// 표 크기에 따른 셀 글자 배율. BandalartChart가 제공한다.
+internal val LocalCellTextScale = staticCompositionLocalOf { 1f }
+
 @Composable
 fun CellText(
     cellText: String,
@@ -45,17 +49,19 @@ fun CellText(
     modifier: Modifier = Modifier,
     textAlpha: Float = 1f,
 ) {
+    val scale = LocalCellTextScale.current
     Text(
         text = cellText,
-        modifier = modifier
-            .padding(horizontal = 4.dp, vertical = 6.dp)
-            .alpha(textAlpha),
+        modifier =
+            modifier
+                .padding(horizontal = 4.dp, vertical = 6.dp)
+                .alpha(textAlpha),
         color = cellTextColor,
         fontFamily = pretendardFontFamily(),
         fontWeight = fontWeight,
-        fontSize = 12.sp,
-        lineHeight = 16.8.sp,
-        letterSpacing = (-0.24).sp,
+        fontSize = 12.sp * scale,
+        lineHeight = 16.8.sp * scale,
+        letterSpacing = (-0.24).sp * scale,
         textAlign = TextAlign.Center,
         // style = TextStyle(lineBreak = cellLineBreak),
     )
