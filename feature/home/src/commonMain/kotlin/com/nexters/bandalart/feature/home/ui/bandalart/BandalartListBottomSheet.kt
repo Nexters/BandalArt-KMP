@@ -112,6 +112,7 @@ fun BandalartListBottomSheet(
                 .wrapContentSize()
                 .statusBarsPadding(),
         sheetState = bottomSheetState,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
         Column(
