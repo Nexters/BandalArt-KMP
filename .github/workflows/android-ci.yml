@@ -6,6 +6,9 @@ env:
 
 on:
     pull_request:
+        # Draft PR은 사람이 검토하기 전의 자동 생성 코드일 수 있어 시크릿을 쓰는 CI를 건너뛰고,
+        # Ready for review로 바꿀 때 실행한다
+        types: [opened, synchronize, reopened, ready_for_review]
         paths-ignore:
             - "**/*.md"
 
@@ -21,7 +24,7 @@ jobs:
         name: Detect iOS changes
         runs-on: ubuntu-latest
         timeout-minutes: 5
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
         outputs:
             ios: ${{ steps.ios.outputs.changed }}
 
@@ -65,7 +68,7 @@ jobs:
         name: Code quality
         runs-on: ubuntu-latest
         timeout-minutes: 15
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
             -   uses: actions/checkout@v7
@@ -105,7 +108,7 @@ jobs:
         name: Unit tests
         runs-on: macos-latest
         timeout-minutes: 30
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
             -   uses: actions/checkout@v7
@@ -143,7 +146,7 @@ jobs:
         name: Android lint and build
         runs-on: ubuntu-latest
         timeout-minutes: 30
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
             -   uses: actions/checkout@v7
@@ -182,7 +185,7 @@ jobs:
         needs: changes
         runs-on: macos-latest
         timeout-minutes: 60
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') && needs.changes.outputs.ios == 'true' }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') && needs.changes.outputs.ios == 'true' }}
         env:
             IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
 
@@ -383,7 +386,7 @@ jobs:
         name: Release CD validation
         runs-on: macos-latest
         timeout-minutes: 15
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
             -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -440,7 +443,7 @@ jobs:
     ci-build:
         name: ci-build
         runs-on: ubuntu-latest
-        if: ${{ always() && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
+        if: ${{ always() && !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
         needs:
             - changes
             - quality

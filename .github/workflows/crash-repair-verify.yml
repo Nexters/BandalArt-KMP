@@ -1,0 +1,69 @@
+name: Crash Repair Verify
+
+# 개인 Crashlytics 봇이 만든 수정 후보를 사람이 검토하기 전에 검증한다.
+# 자동 생성 코드를 실행하므로 시크릿을 쓰지 않고, 토큰은 읽기 권한만 갖는다.
+
+env:
+    GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+
+on:
+    push:
+        branches:
+            - "crash-verify/**"
+
+concurrency:
+    group: crash-verify-${{ github.ref }}
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+jobs:
+    verify:
+        name: Verify
+        # android-ci의 unit_tests와 같은 러너에서 allTests를 실행한다
+        runs-on: macos-latest
+        timeout-minutes: 45
+
+        steps:
+            -   uses: actions/checkout@v7
+                with:
+                    # spotless ratchet이 origin/main을 비교하고, 테스트 코드가 토큰을 읽지 못하게 한다
+                    fetch-depth: 0
+                    persist-credentials: false
+
+            -   name: Setup JDK 21
+                uses: actions/setup-java@v5
+                with:
+                    distribution: zulu
+                    java-version: 21
+
+            -   name: Setup Android SDK
+                uses: android-actions/setup-android@v4
+                with:
+                    packages: platform-tools
+
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v6
+                with:
+                    # 검증 브랜치가 공유 캐시를 바꾸지 못하게 읽기만 한다
+                    cache-read-only: true
+
+            # release 서명 설정이 구성 단계에서 파일을 읽으므로 debug 빌드용 더미 값을 넣는다
+            -   name: Generate dummy build properties
+                run: |
+                    printf 'STORE_FILE=/dev/null\nSTORE_PASSWORD=unused\nKEY_ALIAS=unused\nKEY_PASSWORD=unused\n' > keystore.properties
+
+            -   name: Verify
+                run: |
+                    ./gradlew spotlessCheck detekt allTests :androidApp:testDebugUnitTest :androidApp:assembleDebug \
+                        -PspotlessRatchetFrom=origin/main --continue --stacktrace
+
+            -   name: Upload test results
+                if: always()
+                uses: actions/upload-artifact@v4
+                with:
+                    name: test-results
+                    path: "**/build/test-results/**/*.xml"
+                    if-no-files-found: ignore
+                    retention-days: 7
