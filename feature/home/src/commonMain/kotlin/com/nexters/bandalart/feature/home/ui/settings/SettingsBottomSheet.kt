@@ -18,6 +18,11 @@ package com.nexters.bandalart.feature.home.ui.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -134,6 +140,10 @@ internal fun SettingsBottomSheet(
     }
 
     ModalBottomSheet(
+        // iPhone Duo처럼 가로 inset이 있는 화면에서 시트 내용이 상태 영역 밑으로 들어가지 않게 한다.
+        contentWindowInsets = {
+            BottomSheetDefaults.windowInsets.union(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+        },
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier.statusBarsPadding(),
         sheetState = bottomSheetState,
