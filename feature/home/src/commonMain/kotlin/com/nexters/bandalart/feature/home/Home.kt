@@ -476,7 +476,13 @@ internal fun HomeContent(
                                     modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Column(modifier = Modifier.width(infoWidth)) {
+                                    // 표 상자 안쪽 좌측 여백만큼 정보 열 시작에도 여백을 줘 좌우 여백을 맞춘다.
+                                    Column(
+                                        modifier =
+                                            Modifier
+                                                .width(infoWidth)
+                                                .padding(start = BOARD_HORIZONTAL_PADDING / 2),
+                                    ) {
                                         header(Modifier)
                                         Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
                                     }
@@ -488,7 +494,7 @@ internal fun HomeContent(
                                     modifier =
                                         Modifier
                                             .width(infoWidth)
-                                            .padding(top = infoTop + headerHeight + 16.dp),
+                                            .padding(start = BOARD_HORIZONTAL_PADDING / 2, top = infoTop + headerHeight + 16.dp),
                                     contentAlignment = Alignment.TopCenter,
                                 ) {
                                     shareButton(Modifier)
