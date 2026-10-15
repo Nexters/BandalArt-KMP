@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -116,6 +118,10 @@ private val BOARD_HORIZONTAL_PADDING = 30.dp
 
 // 1단에서 높이에 맞춰 줄이더라도 세로 휴대폰 표 크기보다 작아지지 않게 한다.
 private val MIN_SINGLE_COLUMN_BOARD_SIZE = 360.dp
+
+// 휴대폰 가로(약 384dp)처럼 높이가 이보다 낮은 2단 화면은 상단 바와 광고를 정보 열로 옮긴다.
+private val SHORT_WIDE_MAX_HEIGHT = 420.dp
+private val SHORT_WIDE_INFO_MAX_WIDTH = 360.dp
 
 @CircuitInject(HomeScreen::class, AppScope::class)
 @Inject
@@ -382,157 +388,285 @@ internal fun HomeContent(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            BoxWithConstraints(modifier = Modifier.weight(1f)) {
-                val density = LocalDensity.current
-                var topBarHeight by remember { mutableStateOf(0.dp) }
-                var headerHeight by remember { mutableStateOf(0.dp) }
-                var shareButtonHeight by remember { mutableStateOf(0.dp) }
-                val viewportWidth = maxWidth
-                val viewportHeight = maxHeight
-                val isWide = viewportWidth >= viewportHeight * WIDE_LAYOUT_ASPECT_RATIO
-                val header: @Composable (Modifier) -> Unit = { headerModifier ->
-                    if (isContentReady) {
-                        HomeHeader(
-                            bandalartData = bandalartData,
-                            cellData = bandalartCellData,
-                            isDropDownMenuOpened = isDropDownMenuOpened,
-                            showRoutineSettingsTooltip = showRoutineSettingsTooltip,
-                            onRoutineSettingsTooltipDismissed = {
-                                eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
-                            },
-                            onHomeUiAction = eventSink,
-                            modifier = headerModifier.onSizeChanged { headerHeight = with(density) { it.height.toDp() } },
-                        )
-                    }
-                }
-                val chart: @Composable (Dp) -> Unit = { maxBoardSize ->
-                    if (isContentReady) {
-                        BandalartChart(
-                            bandalartData = bandalartData,
-                            bandalartCellData = bandalartCellData,
-                            showTaskCompletionTooltip = showTaskCompletionTooltip,
-                            onTaskCompletionTooltipDismissed = {
-                                eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
-                            },
-                            onHomeUiAction = eventSink,
-                            modifier =
-                                Modifier
-                                    .captureBandalartToGraphicsLayer(completeGraphicsLayer),
-                            maxBoardSize = maxBoardSize,
-                        )
-                    }
-                }
-                val shareButton: @Composable (Modifier) -> Unit = { shareModifier ->
-                    if (isContentReady) {
-                        HomeShareButton(
-                            onShareButtonClick = {
-                                eventSink(HomeScreen.Event.RequestShare)
-                            },
-                            modifier = shareModifier.onSizeChanged { shareButtonHeight = with(density) { it.height.toDp() } },
-                        )
-                    }
-                }
-
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .testTag(HOME_SCROLL_TAG)
-                            .padding(bottom = if (isWide) 0.dp else 32.dp),
-                ) {
-                    Column(modifier = Modifier.onSizeChanged { topBarHeight = with(density) { it.height.toDp() } }) {
-                        HomeTopBar(
-                            bandalartCount = bandalartListSize,
-                            onHomeUiAction = eventSink,
-                        )
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.outlineVariant,
-                        )
-                    }
-                    if (isWide) {
-                        // 정보 | 표 2단. 공유 이미지에 공유 버튼이 들어가지 않도록 버튼은 캡처 영역 밖에 겹쳐 둔다.
-                        val boardSize =
-                            min(
-                                viewportHeight - topBarHeight - 32.dp,
-                                viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
-                            )
-                        val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
-                        // 정보 영역은 표 높이 기준 세로 가운데에 두고, 공유 버튼은 정보 영역의 헤더 바로 아래에 겹친다.
-                        val infoHeight = headerHeight + 16.dp + shareButtonHeight
-                        val infoTop = max((boardSize - infoHeight) / 2, 0.dp)
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = viewportHeight - topBarHeight)
-                                    .padding(vertical = 16.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Box {
-                                Row(
-                                    modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    // 표 상자 안쪽 좌측 여백만큼 정보 열 시작에도 여백을 줘 좌우 여백을 맞춘다.
-                                    Column(
-                                        modifier =
-                                            Modifier
-                                                .width(infoWidth)
-                                                .padding(start = BOARD_HORIZONTAL_PADDING / 2),
-                                    ) {
-                                        header(Modifier)
-                                        Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
-                                    }
-                                    Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
-                                        chart(boardSize)
-                                    }
-                                }
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .width(infoWidth)
-                                            .padding(start = BOARD_HORIZONTAL_PADDING / 2, top = infoTop + headerHeight + 16.dp),
-                                    contentAlignment = Alignment.TopCenter,
-                                ) {
-                                    shareButton(Modifier)
-                                }
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            // 휴대폰 가로처럼 높이가 낮은 2단 화면은 상단 바와 광고를 정보 열로 옮겨 표가 홈 전체 높이를 쓰게 한다.
+            val isShortWide = maxWidth >= maxHeight * WIDE_LAYOUT_ASPECT_RATIO && maxHeight < SHORT_WIDE_MAX_HEIGHT
+            if (isShortWide) {
+                ShortWideHomeContent(
+                    viewportWidth = maxWidth,
+                    viewportHeight = maxHeight,
+                    bandalartListSize = bandalartListSize,
+                    bandalartData = bandalartData,
+                    bandalartCellData = bandalartCellData,
+                    isDropDownMenuOpened = isDropDownMenuOpened,
+                    showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                    showTaskCompletionTooltip = showTaskCompletionTooltip,
+                    isBannerCreativeVisible = isBannerCreativeVisible,
+                    eventSink = eventSink,
+                    homeGraphicsLayer = homeGraphicsLayer,
+                    completeGraphicsLayer = completeGraphicsLayer,
+                    updateSnackbarHostState = updateSnackbarHostState,
+                    bannerAdHost = bannerAdHost,
+                )
+            } else {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                        val density = LocalDensity.current
+                        var topBarHeight by remember { mutableStateOf(0.dp) }
+                        var headerHeight by remember { mutableStateOf(0.dp) }
+                        var shareButtonHeight by remember { mutableStateOf(0.dp) }
+                        val viewportWidth = maxWidth
+                        val viewportHeight = maxHeight
+                        val isWide = viewportWidth >= viewportHeight * WIDE_LAYOUT_ASPECT_RATIO
+                        val header: @Composable (Modifier) -> Unit = { headerModifier ->
+                            if (isContentReady) {
+                                HomeHeader(
+                                    bandalartData = bandalartData,
+                                    cellData = bandalartCellData,
+                                    isDropDownMenuOpened = isDropDownMenuOpened,
+                                    showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                                    onRoutineSettingsTooltipDismissed = {
+                                        eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
+                                    },
+                                    onHomeUiAction = eventSink,
+                                    modifier = headerModifier.onSizeChanged { headerHeight = with(density) { it.height.toDp() } },
+                                )
                             }
                         }
-                    } else {
-                        // 세로 휴대폰 크기는 유지하고, 넓은 화면에서만 남은 높이에 맞춰 표를 줄인다.
-                        val boardSize =
-                            max(
-                                viewportHeight - topBarHeight - headerHeight - shareButtonHeight - 16.dp - 32.dp,
-                                MIN_SINGLE_COLUMN_BOARD_SIZE,
-                            )
+                        val chart: @Composable (Dp) -> Unit = { maxBoardSize ->
+                            if (isContentReady) {
+                                BandalartChart(
+                                    bandalartData = bandalartData,
+                                    bandalartCellData = bandalartCellData,
+                                    showTaskCompletionTooltip = showTaskCompletionTooltip,
+                                    onTaskCompletionTooltipDismissed = {
+                                        eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
+                                    },
+                                    onHomeUiAction = eventSink,
+                                    modifier =
+                                        Modifier
+                                            .captureBandalartToGraphicsLayer(completeGraphicsLayer),
+                                    maxBoardSize = maxBoardSize,
+                                )
+                            }
+                        }
+                        val shareButton: @Composable (Modifier) -> Unit = { shareModifier ->
+                            if (isContentReady) {
+                                HomeShareButton(
+                                    onShareButtonClick = {
+                                        eventSink(HomeScreen.Event.RequestShare)
+                                    },
+                                    modifier = shareModifier.onSizeChanged { shareButtonHeight = with(density) { it.height.toDp() } },
+                                )
+                            }
+                        }
+
                         Column(
                             modifier =
                                 Modifier
-                                    .captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                                    .testTag(HOME_SCROLL_TAG)
+                                    .padding(bottom = if (isWide) 0.dp else 32.dp),
                         ) {
-                            header(Modifier)
-                            chart(boardSize)
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Column(modifier = Modifier.onSizeChanged { topBarHeight = with(density) { it.height.toDp() } }) {
+                                HomeTopBar(
+                                    bandalartCount = bandalartListSize,
+                                    onHomeUiAction = eventSink,
+                                )
+                                HorizontalDivider(
+                                    thickness = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                )
+                            }
+                            if (isWide) {
+                                // 정보 | 표 2단. 공유 이미지에 공유 버튼이 들어가지 않도록 버튼은 캡처 영역 밖에 겹쳐 둔다.
+                                val boardSize =
+                                    min(
+                                        viewportHeight - topBarHeight - 32.dp,
+                                        viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
+                                    )
+                                val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
+                                // 정보 영역은 표 높이 기준 세로 가운데에 두고, 공유 버튼은 정보 영역의 헤더 바로 아래에 겹친다.
+                                val infoHeight = headerHeight + 16.dp + shareButtonHeight
+                                val infoTop = max((boardSize - infoHeight) / 2, 0.dp)
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(min = viewportHeight - topBarHeight)
+                                            .padding(vertical = 16.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Box {
+                                        Row(
+                                            modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            // 표 상자 안쪽 좌측 여백만큼 정보 열 시작에도 여백을 줘 좌우 여백을 맞춘다.
+                                            Column(
+                                                modifier =
+                                                    Modifier
+                                                        .width(infoWidth)
+                                                        .padding(start = BOARD_HORIZONTAL_PADDING / 2),
+                                            ) {
+                                                header(Modifier)
+                                                Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
+                                            }
+                                            Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
+                                                chart(boardSize)
+                                            }
+                                        }
+                                        Box(
+                                            modifier =
+                                                Modifier
+                                                    .width(infoWidth)
+                                                    .padding(start = BOARD_HORIZONTAL_PADDING / 2, top = infoTop + headerHeight + 16.dp),
+                                            contentAlignment = Alignment.TopCenter,
+                                        ) {
+                                            shareButton(Modifier)
+                                        }
+                                    }
+                                }
+                            } else {
+                                // 세로 휴대폰 크기는 유지하고, 넓은 화면에서만 남은 높이에 맞춰 표를 줄인다.
+                                val boardSize =
+                                    max(
+                                        viewportHeight - topBarHeight - headerHeight - shareButtonHeight - 16.dp - 32.dp,
+                                        MIN_SINGLE_COLUMN_BOARD_SIZE,
+                                    )
+                                Column(
+                                    modifier =
+                                        Modifier
+                                            .captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                ) {
+                                    header(Modifier)
+                                    chart(boardSize)
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                                Spacer(modifier = Modifier.weight(1f))
+                                shareButton(Modifier.align(Alignment.CenterHorizontally))
+                            }
                         }
-                        Spacer(modifier = Modifier.weight(1f))
-                        shareButton(Modifier.align(Alignment.CenterHorizontally))
-                    }
-                }
 
-                SnackbarHost(
-                    hostState = updateSnackbarHostState,
-                    modifier = Modifier.align(Alignment.BottomCenter),
+                        SnackbarHost(
+                            hostState = updateSnackbarHostState,
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                        )
+                    }
+
+                    bannerAdHost.Content(
+                        visible = isBannerCreativeVisible,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShortWideHomeContent(
+    viewportWidth: Dp,
+    viewportHeight: Dp,
+    bandalartListSize: Int,
+    bandalartData: BandalartUiModel?,
+    bandalartCellData: BandalartCellEntity?,
+    isDropDownMenuOpened: Boolean,
+    showRoutineSettingsTooltip: Boolean,
+    showTaskCompletionTooltip: Boolean,
+    isBannerCreativeVisible: Boolean,
+    eventSink: (HomeScreen.Event) -> Unit,
+    homeGraphicsLayer: GraphicsLayer,
+    completeGraphicsLayer: GraphicsLayer,
+    updateSnackbarHostState: SnackbarHostState,
+    bannerAdHost: BannerAdHost,
+) {
+    val boardSize =
+        min(
+            viewportHeight - 24.dp,
+            viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
+        )
+    val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
+    Box(modifier = Modifier.fillMaxSize()) {
+        // 공유 이미지에는 정보 열과 표만 들어가도록 상단 바·공유 버튼·광고는 캡처 영역 밖에 겹쳐 둔다.
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .captureBandalartToGraphicsLayer(homeGraphicsLayer),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .width(infoWidth)
+                        .padding(start = BOARD_HORIZONTAL_PADDING / 2),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (bandalartData != null && bandalartCellData != null) {
+                    HomeHeader(
+                        bandalartData = bandalartData,
+                        cellData = bandalartCellData,
+                        isDropDownMenuOpened = isDropDownMenuOpened,
+                        showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                        onRoutineSettingsTooltipDismissed = {
+                            eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
+                        },
+                        onHomeUiAction = eventSink,
+                        modifier = Modifier.widthIn(max = SHORT_WIDE_INFO_MAX_WIDTH),
+                        compact = true,
+                    )
+                }
+            }
+            Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
+                if (bandalartData != null && bandalartCellData != null) {
+                    BandalartChart(
+                        bandalartData = bandalartData,
+                        bandalartCellData = bandalartCellData,
+                        showTaskCompletionTooltip = showTaskCompletionTooltip,
+                        onTaskCompletionTooltipDismissed = {
+                            eventSink(HomeScreen.Event.DismissTaskCompletionTooltip)
+                        },
+                        onHomeUiAction = eventSink,
+                        modifier =
+                            Modifier
+                                .captureBandalartToGraphicsLayer(completeGraphicsLayer),
+                        maxBoardSize = boardSize,
+                    )
+                }
+            }
+        }
+        Column(
+            modifier =
+                Modifier
+                    .width(infoWidth)
+                    .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            HomeTopBar(
+                bandalartCount = bandalartListSize,
+                onHomeUiAction = eventSink,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            if (bandalartData != null && bandalartCellData != null) {
+                HomeShareButton(
+                    onShareButtonClick = {
+                        eventSink(HomeScreen.Event.RequestShare)
+                    },
                 )
             }
-
+            // 광고를 공유 버튼과 붙이지 않아 잘못 누르는 일을 줄인다.
+            Spacer(modifier = Modifier.height(16.dp))
             bannerAdHost.Content(
                 visible = isBannerCreativeVisible,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
+        SnackbarHost(
+            hostState = updateSnackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
 }
 

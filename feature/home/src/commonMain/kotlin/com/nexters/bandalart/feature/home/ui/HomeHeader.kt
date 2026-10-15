@@ -97,97 +97,47 @@ fun HomeHeader(
     modifier: Modifier = Modifier,
     showRoutineSettingsTooltip: Boolean = false,
     onRoutineSettingsTooltipDismissed: () -> Unit = {},
+    compact: Boolean = false,
 ) {
     Column(modifier.padding(horizontal = 16.dp)) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Column {
-            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                ) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .width(52.dp)
-                                .aspectRatio(1f)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable {
-                                    onHomeUiAction(HomeScreen.Event.OpenEmoji)
-                                },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        if (bandalartData.profileEmoji.isNullOrEmpty()) {
-                            Icon(
-                                imageVector = vectorResource(Res.drawable.ic_empty_emoji),
-                                contentDescription = stringResource(Res.string.empty_emoji_description),
-                                tint = Color.Unspecified,
-                            )
-                        } else {
-                            BandalartEmoji(
-                                unicode = bandalartData.profileEmoji.orEmpty(),
-                                contentDescription = stringResource(Res.string.edit_description),
-                                size = 36.dp,
-                            )
-                        }
-                    }
-                }
-                if (bandalartData.profileEmoji.isNullOrEmpty()) {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_edit),
-                        contentDescription = stringResource(Res.string.edit_description),
-                        modifier =
-                            Modifier
-                                .align(Alignment.BottomEnd)
-                                .offset(x = 4.dp, y = 4.dp),
-                        tint = Color.Unspecified,
-                    )
-                }
+        if (compact) {
+            // 휴대폰 가로처럼 높이가 낮은 화면에서는 이모지와 제목을 한 줄에 둔다.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                HomeProfileEmoji(bandalartData = bandalartData, onHomeUiAction = onHomeUiAction)
+                Spacer(modifier = Modifier.width(12.dp))
+                HomeTitle(
+                    bandalartData = bandalartData,
+                    cellData = cellData,
+                    isDropDownMenuOpened = isDropDownMenuOpened,
+                    showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                    onRoutineSettingsTooltipDismissed = onRoutineSettingsTooltipDismissed,
+                    onHomeUiAction = onHomeUiAction,
+                    textAlignment = Alignment.CenterStart,
+                    modifier = Modifier.weight(1f),
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-            ) {
-                Text(
-                    text = bandalartData.titleText.ifEmpty { stringResource(Res.string.home_empty_title) },
-                    color =
-                        if (bandalartData.titleText.isEmpty()) {
-                            MaterialTheme.colorScheme.outline
-                        } else {
-                            MaterialTheme.colorScheme.onBackground
-                        },
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.W700,
-                    modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .clickable {
-                                onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
-                            },
-                    letterSpacing = (-0.4).sp,
+        } else {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column {
+                HomeProfileEmoji(
+                    bandalartData = bandalartData,
+                    onHomeUiAction = onHomeUiAction,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
-                Box(modifier = Modifier.align(Alignment.CenterEnd)) {
-                    if (showRoutineSettingsTooltip) {
-                        RoutineSettingsTooltip(
-                            anchorKey = bandalartData.id,
-                            onDismiss = onRoutineSettingsTooltipDismissed,
-                        ) {
-                            RoutineSettingsMenuAnchor(onHomeUiAction)
-                        }
-                    } else {
-                        RoutineSettingsMenuAnchor(onHomeUiAction)
-                    }
-                }
-                BandalartDropDownMenu(
+                Spacer(modifier = Modifier.height(12.dp))
+                HomeTitle(
+                    bandalartData = bandalartData,
+                    cellData = cellData,
                     isDropDownMenuOpened = isDropDownMenuOpened,
-                    onAction = onHomeUiAction,
+                    showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                    onRoutineSettingsTooltipDismissed = onRoutineSettingsTooltipDismissed,
+                    onHomeUiAction = onHomeUiAction,
+                    textAlignment = Alignment.Center,
                 )
             }
+            Spacer(modifier = Modifier.height(24.dp))
         }
-        Spacer(modifier = Modifier.height(24.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -251,7 +201,114 @@ fun HomeHeader(
             completionRatio = bandalartData.completionRatio,
             progressColor = bandalartData.mainColor.toColor(),
         )
-        Spacer(modifier = Modifier.height(18.dp))
+        if (!compact) {
+            Spacer(modifier = Modifier.height(18.dp))
+        }
+    }
+}
+
+@Composable
+private fun HomeProfileEmoji(
+    bandalartData: BandalartUiModel,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .width(52.dp)
+                        .aspectRatio(1f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable {
+                            onHomeUiAction(HomeScreen.Event.OpenEmoji)
+                        },
+                contentAlignment = Alignment.Center,
+            ) {
+                if (bandalartData.profileEmoji.isNullOrEmpty()) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_empty_emoji),
+                        contentDescription = stringResource(Res.string.empty_emoji_description),
+                        tint = Color.Unspecified,
+                    )
+                } else {
+                    BandalartEmoji(
+                        unicode = bandalartData.profileEmoji.orEmpty(),
+                        contentDescription = stringResource(Res.string.edit_description),
+                        size = 36.dp,
+                    )
+                }
+            }
+        }
+        if (bandalartData.profileEmoji.isNullOrEmpty()) {
+            Icon(
+                imageVector = vectorResource(Res.drawable.ic_edit),
+                contentDescription = stringResource(Res.string.edit_description),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = 4.dp, y = 4.dp),
+                tint = Color.Unspecified,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeTitle(
+    bandalartData: BandalartUiModel,
+    cellData: BandalartCellEntity,
+    isDropDownMenuOpened: Boolean,
+    showRoutineSettingsTooltip: Boolean,
+    onRoutineSettingsTooltipDismissed: () -> Unit,
+    onHomeUiAction: (HomeScreen.Event) -> Unit,
+    textAlignment: Alignment,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+    ) {
+        Text(
+            text = bandalartData.titleText.ifEmpty { stringResource(Res.string.home_empty_title) },
+            color =
+                if (bandalartData.titleText.isEmpty()) {
+                    MaterialTheme.colorScheme.outline
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W700,
+            modifier =
+                Modifier
+                    .align(textAlignment)
+                    .clickable {
+                        onHomeUiAction(HomeScreen.Event.OpenCell(CellType.MAIN, bandalartData.titleText.isEmpty(), cellData))
+                    },
+            letterSpacing = (-0.4).sp,
+        )
+        Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+            if (showRoutineSettingsTooltip) {
+                RoutineSettingsTooltip(
+                    anchorKey = bandalartData.id,
+                    onDismiss = onRoutineSettingsTooltipDismissed,
+                ) {
+                    RoutineSettingsMenuAnchor(onHomeUiAction)
+                }
+            } else {
+                RoutineSettingsMenuAnchor(onHomeUiAction)
+            }
+        }
+        BandalartDropDownMenu(
+            isDropDownMenuOpened = isDropDownMenuOpened,
+            onAction = onHomeUiAction,
+        )
     }
 }
 
