@@ -16,13 +16,7 @@
 
 package com.nexters.bandalart.feature.home.ui.bandalart
 
-import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -31,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,10 +41,7 @@ fun BandalartEmojiBottomSheet(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
-        // iPhone Duo처럼 가로 inset이 있는 화면에서 시트 내용이 상태 영역 밑으로 들어가지 않게 한다.
-        contentWindowInsets = {
-            BottomSheetDefaults.windowInsets.union(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-        },
+        contentWindowInsets = { bottomSheetContentWindowInsets() },
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
