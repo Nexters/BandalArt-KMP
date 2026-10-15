@@ -1,3 +1,2 @@
-• You can now choose the time of day for deadline reminders in Settings.
-• Your reminder time is included in cloud backups.
-• The reminder time picker is now centered on wide screens and matches the app colors.
+• Rotate your device to landscape to see your goal details and Bandalart board side by side.
+• On unfolded foldables, the whole board now fits on one screen.
