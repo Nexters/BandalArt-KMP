@@ -225,9 +225,9 @@ jobs:
                     path: |
                         ~/.konan
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
-                    key: ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+                    key: ios-dependencies-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
                     restore-keys: |
-                        ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+                        ios-dependencies-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
             -   name: Restore iOS build cache
                 id: ios-build-cache

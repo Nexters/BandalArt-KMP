@@ -72,9 +72,9 @@ jobs:
                     path: |
                         ~/.konan
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SourcePackages
-                    key: ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+                    key: ios-dependencies-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**/Package.resolved', '**/*.gradle.kts', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
                     restore-keys: |
-                        ios-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+                        ios-dependencies-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
             -   name: Restore iOS build cache
                 id: ios-build-cache
@@ -84,20 +84,20 @@ jobs:
                         ${{ env.IOS_DERIVED_DATA_PATH }}/Build
                         ${{ env.IOS_DERIVED_DATA_PATH }}/ModuleCache.noindex
                         ${{ env.IOS_DERIVED_DATA_PATH }}/SDKStatCaches.noindex
-                    key: ios-xcode-simulator-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
+                    key: ios-xcode-simulator-v3-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosApp/**', 'iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**') }}
                     restore-keys: |
-                        ios-xcode-simulator-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
+                        ios-xcode-simulator-v3-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-
 
             -   name: Restore KMP framework cache
                 id: kmp-framework-cache
                 uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
                 with:
                     path: |
-                        composeApp/build/xcode-frameworks/Release
-                        iosWidgetShared/build/xcode-frameworks/Release
-                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/ComposeApp.framework
-                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/IosWidgetShared.framework
-                    key: ios-kmp-frameworks-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**', 'gradle.properties') }}
+                        composeApp/build/xcode-frameworks/Debug
+                        iosWidgetShared/build/xcode-frameworks/Debug
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Debug-iphonesimulator/ComposeApp.framework
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Debug-iphonesimulator/IosWidgetShared.framework
+                    key: ios-kmp-frameworks-v3-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode-version.outputs.hash }}-${{ hashFiles('iosWidgetShared/**', 'composeApp/**', 'core/**', 'feature/**', 'build-logic/**', '*.gradle.kts', 'gradle/**', 'gradle.properties') }}
 
             -   name: Reuse cached Kotlin frameworks
                 if: steps.kmp-framework-cache.outputs.cache-hit == 'true'
@@ -122,7 +122,7 @@ jobs:
                     xcodebuild \
                         -project iosApp/iosApp.xcodeproj \
                         -scheme iosApp \
-                        -configuration Release \
+                        -configuration Debug \
                         -sdk iphonesimulator \
                         -destination "generic/platform=iOS Simulator" \
                         -derivedDataPath "$IOS_DERIVED_DATA_PATH" \
@@ -135,9 +135,9 @@ jobs:
 
             -   name: Verify cache seed products
                 run: |
-                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Release-iphonesimulator/ComposeApp.framework"
-                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Release-iphonesimulator/IosWidgetShared.framework"
-                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Release-iphonesimulator/iosApp.app"
+                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Debug-iphonesimulator/ComposeApp.framework"
+                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Debug-iphonesimulator/IosWidgetShared.framework"
+                    test -d "$IOS_DERIVED_DATA_PATH/Build/Products/Debug-iphonesimulator/iosApp.app"
 
             -   name: Report iOS cache seed performance
                 if: always()
@@ -201,8 +201,8 @@ jobs:
                 uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
                 with:
                     path: |
-                        composeApp/build/xcode-frameworks/Release
-                        iosWidgetShared/build/xcode-frameworks/Release
-                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/ComposeApp.framework
-                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Release-iphonesimulator/IosWidgetShared.framework
+                        composeApp/build/xcode-frameworks/Debug
+                        iosWidgetShared/build/xcode-frameworks/Debug
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Debug-iphonesimulator/ComposeApp.framework
+                        ${{ env.IOS_DERIVED_DATA_PATH }}/Build/Products/Debug-iphonesimulator/IosWidgetShared.framework
                     key: ${{ steps.kmp-framework-cache.outputs.cache-primary-key }}

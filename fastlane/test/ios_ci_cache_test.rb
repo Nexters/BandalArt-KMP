@@ -48,9 +48,9 @@ end
 
 unless ci_workflow.include?("Reuse cached Kotlin frameworks") &&
        ci_workflow.include?("Restore KMP framework cache") &&
-       ci_workflow.include?("ios-kmp-frameworks-v2-") &&
-       ci_workflow.include?("composeApp/build/xcode-frameworks/Release") &&
-       ci_workflow.include?("iosWidgetShared/build/xcode-frameworks/Release") &&
+       ci_workflow.include?("ios-kmp-frameworks-v3-") &&
+       ci_workflow.include?("composeApp/build/xcode-frameworks/Debug") &&
+       ci_workflow.include?("iosWidgetShared/build/xcode-frameworks/Debug") &&
        ci_workflow.include?("steps.kmp-framework-cache.outputs.cache-hit") &&
        ci_workflow.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED") &&
        kmp_cache_script.include?("ComposeApp.framework") &&
@@ -64,9 +64,9 @@ unless seed_workflow.include?("iOS Cache Seed") &&
        seed_workflow.include?("workflow_dispatch:") &&
        seed_workflow.include?("Restore KMP framework cache") &&
        seed_workflow.include?("Save KMP framework cache") &&
-       seed_workflow.include?("ios-kmp-frameworks-v2-") &&
-       seed_workflow.include?("composeApp/build/xcode-frameworks/Release") &&
-       seed_workflow.include?("iosWidgetShared/build/xcode-frameworks/Release") &&
+       seed_workflow.include?("ios-kmp-frameworks-v3-") &&
+       seed_workflow.include?("composeApp/build/xcode-frameworks/Debug") &&
+       seed_workflow.include?("iosWidgetShared/build/xcode-frameworks/Debug") &&
        seed_workflow.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED")
   raise "Trusted main builds must seed the shared iOS and KMP caches"
 end
