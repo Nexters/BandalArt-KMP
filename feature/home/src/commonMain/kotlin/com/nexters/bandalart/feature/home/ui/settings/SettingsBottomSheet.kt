@@ -168,9 +168,14 @@ internal fun SettingsBottomSheet(
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
+                // 앱 설정이 켜져 있어도 권한을 아직 묻지 않았으면(재설치·복원, 권한 회수) 예약이 모두 취소된 상태라 꺼짐으로 보여 준다.
+                // 사용자가 다시 켜면 확인 팝업과 권한 요청을 거친다.
+                val isDeadlineReminderOn =
+                    deadlineReminderEnabled &&
+                        deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE
                 SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
                 DeadlineReminderRow(
-                    enabled = deadlineReminderEnabled,
+                    enabled = isDeadlineReminderOn,
                     authorizationStatus = deadlineNotificationAuthorizationStatus,
                     schedulingHealth = deadlineReminderSchedulingHealth,
                     onToggle = { enabled ->
@@ -186,7 +191,7 @@ internal fun SettingsBottomSheet(
                         }
                     },
                 )
-                if (deadlineReminderEnabled) {
+                if (isDeadlineReminderOn) {
                     DeadlineReminderTimeRow(
                         time = deadlineReminderTime,
                         onClick = { showDeadlineReminderTimePicker = true },
@@ -310,7 +315,7 @@ private fun DeadlineReminderRow(
                     when {
                         authorizationStatus == DeadlineNotificationAuthorizationStatus.BLOCKED ->
                             stringResource(Res.string.settings_deadline_reminder_blocked)
-                        schedulingHealth.lastErrorCategory != null ->
+                        enabled && schedulingHealth.lastErrorCategory != null ->
                             stringResource(Res.string.settings_deadline_reminder_degraded)
                         schedulingHealth.overflowCount > 0 ->
                             stringResource(
