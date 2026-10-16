@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,6 +67,7 @@ import org.jetbrains.compose.resources.vectorResource
 
 private const val ONBOARDING_KR_LOTTIE_FILE = "files/onboarding_kr.json"
 private const val ONBOARDING_EN_LOTTIE_FILE = "files/onboarding_en.json"
+private val ONBOARDING_CONTENT_MAX_WIDTH = 480.dp
 
 @CircuitInject(OnboardingScreen::class, AppScope::class)
 @Inject
@@ -92,9 +94,13 @@ internal fun Onboarding(
                 pageCount = pageCount,
                 pagerState = pagerState,
             )
+            // 태블릿·펼친 폴더블에서 이미지와 시작 버튼이 화면 전체 너비로 늘어나지 않게 너비를 제한한다.
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize(),
+                modifier =
+                    Modifier
+                        .widthIn(max = ONBOARDING_CONTENT_MAX_WIDTH)
+                        .fillMaxSize(),
             ) { page ->
                 when (page) {
                     0 -> {
