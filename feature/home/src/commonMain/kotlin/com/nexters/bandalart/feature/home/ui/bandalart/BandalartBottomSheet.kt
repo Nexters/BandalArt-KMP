@@ -22,11 +22,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,7 +42,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -97,6 +91,7 @@ import com.nexters.bandalart.feature.home.model.CellType
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartCellData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -151,10 +146,7 @@ fun BandalartBottomSheet(
         }
 
     ModalBottomSheet(
-        // iPhone Duo처럼 가로 inset이 있는 화면에서 시트 내용이 상태 영역 밑으로 들어가지 않게 한다.
-        contentWindowInsets = {
-            BottomSheetDefaults.windowInsets.union(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-        },
+        contentWindowInsets = { bottomSheetContentWindowInsets() },
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },

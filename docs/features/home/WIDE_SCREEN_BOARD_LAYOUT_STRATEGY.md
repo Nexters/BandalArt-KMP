@@ -94,6 +94,29 @@
 - iPhone 가로: 노치 쪽 inset 침범 없음
 - 공유 이미지에 상단 바·공유 버튼·광고가 들어가지 않음
 
+## 넓은 화면 하단 시트 가로 inset (#447)
+
+#441은 시트 5곳에 `safeDrawing`의 가로 inset을 그대로 더했다. 넓은 화면에서 시트는 `BottomSheetDefaults.SheetMaxWidth`(640dp)로 제한되어 가운데에 뜨는데, inset은 위치와 무관하게 패딩으로 들어가 iPhone Duo 안쪽에서 시트 내용이 상태 레일 너비(약 70pt)만큼 왼쪽으로 치우쳤다.
+
+### 결정
+
+- `bottomSheetContentWindowInsets()`: 각 쪽 패딩 = `max(0, 가로 inset - (창 너비 - 시트 너비) / 2)`
+- 시트가 창 전체 너비일 때(Duo 바깥, 세로 휴대폰)는 #441과 같고, 가운데에 뜬 시트는 바깥 여백이 inset을 덮는 만큼 패딩이 줄어든다
+- 세로 inset은 `BottomSheetDefaults.windowInsets` 그대로 둔다
+
+### 대안
+
+| 안 | 기각 이유 |
+|---|---|
+| `Modifier.fitInside(WindowInsetsRulers.SafeDrawing.current)` | 위치 기반이라 정확하지만 가로만 고를 수 없다. 시트가 아래에서 올라오는 동안 아래쪽 패딩이 바뀌어 내용이 흔들릴 수 있다 |
+| 가로 inset 제거 | Duo 바깥에서 시트 내용이 상태 레일 밑으로 들어간다 (#441 이전 문제) |
+
+### 확인
+
+- iPhone Duo 안쪽: 시트 안 좌우 여백 대칭
+- iPhone Duo 바깥: 시트 내용이 상태 레일 밑으로 들어가지 않음
+- Android 가로: 시트가 내비게이션 바와 겹치지 않음
+
 ## 확인 기기
 
 | 화면 | 기대 결과 |

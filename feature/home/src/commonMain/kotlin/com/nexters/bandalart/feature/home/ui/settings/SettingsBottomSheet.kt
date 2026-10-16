@@ -18,11 +18,6 @@ package com.nexters.bandalart.feature.home.ui.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,7 +34,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -92,6 +86,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
+import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -140,10 +135,7 @@ internal fun SettingsBottomSheet(
     }
 
     ModalBottomSheet(
-        // iPhone Duo처럼 가로 inset이 있는 화면에서 시트 내용이 상태 영역 밑으로 들어가지 않게 한다.
-        contentWindowInsets = {
-            BottomSheetDefaults.windowInsets.union(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-        },
+        contentWindowInsets = { bottomSheetContentWindowInsets() },
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier.statusBarsPadding(),
         sheetState = bottomSheetState,
