@@ -31,7 +31,7 @@ GitHub는 기본 브랜치 캐시를 신뢰 가능한 `push` workflow에서 유�
 
 ### 4.2 KMP framework cache
 
-아래 simulator framework의 Gradle 실산출물과 DerivedData product link를 함께 별도 캐시한다. DerivedData의 framework는 `composeApp/build/xcode-frameworks/Release` 또는 `iosWidgetShared/build/xcode-frameworks/Release`를 가리키는 link이므로 link만 저장하면 새 runner에서 재사용할 수 없다.
+아래 simulator framework의 Gradle 실산출물과 DerivedData product link를 함께 별도 캐시한다. DerivedData의 framework는 `composeApp/build/xcode-frameworks/Debug` 또는 `iosWidgetShared/build/xcode-frameworks/Debug`를 가리키는 link이므로 link만 저장하면 새 runner에서 재사용할 수 없다.
 
 - `ComposeApp.framework`
 - `IosWidgetShared.framework`
@@ -48,7 +48,7 @@ Xcode Build, ModuleCache와 SDKStatCaches를 보관한다. iOS·KMP 전체 입�
 
 ### main cache seed
 
-별도 `iOS Cache Seed` workflow를 `main`의 iOS 관련 변경과 수동 실행에 연결한다. 신뢰 가능한 기본 브랜치 실행만 cache를 저장하며 simulator를 부팅하거나 앱을 실행하지 않고 generic simulator Release build로 산출물을 만든다.
+별도 `iOS Cache Seed` workflow를 `main`의 iOS 관련 변경과 수동 실행에 연결한다. 신뢰 가능한 기본 브랜치 실행만 cache를 저장하며 simulator를 부팅하거나 앱을 실행하지 않고 generic simulator Debug build로 산출물을 만든다. PR CI와 같은 구성이어야 PR이 seed cache를 재사용할 수 있다.
 
 동시 merge가 발생하면 이전 seed를 취소하고 최신 `main`만 남긴다.
 
@@ -64,3 +64,27 @@ PR workflow는 dependency, Xcode, KMP cache 순서로 복원한다. KMP exact hi
 - PR 필수 CI가 모두 통과한다.
 - 머지 후 `main` seed workflow가 성공하고 기본 브랜치 cache를 저장한다.
 - 후속 iOS PR에서 `KMP frameworks: exact hit`와 단축된 시간을 기록한다.
+
+## 7. PR CI Debug 전환 (2026-10-16)
+
+### 측정
+
+PR #455 iOS job 41분 중 `Build iOS host app` 단계가 35분 21초였다. 그 안에서 Gradle이 `composeApp` Release framework를 26분 31초, `iosWidgetShared` Release framework를 5분 19초 동안 만들었다. 모듈 `compileKotlinIosSimulatorArm64`는 9개가 이미 Gradle build cache(`FROM-CACHE`)를 썼으므로, 남은 시간은 대부분 Kotlin/Native Release 링크다.
+
+앱 코드 PR은 `core/`, `feature/`, `composeApp/` 중 하나를 바꾸므로 KMP framework cache(4.2)가 거의 항상 miss다. 바뀐 코드의 Release 링크는 캐시로 줄일 수 없다.
+
+### 결정
+
+- PR CI와 main seed의 simulator 빌드를 `-configuration Debug`로 바꾼다. Debug 링크는 최적화를 하지 않고 의존성 Kotlin/Native 컴파일러 캐시를 쓴다.
+- Release 빌드는 Release CD(TestFlight archive)에서만 한다.
+- 시뮬레이터 부팅을 빌드 전에 시작만 하고, 완료 대기(`bootstatus`)는 앱 실행 직전에 한다.
+- 캐시 키 버전을 올린다: dependency v1→v2(Release CD 포함, Debug 컴파일러 캐시를 `~/.konan`에 새로 저장), DerivedData v2→v3, KMP framework v2→v3.
+
+### 포기하는 것
+
+Kotlin/Native Release 최적화·링크에서만 생기는 실패는 PR에서 잡지 못하고 main 머지 후 Release CD에서 처음 드러난다. Release CD는 출시 경로라 이때 실패하면 main을 고친 뒤 다시 실행해야 한다.
+
+### 확인
+
+- 첫 Debug 실행은 캐시가 비어 있어 대표값이 아니다. 두 번째 실행 또는 다음 PR의 `Build iOS host app` 시간을 41분 기준과 비교해 기록한다.
+- 머지 후 seed workflow가 Debug 산출물을 저장하는지 확인한다.
