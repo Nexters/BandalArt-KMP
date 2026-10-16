@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +56,7 @@ import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.stringResource
 
 private const val FINISH_LOTTIE_FILE = "files/finish.json"
+private val COMPLETE_CONTENT_MAX_WIDTH = 480.dp
 
 @CircuitInject(CompleteScreen::class, AppScope::class)
 @Inject
@@ -115,7 +117,14 @@ internal fun CompleteContent(
                     lineHeight = 30.8.sp,
                     textAlign = TextAlign.Center,
                 )
-                Box(modifier = Modifier.fillMaxSize()) {
+                // 태블릿·펼친 폴더블에서 카드와 버튼이 화면 전체 너비로 늘어나지 않게 너비를 제한한다.
+                // 카드 위치는 화면 가운데의 축하 애니메이션과 겹치지 않도록 기존처럼 전체 영역 기준으로 둔다.
+                Box(
+                    modifier =
+                        Modifier
+                            .widthIn(max = COMPLETE_CONTENT_MAX_WIDTH)
+                            .fillMaxSize(),
+                ) {
                     CompleteBandalart(
                         profileEmoji = state.profileEmoji,
                         title = state.title,
