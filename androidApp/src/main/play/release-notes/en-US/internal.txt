@@ -1,2 +1,2 @@
-• Rotate your device to landscape to see your goal details and Bandalart board side by side.
-• On unfolded foldables, the whole board now fits on one screen.
+• Bottom sheets, the completion screen, and onboarding now look better centered on unfolded foldables and tablets.
+• Fixed the deadline reminder setting showing a misleading message before notification permission was granted.
