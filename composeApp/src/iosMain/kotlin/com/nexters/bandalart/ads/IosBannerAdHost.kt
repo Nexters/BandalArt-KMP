@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.viewinterop.UIKitView
 import com.nexters.bandalart.core.common.BannerAdHost
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSProcessInfo
+import platform.UIKit.UIColor
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.Platform
 
@@ -47,6 +49,8 @@ class IosBannerAdHost(
         ) {
             if (maxWidth.value < FIXED_BANNER_WIDTH_DP || isScreenshotMode) return@BoxWithConstraints
 
+            // 광고를 받기 전이나 받지 못했을 때 interop 자리 뒤의 흰 배경이 비치지 않도록 화면 배경색을 칠해 둔다.
+            val backgroundColor = MaterialTheme.colorScheme.background
             key(adsBridge) {
                 UIKitView(
                     factory = adsBridge::makeBannerView,
@@ -54,7 +58,16 @@ class IosBannerAdHost(
                         Modifier
                             .width(FIXED_BANNER_WIDTH_DP.dp)
                             .height(FIXED_BANNER_HEIGHT_DP.dp),
-                    update = { view -> view.hidden = !visible },
+                    update = { view ->
+                        view.hidden = !visible
+                        view.backgroundColor =
+                            UIColor.colorWithRed(
+                                red = backgroundColor.red.toDouble(),
+                                green = backgroundColor.green.toDouble(),
+                                blue = backgroundColor.blue.toDouble(),
+                                alpha = backgroundColor.alpha.toDouble(),
+                            )
+                    },
                 )
             }
         }
