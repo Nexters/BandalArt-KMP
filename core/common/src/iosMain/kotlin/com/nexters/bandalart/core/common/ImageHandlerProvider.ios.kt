@@ -21,10 +21,12 @@ import com.eygraber.uri.Uri
 import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.refTo
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGBitmapContextCreate
 import platform.CoreGraphics.CGBitmapContextCreateImage
 import platform.CoreGraphics.CGColorSpaceCreateWithName
 import platform.CoreGraphics.CGImageAlphaInfo
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.kCGBitmapByteOrder32Little
 import platform.CoreGraphics.kCGColorSpaceSRGB
 import platform.Foundation.NSDate
@@ -39,6 +41,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePNGRepresentation
 import platform.UIKit.UIImageWriteToSavedPhotosAlbum
+import platform.UIKit.popoverPresentationController
 
 actual class ImageHandlerProvider {
     @Suppress("TooGenericExceptionCaught")
@@ -141,11 +144,7 @@ actual class ImageHandlerProvider {
                 activityItems = listOf(bitmap),
                 applicationActivities = null,
             )
-        UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
-            activityViewController,
-            animated = true,
-            completion = null,
-        )
+        presentShareSheet(activityViewController)
     }
 
     private fun shareUrl(nsUrl: NSURL) {
@@ -154,7 +153,22 @@ actual class ImageHandlerProvider {
                 activityItems = listOf(nsUrl),
                 applicationActivities = null,
             )
-        UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+        presentShareSheet(activityViewController)
+    }
+
+    // iPad는 공유 시트를 popover로 띄우므로 기준 위치가 없으면 NSException으로 앱이 종료된다.
+    // 공유 버튼 위치를 알 수 없어 화면 가운데에 화살표 없이 띄운다. iPhone에서는 popover 설정이 무시된다.
+    @OptIn(ExperimentalForeignApi::class)
+    private fun presentShareSheet(activityViewController: UIActivityViewController) {
+        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController ?: return
+        activityViewController.popoverPresentationController?.let { popover ->
+            val rootView = rootViewController.view
+            popover.sourceView = rootView
+            popover.sourceRect =
+                rootView.bounds.useContents { CGRectMake(origin.x + size.width / 2, origin.y + size.height / 2, 0.0, 0.0) }
+            popover.permittedArrowDirections = 0uL
+        }
+        rootViewController.presentViewController(
             activityViewController,
             animated = true,
             completion = null,
