@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.UIKitView
 import com.nexters.bandalart.core.common.BannerAdHost
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSProcessInfo
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.Platform
 
 class IosBannerAdHost(
     private val adsBridge: IosAdsBridge,
@@ -42,7 +45,7 @@ class IosBannerAdHost(
             modifier = modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            if (maxWidth.value < FIXED_BANNER_WIDTH_DP) return@BoxWithConstraints
+            if (maxWidth.value < FIXED_BANNER_WIDTH_DP || isScreenshotMode) return@BoxWithConstraints
 
             key(adsBridge) {
                 UIKitView(
@@ -57,6 +60,12 @@ class IosBannerAdHost(
         }
     }
 }
+
+// 스토어 스크린샷 촬영용: Debug 빌드를 `simctl launch ... -hideAdsForScreenshots`로 실행하면 광고 칸을 그리지 않는다.
+// 배너만 숨기면 interop 자리가 흰 사각형으로 남기 때문에 UIKitView 자체를 만들지 않는다.
+@OptIn(ExperimentalNativeApi::class)
+private val isScreenshotMode =
+    Platform.isDebugBinary && NSProcessInfo.processInfo.arguments.contains("-hideAdsForScreenshots")
 
 private const val FIXED_BANNER_WIDTH_DP = 320
 private const val FIXED_BANNER_HEIGHT_DP = 50

@@ -33,7 +33,12 @@ fi
 db_path() {
   local group_dir
   group_dir=$(xcrun simctl get_app_container "$UDID" "$BUNDLE_ID" groups | awk -v g="$APP_GROUP" '$1 == g { $1 = ""; sub(/^ /, ""); print }')
-  echo "$group_dir/bandalart.db"
+  if [[ -n "$group_dir" ]]; then
+    echo "$group_dir/bandalart.db"
+  else
+    # 서명 없이 빌드(CODE_SIGNING_ALLOWED=NO)하면 App Group이 없어 앱 Documents에 DB가 생긴다.
+    echo "$(xcrun simctl get_app_container "$UDID" "$BUNDLE_ID" data)/Documents/bandalart.db"
+  fi
 }
 
 stop_app() { xcrun simctl terminate "$UDID" "$BUNDLE_ID" >/dev/null 2>&1 || true; sleep 1; }
@@ -53,8 +58,8 @@ seed_sql() {
   cat <<'SQL'
 BEGIN;
 -- 반다라트 1: 2027 갓생 살기 (완료 10셀 → 40%)
-UPDATE bandalarts SET profileEmoji = '🔥', title = '2027 갓생 살기', dueDate = '2027-12-31T23:59:00' WHERE id = 1;
-UPDATE bandalart_cells SET title = '2027 갓생 살기', description = '매일 조금씩 나아지는 한 해', dueDate = '2027-12-31T23:59:00' WHERE id = 1;
+UPDATE bandalarts SET profileEmoji = '🔥', title = '2027 갓생 살기', dueDate = '2027-12-31T23:59' WHERE id = 1;
+UPDATE bandalart_cells SET title = '2027 갓생 살기', description = '매일 조금씩 나아지는 한 해', dueDate = '2027-12-31T23:59' WHERE id = 1;
 UPDATE bandalart_cells SET title = CASE id
   WHEN 2 THEN '건강' WHEN 3 THEN '헬스장 주 3회' WHEN 4 THEN '하루 물 2L' WHEN 5 THEN '12시 전에 취침'
   WHEN 6 THEN '매일 아침 스트레칭' WHEN 7 THEN '마라톤 10km 완주'
@@ -71,8 +76,8 @@ UPDATE bandalarts SET completionRatio = 40, isCompleted = 0 WHERE id = 1;
 SQL
   # 반다라트 2가 없으면 앱에서 '취업 준비' 템플릿으로 먼저 만든다.
   cat <<'SQL'
-UPDATE bandalarts SET dueDate = '2027-03-31T23:59:00' WHERE id = 2;
-UPDATE bandalart_cells SET dueDate = '2027-03-31T23:59:00', description = '상반기 공채 합격하기' WHERE id = 26;
+UPDATE bandalarts SET dueDate = '2027-03-31T23:59' WHERE id = 2;
+UPDATE bandalart_cells SET dueDate = '2027-03-31T23:59', description = '상반기 공채 합격하기' WHERE id = 26;
 UPDATE bandalart_cells SET title = CASE id
   WHEN 31 THEN '채용 공고 매일 확인' WHEN 32 THEN '현직자 커피챗' WHEN 37 THEN '자격증 서류 정리' WHEN 38 THEN '첨삭 받기'
   WHEN 43 THEN '코딩 테스트 주 3회' WHEN 44 THEN '스터디 참여' WHEN 49 THEN '1분 자기소개' WHEN 50 THEN '면접 복장 준비'
