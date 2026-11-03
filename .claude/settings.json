@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "prevue": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/kakao/prevue.git"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "prevue@prevue": true
+  }
+}

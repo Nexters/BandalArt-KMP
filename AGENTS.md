@@ -74,6 +74,12 @@
 - Compose와 Circuit 상태의 소유권·수명, `remember*` API와 영속 저장 선택은 `docs/architecture/state/COMPOSE_STATE_LIFETIME_GUIDE.md`를 따른다.
 - 새 문서는 `docs/README.md`의 분류 규칙에 따라 주제 폴더에 두고, `docs/` 루트에는 인덱스와 백로그만 둔다.
 
+## Compose 프리뷰 확인
+
+- Compose UI를 고치거나 화면이 어떻게 보이는지 확인할 때는 `/prevue` skill로 `@Preview`를 브라우저에서 렌더한다 ([kakao/prevue](https://github.com/kakao/prevue)).
+- commonMain 파일을 지정하면 모듈의 Android compilation으로 렌더한다. 모듈을 처음 열 때 한 번 Gradle로 빌드 설정을 읽고, 이후 저장할 때마다 Gradle 없이 다시 그린다.
+- Android Studio가 `/Applications/Android Studio.app`이 아닌 곳에 설치돼 있으면 프리뷰 서버가 뜨지 않을 수 있다. 이 경우 `PREVUE_JDK`에 JDK 21 이상 경로를 지정한다.
+
 ## 앱 통계 기록
 
 - App Store Connect와 Google Play Console의 다운로드·설치·활성 사용자 통계 기록 요청은 `plugins/bandalart/skills/record-app-metrics/SKILL.md`를 따른다.
