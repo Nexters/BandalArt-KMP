@@ -21,13 +21,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.nexters.bandalart.core.database.entity.BandalartCellDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
+import com.nexters.bandalart.core.database.entity.CellCompletionRecordDBEntity
 
 @Database(
     entities = [
         BandalartDBEntity::class,
         BandalartCellDBEntity::class,
+        CellCompletionRecordDBEntity::class,
     ],
-    version = 2,
+    version = 3,
 )
 @ConstructedBy(BandalartDatabaseConstructor::class)
 abstract class BandalartDatabase : RoomDatabase() {

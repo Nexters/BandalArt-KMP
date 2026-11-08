@@ -16,3 +16,5 @@
 "Exercise three times" = "週3回運動する";
 "Sleep before midnight" = "日付が変わる前に寝る";
 "Drink enough water" = "十分な水を飲む";
+"%lld tasks left" = "残り %lld 件";
+"🔥 %lld-day streak" = "🔥 %lld日連続";

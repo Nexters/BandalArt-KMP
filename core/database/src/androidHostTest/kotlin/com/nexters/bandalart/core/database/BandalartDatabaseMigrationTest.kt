@@ -100,6 +100,8 @@ class BandalartDatabaseMigrationTest {
                 assertFalse(migrated.dailyResetEnabled)
                 assertNull(migrated.lastDailyResetDate)
                 assertFalse(migrated.completionResetSyncPending)
+                // 2 -> 3은 완료 기록 테이블만 추가하고 과거 기록을 채우지 않는다.
+                assertEquals(emptyList<String>(), database.bandalartDao.getCompletedDates())
             } finally {
                 database.close()
             }

@@ -221,6 +221,13 @@ private fun SmallContent(
             style = CompactRatioTextStyle,
             maxLines = 1,
         )
+        if (state.streakDays > 0) {
+            Text(
+                text = context.getString(R.string.bandalart_widget_streak, state.streakDays),
+                style = CaptionTextStyle,
+                maxLines = 1,
+            )
+        }
     }
 }
 
@@ -251,8 +258,19 @@ private fun DetailContent(
                 maxLines = 1,
             )
             Text(
-                text = context.getString(R.string.bandalart_widget_completion_ratio, state.completionRatio),
+                text =
+                    context.getString(R.string.bandalart_widget_completion_ratio, state.completionRatio) +
+                        " · " +
+                        context.getString(R.string.bandalart_widget_remaining_tasks, state.remainingTaskCount),
                 style = CaptionTextStyle,
+                maxLines = 1,
+            )
+        }
+        if (state.streakDays > 0) {
+            Spacer(modifier = GlanceModifier.width(6.dp))
+            Text(
+                text = context.getString(R.string.bandalart_widget_streak, state.streakDays),
+                style = StreakTextStyle,
                 maxLines = 1,
             )
         }
@@ -398,6 +416,12 @@ private val CaptionTextStyle =
     TextStyle(
         color = WidgetSecondaryTextColor,
         fontSize = 11.sp,
+    )
+private val StreakTextStyle =
+    TextStyle(
+        color = WidgetAccentColor,
+        fontSize = 11.sp,
+        fontWeight = FontWeight.Bold,
     )
 private val CompactRatioTextStyle =
     TextStyle(

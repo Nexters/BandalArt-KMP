@@ -124,6 +124,9 @@ interface BandalartRepository {
 
     suspend fun applyDueDailyResets(): Set<Long>
 
+    /** 태스크를 완료한 날이 오늘 또는 어제까지 며칠 연속인지 관찰한다. */
+    fun observeCompletionStreak(): Flow<Int>
+
     /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)
 

@@ -10,6 +10,8 @@
     <string name="bandalart_widget_unconfigured">表示するBandalArtを選択してください</string>
     <string name="bandalart_widget_deleted">選択した目標が見つかりません\nタップして再設定してください</string>
     <string name="bandalart_widget_completion_ratio">達成率 %1$d%%</string>
+    <string name="bandalart_widget_remaining_tasks">残り %1$d 件</string>
+    <string name="bandalart_widget_streak">🔥 %1$d日連続</string>
     <string name="bandalart_widget_no_subgoal">サブ目標が選択されていません</string>
     <string name="bandalart_widget_no_tasks">登録されたタスクはありません</string>
     <string name="bandalart_widget_unnamed_goal">名前のない目標</string>

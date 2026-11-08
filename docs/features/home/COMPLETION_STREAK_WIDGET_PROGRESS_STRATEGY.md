@@ -76,8 +76,8 @@
 
 ### Android (Glance)
 
-- Small: 이모지·제목·달성률 아래에 streak가 1 이상이면 `🔥 N일` 한 줄을 추가한다.
-- Medium/Large: 헤더 캡션을 `달성률 N% · 남은 할 일 M개`로 바꾸고, streak가 1 이상이면 `🔥 N일 연속`을 덧붙인다.
+- Small: 이모지·제목·달성률 아래에 streak가 1 이상이면 `🔥 N일 연속` 한 줄을 추가한다.
+- Medium/Large: 헤더 캡션을 `달성률 N% · 남은 할 일 M개`로 바꾸고, streak가 1 이상이면 헤더 오른쪽 끝에 `🔥 N일 연속`을 표시한다.
 - 위젯 체크도 bandalarts 행을 갱신하므로 기존 상태 Flow로 다시 그려진다. 자정 경계는 기존 `updatePeriodMillis="0"` 정책을 유지하고 다음 데이터 변경이나 위젯 갱신 때 반영된다.
 
 ### iOS (WidgetKit)

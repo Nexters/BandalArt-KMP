@@ -161,6 +161,8 @@ internal sealed interface BandalartWidgetViewState {
         val completionRatio: Int,
         val subGoalTitle: String?,
         val tasks: List<BandalartWidgetTask>,
+        val remainingTaskCount: Int,
+        val streakDays: Int,
     ) : BandalartWidgetViewState
 }
 
@@ -181,6 +183,8 @@ internal fun toWidgetViewState(
                 completionRatio = snapshot.completionRatio.coerceIn(0, 100),
                 subGoalTitle = snapshot.subGoalTitle?.ifBlank { null },
                 tasks = snapshot.tasks.filter { it.title.isNotBlank() }.take(5),
+                remainingTaskCount = snapshot.remainingTaskCount,
+                streakDays = snapshot.streakDays,
             )
     }
 

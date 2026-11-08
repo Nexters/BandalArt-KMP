@@ -36,6 +36,8 @@ data class IosWidgetSnapshot(
     val completionRatio: Int,
     val subGoalTitle: String?,
     val tasks: List<IosWidgetTask>,
+    val remainingTaskCount: Int,
+    val streakDays: Int,
 )
 
 data class IosWidgetTask(

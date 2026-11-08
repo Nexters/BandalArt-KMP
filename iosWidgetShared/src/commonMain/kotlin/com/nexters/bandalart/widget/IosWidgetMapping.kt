@@ -37,6 +37,8 @@ internal data class IosWidgetSnapshotRecord(
     val completionRatio: Int,
     val subGoalTitle: String?,
     val tasks: List<IosWidgetTaskRecord>,
+    val remainingTaskCount: Int,
+    val streakDays: Int,
 )
 
 internal data class IosWidgetTaskRecord(
@@ -83,4 +85,6 @@ internal fun IosWidgetSnapshotRecord.toIosWidgetSnapshot(): IosWidgetSnapshot =
                 val title = task.title?.takeUnless(String::isBlank) ?: return@mapNotNull null
                 IosWidgetTask(id = id, title = title, isCompleted = task.isCompleted)
             },
+        remainingTaskCount = remainingTaskCount,
+        streakDays = streakDays,
     )

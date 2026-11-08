@@ -32,6 +32,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
 import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
+import com.nexters.bandalart.core.domain.policy.calculateCompletionStreak
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
@@ -39,6 +40,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
+import kotlin.time.Clock
 
 class DefaultBandalartRepository(
     private val bandalartDataStore: BandalartDataStore,
@@ -107,7 +110,12 @@ class DefaultBandalartRepository(
         cellId: Long,
         updateBandalartTaskCellEntity: UpdateBandalartTaskCellEntity,
     ) {
-        bandalartDao.updateTaskCellWithDto(cellId, updateBandalartTaskCellEntity.toDto())
+        bandalartDao.updateTaskCellWithDto(
+            cellId = cellId,
+            updateDto = updateBandalartTaskCellEntity.toDto(),
+            today = dailyResetDateProvider.today().toString(),
+            completedAt = Clock.System.now().toEpochMilliseconds(),
+        )
         deadlineReminderReconciler.reconcileAll()
     }
 
@@ -123,6 +131,8 @@ class DefaultBandalartRepository(
                 subGoalId = subGoalId,
                 taskId = taskId,
                 completed = completed,
+                today = dailyResetDateProvider.today().toString(),
+                completedAt = Clock.System.now().toEpochMilliseconds(),
             ).also { wasUpdated ->
                 if (wasUpdated) deadlineReminderReconciler.reconcileAll()
             }
@@ -161,6 +171,14 @@ class DefaultBandalartRepository(
         if (wasReset || synchronizedPendingReset) deadlineReminderReconciler.reconcileAll()
         return wasReset
     }
+
+    override fun observeCompletionStreak(): Flow<Int> =
+        bandalartDao.observeCompletedDates().map { dates ->
+            calculateCompletionStreak(
+                completedDates = dates.map(LocalDate::parse),
+                today = dailyResetDateProvider.today(),
+            )
+        }
 
     override suspend fun applyDueDailyResets(): Set<Long> {
         val resetIds =

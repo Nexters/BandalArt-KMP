@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.core.database)
             implementation(projects.core.domain)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
 
         jvmTest.dependencies {

@@ -102,6 +102,8 @@ internal class RecordingBandalartRepository : BandalartRepository {
 
     override suspend fun applyDueDailyResets(): Set<Long> = emptySet()
 
+    override fun observeCompletionStreak(): Flow<Int> = emptyFlow()
+
     override suspend fun setRecentBandalartId(recentBandalartId: Long) = error("Not used")
 
     override suspend fun getRecentBandalartId(): Long = error("Not used")
