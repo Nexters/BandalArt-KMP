@@ -476,6 +476,12 @@ interface BandalartDao {
     @Query("SELECT DISTINCT completedDate FROM cell_completion_records ORDER BY completedDate DESC")
     suspend fun getCompletedDates(): List<String>
 
+    @Query("SELECT * FROM cell_completion_records WHERE completedDate BETWEEN :startDate AND :endDate")
+    suspend fun getCompletionRecordsBetween(
+        startDate: String,
+        endDate: String,
+    ): List<CellCompletionRecordDBEntity>
+
     /** 셀의 이모지 업데이트 */
     @Transaction
     suspend fun updateEmojiWithDto(

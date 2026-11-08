@@ -37,7 +37,8 @@ fun MainViewController(
 ): UIViewController {
     val appGraph = createIosAppGraph(adsBridge, deviceBackupKeyBridge)
     notificationLaunchBridge.attach(appGraph.deadlineNotificationLaunchTarget)
-    deadlineReminderLifecycleBridge.attach(appGraph.deadlineReminderReconciler)
+    notificationLaunchBridge.attach(appGraph.weeklyReviewLaunchTarget)
+    deadlineReminderLifecycleBridge.attach(appGraph.deadlineReminderReconciler, appGraph.weeklyReviewReminderReconciler)
     widgetLaunchBridge.attach(appGraph.bandalartWidgetLaunchTarget)
     widgetRuntimeBridge.attach(appGraph)
 

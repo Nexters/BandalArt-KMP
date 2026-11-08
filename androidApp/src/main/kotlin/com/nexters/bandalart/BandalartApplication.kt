@@ -83,6 +83,9 @@ class BandalartApplication : Application() {
             launchIntentFactory = { _, _ ->
                 Intent(this, DeadlineNotificationTrampolineActivity::class.java)
             },
+            weeklyReviewLaunchIntentFactory = {
+                Intent(this, DeadlineNotificationTrampolineActivity::class.java)
+            },
             notificationCapture = { notificationId, title, body, data ->
                 Ding.captureNotification(
                     context = this,

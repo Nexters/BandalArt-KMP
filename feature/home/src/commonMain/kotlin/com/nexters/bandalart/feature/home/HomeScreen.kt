@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.ThemeMode
+import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
@@ -56,6 +57,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
         val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
         val deadlinePermissionRequestId: Long? = null,
+        val weeklyReviewReminderEnabled: Boolean = false,
         val showRoutineSettingsTooltip: Boolean = false,
         val showTaskCompletionTooltip: Boolean = false,
         val completionStreak: Int = 0,
@@ -86,6 +88,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : BottomSheetState
 
         data object Settings : BottomSheetState
+
+        data class WeeklyReview(
+            val summary: WeeklyReviewSummary,
+        ) : BottomSheetState
 
         data class RoutineSettings(
             val bandalartId: Long,
@@ -290,6 +296,18 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data object DeadlineReminderForegrounded : Event
 
         data object SendDeadlineReminderTestNotification : Event
+
+        data class SetWeeklyReviewReminderEnabled(
+            val enabled: Boolean,
+        ) : Event
+
+        data object ConfirmWeeklyReviewReminderPermission : Event
+
+        data object OpenWeeklyReview : Event
+
+        data class SelectWeeklyReviewBandalart(
+            val bandalartId: Long,
+        ) : Event
 
         data object ContactSupport : Event
 

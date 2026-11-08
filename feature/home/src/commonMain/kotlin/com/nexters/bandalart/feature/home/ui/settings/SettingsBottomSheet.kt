@@ -80,6 +80,10 @@ import bandalart.core.designsystem.generated.resources.settings_theme_system
 import bandalart.core.designsystem.generated.resources.settings_title
 import bandalart.core.designsystem.generated.resources.settings_version
 import bandalart.core.designsystem.generated.resources.settings_version_value
+import bandalart.core.designsystem.generated.resources.settings_weekly_review_open
+import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder
+import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_body
+import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_dialog_title
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
@@ -99,6 +103,7 @@ internal fun SettingsBottomSheet(
     deadlineReminderTime: LocalTime,
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
+    weeklyReviewReminderEnabled: Boolean,
     appVersion: String,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
@@ -106,6 +111,7 @@ internal fun SettingsBottomSheet(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showDeadlineReminderConfirmation by remember { mutableStateOf(false) }
     var showDeadlineReminderTimePicker by remember { mutableStateOf(false) }
+    var showWeeklyReviewReminderConfirmation by remember { mutableStateOf(false) }
 
     if (showDeadlineReminderTimePicker) {
         DeadlineReminderTimePickerDialog(
@@ -131,6 +137,22 @@ internal fun SettingsBottomSheet(
                 onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
             },
             onCancelClick = { showDeadlineReminderConfirmation = false },
+        )
+    }
+
+    if (showWeeklyReviewReminderConfirmation) {
+        BandalartActionAlertDialog(
+            icon = Res.drawable.ic_notifications_outlined,
+            iconContentDescription = stringResource(Res.string.settings_weekly_review_reminder),
+            title = stringResource(Res.string.settings_weekly_review_reminder_dialog_title),
+            message = stringResource(Res.string.settings_deadline_reminder_dialog_body),
+            confirmLabel = stringResource(Res.string.settings_deadline_reminder_confirm),
+            cancelLabel = stringResource(Res.string.action_cancel),
+            onConfirmClick = {
+                showWeeklyReviewReminderConfirmation = false
+                onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
+            },
+            onCancelClick = { showWeeklyReviewReminderConfirmation = false },
         )
     }
 
@@ -197,12 +219,36 @@ internal fun SettingsBottomSheet(
                         onClick = { showDeadlineReminderTimePicker = true },
                     )
                 }
+                WeeklyReviewReminderRow(
+                    enabled =
+                        weeklyReviewReminderEnabled &&
+                            deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE,
+                    onToggle = { enabled ->
+                        if (!enabled) {
+                            onHomeUiAction(HomeScreen.Event.SetWeeklyReviewReminderEnabled(false))
+                        } else if (
+                            deadlineNotificationAuthorizationStatus ==
+                            DeadlineNotificationAuthorizationStatus.BLOCKED
+                        ) {
+                            onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
+                        } else {
+                            showWeeklyReviewReminderConfirmation = true
+                        }
+                    },
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
+            SettingsWeeklyReviewRow(
+                onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
             SettingsCloudBackupRow(
                 onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
             )
@@ -283,6 +329,70 @@ private fun SettingsCloudBackupRow(onClick: () -> Unit) {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@Composable
+private fun SettingsWeeklyReviewRow(onClick: () -> Unit) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(Res.string.settings_weekly_review_open),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 15.sp,
+            fontFamily = pretendardFontFamily(),
+            fontWeight = FontWeight.W600,
+            modifier = Modifier.weight(1f),
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@Composable
+private fun WeeklyReviewReminderRow(
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onToggle(!enabled) }
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(Res.string.settings_weekly_review_reminder),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 15.sp,
+                fontFamily = pretendardFontFamily(),
+                fontWeight = FontWeight.W600,
+            )
+            Text(
+                text = stringResource(Res.string.settings_weekly_review_reminder_body),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp,
+                fontFamily = pretendardFontFamily(),
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(top = 4.dp, end = 12.dp),
+            )
+        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
         )
     }
 }

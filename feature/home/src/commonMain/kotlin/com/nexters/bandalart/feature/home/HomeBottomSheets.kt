@@ -29,6 +29,7 @@ import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartListBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.RoutineSettingsBottomSheet
+import com.nexters.bandalart.feature.home.ui.review.WeeklyReviewBottomSheet
 import com.nexters.bandalart.feature.home.ui.settings.SettingsBottomSheet
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -44,6 +45,7 @@ internal fun HomeBottomSheets(
     deadlineReminderTime: LocalTime,
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
+    weeklyReviewReminderEnabled: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
     appVersion: String,
 ) {
@@ -84,7 +86,16 @@ internal fun HomeBottomSheets(
                 deadlineReminderTime = deadlineReminderTime,
                 deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
                 deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
+                weeklyReviewReminderEnabled = weeklyReviewReminderEnabled,
                 appVersion = appVersion,
+                onHomeUiAction = eventSink,
+            )
+        }
+
+        is HomeScreen.BottomSheetState.WeeklyReview -> {
+            WeeklyReviewBottomSheet(
+                summary = bottomSheet.summary,
+                bandalartList = updateBandalartListTitles(bandalartList).toImmutableList(),
                 onHomeUiAction = eventSink,
             )
         }

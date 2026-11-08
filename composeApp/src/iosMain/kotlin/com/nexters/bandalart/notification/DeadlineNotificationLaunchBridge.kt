@@ -17,10 +17,13 @@
 package com.nexters.bandalart.notification
 
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewLaunchTarget
 
 class DeadlineNotificationLaunchBridge {
     private var launchTarget: DeadlineNotificationLaunchTarget? = null
     private var bufferedBandalartId: Long? = null
+    private var weeklyReviewLaunchTarget: WeeklyReviewLaunchTarget? = null
+    private var hasBufferedWeeklyReview = false
 
     fun record(bandalartId: Long) {
         if (bandalartId <= 0L) return
@@ -32,9 +35,26 @@ class DeadlineNotificationLaunchBridge {
         }
     }
 
+    fun recordWeeklyReview() {
+        val target = weeklyReviewLaunchTarget
+        if (target == null) {
+            hasBufferedWeeklyReview = true
+        } else {
+            target.record()
+        }
+    }
+
     internal fun attach(target: DeadlineNotificationLaunchTarget) {
         launchTarget = target
         bufferedBandalartId?.let(target::record)
         bufferedBandalartId = null
+    }
+
+    internal fun attach(target: WeeklyReviewLaunchTarget) {
+        weeklyReviewLaunchTarget = target
+        if (hasBufferedWeeklyReview) {
+            hasBufferedWeeklyReview = false
+            target.record()
+        }
     }
 }

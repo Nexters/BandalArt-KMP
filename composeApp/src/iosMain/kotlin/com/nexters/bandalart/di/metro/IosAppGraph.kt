@@ -31,6 +31,7 @@ import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
 import com.nexters.bandalart.notification.IosDeadlineNotificationAuthorization
 import com.nexters.bandalart.notification.IosDeadlineReminderScheduler
+import com.nexters.bandalart.notification.IosWeeklyReviewReminderScheduler
 
 private class IosPlatformBindings(
     adsBridge: IosAdsBridge,
@@ -46,6 +47,7 @@ private class IosPlatformBindings(
     override val rewardedAdGateway = IosRewardedAdGateway(adsBridge)
     override val deadlineReminderScheduler = IosDeadlineReminderScheduler()
     override val deadlineNotificationAuthorization = IosDeadlineNotificationAuthorization()
+    override val weeklyReviewReminderScheduler = IosWeeklyReviewReminderScheduler()
     override val backupApiConfig =
         BackupApiConfig(
             url = BackupBuildConfig.SUPABASE_URL,

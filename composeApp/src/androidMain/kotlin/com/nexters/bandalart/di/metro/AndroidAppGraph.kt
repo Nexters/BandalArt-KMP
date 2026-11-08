@@ -36,6 +36,7 @@ import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorizati
 import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
+import com.nexters.bandalart.notification.AndroidWeeklyReviewReminderScheduler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -58,6 +59,7 @@ private class AndroidPlatformBindings(
     override val supportMailLauncher = AndroidSupportMailLauncher(application)
     override val deadlineReminderScheduler = AndroidDeadlineReminderScheduler(application)
     override val deadlineNotificationAuthorization = AndroidDeadlineNotificationAuthorization(application)
+    override val weeklyReviewReminderScheduler = AndroidWeeklyReviewReminderScheduler(application)
     override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
         if (backupApiConfig.isConfigured) AndroidDeviceBackupKeyProvider(application) else DeviceBackupKeyProvider { null }
 }
@@ -82,6 +84,7 @@ fun createAndroidAppGraph(
 fun installAndroidDeadlineReminderInfrastructure(
     appGraph: AppGraph,
     launchIntentFactory: (batchId: String, bandalartId: Long) -> Intent,
+    weeklyReviewLaunchIntentFactory: () -> Intent,
     notificationCapture: (
         notificationId: Int,
         title: String,
@@ -99,11 +102,15 @@ fun installAndroidDeadlineReminderInfrastructure(
                 get() = appGraph.deadlineNotificationAuthorization
             override val deadlineReminderReconciler
                 get() = appGraph.deadlineReminderReconciler
+            override val weeklyReviewReminderReconciler
+                get() = appGraph.weeklyReviewReminderReconciler
 
             override fun createDeadlineNotificationLaunchIntent(
                 batchId: String,
                 bandalartId: Long,
             ): Intent = launchIntentFactory(batchId, bandalartId)
+
+            override fun createWeeklyReviewLaunchIntent(): Intent = weeklyReviewLaunchIntentFactory()
 
             override fun captureDeadlineNotification(
                 notificationId: Int,
@@ -119,6 +126,7 @@ fun installAndroidDeadlineReminderInfrastructure(
 
 suspend fun reconcileAndroidDeadlineReminders(appGraph: AppGraph) {
     appGraph.deadlineReminderReconciler.reconcileAll()
+    appGraph.weeklyReviewReminderReconciler.reconcile()
 }
 
 fun recordAndroidDeadlineNotificationLaunch(
@@ -126,6 +134,10 @@ fun recordAndroidDeadlineNotificationLaunch(
     bandalartId: Long,
 ) {
     appGraph.deadlineNotificationLaunchTarget.record(bandalartId)
+}
+
+fun recordAndroidWeeklyReviewLaunch(appGraph: AppGraph) {
+    appGraph.weeklyReviewLaunchTarget.record()
 }
 
 fun recordAndroidWidgetLaunch(

@@ -17,6 +17,7 @@
 package com.nexters.bandalart.notification
 
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,21 +29,28 @@ class DeadlineReminderLifecycleBridge internal constructor(
     constructor() : this(CoroutineScope(SupervisorJob() + Dispatchers.Default))
 
     private var reconciler: DeadlineReminderReconciler? = null
+    private var weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler? = null
     private var hasPendingReconcile = false
 
     fun record() {
         val currentReconciler = reconciler
-        if (currentReconciler == null) {
+        val currentWeeklyReviewReminderReconciler = weeklyReviewReminderReconciler
+        if (currentReconciler == null || currentWeeklyReviewReminderReconciler == null) {
             hasPendingReconcile = true
             return
         }
         scope.launch {
             currentReconciler.reconcileAll()
+            currentWeeklyReviewReminderReconciler.reconcile()
         }
     }
 
-    internal fun attach(reconciler: DeadlineReminderReconciler) {
+    internal fun attach(
+        reconciler: DeadlineReminderReconciler,
+        weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler,
+    ) {
         this.reconciler = reconciler
+        this.weeklyReviewReminderReconciler = weeklyReviewReminderReconciler
         if (hasPendingReconcile) {
             hasPendingReconcile = false
             record()
