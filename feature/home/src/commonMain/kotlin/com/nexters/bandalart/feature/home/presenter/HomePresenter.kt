@@ -533,6 +533,14 @@ class HomePresenter(
                 )
         }
 
+        fun updateDailyResetDraft(enabled: Boolean) {
+            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell ?: return
+            bottomSheet =
+                currentSheet.copy(
+                    bandalartData = currentSheet.bandalartData.copy(dailyResetEnabled = enabled),
+                )
+        }
+
         suspend fun saveCell() {
             val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell ?: return
             val currentBandalart = currentSheet.bandalartData
@@ -541,7 +549,7 @@ class HomePresenter(
             val dueDate = currentCell.dueDate?.ifEmpty { null }
 
             when (currentSheet.cellType) {
-                CellType.MAIN ->
+                CellType.MAIN -> {
                     bandalartRepository.updateBandalartMainCell(
                         bandalartId = currentBandalart.id,
                         cellId = currentCell.id,
@@ -555,6 +563,13 @@ class HomePresenter(
                                 subColor = currentBandalart.subColor,
                             ),
                     )
+                    if (currentBandalart.dailyResetEnabled != currentSheet.initialBandalartData.dailyResetEnabled) {
+                        bandalartRepository.setDailyResetEnabled(
+                            bandalartId = currentBandalart.id,
+                            enabled = currentBandalart.dailyResetEnabled,
+                        )
+                    }
+                }
 
                 CellType.SUB ->
                     bandalartRepository.updateBandalartSubCell(
@@ -1040,6 +1055,8 @@ class HomePresenter(
                         mainColor = event.mainColor,
                         subColor = event.subColor,
                     )
+
+                is HomeScreen.Event.UpdateDailyResetDraft -> updateDailyResetDraft(event.enabled)
 
                 HomeScreen.Event.OpenDatePicker -> {
                     val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.Cell

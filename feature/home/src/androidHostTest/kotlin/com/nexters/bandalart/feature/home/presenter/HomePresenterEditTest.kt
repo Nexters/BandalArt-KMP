@@ -149,6 +149,73 @@ class HomePresenterEditTest {
         }
 
     @Test
+    fun mainCellDailyResetDraftIsAppliedOnlyOnSave() =
+        runTest {
+            val mainCell = cell(id = 10L, title = "기존 목표")
+            val repository = repositoryWithCells(mainCell = mainCell)
+            val presenter = presenter(repository)
+
+            presenter.test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(
+                    HomeScreen.Event.OpenCell(
+                        cellType = CellType.MAIN,
+                        isMainCellTitleEmpty = false,
+                        cellData = mainCell,
+                    ),
+                )
+                state = awaitCellSheet()
+                assertFalse(state.cellSheet().bandalartData.dailyResetEnabled)
+
+                state.eventSink(HomeScreen.Event.UpdateDailyResetDraft(enabled = true))
+                do {
+                    state = awaitItem()
+                } while (!state.cellSheet().bandalartData.dailyResetEnabled)
+                assertFalse(state.cellSheet().initialBandalartData.dailyResetEnabled)
+                assertTrue(repository.dailyResetUpdates.isEmpty())
+
+                state.eventSink(HomeScreen.Event.SaveCell)
+                do {
+                    state = awaitItem()
+                } while (state.bottomSheet != null || state.bandalartData?.dailyResetEnabled != true)
+
+                assertNotNull(repository.mainCellUpdate)
+                assertEquals(listOf(1L to true), repository.dailyResetUpdates)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun mainCellSaveWithoutDailyResetChangeKeepsRoutineSetting() =
+        runTest {
+            val mainCell = cell(id = 10L, title = "기존 목표")
+            val repository = repositoryWithCells(mainCell = mainCell)
+            val presenter = presenter(repository)
+
+            presenter.test {
+                var state = awaitLoadedBandalart(1L)
+                state.eventSink(
+                    HomeScreen.Event.OpenCell(
+                        cellType = CellType.MAIN,
+                        isMainCellTitleEmpty = false,
+                        cellData = mainCell,
+                    ),
+                )
+                state = awaitCellSheet()
+                state.eventSink(HomeScreen.Event.UpdateDailyResetDraft(enabled = true))
+                state.eventSink(HomeScreen.Event.UpdateDailyResetDraft(enabled = false))
+                state.eventSink(HomeScreen.Event.UpdateDescription("새 설명"))
+                state.eventSink(HomeScreen.Event.SaveCell)
+                do {
+                    state = awaitItem()
+                } while (repository.mainCellUpdate == null || state.bottomSheet != null)
+
+                assertTrue(repository.dailyResetUpdates.isEmpty())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun subAndTaskCellDraftsUseTheirRepositoryPayloads() =
         runTest {
             val mainCell = cell(id = 10L, title = "메인")

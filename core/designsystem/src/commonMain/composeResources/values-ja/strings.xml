@@ -111,6 +111,7 @@
 
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">毎日繰り返す目標をルーティンに設定できます</string>
+    <string name="home_daily_reset_badge">毎日リセット</string>
     <string name="routine_settings_title">ルーティン設定</string>
     <string name="routine_settings_daily_reset_title">毎日新しく始める</string>
     <string name="routine_settings_daily_reset_description">日付が変わってからアプリを開くと、すべての完了チェックが解除されます。目標とメモはそのまま残ります。</string>

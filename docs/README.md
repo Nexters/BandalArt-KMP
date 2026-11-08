@@ -109,6 +109,11 @@
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)
 - [foreground 인앱 업데이트](features/updates/IN_APP_UPDATE_FOREGROUND_STRATEGY.md)
 
+### Routines
+
+- [반다라트별 일일 완료 체크 초기화](features/routines/DAILY_COMPLETION_RESET_STRATEGY.md)
+- [루틴 발견성 개선](features/routines/ROUTINE_DISCOVERABILITY_STRATEGY.md)
+
 ### Widgets
 
 - [Android 위젯 기능 가이드](features/widgets/ANDROID_WIDGET_FEATURE_GUIDE.md)

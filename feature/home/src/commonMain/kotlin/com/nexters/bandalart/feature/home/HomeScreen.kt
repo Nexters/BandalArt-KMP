@@ -223,6 +223,10 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             val subColor: String,
         ) : Event
 
+        data class UpdateDailyResetDraft(
+            val enabled: Boolean,
+        ) : Event
+
         data object OpenDatePicker : Event
 
         data object OpenEmojiPicker : Event
