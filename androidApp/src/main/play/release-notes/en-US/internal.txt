@@ -1,2 +1,1 @@
-• Bottom sheets, the completion screen, and onboarding now look better centered on unfolded foldables and tablets.
-• Fixed the deadline reminder setting showing a misleading message before notification permission was granted.
+• Long memos in cell editing now wrap onto multiple lines so you can see the full text.
