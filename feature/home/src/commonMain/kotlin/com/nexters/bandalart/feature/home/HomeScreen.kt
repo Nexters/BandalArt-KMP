@@ -19,6 +19,7 @@ package com.nexters.bandalart.feature.home
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
@@ -91,6 +92,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data class WeeklyReview(
             val summary: WeeklyReviewSummary,
+            val heatmap: CompletionHeatmap,
         ) : BottomSheetState
 
         data class RoutineSettings(

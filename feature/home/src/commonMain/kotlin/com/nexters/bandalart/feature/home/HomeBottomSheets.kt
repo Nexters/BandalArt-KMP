@@ -95,6 +95,7 @@ internal fun HomeBottomSheets(
         is HomeScreen.BottomSheetState.WeeklyReview -> {
             WeeklyReviewBottomSheet(
                 summary = bottomSheet.summary,
+                heatmap = bottomSheet.heatmap,
                 bandalartList = updateBandalartListTitles(bandalartList).toImmutableList(),
                 onHomeUiAction = eventSink,
             )

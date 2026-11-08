@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.complete.presenter
 
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
@@ -106,6 +107,8 @@ internal class RecordingBandalartRepository : BandalartRepository {
     override fun observeCompletionStreak(): Flow<Int> = emptyFlow()
 
     override suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary = error("Not used")
+
+    override suspend fun getCompletionHeatmap(): CompletionHeatmap = error("Not used")
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) = error("Not used")
 

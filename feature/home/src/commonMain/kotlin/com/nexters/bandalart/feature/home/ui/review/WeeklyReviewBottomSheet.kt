@@ -28,7 +28,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
@@ -57,6 +59,7 @@ import bandalart.core.designsystem.generated.resources.weekly_review_title
 import bandalart.core.designsystem.generated.resources.weekly_review_total
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewBandalartSummary
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -69,6 +72,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun WeeklyReviewBottomSheet(
     summary: WeeklyReviewSummary,
+    heatmap: CompletionHeatmap,
     bandalartList: ImmutableList<BandalartUiModel>,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
@@ -87,6 +91,7 @@ internal fun WeeklyReviewBottomSheet(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .navigationBarsPadding()
                     .padding(bottom = 24.dp),
         ) {
@@ -132,6 +137,14 @@ internal fun WeeklyReviewBottomSheet(
                     )
                 }
             }
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
+            CompletionHeatmapSection(
+                heatmap = heatmap,
+                modifier = Modifier.padding(top = 16.dp),
+            )
         }
     }
 }

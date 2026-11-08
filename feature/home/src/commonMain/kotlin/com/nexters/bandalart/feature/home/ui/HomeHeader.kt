@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +69,7 @@ import bandalart.core.designsystem.generated.resources.ic_edit
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import bandalart.core.designsystem.generated.resources.ic_option
 import bandalart.core.designsystem.generated.resources.option_description
+import bandalart.core.designsystem.generated.resources.settings_weekly_review_open
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.common.extension.toFormatDate
 import com.nexters.bandalart.core.common.getLocale
@@ -183,7 +185,14 @@ fun HomeHeader(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.W500,
-                    modifier = Modifier.padding(start = 6.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 6.dp)
+                            .clickable(
+                                onClickLabel = stringResource(Res.string.settings_weekly_review_open),
+                                role = Role.Button,
+                                onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
+                            ).padding(vertical = 4.dp),
                     letterSpacing = (-0.24).sp,
                 )
             }

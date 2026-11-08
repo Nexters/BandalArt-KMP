@@ -311,7 +311,11 @@ class HomePresenter(
         }
 
         suspend fun openWeeklyReview() {
-            bottomSheet = HomeScreen.BottomSheetState.WeeklyReview(bandalartRepository.getWeeklyReviewSummary())
+            bottomSheet =
+                HomeScreen.BottomSheetState.WeeklyReview(
+                    summary = bandalartRepository.getWeeklyReviewSummary(),
+                    heatmap = bandalartRepository.getCompletionHeatmap(),
+                )
         }
 
         suspend fun selectBandalart(
