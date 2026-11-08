@@ -17,7 +17,7 @@
 package com.nexters.bandalart.feature.home.ui.bandalart
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,6 +41,7 @@ internal fun BandalartTextField(
     onValueChange: (TextFieldValue) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
+    maxLines: Int = 1,
     focusManager: FocusManager = LocalFocusManager.current,
 ) {
     BasicTextField(
@@ -49,11 +50,11 @@ internal fun BandalartTextField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(24.dp)
+                .heightIn(min = 24.dp)
                 .clearFocusOnKeyboardDismiss(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        maxLines = 1,
+        maxLines = maxLines,
         textStyle = BottomSheetContent().copy(color = MaterialTheme.colorScheme.onSurface),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
         decorationBox = { innerTextField ->

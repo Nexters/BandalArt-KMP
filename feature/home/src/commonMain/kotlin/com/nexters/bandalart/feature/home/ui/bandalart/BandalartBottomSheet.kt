@@ -351,6 +351,7 @@ fun BandalartBottomSheet(
                                 onHomeUiAction(HomeScreen.Event.UpdateDescription(description.text))
                             },
                             placeholder = stringResource(Res.string.bottomsheet_description_placeholder),
+                            maxLines = Int.MAX_VALUE,
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HorizontalDivider(
