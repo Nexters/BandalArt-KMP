@@ -55,6 +55,14 @@ object NoOpWeeklyReviewReminderScheduler : WeeklyReviewReminderScheduler {
     override suspend fun cancel(): DeadlineReminderSchedulingResult = DeadlineReminderSchedulingResult(scheduledCount = 0)
 }
 
+/**
+ * 주간 회고 알림 전용 권한 확인.
+ * Android는 앱 전체 알림 권한과 함께 주간 회고 채널이 꺼졌는지도 반영해야 하므로 마감일 알림과 별도 인스턴스로 주입한다.
+ */
+class WeeklyReviewNotificationAuthorization(
+    delegate: DeadlineNotificationAuthorization,
+) : DeadlineNotificationAuthorization by delegate
+
 interface WeeklyReviewReminderReconciler {
     suspend fun reconcile()
 }

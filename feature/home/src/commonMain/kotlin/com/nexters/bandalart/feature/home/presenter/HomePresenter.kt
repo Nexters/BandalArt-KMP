@@ -46,6 +46,7 @@ import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderSchedu
 import com.nexters.bandalart.core.domain.notification.BufferedWeeklyReviewLaunchTarget
 import com.nexters.bandalart.core.domain.notification.NoOpWeeklyReviewReminderReconciler
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
@@ -95,6 +96,8 @@ class HomePresenter(
         BufferedDeadlineNotificationLaunchTarget(),
     private val bandalartWidgetLaunchTarget: BandalartWidgetLaunchTarget =
         BufferedBandalartWidgetLaunchTarget(),
+    private val weeklyReviewNotificationAuthorization: WeeklyReviewNotificationAuthorization =
+        WeeklyReviewNotificationAuthorization(NoOpDeadlineNotificationAuthorization),
     private val weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler = NoOpWeeklyReviewReminderReconciler,
     private val weeklyReviewLaunchTarget: WeeklyReviewLaunchTarget = BufferedWeeklyReviewLaunchTarget(),
 ) : Presenter<HomeScreen.State> {
@@ -142,6 +145,9 @@ class HomePresenter(
         val completionStreakFlow = remember { bandalartRepository.observeCompletionStreak() }
         val completionStreak by completionStreakFlow.collectAsState(initial = 0)
         var deadlineNotificationAuthorizationStatus by remember {
+            mutableStateOf(DeadlineNotificationAuthorizationStatus.UNSUPPORTED)
+        }
+        var weeklyReviewNotificationAuthorizationStatus by remember {
             mutableStateOf(DeadlineNotificationAuthorizationStatus.UNSUPPORTED)
         }
         var deadlinePermissionRequestId by remember { mutableStateOf<Long?>(null) }
@@ -272,18 +278,42 @@ class HomePresenter(
             }
         }
 
+        fun authorizationOf(reminder: NotificationReminder): DeadlineNotificationAuthorization =
+            when (reminder) {
+                NotificationReminder.DEADLINE -> deadlineNotificationAuthorization
+                NotificationReminder.WEEKLY_REVIEW -> weeklyReviewNotificationAuthorization
+            }
+
+        // Android는 알림 채널별로 꺼질 수 있어 마감일/주간 회고 권한 상태를 따로 기록한다.
+        fun recordAuthorizationStatus(
+            reminder: NotificationReminder,
+            status: DeadlineNotificationAuthorizationStatus,
+        ): DeadlineNotificationAuthorizationStatus {
+            when (reminder) {
+                NotificationReminder.DEADLINE -> deadlineNotificationAuthorizationStatus = status
+                NotificationReminder.WEEKLY_REVIEW -> weeklyReviewNotificationAuthorizationStatus = status
+            }
+            return status
+        }
+
+        suspend fun refreshAuthorizationStatus(reminder: NotificationReminder): DeadlineNotificationAuthorizationStatus =
+            recordAuthorizationStatus(reminder, authorizationOf(reminder).getStatus())
+
+        fun DeadlineNotificationAuthorizationStatus.isGranted(): Boolean =
+            this == DeadlineNotificationAuthorizationStatus.GRANTED ||
+                this == DeadlineNotificationAuthorizationStatus.QUIET
+
         fun confirmReminderPermission(reminder: NotificationReminder) {
             scope.launch {
-                deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
-                when (deadlineNotificationAuthorizationStatus) {
+                when (refreshAuthorizationStatus(reminder)) {
                     DeadlineNotificationAuthorizationStatus.GRANTED,
                     DeadlineNotificationAuthorizationStatus.QUIET,
                     -> setReminderEnabled(reminder, true)
 
                     DeadlineNotificationAuthorizationStatus.REQUESTABLE -> {
-                        deadlineNotificationAuthorizationStatus =
-                            deadlineNotificationAuthorization.requestAuthorization()
-                        when (deadlineNotificationAuthorizationStatus) {
+                        val requestedStatus =
+                            recordAuthorizationStatus(reminder, authorizationOf(reminder).requestAuthorization())
+                        when (requestedStatus) {
                             DeadlineNotificationAuthorizationStatus.GRANTED,
                             DeadlineNotificationAuthorizationStatus.QUIET,
                             -> setReminderEnabled(reminder, true)
@@ -302,7 +332,7 @@ class HomePresenter(
 
                     DeadlineNotificationAuthorizationStatus.BLOCKED -> {
                         reminderToEnableAfterSettings = reminder
-                        deadlineNotificationAuthorization.openSettings()
+                        authorizationOf(reminder).openSettings()
                     }
 
                     DeadlineNotificationAuthorizationStatus.UNSUPPORTED -> Unit
@@ -1000,6 +1030,7 @@ class HomePresenter(
             deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
             deadlinePermissionRequestId = deadlinePermissionRequestId,
             weeklyReviewReminderEnabled = weeklyReviewReminderEnabled,
+            weeklyReviewNotificationAuthorizationStatus = weeklyReviewNotificationAuthorizationStatus,
             showRoutineSettingsTooltip =
                 !routineSettingsTooltipDismissed &&
                     !isRoutineSettingsTooltipDismissalRequested &&
@@ -1050,7 +1081,8 @@ class HomePresenter(
                 HomeScreen.Event.OpenSettings -> {
                     bottomSheet = HomeScreen.BottomSheetState.Settings
                     scope.launch {
-                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
+                        refreshAuthorizationStatus(NotificationReminder.DEADLINE)
+                        refreshAuthorizationStatus(NotificationReminder.WEEKLY_REVIEW)
                     }
                 }
                 HomeScreen.Event.OpenCloudBackup -> {
@@ -1240,25 +1272,23 @@ class HomePresenter(
                 HomeScreen.Event.DeadlineReminderPermissionResult -> {
                     deadlinePermissionRequestId = null
                     scope.launch {
-                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
-                        val granted =
-                            deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.GRANTED ||
-                                deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.QUIET
-                        setReminderEnabled(permissionRequestReminder, granted)
+                        val reminder = permissionRequestReminder
+                        setReminderEnabled(reminder, refreshAuthorizationStatus(reminder).isGranted())
                     }
                 }
 
                 HomeScreen.Event.DeadlineReminderForegrounded -> {
                     scope.launch {
-                        deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorization.getStatus()
-                        val granted =
-                            deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.GRANTED ||
-                                deadlineNotificationAuthorizationStatus == DeadlineNotificationAuthorizationStatus.QUIET
+                        val isDeadlineGranted = refreshAuthorizationStatus(NotificationReminder.DEADLINE).isGranted()
+                        val isWeeklyReviewGranted =
+                            refreshAuthorizationStatus(NotificationReminder.WEEKLY_REVIEW).isGranted()
                         val reminderToEnable = reminderToEnableAfterSettings
                         reminderToEnableAfterSettings = null
-                        when (reminderToEnable.takeIf { granted }) {
-                            NotificationReminder.DEADLINE -> settingsRepository.setDeadlineReminderEnabled(true)
-                            NotificationReminder.WEEKLY_REVIEW -> settingsRepository.setWeeklyReviewReminderEnabled(true)
+                        when (reminderToEnable) {
+                            NotificationReminder.DEADLINE ->
+                                if (isDeadlineGranted) settingsRepository.setDeadlineReminderEnabled(true)
+                            NotificationReminder.WEEKLY_REVIEW ->
+                                if (isWeeklyReviewGranted) settingsRepository.setWeeklyReviewReminderEnabled(true)
                             null -> Unit
                         }
                         deadlineReminderReconciler.reconcileAll()

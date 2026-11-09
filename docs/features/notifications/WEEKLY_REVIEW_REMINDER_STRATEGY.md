@@ -78,7 +78,11 @@
   2. 실행 시점의 현지 날짜가 일요일이 아니면 보내지 않는다(기기가 꺼져 있다 월요일에 늦게 실행된 경우. 새 주가 시작돼 요약이 비어 보이기 때문이다).
   3. 알림을 보낸 뒤 `reconcile()`로 다음 주 일요일을 예약한다. 발송을 건너뛴 경우에도 재예약한다.
 - 채널: `weekly_review_v1`(이름 "주간 회고"), importance DEFAULT. 마감일 채널과 분리해 사용자가 하나만 끌 수 있게 한다.
-- 권한 판단의 한계: 공용 `AndroidDeadlineNotificationAuthorization`은 마감일 채널이 꺼졌을 때 BLOCKED를 돌려준다. 이 경우 주간 알림도 꺼진 것으로 표시된다. 반대로 주간 채널만 끈 경우는 설정상 켜짐으로 보이지만 OS가 표시하지 않는다. 채널별 상태 구분은 이번 범위에서 하지 않는다.
+- 권한 판단: `AndroidDeadlineNotificationAuthorization`은 확인할 채널 id를 생성자로 받는다. 주간 알림은 `weekly_review_v1` 채널로 만든 인스턴스를 `WeeklyReviewNotificationAuthorization`(도메인 래퍼 타입)으로 감싸 따로 주입한다.
+  - 앱 전체 알림 권한이 없거나 꺼져 있으면 두 알림 모두 BLOCKED 또는 REQUESTABLE이다.
+  - 채널 importance가 NONE이면 해당 알림만 BLOCKED다. 마감일 채널만 끄면 주간 알림은 영향을 받지 않고, 주간 채널만 끄면 주간 토글이 꺼짐으로 보인다. 재조정은 주간 예약을 취소하고, Worker는 발송하지 않는다.
+  - 주간 토글을 다시 켜면 마감일 알림과 같은 흐름으로 앱 알림 설정 화면을 연다. 돌아온 뒤 주간 채널이 켜져 있으면 설정을 켠다.
+  - iOS는 채널 개념이 없어 같은 `IosDeadlineNotificationAuthorization`을 감싼다.
 - 탭: 기존 `DeadlineNotificationTrampolineActivity`에 action `com.nexters.bandalart.action.OPEN_WEEKLY_REVIEW`를 추가하고, 이 action이면 `WeeklyReviewLaunchTarget.record()`를 호출한 뒤 `MainActivity`를 연다. 새 activity는 만들지 않는다.
 - Worker 의존성은 기존 `AndroidDeadlineReminderDependencies` registry에 주간 항목을 추가해 전달한다.
 
@@ -131,7 +135,7 @@
 - `core/database` `androidHostTest`: 기간 조회 DAO.
 - `core/data` `androidHostTest`: `DefaultWeeklyReviewReminderReconciler`(꺼짐 → cancel, 권한 없음 → cancel, 켜짐+GRANTED/QUIET → schedule).
 - `composeApp` `androidHostTest`: Android scheduler의 unique work·지연 시간, Worker의 일요일 아님 건너뛰기와 재예약.
-- `feature/home` `androidHostTest`: 주간 토글 켜기(권한 흐름 포함)·끄기, 알림 launch로 요약 시트 열기.
+- `feature/home` `androidHostTest`: 주간 토글 켜기(권한 흐름 포함)·끄기, 마감일/주간 권한 상태 분리, 알림 launch로 요약 시트 열기.
 
 ## 범위 밖
 

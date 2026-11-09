@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.notification.BufferedWeeklyReviewLaunchTarget
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
@@ -104,6 +105,37 @@ class HomePresenterWeeklyReviewTest {
         }
 
     @Test
+    fun weeklyChannelBlockedIsTrackedSeparatelyFromDeadlineChannel() =
+        runTest {
+            val deadlineAuthorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.GRANTED)
+            val weeklyAuthorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.BLOCKED)
+            val presenter =
+                presenter(
+                    settings = FakeSettingsRepository(initialWeeklyReviewReminderEnabled = true),
+                    authorization = weeklyAuthorization,
+                    deadlineAuthorization = deadlineAuthorization,
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                state.eventSink(HomeScreen.Event.OpenSettings)
+                while (
+                    state.weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.BLOCKED ||
+                    state.deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.GRANTED
+                ) {
+                    state = awaitItem()
+                }
+
+                state.eventSink(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
+                advanceUntilIdle()
+                assertEquals(1, weeklyAuthorization.openSettingsCalls)
+                assertEquals(0, deadlineAuthorization.openSettingsCalls)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
     fun turningOffWeeklyReminderSavesAndReconciles() =
         runTest {
             val reconciler = RecordingWeeklyReconciler()
@@ -176,6 +208,8 @@ class HomePresenterWeeklyReviewTest {
         settings: FakeSettingsRepository = FakeSettingsRepository(),
         authorization: DeadlineNotificationAuthorization =
             FakeAuthorization(DeadlineNotificationAuthorizationStatus.REQUESTABLE),
+        deadlineAuthorization: DeadlineNotificationAuthorization =
+            FakeAuthorization(DeadlineNotificationAuthorizationStatus.REQUESTABLE),
         reconciler: WeeklyReviewReminderReconciler = RecordingWeeklyReconciler(),
         launchTarget: BufferedWeeklyReviewLaunchTarget = BufferedWeeklyReviewLaunchTarget(),
     ) = HomePresenter(
@@ -184,7 +218,8 @@ class HomePresenterWeeklyReviewTest {
         bandalartSlotRepository = FakeBandalartSlotRepository(),
         inAppUpdateRepository = FakeInAppUpdateRepository(),
         settingsRepository = settings,
-        deadlineNotificationAuthorization = authorization,
+        deadlineNotificationAuthorization = deadlineAuthorization,
+        weeklyReviewNotificationAuthorization = WeeklyReviewNotificationAuthorization(authorization),
         weeklyReviewReminderReconciler = reconciler,
         weeklyReviewLaunchTarget = launchTarget,
     )

@@ -210,6 +210,7 @@ internal fun Home(
         deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
         deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
         weeklyReviewReminderEnabled = state.weeklyReviewReminderEnabled,
+        weeklyReviewNotificationAuthorizationStatus = state.weeklyReviewNotificationAuthorizationStatus,
         eventSink = state.eventSink,
         appVersion = appVersion,
     )
