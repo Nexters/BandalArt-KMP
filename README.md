@@ -160,3 +160,7 @@ iOS 호스트 앱은 Xcode의 `iosApp` scheme으로 실행합니다. 테스트 s
 |:-:|:-:|
 |<img src="https://github.com/Nexters/BandalArt-Android/assets/51016231/e7b05305-b831-4c81-8635-84b478726c55" width=200>|<img src="https://github.com/Nexters/BandalArt-Android/assets/51016231/bbcf9941-5fbb-4f8a-8e8d-8f78db396808" width=200>|
 |[@easyhooon](https://github.com/easyhooon)|[@likppi10](https://github.com/likppi10)|
+
+
+<!-- personal-crashlytics-connectivity:v1 -->
+이 변경은 개인 크래시 대응 bot의 Draft PR 연결 검증용입니다. 검증 후 병합 없이 닫습니다.
