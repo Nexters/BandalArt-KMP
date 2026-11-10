@@ -96,6 +96,7 @@ internal fun HomeBottomSheets(
             WeeklyReviewBottomSheet(
                 summary = bottomSheet.summary,
                 bandalartList = updateBandalartListTitles(bandalartList).toImmutableList(),
+                weeklyReviewReminderEnabled = weeklyReviewReminderEnabled,
                 onHomeUiAction = eventSink,
             )
         }

@@ -28,6 +28,7 @@ class FakeSettingsRepository(
     initialDeadlineReminderEnabled: Boolean = false,
     initialDeadlineReminderTime: LocalTime = DeadlineReminderTime.Default,
     initialWeeklyReviewReminderEnabled: Boolean = false,
+    initialWeeklyReviewReminderNudgeShown: Boolean = false,
     initialTaskCompletionTooltipDismissed: Boolean = false,
     initialRoutineSettingsTooltipDismissed: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
@@ -37,6 +38,7 @@ class FakeSettingsRepository(
     private val deadlineReminderEnabledState = MutableStateFlow(initialDeadlineReminderEnabled)
     private val deadlineReminderTimeState = MutableStateFlow(initialDeadlineReminderTime)
     private val weeklyReviewReminderEnabledState = MutableStateFlow(initialWeeklyReviewReminderEnabled)
+    private val weeklyReviewReminderNudgeShownState = MutableStateFlow(initialWeeklyReviewReminderNudgeShown)
     private val taskCompletionTooltipDismissedState =
         MutableStateFlow(initialTaskCompletionTooltipDismissed)
     private val routineSettingsTooltipDismissedState =
@@ -47,6 +49,7 @@ class FakeSettingsRepository(
     override val deadlineReminderEnabled = deadlineReminderEnabledState.asStateFlow()
     override val deadlineReminderTime = deadlineReminderTimeState.asStateFlow()
     override val weeklyReviewReminderEnabled = weeklyReviewReminderEnabledState.asStateFlow()
+    override val weeklyReviewReminderNudgeShown = weeklyReviewReminderNudgeShownState.asStateFlow()
     override val taskCompletionTooltipDismissed = taskCompletionTooltipDismissedState.asStateFlow()
     override val routineSettingsTooltipDismissed = routineSettingsTooltipDismissedState.asStateFlow()
 
@@ -55,6 +58,8 @@ class FakeSettingsRepository(
     var taskCompletionTooltipDismissals = 0
         private set
     var routineSettingsTooltipDismissals = 0
+        private set
+    var weeklyReviewReminderNudgeMarks = 0
         private set
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
@@ -76,6 +81,11 @@ class FakeSettingsRepository(
 
     override suspend fun setWeeklyReviewReminderEnabled(enabled: Boolean) {
         weeklyReviewReminderEnabledState.value = enabled
+    }
+
+    override suspend fun markWeeklyReviewReminderNudgeShown() {
+        weeklyReviewReminderNudgeMarks += 1
+        weeklyReviewReminderNudgeShownState.value = true
     }
 
     override suspend fun setDeadlineReminderTime(time: LocalTime) {

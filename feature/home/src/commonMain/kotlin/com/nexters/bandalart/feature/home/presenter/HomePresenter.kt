@@ -73,6 +73,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -131,6 +132,8 @@ class HomePresenter(
             initial = DeadlineReminderTime.Default,
         )
         val weeklyReviewReminderEnabled by settingsRepository.weeklyReviewReminderEnabled.collectAsState(initial = false)
+        val weeklyReviewReminderNudgeShown by
+            settingsRepository.weeklyReviewReminderNudgeShown.collectAsState(initial = true)
         val taskCompletionTooltipDismissed by
             settingsRepository.taskCompletionTooltipDismissed.collectAsState(initial = true)
         val routineSettingsTooltipDismissed by
@@ -963,6 +966,25 @@ class HomePresenter(
             weeklyReviewLaunchTarget.acknowledge()
         }
 
+        val canShowWeeklyReviewReminderNudge =
+            completionStreak > 0 &&
+                !weeklyReviewReminderNudgeShown &&
+                bandalartData != null &&
+                bottomSheet == null &&
+                dialog == null &&
+                !isDropDownMenuOpened &&
+                imageRequest == null &&
+                rewardedAdRequestId == null
+        LaunchedEffect(canShowWeeklyReviewReminderNudge) {
+            if (!canShowWeeklyReviewReminderNudge) return@LaunchedEffect
+            val reminderEnabled = settingsRepository.weeklyReviewReminderEnabled.first()
+            // 플래그 저장으로 이 effect가 재시작돼도 기록이 취소되지 않도록 presenter scope에서 실행한다.
+            scope.launch { settingsRepository.markWeeklyReviewReminderNudgeShown() }
+            if (!reminderEnabled) {
+                dialog = HomeScreen.DialogState.WeeklyReviewReminderNudge
+            }
+        }
+
         LaunchedEffect(isBandalartCompleted, bandalartData?.id) {
             val completedBandalart = bandalartData
             if (
@@ -1283,8 +1305,10 @@ class HomePresenter(
                     }
                 }
 
-                HomeScreen.Event.ConfirmWeeklyReviewReminderPermission ->
+                HomeScreen.Event.ConfirmWeeklyReviewReminderPermission -> {
+                    if (dialog == HomeScreen.DialogState.WeeklyReviewReminderNudge) dialog = null
                     confirmReminderPermission(NotificationReminder.WEEKLY_REVIEW)
+                }
 
                 HomeScreen.Event.OpenWeeklyReview -> scope.launch { openWeeklyReview() }
 

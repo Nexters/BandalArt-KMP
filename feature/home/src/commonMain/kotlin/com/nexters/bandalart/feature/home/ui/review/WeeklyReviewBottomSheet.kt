@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
@@ -50,9 +51,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
+import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.weekly_review_bandalart_progress
 import bandalart.core.designsystem.generated.resources.weekly_review_empty
 import bandalart.core.designsystem.generated.resources.weekly_review_period
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_banner_action
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_banner_body
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_banner_title
 import bandalart.core.designsystem.generated.resources.weekly_review_title
 import bandalart.core.designsystem.generated.resources.weekly_review_total
 import com.nexters.bandalart.core.common.extension.toColor
@@ -64,12 +69,14 @@ import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WeeklyReviewBottomSheet(
     summary: WeeklyReviewSummary,
     bandalartList: ImmutableList<BandalartUiModel>,
+    weeklyReviewReminderEnabled: Boolean,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -94,6 +101,11 @@ internal fun WeeklyReviewBottomSheet(
                 summary = summary,
                 onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
             )
+            if (!weeklyReviewReminderEnabled) {
+                WeeklyReviewReminderBanner(
+                    onClick = { onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission) },
+                )
+            }
             if (summary.completedCount == 0) {
                 Text(
                     text = stringResource(Res.string.weekly_review_empty),
@@ -179,6 +191,53 @@ private fun WeeklyReviewHeader(
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
+    }
+}
+
+@Composable
+private fun WeeklyReviewReminderBanner(onClick: () -> Unit) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = vectorResource(Res.drawable.ic_notifications_outlined),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(Res.string.weekly_review_reminder_banner_title),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 14.sp,
+                fontFamily = pretendardFontFamily(),
+                fontWeight = FontWeight.W600,
+            )
+            Text(
+                text = stringResource(Res.string.weekly_review_reminder_banner_body),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 12.sp,
+                fontFamily = pretendardFontFamily(),
+                modifier = Modifier.padding(top = 2.dp),
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = stringResource(Res.string.weekly_review_reminder_banner_action),
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 14.sp,
+            fontFamily = pretendardFontFamily(),
+            fontWeight = FontWeight.W700,
+        )
     }
 }
 

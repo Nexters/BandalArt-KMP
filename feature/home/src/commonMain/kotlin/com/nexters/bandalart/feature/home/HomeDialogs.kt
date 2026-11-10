@@ -27,10 +27,16 @@ import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_
 import bandalart.core.designsystem.generated.resources.delete_bandalart_subcell_dialog_title
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_message
 import bandalart.core.designsystem.generated.resources.delete_bandalart_taskcell_dialog_title
+import bandalart.core.designsystem.generated.resources.ic_notifications_outlined
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_empty_title
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_title
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_nudge_body
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_nudge_cancel
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_nudge_confirm
+import bandalart.core.designsystem.generated.resources.weekly_review_reminder_nudge_title
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
+import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDeleteAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.RewardedBandalartAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.ResetCompletionsAlertDialog
@@ -66,6 +72,22 @@ internal fun HomeDialogs(
             RewardedBandalartAlertDialog(
                 onConfirmClick = {
                     eventSink(HomeScreen.Event.ConfirmRewardedCreate)
+                },
+                onCancelClick = {
+                    eventSink(HomeScreen.Event.DismissDialog)
+                },
+            )
+        }
+        HomeScreen.DialogState.WeeklyReviewReminderNudge -> {
+            BandalartActionAlertDialog(
+                icon = Res.drawable.ic_notifications_outlined,
+                iconContentDescription = null,
+                title = stringResource(Res.string.weekly_review_reminder_nudge_title),
+                message = stringResource(Res.string.weekly_review_reminder_nudge_body),
+                confirmLabel = stringResource(Res.string.weekly_review_reminder_nudge_confirm),
+                cancelLabel = stringResource(Res.string.weekly_review_reminder_nudge_cancel),
+                onConfirmClick = {
+                    eventSink(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
                 },
                 onCancelClick = {
                     eventSink(HomeScreen.Event.DismissDialog)

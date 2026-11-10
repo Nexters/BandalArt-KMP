@@ -35,6 +35,8 @@ class DefaultSettingsRepository(
     override val deadlineReminderTime: Flow<LocalTime> =
         bandalartDataStore.deadlineReminderMinuteOfDay.map(DeadlineReminderTime::fromMinuteOfDay)
     override val weeklyReviewReminderEnabled: Flow<Boolean> = bandalartDataStore.weeklyReviewReminderEnabled
+    override val weeklyReviewReminderNudgeShown: Flow<Boolean> =
+        bandalartDataStore.weeklyReviewReminderNudgeShown
     override val taskCompletionTooltipDismissed: Flow<Boolean> =
         bandalartDataStore.taskCompletionTooltipDismissed
     override val routineSettingsTooltipDismissed: Flow<Boolean> =
@@ -58,6 +60,10 @@ class DefaultSettingsRepository(
 
     override suspend fun setWeeklyReviewReminderEnabled(enabled: Boolean) {
         bandalartDataStore.setWeeklyReviewReminderEnabled(enabled)
+    }
+
+    override suspend fun markWeeklyReviewReminderNudgeShown() {
+        bandalartDataStore.markWeeklyReviewReminderNudgeShown()
     }
 
     override suspend fun dismissTaskCompletionTooltip() {

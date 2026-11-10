@@ -27,6 +27,7 @@ interface SettingsRepository {
 
     val deadlineReminderTime: Flow<LocalTime>
     val weeklyReviewReminderEnabled: Flow<Boolean>
+    val weeklyReviewReminderNudgeShown: Flow<Boolean>
     val taskCompletionTooltipDismissed: Flow<Boolean>
     val routineSettingsTooltipDismissed: Flow<Boolean>
 
@@ -39,6 +40,8 @@ interface SettingsRepository {
     suspend fun setDeadlineReminderTime(time: LocalTime)
 
     suspend fun setWeeklyReviewReminderEnabled(enabled: Boolean)
+
+    suspend fun markWeeklyReviewReminderNudgeShown()
 
     suspend fun dismissTaskCompletionTooltip()
 
