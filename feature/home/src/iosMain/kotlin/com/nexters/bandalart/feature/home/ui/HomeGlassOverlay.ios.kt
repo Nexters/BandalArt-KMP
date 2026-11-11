@@ -17,7 +17,9 @@
 package com.nexters.bandalart.feature.home.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,6 +63,9 @@ import zone.ien.hig.theme.lightColorScheme
 import zone.ien.hig.utils.rememberDefaultBackdrop
 
 internal actual val usesHomeGlassOverlay: Boolean = true
+
+/** hig `CupertinoLiquidIconButton`의 고정 크기. */
+private val GLASS_CONTROL_HEIGHT = 48.dp
 
 @Composable
 internal actual fun HomeGlassOverlay(
@@ -124,20 +129,28 @@ private fun HomeGlassTopBar(
         CupertinoLiquidButton(
             onClick = { onHomeUiAction(HomeScreen.Event.OpenBandalartList) },
             backdrop = backdrop,
+            // 설정 아이콘 버튼(48dp)과 높이를 맞추려고 세로 패딩 대신 내용 높이를 고정한다.
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            if (bandalartCount > 1) {
-                CupertinoIcon(
-                    imageVector = vectorResource(Res.drawable.ic_hamburger),
-                    contentDescription = stringResource(Res.string.hamburger_description),
-                )
-                CupertinoText(text = stringResource(Res.string.home_list), fontWeight = FontWeight.W700)
-            } else {
-                CupertinoIcon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(Res.string.add_description),
-                    modifier = Modifier.size(20.dp),
-                )
-                CupertinoText(text = stringResource(Res.string.home_add), fontWeight = FontWeight.W700)
+            Row(
+                modifier = Modifier.height(GLASS_CONTROL_HEIGHT),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (bandalartCount > 1) {
+                    CupertinoIcon(
+                        imageVector = vectorResource(Res.drawable.ic_hamburger),
+                        contentDescription = stringResource(Res.string.hamburger_description),
+                    )
+                    CupertinoText(text = stringResource(Res.string.home_list), fontWeight = FontWeight.W700)
+                } else {
+                    CupertinoIcon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(Res.string.add_description),
+                        modifier = Modifier.size(20.dp),
+                    )
+                    CupertinoText(text = stringResource(Res.string.home_add), fontWeight = FontWeight.W700)
+                }
             }
         }
     }
