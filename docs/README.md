@@ -50,6 +50,10 @@
 
 - [Firebase Performance Monitoring 도입 검토](architecture/performance/FIREBASE_PERFORMANCE_ADOPTION_RESEARCH.md)
 
+### Design System
+
+- [hig-adaptive 기반 Liquid Glass 적용](architecture/design-system/HIG_ADAPTIVE_LIQUID_GLASS_STRATEGY.md)
+
 ### KMP
 
 - [AGP 9 KMP 마이그레이션](architecture/kmp/KMP_AGP_9_MIGRATION_STRATEGY.md)
