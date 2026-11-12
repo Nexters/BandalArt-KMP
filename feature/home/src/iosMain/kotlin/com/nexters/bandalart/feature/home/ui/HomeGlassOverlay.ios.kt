@@ -16,7 +16,6 @@
 
 package com.nexters.bandalart.feature.home.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,6 +47,8 @@ import bandalart.core.designsystem.generated.resources.settings_description
 import bandalart.core.designsystem.generated.resources.share_description
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
+import com.nexters.bandalart.core.common.extension.rememberSingleClick
+import com.nexters.bandalart.core.designsystem.theme.LocalBandalartDarkTheme
 import com.nexters.bandalart.core.ui.component.AppTitle
 import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
@@ -76,7 +77,8 @@ internal actual fun HomeGlassOverlay(
     content: @Composable () -> Unit,
 ) {
     // CupertinoTheme이 없으면 hig 색이 라이트로 고정되므로 앱 테마와 같은 기준으로 감싼다.
-    val isDark = isSystemInDarkTheme()
+    // 시스템 값이 아니라 설정의 테마 모드를 반영한 값을 써야 상태 바 모양도 앱과 어긋나지 않는다.
+    val isDark = LocalBandalartDarkTheme.current
     CupertinoTheme(colorScheme = if (isDark) darkColorScheme() else lightColorScheme()) {
         val backdrop = rememberDefaultBackdrop()
         Box(modifier = modifier) {
@@ -163,8 +165,9 @@ private fun HomeGlassShareButton(
     backdrop: Backdrop,
     modifier: Modifier = Modifier,
 ) {
+    // 기존 HomeShareButton의 clickableSingle처럼 중복 탭으로 공유가 두 번 열리지 않게 한다.
     CupertinoLiquidButton(
-        onClick = onClick,
+        onClick = rememberSingleClick(onClick),
         backdrop = backdrop,
         modifier = modifier,
     ) {

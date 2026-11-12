@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -44,6 +45,9 @@ private val LightColorScheme =
         surfaceContainer = Gray200,
     )
 
+/** 설정의 테마 모드까지 반영해 [BandalartTheme]이 고른 다크 여부. */
+val LocalBandalartDarkTheme = staticCompositionLocalOf { false }
+
 @Composable
 fun BandalartTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -57,6 +61,7 @@ fun BandalartTheme(
 
     CompositionLocalProvider(
         LocalDensity provides Density(density = LocalDensity.current.density, fontScale = 1f),
+        LocalBandalartDarkTheme provides darkTheme,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
