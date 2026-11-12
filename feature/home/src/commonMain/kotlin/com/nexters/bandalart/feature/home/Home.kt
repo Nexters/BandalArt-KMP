@@ -91,6 +91,12 @@ import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartData
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartList
 import com.nexters.bandalart.feature.home.ui.HomeHeader
 import com.nexters.bandalart.feature.home.ui.HomeShareButton
+import com.kyant.backdrop.backdrops.layerBackdrop
+import com.nexters.bandalart.feature.home.ui.HOME_TOP_BAR_HEIGHT
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.adaptive.Theme
+import zone.ien.hig.adaptive.currentTheme
+import zone.ien.hig.utils.rememberDefaultBackdrop
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -367,6 +373,7 @@ private suspend fun showSnackbarForDuration(
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 internal fun HomeContent(
     bandalartListSize: Int,
@@ -461,91 +468,124 @@ internal fun HomeContent(
                             }
                         }
 
-                        Column(
+                        val isCupertino = currentTheme == Theme.Cupertino
+                        val glassBackdrop = rememberDefaultBackdrop()
+
+                        // iOS는 콘텐츠를 유리 컨트롤이 굴절시킬 배경으로 기록한다. 컨트롤은 기록 레이어 밖에 둔다.
+                        Box(
                             modifier =
                                 Modifier
                                     .fillMaxSize()
-                                    .verticalScroll(rememberScrollState())
-                                    .testTag(HOME_SCROLL_TAG)
-                                    .padding(bottom = if (isWide) 0.dp else 32.dp),
+                                    .then(if (isCupertino) Modifier.layerBackdrop(glassBackdrop) else Modifier),
                         ) {
-                            Column(modifier = Modifier.onSizeChanged { topBarHeight = with(density) { it.height.toDp() } }) {
-                                HomeTopBar(
-                                    bandalartCount = bandalartListSize,
-                                    onHomeUiAction = eventSink,
-                                )
-                                HorizontalDivider(
-                                    thickness = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant,
-                                )
-                            }
-                            if (isWide) {
-                                // 정보 | 표 2단. 공유 이미지에 공유 버튼이 들어가지 않도록 버튼은 캡처 영역 밖에 겹쳐 둔다.
-                                val boardSize =
-                                    min(
-                                        viewportHeight - topBarHeight - 32.dp,
-                                        viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
-                                    )
-                                val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
-                                // 정보 영역은 표 높이 기준 세로 가운데에 두고, 공유 버튼은 정보 영역의 헤더 바로 아래에 겹친다.
-                                val infoHeight = headerHeight + 16.dp + shareButtonHeight
-                                val infoTop = max((boardSize - infoHeight) / 2, 0.dp)
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .heightIn(min = viewportHeight - topBarHeight)
-                                            .padding(vertical = 16.dp),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Box {
-                                        Row(
-                                            modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ) {
-                                            // 표 상자 안쪽 좌측 여백만큼 정보 열 시작에도 여백을 줘 좌우 여백을 맞춘다.
-                                            Column(
+                            Column(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState())
+                                        .testTag(HOME_SCROLL_TAG)
+                                        .padding(bottom = if (isWide) 0.dp else 32.dp),
+                            ) {
+                                Column(modifier = Modifier.onSizeChanged { topBarHeight = with(density) { it.height.toDp() } }) {
+                                    if (isCupertino) {
+                                        // 유리 상단 바는 콘텐츠 위에 따로 띄우므로 같은 높이만 비워 둔다.
+                                        Spacer(modifier = Modifier.height(HOME_TOP_BAR_HEIGHT))
+                                    } else {
+                                        HomeTopBar(
+                                            bandalartCount = bandalartListSize,
+                                            onHomeUiAction = eventSink,
+                                        )
+                                        HorizontalDivider(
+                                            thickness = 1.dp,
+                                            color = MaterialTheme.colorScheme.outlineVariant,
+                                        )
+                                    }
+                                }
+                                if (isWide) {
+                                    // 정보 | 표 2단. 공유 이미지에 공유 버튼이 들어가지 않도록 버튼은 캡처 영역 밖에 겹쳐 둔다.
+                                    val boardSize =
+                                        min(
+                                            viewportHeight - topBarHeight - 32.dp,
+                                            viewportWidth * WIDE_BOARD_MAX_WIDTH_FRACTION - BOARD_HORIZONTAL_PADDING,
+                                        )
+                                    val infoWidth = viewportWidth - boardSize - BOARD_HORIZONTAL_PADDING
+                                    // 정보 영역은 표 높이 기준 세로 가운데에 두고, 공유 버튼은 정보 영역의 헤더 바로 아래에 겹친다.
+                                    val infoHeight = headerHeight + 16.dp + shareButtonHeight
+                                    val infoTop = max((boardSize - infoHeight) / 2, 0.dp)
+                                    Box(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .heightIn(min = viewportHeight - topBarHeight)
+                                                .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Box {
+                                            Row(
+                                                modifier = Modifier.captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                // 표 상자 안쪽 좌측 여백만큼 정보 열 시작에도 여백을 줘 좌우 여백을 맞춘다.
+                                                Column(
+                                                    modifier =
+                                                        Modifier
+                                                            .width(infoWidth)
+                                                            .padding(start = BOARD_HORIZONTAL_PADDING / 2),
+                                                ) {
+                                                    header(Modifier)
+                                                    Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
+                                                }
+                                                Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
+                                                    chart(boardSize)
+                                                }
+                                            }
+                                            Box(
                                                 modifier =
                                                     Modifier
                                                         .width(infoWidth)
-                                                        .padding(start = BOARD_HORIZONTAL_PADDING / 2),
+                                                        .padding(start = BOARD_HORIZONTAL_PADDING / 2, top = infoTop + headerHeight + 16.dp),
+                                                contentAlignment = Alignment.TopCenter,
                                             ) {
-                                                header(Modifier)
-                                                Spacer(modifier = Modifier.height(16.dp + shareButtonHeight))
+                                                shareButton(Modifier)
                                             }
-                                            Box(modifier = Modifier.width(boardSize + BOARD_HORIZONTAL_PADDING)) {
-                                                chart(boardSize)
-                                            }
-                                        }
-                                        Box(
-                                            modifier =
-                                                Modifier
-                                                    .width(infoWidth)
-                                                    .padding(start = BOARD_HORIZONTAL_PADDING / 2, top = infoTop + headerHeight + 16.dp),
-                                            contentAlignment = Alignment.TopCenter,
-                                        ) {
-                                            shareButton(Modifier)
                                         }
                                     }
+                                } else {
+                                    // 세로 휴대폰 크기는 유지하고, 넓은 화면에서만 남은 높이에 맞춰 표를 줄인다.
+                                    val boardSize =
+                                        max(
+                                            viewportHeight - topBarHeight - headerHeight - shareButtonHeight - 16.dp - 32.dp,
+                                            MIN_SINGLE_COLUMN_BOARD_SIZE,
+                                        )
+                                    Column(
+                                        modifier =
+                                            Modifier
+                                                .captureBandalartToGraphicsLayer(homeGraphicsLayer),
+                                    ) {
+                                        header(Modifier)
+                                        chart(boardSize)
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    if (!isCupertino) {
+                                        shareButton(Modifier.align(Alignment.CenterHorizontally))
+                                    }
                                 }
-                            } else {
-                                // 세로 휴대폰 크기는 유지하고, 넓은 화면에서만 남은 높이에 맞춰 표를 줄인다.
-                                val boardSize =
-                                    max(
-                                        viewportHeight - topBarHeight - headerHeight - shareButtonHeight - 16.dp - 32.dp,
-                                        MIN_SINGLE_COLUMN_BOARD_SIZE,
-                                    )
-                                Column(
-                                    modifier =
-                                        Modifier
-                                            .captureBandalartToGraphicsLayer(homeGraphicsLayer),
-                                ) {
-                                    header(Modifier)
-                                    chart(boardSize)
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                }
-                                Spacer(modifier = Modifier.weight(1f))
-                                shareButton(Modifier.align(Alignment.CenterHorizontally))
+                            }
+                        }
+                        if (isCupertino) {
+                            HomeTopBar(
+                                bandalartCount = bandalartListSize,
+                                onHomeUiAction = eventSink,
+                                backdrop = glassBackdrop,
+                                modifier = Modifier.align(Alignment.TopCenter),
+                            )
+                            if (isContentReady && !isWide) {
+                                HomeShareButton(
+                                    onShareButtonClick = { eventSink(HomeScreen.Event.RequestShare) },
+                                    backdrop = glassBackdrop,
+                                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                                )
                             }
                         }
 
