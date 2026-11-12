@@ -38,41 +38,70 @@ import bandalart.core.designsystem.generated.resources.ic_share
 import bandalart.core.designsystem.generated.resources.share_description
 import com.nexters.bandalart.core.common.extension.clickableSingle
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
+import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.nexters.bandalart.core.common.extension.rememberSingleClick
+import zone.ien.hig.CupertinoLiquidButton
+import zone.ien.hig.ExperimentalCupertinoApi
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.utils.rememberDefaultBackdrop
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 
+/** iOS(Cupertino)는 유리 버튼, 그 외는 기존 Material 버튼으로 그린다. [backdrop]은 유리 버튼이 굴절시킬 배경이다. */
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun HomeShareButton(
     onShareButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    backdrop: LayerBackdrop = rememberDefaultBackdrop(),
 ) {
-    Box(
-        modifier =
-            modifier
-                .wrapContentSize()
-                .clip(RoundedCornerShape(18.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickableSingle { onShareButtonClick() },
-        contentAlignment = Alignment.Center,
+    AdaptiveWidget(
+        material = {
+            Box(
+                modifier =
+                    modifier
+                        .wrapContentSize()
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickableSingle { onShareButtonClick() },
+                contentAlignment = Alignment.Center,
+            ) {
+                HomeShareLabel(modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 20.dp, bottom = 8.dp))
+            }
+        },
+        cupertino = {
+            // Material 쪽 clickableSingle처럼 중복 탭으로 공유가 두 번 열리지 않게 한다.
+            CupertinoLiquidButton(
+                onClick = rememberSingleClick(onShareButtonClick),
+                backdrop = backdrop,
+                modifier = modifier,
+            ) {
+                HomeShareLabel()
+            }
+        },
+    )
+}
+
+@Composable
+private fun HomeShareLabel(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 20.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                imageVector = vectorResource(Res.drawable.ic_share),
-                contentDescription = stringResource(Res.string.share_description),
-                tint = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = stringResource(Res.string.action_share),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W700,
-                modifier = Modifier.padding(start = 4.dp),
-            )
-        }
+        Icon(
+            imageVector = vectorResource(Res.drawable.ic_share),
+            contentDescription = stringResource(Res.string.share_description),
+            tint = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = stringResource(Res.string.action_share),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.W700,
+            modifier = Modifier.padding(start = 4.dp),
+        )
     }
 }
 
