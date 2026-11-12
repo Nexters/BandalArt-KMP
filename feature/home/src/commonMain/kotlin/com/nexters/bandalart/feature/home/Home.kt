@@ -584,7 +584,12 @@ internal fun HomeContent(
                                 HomeShareButton(
                                     onShareButtonClick = { eventSink(HomeScreen.Event.RequestShare) },
                                     backdrop = glassBackdrop,
-                                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
+                                    // 표 크기 계산이 떠 있는 버튼 높이만큼 비워 두도록 측정한다. 넓은 세로 화면(iPad)에서 표와 겹치지 않게 한다.
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .padding(bottom = 16.dp)
+                                            .onSizeChanged { shareButtonHeight = with(density) { it.height.toDp() } },
                                 )
                             }
                         }
