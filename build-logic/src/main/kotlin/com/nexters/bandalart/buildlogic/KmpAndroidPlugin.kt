@@ -5,6 +5,10 @@ import com.nexters.bandalart.buildlogic.configure.Plugins
 import com.nexters.bandalart.buildlogic.configure.applyPlugins
 import com.nexters.bandalart.buildlogic.configure.kotlin
 import com.nexters.bandalart.buildlogic.configure.libs
+import org.gradle.api.tasks.testing.Test
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -46,6 +50,13 @@ internal class KmpAndroidPlugin : BuildLogicPlugin(
                     runtimeOnly(libs.junit.platform.launcher)
                 }
             }
+        }
+
+        // 컴파일 대상은 Java 17로 두고, 호스트 테스트만 JDK 21에서 실행한다.
+        // hig 전이 의존성(zone.ien.capsule)이 Java 21 바이트코드라 JDK 17 Robolectric에서 로드되지 않는다.
+        val javaToolchains = extensions.getByType<JavaToolchainService>()
+        tasks.withType<Test>().configureEach {
+            javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(21)) })
         }
     },
 )
