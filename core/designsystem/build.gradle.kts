@@ -8,6 +8,13 @@ plugins {
 
 kotlin {
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.compose.hig)
+            implementation(libs.compose.hig.adaptive)
+        }
+    }
 }
 
 compose.resources {

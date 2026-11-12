@@ -16,7 +16,7 @@
 | Android SDK | `minSdk` 28 → 29, `compileSdk` 37 → 37.1. Android 9 사용자는 Play Console 기준 표시값 없음("-") |
 | Android 화면 | **변화 없음**이 합격 기준이다. 현재 색·모양·패딩을 `material { }` 블록으로 옮기고 적용 전후 스크린샷을 비교한다 |
 | iOS 화면 | Liquid Glass 컨트롤로 바꾼다. 유리 효과가 드러나는 콘텐츠 위 컨트롤(상단 바, 떠 있는 버튼)부터 적용한다 |
-| 테마 | 앱 루트에서 `AdaptiveTheme`으로 `MaterialTheme`과 `CupertinoTheme`을 함께 제공한다. 다크 여부는 `BandalartTheme`과 같은 값(설정의 `ThemeMode`를 반영한 `isDarkTheme`)을 쓴다 |
+| 테마 | `BandalartTheme` 안에서 `AdaptiveTheme`으로 `MaterialTheme`과 `CupertinoTheme`을 함께 제공한다. Preview와 테스트도 같은 테마를 받는다. 다크 여부는 `BandalartTheme`과 같은 값(설정의 `ThemeMode`를 반영한 `isDarkTheme`)을 쓴다 |
 | adaptive가 없는 컴포넌트 | 공개 API `AdaptiveWidget(material, cupertino)`로 프로젝트 래퍼를 만들거나 Material을 유지한다. 화면별 expect/actual은 새로 만들지 않는다 |
 | 중복 탭 방지 | 기존에 `clickableSingle`을 쓰던 곳은 adaptive 컨트롤의 `onClick`에도 같은 중복 탭 방지를 적용한다. `Adaptive*`와 `CupertinoLiquid*`는 일반 `onClick`만 받는다 |
 | 버전 | `@ExperimentalAdaptiveApi`라 버전을 고정하고, 올릴 때는 iOS·Android 홈 스크린샷을 다시 비교한다 |
@@ -108,12 +108,14 @@ PR은 단계마다 하나로 나눈다.
 | 실행 | debug 빌드를 Android 17 기기에 설치해 홈 화면 표시와 크래시 없음 확인 **[실행]**. release 빌드 실행은 미확인 |
 | 남은 위험 | Android material3가 `1.5.0-alpha22`로 올라간다. 각 단계에서 Android 화면 회귀를 확인한다 |
 
-### 1. 앱 루트 `AdaptiveTheme`
+### 1. `BandalartTheme`에 `AdaptiveTheme` 추가
 
-- `BandalartApp`의 `BandalartTheme` 안쪽에 `AdaptiveTheme`을 둔다.
-- `cupertino` 스펙의 `colorScheme`은 `isDarkTheme`(설정 `ThemeMode` 반영)로 고른다. `isSystemInDarkTheme()`를 직접 쓰지 않는다.
-- `material` 스펙에는 현재 `BandalartTheme`의 색·타이포를 그대로 넘긴다. `BandalartTheme`의 `fontScale = 1f` density 고정이 유지되는지 확인한다.
-- **[소스]** `CupertinoTheme`은 `SystemBarAppearance(colorScheme.isDark)`를 호출한다. 앱이 이미 `SystemBarAppearance(isDarkTheme)`를 호출하므로 두 값이 어긋나지 않게 같은 플래그를 쓴다.
+- `core/designsystem`의 `BandalartTheme`이 `MaterialTheme` 안쪽에서 `AdaptiveTheme`을 감싼다. 앱 루트가 아니라 여기에 두는 이유는 화면 Preview와 테스트도 `BandalartTheme`만 감싸기 때문이다.
+- `material` 스펙은 `MaterialThemeSpec.Default()`로 바로 위 `MaterialTheme`의 색·모양·타이포를 그대로 넘긴다.
+- `cupertino` 스펙의 `colorScheme`은 `BandalartTheme`의 `darkTheme`(설정 `ThemeMode` 반영)으로 고른다. `isSystemInDarkTheme()`를 직접 쓰지 않는다.
+- `fontScale = 1f` density 고정은 `AdaptiveTheme` 바깥 `CompositionLocalProvider`에 그대로 있다.
+- **[소스]** `CupertinoTheme`은 `SystemBarAppearance(colorScheme.isDark)`를 호출한다. 앱도 `SystemBarAppearance(isDarkTheme)`를 호출하며 두 값은 같은 플래그에서 나온다.
+- **[실행]** Android 17 기기에서 홈 화면이 적용 전과 같고 크래시가 없음을 확인했다(2026-11-12).
 
 ### 2. 홈 (#474 재작성)
 
