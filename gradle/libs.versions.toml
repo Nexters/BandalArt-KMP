@@ -1,9 +1,10 @@
 [versions]
 
 # App Version
-minSdk = "28"
+minSdk = "29"
 targetSdk = "36"
 compileSdk = "37"
+compileSdkMinor = "1"
 majorVersion = "2"
 minorVersion = "6"
 patchVersion = "5"
@@ -209,6 +210,7 @@ uri-kmp = { group = "com.eygraber", name = "uri-kmp", version.ref = "uri-kmp" }
 compottie = { group = "io.github.alexzhirkevich", name = "compottie", version.ref = "compottie" }
 cmptoast = { group = "network.chaintech", name = "cmptoast", version.ref = "cmptoast" }
 compose-hig = { group = "zone.ien.hig", name = "hig", version.ref = "compose-hig" }
+compose-hig-adaptive = { group = "zone.ien.hig", name = "hig-adaptive", version.ref = "compose-hig" }
 jindong-core = { group = "io.github.compose-jindong", name = "jindong-core", version.ref = "jindong" }
 jindong-compose = { group = "io.github.compose-jindong", name = "jindong-compose", version.ref = "jindong" }
 ding = { group = "io.github.easyhooon", name = "ding", version.ref = "ding" }
