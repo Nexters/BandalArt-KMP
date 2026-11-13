@@ -37,12 +37,10 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -84,6 +82,10 @@ import bandalart.core.designsystem.generated.resources.settings_weekly_review_op
 import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder
 import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_body
 import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_dialog_title
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
@@ -94,6 +96,9 @@ import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import zone.ien.hig.adaptive.AdaptiveIconButton
+import zone.ien.hig.adaptive.AdaptiveSwitch
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,136 +163,138 @@ internal fun SettingsBottomSheet(
     }
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier.statusBarsPadding(),
         sheetState = bottomSheetState,
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-        ) {
-            SettingsHeader(onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) })
-            SettingsSectionTitle(text = stringResource(Res.string.settings_appearance))
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
             Column(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
             ) {
-                ThemeMode.entries.forEach { mode ->
-                    ThemeModeRow(
-                        mode = mode,
-                        selected = mode == themeMode,
-                        onClick = { onHomeUiAction(HomeScreen.Event.SelectThemeMode(mode)) },
-                    )
+                SettingsHeader(onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) })
+                SettingsSectionTitle(text = stringResource(Res.string.settings_appearance))
+                Column(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    ThemeMode.entries.forEach { mode ->
+                        ThemeModeRow(
+                            mode = mode,
+                            selected = mode == themeMode,
+                            onClick = { onHomeUiAction(HomeScreen.Event.SelectThemeMode(mode)) },
+                        )
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.height(28.dp))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
-                // 앱 설정이 켜져 있어도 권한을 아직 묻지 않았으면(재설치·복원, 권한 회수) 예약이 모두 취소된 상태라 꺼짐으로 보여 준다.
-                // 사용자가 다시 켜면 확인 팝업과 권한 요청을 거친다.
-                val isDeadlineReminderOn =
-                    deadlineReminderEnabled &&
-                        deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE
-                SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
-                DeadlineReminderRow(
-                    enabled = isDeadlineReminderOn,
-                    authorizationStatus = deadlineNotificationAuthorizationStatus,
-                    schedulingHealth = deadlineReminderSchedulingHealth,
-                    onToggle = { enabled ->
-                        if (!enabled) {
-                            onHomeUiAction(HomeScreen.Event.SetDeadlineReminderEnabled(false))
-                        } else if (
-                            deadlineNotificationAuthorizationStatus ==
-                            DeadlineNotificationAuthorizationStatus.BLOCKED
-                        ) {
-                            onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
-                        } else {
-                            showDeadlineReminderConfirmation = true
-                        }
-                    },
-                )
-                if (isDeadlineReminderOn) {
-                    DeadlineReminderTimeRow(
-                        time = deadlineReminderTime,
-                        onClick = { showDeadlineReminderTimePicker = true },
-                    )
-                }
-                // 주간 회고 채널이나 앱 알림이 꺼져 있으면 알림이 오지 않으므로 꺼짐으로 보여 준다.
-                WeeklyReviewReminderRow(
-                    enabled =
-                        weeklyReviewReminderEnabled &&
-                            weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE &&
-                            weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.BLOCKED,
-                    onToggle = { enabled ->
-                        if (!enabled) {
-                            onHomeUiAction(HomeScreen.Event.SetWeeklyReviewReminderEnabled(false))
-                        } else if (
-                            weeklyReviewNotificationAuthorizationStatus ==
-                            DeadlineNotificationAuthorizationStatus.BLOCKED
-                        ) {
-                            onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
-                        } else {
-                            showWeeklyReviewReminderConfirmation = true
-                        }
-                    },
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(28.dp))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
-            }
-            SettingsWeeklyReviewRow(
-                onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            SettingsCloudBackupRow(
-                onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
-            SettingsContactRow(
-                onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
-            )
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(Res.string.settings_version),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp,
-                    fontFamily = pretendardFontFamily(),
-                    fontWeight = FontWeight.W600,
-                    letterSpacing = (-0.3).sp,
-                    lineHeight = 21.sp,
+                if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
+                    // 앱 설정이 켜져 있어도 권한을 아직 묻지 않았으면(재설치·복원, 권한 회수) 예약이 모두 취소된 상태라 꺼짐으로 보여 준다.
+                    // 사용자가 다시 켜면 확인 팝업과 권한 요청을 거친다.
+                    val isDeadlineReminderOn =
+                        deadlineReminderEnabled &&
+                            deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE
+                    SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
+                    DeadlineReminderRow(
+                        enabled = isDeadlineReminderOn,
+                        authorizationStatus = deadlineNotificationAuthorizationStatus,
+                        schedulingHealth = deadlineReminderSchedulingHealth,
+                        onToggle = { enabled ->
+                            if (!enabled) {
+                                onHomeUiAction(HomeScreen.Event.SetDeadlineReminderEnabled(false))
+                            } else if (
+                                deadlineNotificationAuthorizationStatus ==
+                                DeadlineNotificationAuthorizationStatus.BLOCKED
+                            ) {
+                                onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                            } else {
+                                showDeadlineReminderConfirmation = true
+                            }
+                        },
+                    )
+                    if (isDeadlineReminderOn) {
+                        DeadlineReminderTimeRow(
+                            time = deadlineReminderTime,
+                            onClick = { showDeadlineReminderTimePicker = true },
+                        )
+                    }
+                    // 주간 회고 채널이나 앱 알림이 꺼져 있으면 알림이 오지 않으므로 꺼짐으로 보여 준다.
+                    WeeklyReviewReminderRow(
+                        enabled =
+                            weeklyReviewReminderEnabled &&
+                                weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE &&
+                                weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.BLOCKED,
+                        onToggle = { enabled ->
+                            if (!enabled) {
+                                onHomeUiAction(HomeScreen.Event.SetWeeklyReviewReminderEnabled(false))
+                            } else if (
+                                weeklyReviewNotificationAuthorizationStatus ==
+                                DeadlineNotificationAuthorizationStatus.BLOCKED
+                            ) {
+                                onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
+                            } else {
+                                showWeeklyReviewReminderConfirmation = true
+                            }
+                        },
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+                SettingsWeeklyReviewRow(
+                    onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = stringResource(Res.string.settings_version_value, appVersion),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    fontFamily = pretendardFontFamily(),
-                    letterSpacing = (-0.3).sp,
-                    lineHeight = 21.sp,
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 20.dp),
                 )
+                SettingsCloudBackupRow(
+                    onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+                SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
+                SettingsContactRow(
+                    onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
+                )
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(Res.string.settings_version),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 15.sp,
+                        fontFamily = pretendardFontFamily(),
+                        fontWeight = FontWeight.W600,
+                        letterSpacing = (-0.3).sp,
+                        lineHeight = 21.sp,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = stringResource(Res.string.settings_version_value, appVersion),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 15.sp,
+                        fontFamily = pretendardFontFamily(),
+                        letterSpacing = (-0.3).sp,
+                        lineHeight = 21.sp,
+                    )
+                }
             }
         }
     }
@@ -363,6 +370,7 @@ private fun SettingsWeeklyReviewRow(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun WeeklyReviewReminderRow(
     enabled: Boolean,
@@ -393,13 +401,14 @@ private fun WeeklyReviewReminderRow(
                 modifier = Modifier.padding(top = 4.dp, end = 12.dp),
             )
         }
-        Switch(
+        AdaptiveSwitch(
             checked = enabled,
             onCheckedChange = onToggle,
         )
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun DeadlineReminderRow(
     enabled: Boolean,
@@ -444,7 +453,7 @@ private fun DeadlineReminderRow(
                 modifier = Modifier.padding(top = 4.dp, end = 12.dp),
             )
         }
-        Switch(
+        AdaptiveSwitch(
             checked = enabled,
             onCheckedChange = onToggle,
         )
@@ -488,6 +497,7 @@ private fun SettingsContactRow(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun SettingsHeader(onCloseClick: () -> Unit) {
     Row(
@@ -508,7 +518,7 @@ private fun SettingsHeader(onCloseClick: () -> Unit) {
             lineHeight = 28.sp,
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onCloseClick) {
+        AdaptiveIconButton(onClick = onCloseClick) {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = stringResource(Res.string.clear_description),
@@ -550,7 +560,7 @@ private fun ThemeModeRow(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+                    color = if (selected) bandalartSheetTintColor(MaterialTheme.colorScheme.surfaceVariant) else bandalartSheetBackgroundColor(),
                     shape = RoundedCornerShape(12.dp),
                 ).clickable(onClick = onClick)
                 .padding(start = 16.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),

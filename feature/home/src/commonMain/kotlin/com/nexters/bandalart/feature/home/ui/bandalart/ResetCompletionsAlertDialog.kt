@@ -24,14 +24,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,9 +42,14 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.action_cancel
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_confirm
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_message
+import com.nexters.bandalart.core.ui.component.BandalartDialogSurface
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 internal fun ResetCompletionsAlertDialog(
     title: String,
@@ -56,10 +58,7 @@ internal fun ResetCompletionsAlertDialog(
     modifier: Modifier = Modifier,
 ) {
     Dialog(onDismissRequest = onCancelClick) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-        ) {
+        BandalartDialogSurface {
             Column(
                 modifier =
                     modifier
@@ -103,13 +102,17 @@ internal fun ResetCompletionsAlertDialog(
                             .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Button(
+                    AdaptiveButton(
                         onClick = onCancelClick,
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                            }
+                        },
                         modifier =
                             Modifier
                                 .weight(1f)
@@ -122,12 +125,22 @@ internal fun ResetCompletionsAlertDialog(
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
-                    Button(
+                    AdaptiveButton(
                         onClick = onConfirmClick,
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
+                        adaptation = {
+                            cupertino {
+                                val tint = MaterialTheme.colorScheme.primary
+                                colors =
+                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                        lightTintColor = tint,
+                                        darkTintColor = tint,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.routine_settings_reset_confirm),
