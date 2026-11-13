@@ -145,10 +145,15 @@ private fun WeeklyReviewHeader(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 8.dp, top = 12.dp, bottom = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
+                .padding(start = 20.dp, end = 8.dp, top = 8.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.Top,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(top = 10.dp),
+        ) {
             Text(
                 text = stringResource(Res.string.weekly_review_title),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -156,6 +161,7 @@ private fun WeeklyReviewHeader(
                 fontFamily = pretendardFontFamily(),
                 fontWeight = FontWeight.W700,
                 letterSpacing = (-0.4).sp,
+                lineHeight = 28.sp,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
