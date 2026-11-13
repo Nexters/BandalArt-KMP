@@ -73,6 +73,7 @@ import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
 import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.template.BandalartTemplate
@@ -230,7 +231,7 @@ private fun BandalartList(
                     },
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            containerColor = bandalartSheetTintColor(MaterialTheme.colorScheme.surfaceVariant),
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
                 ) {
@@ -347,7 +348,7 @@ private fun CreationOptionRow(
                 .fillMaxWidth()
                 .semantics { role = Role.Button },
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = bandalartSheetTintColor(MaterialTheme.colorScheme.surfaceVariant),
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ) {
         Row(
