@@ -449,6 +449,7 @@ internal fun HomeContent(
                                     },
                                     onHomeUiAction = eventSink,
                                     modifier = headerModifier.onSizeChanged { headerHeight = with(density) { it.height.toDp() } },
+                                    dropDownMenuBackdrop = glassBackdrop,
                                 )
                             }
                         }

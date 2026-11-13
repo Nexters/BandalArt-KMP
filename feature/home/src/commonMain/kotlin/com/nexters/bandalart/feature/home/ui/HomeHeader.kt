@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.feature.home.ui
 
+import com.kyant.backdrop.Backdrop
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -98,6 +99,7 @@ fun HomeHeader(
     showRoutineSettingsTooltip: Boolean = false,
     onRoutineSettingsTooltipDismissed: () -> Unit = {},
     compact: Boolean = false,
+    dropDownMenuBackdrop: Backdrop? = null,
 ) {
     Column(modifier.padding(horizontal = 16.dp)) {
         if (compact) {
@@ -112,6 +114,7 @@ fun HomeHeader(
                     showRoutineSettingsTooltip = showRoutineSettingsTooltip,
                     onRoutineSettingsTooltipDismissed = onRoutineSettingsTooltipDismissed,
                     onHomeUiAction = onHomeUiAction,
+                    dropDownMenuBackdrop = dropDownMenuBackdrop,
                     textAlignment = Alignment.CenterStart,
                     modifier = Modifier.weight(1f),
                 )
@@ -133,6 +136,7 @@ fun HomeHeader(
                     showRoutineSettingsTooltip = showRoutineSettingsTooltip,
                     onRoutineSettingsTooltipDismissed = onRoutineSettingsTooltipDismissed,
                     onHomeUiAction = onHomeUiAction,
+                    dropDownMenuBackdrop = dropDownMenuBackdrop,
                     textAlignment = Alignment.Center,
                 )
             }
@@ -266,6 +270,7 @@ private fun HomeTitle(
     showRoutineSettingsTooltip: Boolean,
     onRoutineSettingsTooltipDismissed: () -> Unit,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
+    dropDownMenuBackdrop: Backdrop?,
     textAlignment: Alignment,
     modifier: Modifier = Modifier,
 ) {
@@ -308,6 +313,7 @@ private fun HomeTitle(
         BandalartDropDownMenu(
             isDropDownMenuOpened = isDropDownMenuOpened,
             onAction = onHomeUiAction,
+            backdrop = dropDownMenuBackdrop,
         )
     }
 }

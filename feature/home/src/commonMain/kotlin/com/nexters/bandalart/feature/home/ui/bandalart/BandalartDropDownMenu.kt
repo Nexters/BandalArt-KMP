@@ -54,19 +54,25 @@ import com.nexters.bandalart.feature.home.HomeScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import zone.ien.hig.CupertinoDropdownMenu
+import zone.ien.hig.CupertinoDropdownMenuDefaults
 import zone.ien.hig.ExperimentalCupertinoApi
 import zone.ien.hig.MenuAction
+import com.kyant.backdrop.Backdrop
 import zone.ien.hig.adaptive.AdaptiveWidget
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import androidx.compose.ui.tooling.preview.Preview
 
-/** iOS(Cupertino)는 hig Liquid Glass 메뉴, 그 외는 기존 Material 드롭다운으로 그린다. */
+/**
+ * iOS(Cupertino)는 hig Liquid Glass 메뉴, 그 외는 기존 Material 드롭다운으로 그린다.
+ * [backdrop]이 있으면 iOS 메뉴 면에 그 화면 기록이 비친다. 없으면 hig 기본 backdrop을 쓴다.
+ */
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BandalartDropDownMenu(
     isDropDownMenuOpened: Boolean,
     onAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
+    backdrop: Backdrop? = null,
 ) {
     val onDismissRequest = { onAction(HomeScreen.Event.DismissDropDownMenu) }
     AdaptiveWidget(
@@ -197,6 +203,7 @@ fun BandalartDropDownMenu(
                 expanded = isDropDownMenuOpened,
                 onDismissRequest = onDismissRequest,
                 modifier = modifier,
+                backdrop = backdrop ?: CupertinoDropdownMenuDefaults.rememberBackdrop(),
             ) {
                 MenuAction(
                     onClick = { onAction(HomeScreen.Event.RequestSave) },
