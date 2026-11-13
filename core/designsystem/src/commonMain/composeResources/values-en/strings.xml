@@ -111,6 +111,7 @@
 
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">Turn repeating goals into a daily routine</string>
+    <string name="home_daily_reset_badge">Resets daily</string>
     <string name="routine_settings_title">Routine settings</string>
     <string name="routine_settings_daily_reset_title">Start fresh every day</string>
     <string name="routine_settings_daily_reset_description">When you open the app on a new day, all completion checks are cleared. Goals and notes stay unchanged.</string>

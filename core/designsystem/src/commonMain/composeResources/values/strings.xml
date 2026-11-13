@@ -111,6 +111,7 @@
 
     <!-- RoutineSettingsBottomSheet.kt -->
     <string name="home_routine_settings_tooltip">매일 반복할 목표라면 루틴으로 설정해보세요</string>
+    <string name="home_daily_reset_badge">매일 초기화</string>
     <string name="routine_settings_title">루틴 설정</string>
     <string name="routine_settings_daily_reset_title">매일 새로 시작하기</string>
     <string name="routine_settings_daily_reset_description">날짜가 바뀐 뒤 앱을 열면 완료 체크가 모두 해제돼요. 목표와 메모는 그대로 유지돼요.</string>

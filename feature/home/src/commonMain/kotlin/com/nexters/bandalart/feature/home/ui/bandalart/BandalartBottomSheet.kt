@@ -51,6 +51,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -63,6 +64,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.arrow_forward_description
 import bandalart.core.designsystem.generated.resources.bottomsheet_color
@@ -79,12 +81,16 @@ import bandalart.core.designsystem.generated.resources.edit_description
 import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.ic_edit
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
+import bandalart.core.designsystem.generated.resources.routine_settings_daily_reset_description
+import bandalart.core.designsystem.generated.resources.routine_settings_daily_reset_title
+import bandalart.core.designsystem.generated.resources.routine_settings_title
 import com.nexters.bandalart.core.common.extension.LocalDateTime
 import com.nexters.bandalart.core.common.extension.noRippleClickable
 import com.nexters.bandalart.core.common.extension.toLocalDateTime
 import com.nexters.bandalart.core.common.extension.toStringLocalDateTime
 import com.nexters.bandalart.core.common.getLocale
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
+import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.ThemeColor
 import com.nexters.bandalart.core.ui.component.emoji.BandalartEmoji
 import com.nexters.bandalart.feature.home.model.CellType
@@ -359,6 +365,49 @@ fun BandalartBottomSheet(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.outline,
                         )
+                    }
+                    if (cellType == CellType.MAIN) {
+                        Spacer(modifier = Modifier.height(28.dp))
+                        BottomSheetSubTitleText(text = stringResource(Res.string.routine_settings_title))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                BottomSheetContentText(text = stringResource(Res.string.routine_settings_daily_reset_title))
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = stringResource(Res.string.routine_settings_daily_reset_description),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 13.sp,
+                                    fontFamily = pretendardFontFamily(),
+                                    lineHeight = 18.sp,
+                                    letterSpacing = (-0.26).sp,
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Switch(
+                                checked = bottomSheetData.bandalartData.dailyResetEnabled,
+                                onCheckedChange = { enabled ->
+                                    onHomeUiAction(HomeScreen.Event.UpdateDailyResetDraft(enabled))
+                                },
+                                colors =
+                                    SwitchDefaults.colors(
+                                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+                                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                        checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                        checkedBorderColor = MaterialTheme.colorScheme.primary,
+                                    ),
+                                modifier =
+                                    Modifier
+                                        .width(52.dp)
+                                        .height(28.dp),
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                     if (cellType == CellType.TASK) {
                         Spacer(modifier = Modifier.height(28.dp))

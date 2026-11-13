@@ -17,6 +17,7 @@
 package com.nexters.bandalart.feature.home.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -50,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +64,7 @@ import bandalart.core.designsystem.generated.resources.edit_description
 import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.home_complete
 import bandalart.core.designsystem.generated.resources.home_complete_ratio
+import bandalart.core.designsystem.generated.resources.home_daily_reset_badge
 import bandalart.core.designsystem.generated.resources.home_empty_title
 import bandalart.core.designsystem.generated.resources.home_routine_settings_tooltip
 import bandalart.core.designsystem.generated.resources.ic_edit
@@ -168,6 +172,12 @@ fun HomeHeader(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
+            if (bandalartData.dailyResetEnabled) {
+                DailyResetBadge(onClick = { onHomeUiAction(HomeScreen.Event.OpenRoutineSettings) })
+                if (bandalartData.isCompleted) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                }
+            }
             if (bandalartData.isCompleted) {
                 Box(
                     modifier
@@ -204,6 +214,36 @@ fun HomeHeader(
         if (!compact) {
             Spacer(modifier = Modifier.height(18.dp))
         }
+    }
+}
+
+// 루틴이 켜진 반다라트임을 홈에서 바로 확인하고 루틴 설정으로 들어갈 수 있게 한다.
+@Composable
+private fun DailyResetBadge(onClick: () -> Unit) {
+    val shape = RoundedCornerShape(24.dp)
+    Row(
+        modifier =
+            Modifier
+                .clip(shape)
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = shape)
+                .clickable(role = Role.Button, onClick = onClick)
+                .padding(horizontal = 9.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(13.dp),
+        )
+        Text(
+            text = stringResource(Res.string.home_daily_reset_badge),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.W600,
+            modifier = Modifier.padding(start = 2.dp),
+            letterSpacing = (-0.2).sp,
+        )
     }
 }
 
