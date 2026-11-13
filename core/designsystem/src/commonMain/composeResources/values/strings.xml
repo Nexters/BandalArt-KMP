@@ -223,6 +223,13 @@
     <string name="weekly_review_total">완료한 셀 %1$d개 · %2$d일 동안 달성</string>
     <string name="weekly_review_bandalart_progress">이번 주 %1$d개 완료 · 달성률 %2$d%</string>
     <string name="weekly_review_empty">이번 주에는 아직 완료한 셀이 없어요. 오늘 하나 시작해 볼까요?</string>
+    <string name="weekly_review_reminder_banner_title">매주 일요일 저녁에 알림 받기</string>
+    <string name="weekly_review_reminder_banner_body">한 주를 돌아볼 시간을 알려 드려요</string>
+    <string name="weekly_review_reminder_banner_action">켜기</string>
+    <string name="weekly_review_reminder_nudge_title">연속 달성을 시작했어요</string>
+    <string name="weekly_review_reminder_nudge_body">매주 일요일 저녁 8시에 한 주를 돌아보는 알림을 보내 드릴까요? 설정에서 언제든 끌 수 있어요.</string>
+    <string name="weekly_review_reminder_nudge_confirm">알림 받기</string>
+    <string name="weekly_review_reminder_nudge_cancel">다음에</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">새 반다라트 만들기</string>

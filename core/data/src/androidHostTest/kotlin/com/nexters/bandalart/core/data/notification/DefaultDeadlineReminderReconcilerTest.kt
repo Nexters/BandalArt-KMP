@@ -171,6 +171,7 @@ class DefaultDeadlineReminderReconcilerTest {
         override val deadlineReminderEnabled = MutableStateFlow(false)
         override val deadlineReminderTime = MutableStateFlow(DeadlineReminderTime.Default)
         override val weeklyReviewReminderEnabled = MutableStateFlow(false)
+        override val weeklyReviewReminderNudgeShown: Flow<Boolean> = MutableStateFlow(false)
         override val taskCompletionTooltipDismissed: Flow<Boolean> = MutableStateFlow(false)
         override val routineSettingsTooltipDismissed: Flow<Boolean> = MutableStateFlow(false)
 
@@ -189,6 +190,8 @@ class DefaultDeadlineReminderReconcilerTest {
         override suspend fun setDeadlineReminderTime(time: LocalTime) {
             deadlineReminderTime.value = time
         }
+
+        override suspend fun markWeeklyReviewReminderNudgeShown() = Unit
 
         override suspend fun dismissTaskCompletionTooltip() = Unit
 

@@ -194,6 +194,119 @@ class HomePresenterWeeklyReviewTest {
             }
         }
 
+    @Test
+    fun firstStreakShowsReminderNudgeOnceAndRecordsFlag() =
+        runTest {
+            val repository = repository()
+            val settings = FakeSettingsRepository()
+            val presenter = presenter(repository = repository, settings = settings)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                repository.completionStreak.value = 1
+                while (state.dialog != HomeScreen.DialogState.WeeklyReviewReminderNudge) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.DismissDialog)
+                while (state.dialog != null) state = awaitItem()
+                repository.completionStreak.value = 2
+                advanceUntilIdle()
+
+                assertEquals(null, expectMostRecentItem().dialog)
+                assertEquals(1, settings.weeklyReviewReminderNudgeMarks)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun reminderNudgeIsNotShownAgainAfterFlagIsRecorded() =
+        runTest {
+            val repository = repository()
+            val settings = FakeSettingsRepository(initialWeeklyReviewReminderNudgeShown = true)
+            val presenter = presenter(repository = repository, settings = settings)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                repository.completionStreak.value = 1
+                while (state.completionStreak != 1) state = awaitItem()
+                advanceUntilIdle()
+
+                assertEquals(0, settings.weeklyReviewReminderNudgeMarks)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun enabledReminderRecordsNudgeFlagWithoutDialog() =
+        runTest {
+            val repository = repository()
+            val settings = FakeSettingsRepository(initialWeeklyReviewReminderEnabled = true)
+            val presenter = presenter(repository = repository, settings = settings)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                repository.completionStreak.value = 1
+                while (state.completionStreak != 1) state = awaitItem()
+                advanceUntilIdle()
+
+                assertEquals(1, settings.weeklyReviewReminderNudgeMarks)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun confirmingReminderNudgeClosesDialogAndEnablesReminder() =
+        runTest {
+            val repository = repository()
+            val presenter =
+                presenter(
+                    repository = repository,
+                    authorization = FakeAuthorization(DeadlineNotificationAuthorizationStatus.GRANTED),
+                )
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                repository.completionStreak.value = 1
+                while (state.dialog != HomeScreen.DialogState.WeeklyReviewReminderNudge) state = awaitItem()
+
+                state.eventSink(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)
+                while (!state.weeklyReviewReminderEnabled) state = awaitItem()
+
+                assertEquals(null, state.dialog)
+                assertFalse(state.deadlineReminderEnabled)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun reminderNudgeWaitsUntilBottomSheetIsClosed() =
+        runTest {
+            val repository = repository()
+            val settings = FakeSettingsRepository()
+            val presenter = presenter(repository = repository, settings = settings)
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData == null) state = awaitItem()
+                state.eventSink(HomeScreen.Event.OpenSettings)
+                while (state.bottomSheet != HomeScreen.BottomSheetState.Settings) state = awaitItem()
+                repository.completionStreak.value = 1
+                while (state.completionStreak != 1) state = awaitItem()
+                advanceUntilIdle()
+
+                assertEquals(0, settings.weeklyReviewReminderNudgeMarks)
+
+                state.eventSink(HomeScreen.Event.DismissBottomSheet)
+                while (state.dialog != HomeScreen.DialogState.WeeklyReviewReminderNudge) state = awaitItem()
+
+                assertEquals(1, settings.weeklyReviewReminderNudgeMarks)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private val summary =
         WeeklyReviewSummary(
             weekStart = LocalDate(2026, 3, 2),

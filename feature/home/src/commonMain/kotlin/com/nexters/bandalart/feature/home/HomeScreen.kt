@@ -108,6 +108,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
 
         data object RewardedCreate : DialogState
 
+        data object WeeklyReviewReminderNudge : DialogState
+
         data class ResetCompletions(
             val bandalartId: Long,
             val bandalartTitle: String,

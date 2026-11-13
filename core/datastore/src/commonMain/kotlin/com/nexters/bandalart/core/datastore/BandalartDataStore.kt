@@ -44,6 +44,7 @@ class BandalartDataStore(
         private const val DEADLINE_REMINDER_ENABLED = "deadline_reminder_enabled"
         private const val DEADLINE_REMINDER_MINUTE_OF_DAY = "deadline_reminder_minute_of_day"
         private const val WEEKLY_REVIEW_REMINDER_ENABLED = "weekly_review_reminder_enabled"
+        private const val WEEKLY_REVIEW_REMINDER_NUDGE_SHOWN_V1 = "weekly_review_reminder_nudge_shown_v1"
         private const val TASK_COMPLETION_TOOLTIP_DISMISSED_V1 = "task_completion_tooltip_dismissed_v1"
         private const val ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1 = "routine_settings_tooltip_dismissed_v1"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
@@ -62,6 +63,8 @@ class BandalartDataStore(
     private val deadlineReminderEnabledKey = booleanPreferencesKey(DEADLINE_REMINDER_ENABLED)
     private val deadlineReminderMinuteOfDayKey = intPreferencesKey(DEADLINE_REMINDER_MINUTE_OF_DAY)
     private val weeklyReviewReminderEnabledKey = booleanPreferencesKey(WEEKLY_REVIEW_REMINDER_ENABLED)
+    private val weeklyReviewReminderNudgeShownKey =
+        booleanPreferencesKey(WEEKLY_REVIEW_REMINDER_NUDGE_SHOWN_V1)
     private val taskCompletionTooltipDismissedKey =
         booleanPreferencesKey(TASK_COMPLETION_TOOLTIP_DISMISSED_V1)
     private val routineSettingsTooltipDismissedKey =
@@ -249,6 +252,15 @@ class BandalartDataStore(
                 else
                     throw exception
             }.map { preferences -> preferences[weeklyReviewReminderEnabledKey] ?: false }
+
+    val weeklyReviewReminderNudgeShown =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences -> preferences[weeklyReviewReminderNudgeShownKey] ?: false }
 
     val taskCompletionTooltipDismissed =
         dataStore.data
@@ -458,6 +470,12 @@ class BandalartDataStore(
     suspend fun setWeeklyReviewReminderEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[weeklyReviewReminderEnabledKey] = enabled
+        }
+    }
+
+    suspend fun markWeeklyReviewReminderNudgeShown() {
+        dataStore.edit { preferences ->
+            preferences[weeklyReviewReminderNudgeShownKey] = true
         }
     }
 

@@ -154,6 +154,21 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("주간 회고 알림 권유 테스트")
+    inner class WeeklyReviewReminderNudgePreferenceTest {
+        @Test
+        fun weeklyReviewReminderNudgeShownIsStored() =
+            runTest {
+                assertFalse(bandalartDataStore.weeklyReviewReminderNudgeShown.first())
+
+                bandalartDataStore.markWeeklyReviewReminderNudgeShown()
+
+                val recreatedDataStore = BandalartDataStore(dataStore)
+                assertTrue(recreatedDataStore.weeklyReviewReminderNudgeShown.first())
+            }
+    }
+
+    @Nested
     @DisplayName("최근 반다라트 ID 관련 테스트")
     inner class RecentBandalartIdTest {
         @Test

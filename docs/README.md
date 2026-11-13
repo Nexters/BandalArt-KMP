@@ -110,6 +110,7 @@
 - [Android 마감 알림 시작 복구](features/notifications/ANDROID_DEADLINE_REMINDER_STARTUP_RECOVERY.md)
 - [마감일 알림 시간 선택·시간대 대응 전략](features/notifications/DEADLINE_REMINDER_TIME_SELECTION_STRATEGY.md)
 - [주간 회고 알림과 진행률 요약](features/notifications/WEEKLY_REVIEW_REMINDER_STRATEGY.md)
+- [주간 회고 알림 켜기 유도](features/notifications/WEEKLY_REVIEW_REMINDER_NUDGE_STRATEGY.md)
 - [이메일 문의](features/settings/EMAIL_INQUIRY_STRATEGY.md)
 - [설정 bottom sheet typography](features/settings/SETTINGS_BOTTOM_SHEET_TYPOGRAPHY_STRATEGY.md)
 - [설정 theme](features/settings/SETTINGS_THEME_STRATEGY.md)
