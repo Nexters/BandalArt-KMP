@@ -99,6 +99,7 @@ import zone.ien.hig.adaptive.currentTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.nexters.bandalart.core.ui.component.LocalDialogBackdrop
+import com.nexters.bandalart.core.ui.component.LocalSheetBackdrop
 import zone.ien.hig.utils.rememberDefaultBackdrop
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
@@ -211,18 +212,20 @@ internal fun Home(
         supportMailLauncher = supportMailLauncher,
     )
 
-    HomeBottomSheets(
-        bottomSheet = state.bottomSheet,
-        recentEmojis = state.recentEmojis,
-        bandalartList = state.bandalartList,
-        themeMode = state.themeMode,
-        deadlineReminderEnabled = state.deadlineReminderEnabled,
-        deadlineReminderTime = state.deadlineReminderTime,
-        deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
-        deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
-        eventSink = state.eventSink,
-        appVersion = appVersion,
-    )
+    CompositionLocalProvider(LocalSheetBackdrop provides glassBackdrop) {
+        HomeBottomSheets(
+            bottomSheet = state.bottomSheet,
+            recentEmojis = state.recentEmojis,
+            bandalartList = state.bandalartList,
+            themeMode = state.themeMode,
+            deadlineReminderEnabled = state.deadlineReminderEnabled,
+            deadlineReminderTime = state.deadlineReminderTime,
+            deadlineNotificationAuthorizationStatus = state.deadlineNotificationAuthorizationStatus,
+            deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
+            eventSink = state.eventSink,
+            appVersion = appVersion,
+        )
+    }
     CompositionLocalProvider(LocalDialogBackdrop provides glassBackdrop) {
         HomeDialogs(
             dialog = state.dialog,

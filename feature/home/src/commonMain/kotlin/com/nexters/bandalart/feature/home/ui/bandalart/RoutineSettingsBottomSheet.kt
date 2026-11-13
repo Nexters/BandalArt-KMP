@@ -50,6 +50,8 @@ import bandalart.core.designsystem.generated.resources.routine_settings_daily_re
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_now
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_now_description
 import bandalart.core.designsystem.generated.resources.routine_settings_title
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
@@ -65,42 +67,90 @@ internal fun RoutineSettingsBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = { onAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(bottom = 24.dp),
-        ) {
-            RoutineSettingsHeader(
-                onCloseClick = { onAction(HomeScreen.Event.DismissBottomSheet) },
-            )
-            Row(
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
+            Column(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                        .navigationBarsPadding()
+                        .padding(bottom = 24.dp),
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(Res.string.routine_settings_daily_reset_title),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 16.sp,
-                        fontFamily = pretendardFontFamily(),
-                        fontWeight = FontWeight.W600,
-                        letterSpacing = (-0.32).sp,
+                RoutineSettingsHeader(
+                    onCloseClick = { onAction(HomeScreen.Event.DismissBottomSheet) },
+                )
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(Res.string.routine_settings_daily_reset_title),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 16.sp,
+                            fontFamily = pretendardFontFamily(),
+                            fontWeight = FontWeight.W600,
+                            letterSpacing = (-0.32).sp,
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = stringResource(Res.string.routine_settings_daily_reset_description),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 13.sp,
+                            fontFamily = pretendardFontFamily(),
+                            lineHeight = 18.sp,
+                            letterSpacing = (-0.26).sp,
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Switch(
+                        checked = state.dailyResetEnabled,
+                        onCheckedChange = { enabled ->
+                            onAction(
+                                HomeScreen.Event.SetDailyResetEnabled(
+                                    bandalartId = state.bandalartId,
+                                    enabled = enabled,
+                                ),
+                            )
+                        },
+                        colors =
+                            SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                            ),
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+                Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
+                    Button(
+                        onClick = { onAction(HomeScreen.Event.OpenResetCompletionsDialog) },
+                        enabled = state.hasCompletedCells,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.routine_settings_reset_now),
+                            fontFamily = pretendardFontFamily(),
+                            fontWeight = FontWeight.W600,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = stringResource(Res.string.routine_settings_daily_reset_description),
+                        text = stringResource(Res.string.routine_settings_reset_now_description),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         fontFamily = pretendardFontFamily(),
@@ -108,52 +158,6 @@ internal fun RoutineSettingsBottomSheet(
                         letterSpacing = (-0.26).sp,
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Switch(
-                    checked = state.dailyResetEnabled,
-                    onCheckedChange = { enabled ->
-                        onAction(
-                            HomeScreen.Event.SetDailyResetEnabled(
-                                bandalartId = state.bandalartId,
-                                enabled = enabled,
-                            ),
-                        )
-                    },
-                    colors =
-                        SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                            checkedTrackColor = MaterialTheme.colorScheme.primary,
-                        ),
-                )
-            }
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
-                Button(
-                    onClick = { onAction(HomeScreen.Event.OpenResetCompletionsDialog) },
-                    enabled = state.hasCompletedCells,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                ) {
-                    Text(
-                        text = stringResource(Res.string.routine_settings_reset_now),
-                        fontFamily = pretendardFontFamily(),
-                        fontWeight = FontWeight.W600,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(Res.string.routine_settings_reset_now_description),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 13.sp,
-                    fontFamily = pretendardFontFamily(),
-                    lineHeight = 18.sp,
-                    letterSpacing = (-0.26).sp,
-                )
             }
         }
     }

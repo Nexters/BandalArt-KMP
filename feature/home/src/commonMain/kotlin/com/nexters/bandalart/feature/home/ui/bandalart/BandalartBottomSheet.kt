@@ -79,6 +79,9 @@ import bandalart.core.designsystem.generated.resources.edit_description
 import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.ic_edit
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.common.extension.LocalDateTime
 import com.nexters.bandalart.core.common.extension.noRippleClickable
 import com.nexters.bandalart.core.common.extension.toLocalDateTime
@@ -146,7 +149,7 @@ fun BandalartBottomSheet(
         }
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
@@ -158,92 +161,201 @@ fun BandalartBottomSheet(
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .noRippleClickable { focusManager.clearFocus() },
-        ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            BottomSheetTopBar(
-                cellType = cellType,
-                isBlankCell = isBlankCell,
-                onCloseClick = {
-                    onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
-                },
-            )
-            Box {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .verticalScroll(scrollState)
-                            .padding(start = 20.dp, top = 40.dp, end = 20.dp),
-                ) {
-                    BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_title))
-                    Spacer(modifier = Modifier.height(11.dp))
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        if (cellType == CellType.MAIN) {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(end = 16.dp),
-                            ) {
-                                Card(
-                                    shape = RoundedCornerShape(16.dp),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                ) {
-                                    Box(
-                                        modifier =
-                                            Modifier
-                                                .width(52.dp)
-                                                .aspectRatio(1f)
-                                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                                .clickable {
-                                                    onHomeUiAction(HomeScreen.Event.OpenEmojiPicker)
-                                                },
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        if (bottomSheetData.bandalartData.profileEmoji.isNullOrEmpty()) {
-                                            Icon(
-                                                imageVector = vectorResource(Res.drawable.ic_empty_emoji),
-                                                contentDescription = stringResource(Res.string.empty_emoji_description),
-                                                tint = Color.Unspecified,
-                                            )
-                                        } else {
-                                            BandalartEmoji(
-                                                unicode = bottomSheetData.bandalartData.profileEmoji.orEmpty(),
-                                                contentDescription = stringResource(Res.string.edit_description),
-                                            )
-                                        }
-                                    }
-                                }
-                                Icon(
-                                    imageVector = vectorResource(Res.drawable.ic_edit),
-                                    contentDescription = stringResource(Res.string.edit_description),
-                                    tint = Color.Unspecified,
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
+            Column(
+                modifier =
+                    Modifier
+                        .background(bandalartSheetBackgroundColor())
+                        .noRippleClickable { focusManager.clearFocus() },
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                BottomSheetTopBar(
+                    cellType = cellType,
+                    isBlankCell = isBlankCell,
+                    onCloseClick = {
+                        onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
+                    },
+                )
+                Box {
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .verticalScroll(scrollState)
+                                .padding(start = 20.dp, top = 40.dp, end = 20.dp),
+                    ) {
+                        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_title))
+                        Spacer(modifier = Modifier.height(11.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            if (cellType == CellType.MAIN) {
+                                Box(
                                     modifier =
                                         Modifier
-                                            .align(Alignment.BottomEnd)
-                                            .offset(x = 4.dp, y = 4.dp),
+                                            .align(Alignment.CenterVertically)
+                                            .padding(end = 16.dp),
+                                ) {
+                                    Card(
+                                        shape = RoundedCornerShape(16.dp),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                    ) {
+                                        Box(
+                                            modifier =
+                                                Modifier
+                                                    .width(52.dp)
+                                                    .aspectRatio(1f)
+                                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                                    .clickable {
+                                                        onHomeUiAction(HomeScreen.Event.OpenEmojiPicker)
+                                                    },
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            if (bottomSheetData.bandalartData.profileEmoji.isNullOrEmpty()) {
+                                                Icon(
+                                                    imageVector = vectorResource(Res.drawable.ic_empty_emoji),
+                                                    contentDescription = stringResource(Res.string.empty_emoji_description),
+                                                    tint = Color.Unspecified,
+                                                )
+                                            } else {
+                                                BandalartEmoji(
+                                                    unicode = bottomSheetData.bandalartData.profileEmoji.orEmpty(),
+                                                    contentDescription = stringResource(Res.string.edit_description),
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.ic_edit),
+                                        contentDescription = stringResource(Res.string.edit_description),
+                                        tint = Color.Unspecified,
+                                        modifier =
+                                            Modifier
+                                                .align(Alignment.BottomEnd)
+                                                .offset(x = 4.dp, y = 4.dp),
+                                    )
+                                }
+                            }
+                            Column(modifier = Modifier.padding(top = 10.dp)) {
+                                BandalartTextField(
+                                    value = titleTextFieldValue.value,
+                                    onValueChange = { title ->
+                                        titleTextFieldValue.value = title
+                                        onHomeUiAction(
+                                            HomeScreen.Event.UpdateCellTitle(
+                                                title = title.text,
+                                                language = getLocale().language,
+                                            ),
+                                        )
+                                    },
+                                    placeholder = stringResource(Res.string.bottomsheet_title_placeholder),
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                HorizontalDivider(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    thickness = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline,
                                 )
                             }
                         }
-                        Column(modifier = Modifier.padding(top = 10.dp)) {
-                            BandalartTextField(
-                                value = titleTextFieldValue.value,
-                                onValueChange = { title ->
-                                    titleTextFieldValue.value = title
+                        AnimatedVisibility(visible = bottomSheetData.isEmojiPickerOpened) {
+                            Column {
+                                BandalartEmojiPicker(
+                                    modifier =
+                                        Modifier
+                                            .padding(top = 4.dp)
+                                            .animateContentSize(
+                                                animationSpec =
+                                                    tween(
+                                                        durationMillis = 300,
+                                                        easing = LinearOutSlowInEasing,
+                                                    ),
+                                            ),
+                                    currentEmoji = bottomSheetData.bandalartData.profileEmoji,
+                                    recentEmojis = recentEmojis,
+                                    isBottomSheet = false,
+                                    onEmojiSelect = { selectedEmoji ->
+                                        onHomeUiAction(HomeScreen.Event.UpdateEmojiDraft(selectedEmoji))
+                                    },
+                                )
+                            }
+                        }
+                        if (cellType == CellType.MAIN) {
+                            Spacer(modifier = Modifier.height(22.dp))
+                            BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_color))
+                            BandalartColorPicker(
+                                initColor =
+                                    ThemeColor(
+                                        mainColor = bottomSheetData.bandalartData.mainColor,
+                                        subColor = bottomSheetData.bandalartData.subColor,
+                                    ),
+                                onColorSelect = { themeColor ->
                                     onHomeUiAction(
-                                        HomeScreen.Event.UpdateCellTitle(
-                                            title = title.text,
-                                            language = getLocale().language,
+                                        HomeScreen.Event.UpdateThemeColor(
+                                            themeColor.mainColor,
+                                            themeColor.subColor,
                                         ),
                                     )
                                 },
-                                placeholder = stringResource(Res.string.bottomsheet_title_placeholder),
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                        }
+                        Spacer(modifier = Modifier.height(25.dp))
+                        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_duedate))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Column {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(24.dp)
+                                        .clickable {
+                                            onHomeUiAction(HomeScreen.Event.OpenDatePicker)
+                                        },
+                                contentAlignment = Alignment.CenterStart,
+                            ) {
+                                if (bottomSheetData.cellData.dueDate.isNullOrEmpty()) {
+                                    BottomSheetContentPlaceholder(text = stringResource(Res.string.bottomsheet_duedate_placeholder))
+                                } else {
+                                    BottomSheetContentText(text = bottomSheetData.cellData.dueDate!!.toStringLocalDateTime(getLocale()))
+                                }
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = stringResource(Res.string.arrow_forward_description),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .size(24.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(),
+                                thickness = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                        }
+                        AnimatedVisibility(visible = bottomSheetData.isDatePickerOpened) {
+                            BandalartDatePicker(
+                                onDueDateSelect = { dueDateResult ->
+                                    onHomeUiAction(HomeScreen.Event.UpdateDueDate(dueDateResult.toString()))
+                                },
+                                currentDueDate = bottomSheetData.cellData.dueDate?.toLocalDateTime() ?: LocalDateTime.now(),
+                                draftKey = "${bottomSheetData.cellData.id}:${bottomSheetData.cellData.dueDate.orEmpty()}",
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(28.dp))
+                        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_description))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Column {
+                            BandalartTextField(
+                                value = descriptionTextFieldValue.value,
+                                onValueChange = { description ->
+                                    descriptionTextFieldValue.value = description
+                                    onHomeUiAction(HomeScreen.Event.UpdateDescription(description.text))
+                                },
+                                placeholder = stringResource(Res.string.bottomsheet_description_placeholder),
+                                maxLines = Int.MAX_VALUE,
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             HorizontalDivider(
@@ -252,188 +364,81 @@ fun BandalartBottomSheet(
                                 color = MaterialTheme.colorScheme.outline,
                             )
                         }
-                    }
-                    AnimatedVisibility(visible = bottomSheetData.isEmojiPickerOpened) {
-                        Column {
-                            BandalartEmojiPicker(
-                                modifier =
-                                    Modifier
-                                        .padding(top = 4.dp)
-                                        .animateContentSize(
-                                            animationSpec =
-                                                tween(
-                                                    durationMillis = 300,
-                                                    easing = LinearOutSlowInEasing,
-                                                ),
-                                        ),
-                                currentEmoji = bottomSheetData.bandalartData.profileEmoji,
-                                recentEmojis = recentEmojis,
-                                isBottomSheet = false,
-                                onEmojiSelect = { selectedEmoji ->
-                                    onHomeUiAction(HomeScreen.Event.UpdateEmojiDraft(selectedEmoji))
-                                },
-                            )
-                        }
-                    }
-                    if (cellType == CellType.MAIN) {
-                        Spacer(modifier = Modifier.height(22.dp))
-                        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_color))
-                        BandalartColorPicker(
-                            initColor =
-                                ThemeColor(
-                                    mainColor = bottomSheetData.bandalartData.mainColor,
-                                    subColor = bottomSheetData.bandalartData.subColor,
-                                ),
-                            onColorSelect = { themeColor ->
-                                onHomeUiAction(
-                                    HomeScreen.Event.UpdateThemeColor(
-                                        themeColor.mainColor,
-                                        themeColor.subColor,
-                                    ),
+                        if (cellType == CellType.TASK) {
+                            Spacer(modifier = Modifier.height(28.dp))
+                            BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_is_completed))
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                BottomSheetContentText(
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    text =
+                                        if (bottomSheetData.cellData.isCompleted)
+                                            stringResource(Res.string.bottomsheet_completed)
+                                        else
+                                            stringResource(Res.string.bottomsheet_in_completed),
                                 )
-                            },
-                        )
-                        Spacer(modifier = Modifier.height(3.dp))
-                    }
-                    Spacer(modifier = Modifier.height(25.dp))
-                    BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_duedate))
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Column {
-                        Box(
+                                Switch(
+                                    checked = bottomSheetData.cellData.isCompleted,
+                                    onCheckedChange = { isCompleted ->
+                                        onHomeUiAction(HomeScreen.Event.UpdateCompletion(isCompleted))
+                                    },
+                                    colors =
+                                        SwitchDefaults.colors(
+                                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                            uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+                                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                            checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                            checkedBorderColor = MaterialTheme.colorScheme.primary,
+                                        ),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .width(52.dp)
+                                            .height(28.dp),
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
+                        Spacer(modifier = Modifier.height(28.dp))
+                        Row(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height(24.dp)
-                                    .clickable {
-                                        onHomeUiAction(HomeScreen.Event.OpenDatePicker)
-                                    },
-                            contentAlignment = Alignment.CenterStart,
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 8.dp)
+                                    .imePadding(),
                         ) {
-                            if (bottomSheetData.cellData.dueDate.isNullOrEmpty()) {
-                                BottomSheetContentPlaceholder(text = stringResource(Res.string.bottomsheet_duedate_placeholder))
-                            } else {
-                                BottomSheetContentText(text = bottomSheetData.cellData.dueDate!!.toStringLocalDateTime(getLocale()))
+                            if (!isBlankCell) {
+                                BottomSheetDeleteButton(
+                                    onClick = {
+                                        onHomeUiAction(HomeScreen.Event.OpenCellDeleteDialog)
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Spacer(modifier = Modifier.width(9.dp))
                             }
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = stringResource(Res.string.arrow_forward_description),
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.CenterEnd)
-                                        .size(24.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(),
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                        )
-                    }
-                    AnimatedVisibility(visible = bottomSheetData.isDatePickerOpened) {
-                        BandalartDatePicker(
-                            onDueDateSelect = { dueDateResult ->
-                                onHomeUiAction(HomeScreen.Event.UpdateDueDate(dueDateResult.toString()))
-                            },
-                            currentDueDate = bottomSheetData.cellData.dueDate?.toLocalDateTime() ?: LocalDateTime.now(),
-                            draftKey = "${bottomSheetData.cellData.id}:${bottomSheetData.cellData.dueDate.orEmpty()}",
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(28.dp))
-                    BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_description))
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Column {
-                        BandalartTextField(
-                            value = descriptionTextFieldValue.value,
-                            onValueChange = { description ->
-                                descriptionTextFieldValue.value = description
-                                onHomeUiAction(HomeScreen.Event.UpdateDescription(description.text))
-                            },
-                            placeholder = stringResource(Res.string.bottomsheet_description_placeholder),
-                            maxLines = Int.MAX_VALUE,
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(),
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                        )
-                    }
-                    if (cellType == CellType.TASK) {
-                        Spacer(modifier = Modifier.height(28.dp))
-                        BottomSheetSubTitleText(text = stringResource(Res.string.bottomsheet_is_completed))
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            BottomSheetContentText(
-                                modifier = Modifier.align(Alignment.CenterStart),
-                                text =
-                                    if (bottomSheetData.cellData.isCompleted)
-                                        stringResource(Res.string.bottomsheet_completed)
-                                    else
-                                        stringResource(Res.string.bottomsheet_in_completed),
-                            )
-                            Switch(
-                                checked = bottomSheetData.cellData.isCompleted,
-                                onCheckedChange = { isCompleted ->
-                                    onHomeUiAction(HomeScreen.Event.UpdateCompletion(isCompleted))
-                                },
-                                colors =
-                                    SwitchDefaults.colors(
-                                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                                        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
-                                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                        checkedBorderColor = MaterialTheme.colorScheme.primary,
-                                    ),
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.CenterEnd)
-                                        .width(52.dp)
-                                        .height(28.dp),
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                    }
-                    Spacer(modifier = Modifier.height(28.dp))
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-                                .padding(horizontal = 8.dp)
-                                .imePadding(),
-                    ) {
-                        if (!isBlankCell) {
-                            BottomSheetDeleteButton(
+                            BottomSheetCompleteButton(
+                                isEnabled = isCompleteButtonEnabled,
                                 onClick = {
-                                    onHomeUiAction(HomeScreen.Event.OpenCellDeleteDialog)
+                                    onHomeUiAction(HomeScreen.Event.SaveCell)
                                 },
                                 modifier = Modifier.weight(1f),
                             )
-                            Spacer(modifier = Modifier.width(9.dp))
                         }
-                        BottomSheetCompleteButton(
-                            isEnabled = isCompleteButtonEnabled,
-                            onClick = {
-                                onHomeUiAction(HomeScreen.Event.SaveCell)
-                            },
-                            modifier = Modifier.weight(1f),
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+
+                    if (showTopGradient) {
+                        ScrollGradientOverlay(isTop = true)
+                    }
+
+                    if (showBottomGradient) {
+                        ScrollGradientOverlay(
+                            isTop = false,
+                            modifier = Modifier.align(Alignment.BottomCenter),
                         )
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                if (showTopGradient) {
-                    ScrollGradientOverlay(isTop = true)
-                }
-
-                if (showBottomGradient) {
-                    ScrollGradientOverlay(
-                        isTop = false,
-                        modifier = Modifier.align(Alignment.BottomCenter),
-                    )
                 }
             }
         }

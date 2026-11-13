@@ -80,6 +80,8 @@ import bandalart.core.designsystem.generated.resources.settings_theme_system
 import bandalart.core.designsystem.generated.resources.settings_title
 import bandalart.core.designsystem.generated.resources.settings_version
 import bandalart.core.designsystem.generated.resources.settings_version_value
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
@@ -135,110 +137,112 @@ internal fun SettingsBottomSheet(
     }
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier.statusBarsPadding(),
         sheetState = bottomSheetState,
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-        ) {
-            SettingsHeader(onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) })
-            SettingsSectionTitle(text = stringResource(Res.string.settings_appearance))
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
             Column(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
             ) {
-                ThemeMode.entries.forEach { mode ->
-                    ThemeModeRow(
-                        mode = mode,
-                        selected = mode == themeMode,
-                        onClick = { onHomeUiAction(HomeScreen.Event.SelectThemeMode(mode)) },
-                    )
+                SettingsHeader(onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) })
+                SettingsSectionTitle(text = stringResource(Res.string.settings_appearance))
+                Column(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    ThemeMode.entries.forEach { mode ->
+                        ThemeModeRow(
+                            mode = mode,
+                            selected = mode == themeMode,
+                            onClick = { onHomeUiAction(HomeScreen.Event.SelectThemeMode(mode)) },
+                        )
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.height(28.dp))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
-                // 앱 설정이 켜져 있어도 권한을 아직 묻지 않았으면(재설치·복원, 권한 회수) 예약이 모두 취소된 상태라 꺼짐으로 보여 준다.
-                // 사용자가 다시 켜면 확인 팝업과 권한 요청을 거친다.
-                val isDeadlineReminderOn =
-                    deadlineReminderEnabled &&
-                        deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE
-                SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
-                DeadlineReminderRow(
-                    enabled = isDeadlineReminderOn,
-                    authorizationStatus = deadlineNotificationAuthorizationStatus,
-                    schedulingHealth = deadlineReminderSchedulingHealth,
-                    onToggle = { enabled ->
-                        if (!enabled) {
-                            onHomeUiAction(HomeScreen.Event.SetDeadlineReminderEnabled(false))
-                        } else if (
-                            deadlineNotificationAuthorizationStatus ==
-                            DeadlineNotificationAuthorizationStatus.BLOCKED
-                        ) {
-                            onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
-                        } else {
-                            showDeadlineReminderConfirmation = true
-                        }
-                    },
-                )
-                if (isDeadlineReminderOn) {
-                    DeadlineReminderTimeRow(
-                        time = deadlineReminderTime,
-                        onClick = { showDeadlineReminderTimePicker = true },
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(28.dp))
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
-            }
-            SettingsCloudBackupRow(
-                onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-            SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
-            SettingsContactRow(
-                onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
-            )
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(Res.string.settings_version),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp,
-                    fontFamily = pretendardFontFamily(),
-                    fontWeight = FontWeight.W600,
-                    letterSpacing = (-0.3).sp,
-                    lineHeight = 21.sp,
+                if (deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.UNSUPPORTED) {
+                    // 앱 설정이 켜져 있어도 권한을 아직 묻지 않았으면(재설치·복원, 권한 회수) 예약이 모두 취소된 상태라 꺼짐으로 보여 준다.
+                    // 사용자가 다시 켜면 확인 팝업과 권한 요청을 거친다.
+                    val isDeadlineReminderOn =
+                        deadlineReminderEnabled &&
+                            deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE
+                    SettingsSectionTitle(text = stringResource(Res.string.settings_deadline_reminder_section))
+                    DeadlineReminderRow(
+                        enabled = isDeadlineReminderOn,
+                        authorizationStatus = deadlineNotificationAuthorizationStatus,
+                        schedulingHealth = deadlineReminderSchedulingHealth,
+                        onToggle = { enabled ->
+                            if (!enabled) {
+                                onHomeUiAction(HomeScreen.Event.SetDeadlineReminderEnabled(false))
+                            } else if (
+                                deadlineNotificationAuthorizationStatus ==
+                                DeadlineNotificationAuthorizationStatus.BLOCKED
+                            ) {
+                                onHomeUiAction(HomeScreen.Event.ConfirmDeadlineReminderPermission)
+                            } else {
+                                showDeadlineReminderConfirmation = true
+                            }
+                        },
+                    )
+                    if (isDeadlineReminderOn) {
+                        DeadlineReminderTimeRow(
+                            time = deadlineReminderTime,
+                            onClick = { showDeadlineReminderTimePicker = true },
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+                SettingsCloudBackupRow(
+                    onClick = { onHomeUiAction(HomeScreen.Event.OpenCloudBackup) },
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = stringResource(Res.string.settings_version_value, appVersion),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    fontFamily = pretendardFontFamily(),
-                    letterSpacing = (-0.3).sp,
-                    lineHeight = 21.sp,
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 20.dp),
                 )
+                SettingsSectionTitle(text = stringResource(Res.string.settings_app_info))
+                SettingsContactRow(
+                    onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
+                )
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(Res.string.settings_version),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 15.sp,
+                        fontFamily = pretendardFontFamily(),
+                        fontWeight = FontWeight.W600,
+                        letterSpacing = (-0.3).sp,
+                        lineHeight = 21.sp,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = stringResource(Res.string.settings_version_value, appVersion),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 15.sp,
+                        fontFamily = pretendardFontFamily(),
+                        letterSpacing = (-0.3).sp,
+                        lineHeight = 21.sp,
+                    )
+                }
             }
         }
     }
