@@ -33,6 +33,8 @@ kotlin {
 
             implementation(libs.coil3.compose)
             implementation(libs.landscapist.coil3)
+            implementation(libs.compose.hig)
+            implementation(libs.compose.hig.adaptive)
             implementation(libs.landscapist.placeholder)
 
             implementation(libs.uri.kmp)

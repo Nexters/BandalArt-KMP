@@ -34,7 +34,14 @@ import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.back_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidIconButton
+import zone.ien.hig.ExperimentalCupertinoApi
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.utils.rememberDefaultBackdrop
 
+/** 뒤로 가기 버튼은 iOS(Cupertino)에서 48dp 유리 아이콘 버튼, 그 외는 기존 Material 아이콘 버튼으로 그린다. */
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun CompleteTopBar(
     onNavigateBack: () -> Unit,
@@ -46,19 +53,32 @@ fun CompleteTopBar(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
     ) {
-        IconButton(
-            onClick = onNavigateBack,
-            modifier =
-                Modifier
-                    .width(32.dp)
-                    .aspectRatio(1f),
-        ) {
+        val backIcon: @Composable () -> Unit = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(Res.string.back_description),
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         }
+        AdaptiveWidget(
+            material = {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier =
+                        Modifier
+                            .width(32.dp)
+                            .aspectRatio(1f),
+                    content = backIcon,
+                )
+            },
+            cupertino = {
+                CupertinoLiquidIconButton(
+                    onClick = onNavigateBack,
+                    backdrop = rememberDefaultBackdrop(),
+                    content = backIcon,
+                )
+            },
+        )
     }
 }
 
