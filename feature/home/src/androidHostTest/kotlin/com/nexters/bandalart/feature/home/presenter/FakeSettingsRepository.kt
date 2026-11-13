@@ -27,6 +27,7 @@ class FakeSettingsRepository(
     initialThemeMode: ThemeMode = ThemeMode.SYSTEM,
     initialDeadlineReminderEnabled: Boolean = false,
     initialDeadlineReminderTime: LocalTime = DeadlineReminderTime.Default,
+    initialWeeklyReviewReminderEnabled: Boolean = false,
     initialTaskCompletionTooltipDismissed: Boolean = false,
     initialRoutineSettingsTooltipDismissed: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
@@ -35,6 +36,7 @@ class FakeSettingsRepository(
     private val recentEmojisState = MutableStateFlow<List<String>>(emptyList())
     private val deadlineReminderEnabledState = MutableStateFlow(initialDeadlineReminderEnabled)
     private val deadlineReminderTimeState = MutableStateFlow(initialDeadlineReminderTime)
+    private val weeklyReviewReminderEnabledState = MutableStateFlow(initialWeeklyReviewReminderEnabled)
     private val taskCompletionTooltipDismissedState =
         MutableStateFlow(initialTaskCompletionTooltipDismissed)
     private val routineSettingsTooltipDismissedState =
@@ -44,6 +46,7 @@ class FakeSettingsRepository(
     override val recentEmojis = recentEmojisState.asStateFlow()
     override val deadlineReminderEnabled = deadlineReminderEnabledState.asStateFlow()
     override val deadlineReminderTime = deadlineReminderTimeState.asStateFlow()
+    override val weeklyReviewReminderEnabled = weeklyReviewReminderEnabledState.asStateFlow()
     override val taskCompletionTooltipDismissed = taskCompletionTooltipDismissedState.asStateFlow()
     override val routineSettingsTooltipDismissed = routineSettingsTooltipDismissedState.asStateFlow()
 
@@ -69,6 +72,10 @@ class FakeSettingsRepository(
 
     override suspend fun setDeadlineReminderEnabled(enabled: Boolean) {
         deadlineReminderEnabledState.value = enabled
+    }
+
+    override suspend fun setWeeklyReviewReminderEnabled(enabled: Boolean) {
+        weeklyReviewReminderEnabledState.value = enabled
     }
 
     override suspend fun setDeadlineReminderTime(time: LocalTime) {

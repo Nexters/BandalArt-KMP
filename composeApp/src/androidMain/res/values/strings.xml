@@ -7,4 +7,8 @@
     <string name="deadline_reminder_multiple_body">%1$d goals are due today.</string>
     <string name="deadline_reminder_test_title">Deadline reminder test</string>
     <string name="deadline_reminder_test_body">If you can see this, notifications are set up correctly.</string>
+    <string name="weekly_review_reminder_channel_name">Weekly review</string>
+    <string name="weekly_review_reminder_channel_description">Weekly recap of your progress every Sunday evening</string>
+    <string name="weekly_review_reminder_title">Weekly review</string>
+    <string name="weekly_review_reminder_body">Look back on this week\'s progress and get ready for next week.</string>
 </resources>

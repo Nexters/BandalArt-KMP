@@ -7,4 +7,8 @@
     <string name="deadline_reminder_multiple_body">%1$d個の目標が今日締切です。</string>
     <string name="deadline_reminder_test_title">締切日リマインダーのテスト</string>
     <string name="deadline_reminder_test_body">この通知が表示されれば、通知は正しく設定されています。</string>
+    <string name="weekly_review_reminder_channel_name">週間ふりかえり</string>
+    <string name="weekly_review_reminder_channel_description">毎週日曜日の夜に今週の進み具合をお知らせします</string>
+    <string name="weekly_review_reminder_title">今週のふりかえり</string>
+    <string name="weekly_review_reminder_body">今週の進み具合をふりかえって、来週の準備をしましょう。</string>
 </resources>

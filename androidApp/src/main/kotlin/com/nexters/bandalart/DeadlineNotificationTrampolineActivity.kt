@@ -20,7 +20,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.nexters.bandalart.di.metro.recordAndroidDeadlineNotificationLaunch
+import com.nexters.bandalart.di.metro.recordAndroidWeeklyReviewLaunch
 import com.nexters.bandalart.notification.DeadlineReminderWorker
+import com.nexters.bandalart.notification.WeeklyReviewReminderWorker
 
 class DeadlineNotificationTrampolineActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +37,9 @@ class DeadlineNotificationTrampolineActivity : Activity() {
                 appGraph = (application as BandalartApplication).appGraph,
                 bandalartId = bandalartId,
             )
+        }
+        if (intent.action == WeeklyReviewReminderWorker.ACTION_OPEN_WEEKLY_REVIEW) {
+            recordAndroidWeeklyReviewLaunch((application as BandalartApplication).appGraph)
         }
         startActivity(
             Intent(this, MainActivity::class.java).apply {

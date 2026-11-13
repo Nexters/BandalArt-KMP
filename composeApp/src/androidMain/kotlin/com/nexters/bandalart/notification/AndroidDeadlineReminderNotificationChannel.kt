@@ -32,3 +32,15 @@ internal fun NotificationManager.ensureDeadlineReminderChannel(context: Context)
         },
     )
 }
+
+internal fun NotificationManager.ensureWeeklyReviewReminderChannel(context: Context) {
+    createNotificationChannel(
+        NotificationChannel(
+            WeeklyReviewReminderWork.CHANNEL_ID,
+            context.getString(R.string.weekly_review_reminder_channel_name),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = context.getString(R.string.weekly_review_reminder_channel_description)
+        },
+    )
+}

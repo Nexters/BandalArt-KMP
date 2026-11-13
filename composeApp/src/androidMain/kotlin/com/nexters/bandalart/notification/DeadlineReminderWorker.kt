@@ -41,11 +41,17 @@ interface AndroidDeadlineReminderDependencies {
         com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorization
     val deadlineReminderReconciler:
         com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+    val weeklyReviewNotificationAuthorization:
+        com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
+    val weeklyReviewReminderReconciler:
+        com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 
     fun createDeadlineNotificationLaunchIntent(
         batchId: String,
         bandalartId: Long,
     ): Intent
+
+    fun createWeeklyReviewLaunchIntent(): Intent
 
     fun captureDeadlineNotification(
         notificationId: Int,
@@ -184,6 +190,7 @@ class DeadlineReminderReconcileWorker(
     override suspend fun doWork(): Result {
         val dependencies = AndroidDeadlineReminderDependenciesRegistry.get() ?: return Result.retry()
         dependencies.deadlineReminderReconciler.reconcileAll()
+        dependencies.weeklyReviewReminderReconciler.reconcile()
         return Result.success()
     }
 }
