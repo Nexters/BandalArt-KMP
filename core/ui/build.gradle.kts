@@ -14,6 +14,8 @@ kotlin {
 
             implementation(libs.compottie)
             implementation(libs.coil3.compose)
+            implementation(libs.compose.hig)
+            implementation(libs.compose.hig.adaptive)
         }
 
         androidHostTest.dependencies {

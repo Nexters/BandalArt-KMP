@@ -23,6 +23,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
@@ -41,7 +43,7 @@ fun BandalartEmojiBottomSheet(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
@@ -50,20 +52,22 @@ fun BandalartEmojiBottomSheet(
         dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        BandalartEmojiPicker(
-            currentEmoji = currentEmoji,
-            recentEmojis = recentEmojis,
-            isBottomSheet = true,
-            onEmojiSelect = { selectedEmoji ->
-                onHomeUiAction(
-                    HomeScreen.Event.UpdateBandalartEmoji(
-                        bandalartId = bandalartId,
-                        cellId = cellId,
-                        emoji = selectedEmoji,
-                    ),
-                )
-            },
-        )
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
+            BandalartEmojiPicker(
+                currentEmoji = currentEmoji,
+                recentEmojis = recentEmojis,
+                isBottomSheet = true,
+                onEmojiSelect = { selectedEmoji ->
+                    onHomeUiAction(
+                        HomeScreen.Event.UpdateBandalartEmoji(
+                            bandalartId = bandalartId,
+                            cellId = cellId,
+                            emoji = selectedEmoji,
+                        ),
+                    )
+                },
+            )
+        }
     }
 }
 

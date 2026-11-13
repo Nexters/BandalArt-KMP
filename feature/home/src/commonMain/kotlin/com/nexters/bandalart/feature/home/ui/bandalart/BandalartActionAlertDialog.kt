@@ -27,13 +27,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,10 +40,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.nexters.bandalart.core.ui.component.BandalartDialogSurface
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun BandalartActionAlertDialog(
     icon: DrawableResource?,
@@ -63,10 +65,7 @@ fun BandalartActionAlertDialog(
     val scrollState = rememberScrollState()
 
     Dialog(onDismissRequest = onCancelClick) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-        ) {
+        BandalartDialogSurface {
             Column(
                 modifier =
                     modifier
@@ -137,19 +136,23 @@ fun BandalartActionAlertDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Button(
+                    AdaptiveButton(
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
                         onClick = onCancelClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = cancelLabel,
@@ -159,19 +162,31 @@ fun BandalartActionAlertDialog(
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
-                    Button(
+                    AdaptiveButton(
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
                         onClick = onConfirmClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                            }
+                            cupertino {
+                                val tint = MaterialTheme.colorScheme.primary
+                                colors =
+                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                        lightTintColor = tint,
+                                        darkTintColor = tint,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = confirmLabel,

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -31,9 +30,13 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.Gray400
 import com.nexters.bandalart.core.designsystem.theme.Gray900
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun ServerErrorAlertDialog(
     title: String,
@@ -89,13 +92,26 @@ fun ServerErrorAlertDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Button(
+                    AdaptiveButton(
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
                         onClick = onConfirmClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = Gray900),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonDefaults.buttonColors(containerColor = Gray900)
+                            }
+                            cupertino {
+                                val tint = Gray900
+                                colors =
+                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                        lightTintColor = tint,
+                                        darkTintColor = tint,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.action_retry),
