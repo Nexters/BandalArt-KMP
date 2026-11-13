@@ -19,25 +19,24 @@ package com.nexters.bandalart.feature.backup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -92,11 +91,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButton
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.ExperimentalCupertinoApi
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.AdaptiveCircularProgressIndicator
+import zone.ien.hig.adaptive.AdaptiveIconButton
+import zone.ien.hig.adaptive.AdaptiveTextButton
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.utils.rememberDefaultBackdrop
 
 private const val SNACKBAR_DURATION_MILLIS = 1500L
 
 @CircuitInject(CloudBackupScreen::class, AppScope::class)
 @Inject
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 internal fun CloudBackup(
     state: CloudBackupUiState,
@@ -195,7 +205,7 @@ internal fun CloudBackup(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            CircularProgressIndicator()
+                            AdaptiveCircularProgressIndicator()
                             Text(
                                 text = stringResource(Res.string.backup_loading),
                                 fontFamily = pretendardFontFamily(),
@@ -219,10 +229,20 @@ internal fun CloudBackup(
             }
             Spacer(modifier = Modifier.weight(1f))
             if (state.entryPoint == CloudBackupScreen.EntryPoint.SETTINGS) {
-                Button(
+                AdaptiveButton(
                     onClick = { state.eventSink(CloudBackupUiState.Event.CreateBackup) },
                     enabled = state.isSupported && !state.isLoading && state.rewardedAdRequestId == null,
                     modifier = Modifier.fillMaxWidth(),
+                    adaptation = {
+                        cupertino {
+                            val primary = MaterialTheme.colorScheme.primary
+                            colors =
+                                CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                    lightTintColor = primary,
+                                    darkTintColor = primary,
+                                )
+                        }
+                    },
                 ) {
                     Text(
                         text = stringResource(Res.string.backup_now),
@@ -230,25 +250,50 @@ internal fun CloudBackup(
                     )
                 }
             }
-            OutlinedButton(
-                onClick = { state.eventSink(CloudBackupUiState.Event.RestoreBackup) },
-                enabled =
-                    state.isSupported &&
-                        !state.isLoading &&
-                        state.rewardedAdRequestId == null &&
-                        state.metadata != null,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
+            val isRestoreEnabled =
+                state.isSupported &&
+                    !state.isLoading &&
+                    state.rewardedAdRequestId == null &&
+                    state.metadata != null
+            val restoreLabel: @Composable RowScope.() -> Unit = {
                 Text(
                     text = stringResource(Res.string.backup_restore),
                     fontFamily = pretendardFontFamily(),
                 )
             }
+            // adaptive outlined 버튼이 없어 Android는 기존 OutlinedButton, iOS는 Liquid Glass 버튼으로 그린다.
+            AdaptiveWidget(
+                material = {
+                    OutlinedButton(
+                        onClick = { state.eventSink(CloudBackupUiState.Event.RestoreBackup) },
+                        enabled = isRestoreEnabled,
+                        modifier = Modifier.fillMaxWidth(),
+                        content = restoreLabel,
+                    )
+                },
+                cupertino = {
+                    CupertinoLiquidButton(
+                        onClick = { state.eventSink(CloudBackupUiState.Event.RestoreBackup) },
+                        backdrop = rememberDefaultBackdrop(),
+                        enabled = isRestoreEnabled,
+                        modifier = Modifier.fillMaxWidth(),
+                        content = restoreLabel,
+                    )
+                },
+            )
             if (state.entryPoint == CloudBackupScreen.EntryPoint.STARTUP) {
-                TextButton(
+                AdaptiveTextButton(
                     onClick = { state.eventSink(CloudBackupUiState.Event.StartFresh) },
                     enabled = !state.isLoading,
                     modifier = Modifier.fillMaxWidth(),
+                    adaptation = {
+                        // AdaptiveTextButton의 Material 기본값은 Button 기준이라 TextButton 기본값으로 되돌린다.
+                        material {
+                            elevation = null
+                            shape = ButtonDefaults.textShape
+                            contentPadding = ButtonDefaults.TextButtonContentPadding
+                        }
+                    },
                 ) {
                     Text(
                         text = stringResource(Res.string.backup_start_fresh),
@@ -261,6 +306,7 @@ internal fun CloudBackup(
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun BackupHeader(
     showBack: Boolean,
@@ -274,12 +320,17 @@ private fun BackupHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (showBack) {
-            IconButton(onClick = onBack) {
+            AdaptiveIconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(Res.string.backup_back),
                 )
             }
+            // iOS Liquid Glass 버튼은 배경이 있어 제목과 붙어 보이므로 간격을 둔다. Android는 기존 간격을 유지한다.
+            AdaptiveWidget(
+                material = {},
+                cupertino = { Spacer(modifier = Modifier.width(12.dp)) },
+            )
         }
         Text(
             text = stringResource(Res.string.backup_title),

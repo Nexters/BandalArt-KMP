@@ -85,6 +85,7 @@ import bandalart.core.designsystem.generated.resources.emoji_picker_category_smi
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_symbols
 import bandalart.core.designsystem.generated.resources.emoji_picker_category_travel
 import com.nexters.bandalart.core.common.getLocale
+import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
 import kotlinx.coroutines.flow.first
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.stringResource
@@ -224,7 +225,7 @@ fun FluentEmojiPicker(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(bandalartSheetBackgroundColor())
                 .padding(top = if (expanded) 16.dp else 0.dp),
     ) {
         val cellSize =
