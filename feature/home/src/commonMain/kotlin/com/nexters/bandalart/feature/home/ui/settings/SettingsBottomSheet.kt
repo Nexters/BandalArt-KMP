@@ -37,12 +37,10 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -94,6 +92,9 @@ import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import zone.ien.hig.adaptive.AdaptiveIconButton
+import zone.ien.hig.adaptive.AdaptiveSwitch
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -293,6 +294,7 @@ private fun SettingsCloudBackupRow(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun DeadlineReminderRow(
     enabled: Boolean,
@@ -337,7 +339,7 @@ private fun DeadlineReminderRow(
                 modifier = Modifier.padding(top = 4.dp, end = 12.dp),
             )
         }
-        Switch(
+        AdaptiveSwitch(
             checked = enabled,
             onCheckedChange = onToggle,
         )
@@ -381,6 +383,7 @@ private fun SettingsContactRow(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun SettingsHeader(onCloseClick: () -> Unit) {
     Row(
@@ -401,7 +404,7 @@ private fun SettingsHeader(onCloseClick: () -> Unit) {
             lineHeight = 28.sp,
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onCloseClick) {
+        AdaptiveIconButton(onClick = onCloseClick) {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = stringResource(Res.string.clear_description),
