@@ -31,6 +31,8 @@ kotlin {
             implementation(libs.circuit.runtime.ui)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.compose.hig)
+            implementation(libs.compose.hig.adaptive)
         }
 
         androidHostTest.dependencies {
