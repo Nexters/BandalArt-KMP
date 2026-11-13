@@ -38,8 +38,17 @@ import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.model.CellType
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidIconButton
+import zone.ien.hig.ExperimentalCupertinoApi
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.adaptive.Theme
+import zone.ien.hig.adaptive.currentTheme
+import zone.ien.hig.utils.rememberDefaultBackdrop
 import androidx.compose.ui.tooling.preview.Preview
 
+/** 닫기 버튼은 iOS(Cupertino)에서 48dp 유리 아이콘 버튼, 그 외는 기존 Material 아이콘 버튼으로 그린다. */
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BottomSheetTopBar(
     cellType: CellType,
@@ -52,22 +61,38 @@ fun BottomSheetTopBar(
             modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
+        // iOS 닫기 버튼(48dp)이 제목보다 높아 제목을 세로 가운데에 둔다. Android는 기존 위치(위쪽)를 유지한다.
+        contentAlignment = if (currentTheme == Theme.Cupertino) Alignment.Center else Alignment.TopStart,
     ) {
         BottomSheetTitleText(cellType = cellType, isBlankCell = isBlankCell)
-        IconButton(
-            modifier =
-                Modifier
-                    .align(Alignment.CenterEnd)
-                    .height(21.dp)
-                    .aspectRatio(1f),
-            onClick = onCloseClick,
-        ) {
+        val closeIcon: @Composable () -> Unit = {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = stringResource(Res.string.clear_description),
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
+        AdaptiveWidget(
+            material = {
+                IconButton(
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .height(21.dp)
+                            .aspectRatio(1f),
+                    onClick = onCloseClick,
+                    content = closeIcon,
+                )
+            },
+            cupertino = {
+                CupertinoLiquidIconButton(
+                    onClick = onCloseClick,
+                    backdrop = rememberDefaultBackdrop(),
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    content = closeIcon,
+                )
+            },
+        )
     }
 }
 

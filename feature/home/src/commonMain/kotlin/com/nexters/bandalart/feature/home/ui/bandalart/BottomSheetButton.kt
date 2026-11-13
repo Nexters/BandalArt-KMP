@@ -30,59 +30,105 @@ import bandalart.core.designsystem.generated.resources.bottomsheet_delete
 import bandalart.core.designsystem.generated.resources.bottomsheet_done
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButton
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.ExperimentalCupertinoApi
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.utils.rememberDefaultBackdrop
 import androidx.compose.ui.tooling.preview.Preview
 
+/** iOS(Cupertino)는 유리 버튼, 그 외는 기존 Material 버튼으로 그린다. */
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BottomSheetDeleteButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FilledIconButton(
-        onClick = onClick,
-        modifier = modifier.height(56.dp),
-        colors =
-            IconButtonColors(
-                MaterialTheme.colorScheme.surfaceVariant,
-                MaterialTheme.colorScheme.onSurface,
-                MaterialTheme.colorScheme.surfaceVariant,
-                MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
-    ) {
-        BottomSheetButtonText(
-            text = stringResource(Res.string.bottomsheet_delete),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
+    val text = stringResource(Res.string.bottomsheet_delete)
+    AdaptiveWidget(
+        material = {
+            FilledIconButton(
+                onClick = onClick,
+                modifier = modifier.height(56.dp),
+                colors =
+                    IconButtonColors(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.onSurface,
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+            ) {
+                BottomSheetButtonText(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        },
+        cupertino = {
+            CupertinoLiquidButton(
+                onClick = onClick,
+                backdrop = rememberDefaultBackdrop(),
+                modifier = modifier.height(56.dp),
+            ) {
+                BottomSheetButtonText(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        },
+    )
 }
 
+/** iOS(Cupertino)는 primary 색 유리 버튼, 그 외는 기존 Material 버튼으로 그린다. */
+@OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BottomSheetCompleteButton(
     isEnabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FilledIconButton(
-        onClick = onClick,
-        modifier = modifier.height(56.dp),
-        colors =
-            IconButtonColors(
-                MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.onPrimary,
-                MaterialTheme.colorScheme.surfaceVariant,
-                MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
-        enabled = isEnabled,
-    ) {
-        BottomSheetButtonText(
-            text = stringResource(Res.string.bottomsheet_done),
-            color =
-                if (isEnabled) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-        )
-    }
+    val text = stringResource(Res.string.bottomsheet_done)
+    val textColor =
+        if (isEnabled) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+    AdaptiveWidget(
+        material = {
+            FilledIconButton(
+                onClick = onClick,
+                modifier = modifier.height(56.dp),
+                colors =
+                    IconButtonColors(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.onPrimary,
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                enabled = isEnabled,
+            ) {
+                BottomSheetButtonText(text = text, color = textColor)
+            }
+        },
+        cupertino = {
+            val primary = MaterialTheme.colorScheme.primary
+            CupertinoLiquidButton(
+                onClick = onClick,
+                backdrop = rememberDefaultBackdrop(),
+                modifier = modifier.height(56.dp),
+                enabled = isEnabled,
+                colors =
+                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                        lightTintColor = primary,
+                        darkTintColor = primary,
+                    ),
+            ) {
+                BottomSheetButtonText(text = text, color = textColor)
+            }
+        },
+    )
 }
 
 // @ComponentPreview
