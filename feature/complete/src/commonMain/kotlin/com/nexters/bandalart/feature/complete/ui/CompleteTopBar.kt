@@ -40,7 +40,7 @@ import zone.ien.hig.adaptive.AdaptiveWidget
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import zone.ien.hig.utils.rememberDefaultBackdrop
 
-/** 뒤로 가기 버튼은 iOS(Cupertino)에서 48dp 유리 아이콘 버튼, 그 외는 기존 Material 아이콘 버튼으로 그린다. */
+/** 뒤로 가기 버튼은 iOS(Cupertino)에서 48dp Liquid Glass 아이콘 버튼, 그 외는 기존 Material 아이콘 버튼으로 그린다. */
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun CompleteTopBar(

@@ -261,7 +261,7 @@ internal fun CloudBackup(
                     fontFamily = pretendardFontFamily(),
                 )
             }
-            // adaptive outlined 버튼이 없어 Android는 기존 OutlinedButton, iOS는 유리 버튼으로 그린다.
+            // adaptive outlined 버튼이 없어 Android는 기존 OutlinedButton, iOS는 Liquid Glass 버튼으로 그린다.
             AdaptiveWidget(
                 material = {
                     OutlinedButton(
@@ -326,7 +326,7 @@ private fun BackupHeader(
                     contentDescription = stringResource(Res.string.backup_back),
                 )
             }
-            // iOS 유리 버튼은 배경이 있어 제목과 붙어 보이므로 간격을 둔다. Android는 기존 간격을 유지한다.
+            // iOS Liquid Glass 버튼은 배경이 있어 제목과 붙어 보이므로 간격을 둔다. Android는 기존 간격을 유지한다.
             AdaptiveWidget(
                 material = {},
                 cupertino = { Spacer(modifier = Modifier.width(12.dp)) },
