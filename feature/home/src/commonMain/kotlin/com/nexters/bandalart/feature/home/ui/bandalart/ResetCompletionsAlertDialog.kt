@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +46,11 @@ import bandalart.core.designsystem.generated.resources.routine_settings_reset_co
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_message
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 internal fun ResetCompletionsAlertDialog(
     title: String,
@@ -103,13 +106,17 @@ internal fun ResetCompletionsAlertDialog(
                             .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Button(
+                    AdaptiveButton(
                         onClick = onCancelClick,
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                            }
+                        },
                         modifier =
                             Modifier
                                 .weight(1f)
@@ -122,12 +129,22 @@ internal fun ResetCompletionsAlertDialog(
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
-                    Button(
+                    AdaptiveButton(
                         onClick = onConfirmClick,
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
+                        adaptation = {
+                            cupertino {
+                                val tint = MaterialTheme.colorScheme.primary
+                                colors =
+                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                        lightTintColor = tint,
+                                        darkTintColor = tint,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.routine_settings_reset_confirm),

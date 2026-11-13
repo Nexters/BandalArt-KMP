@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,9 +46,13 @@ import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_delete
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.CupertinoLiquidButtonDefaults
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun BandalartDeleteAlertDialog(
     title: String,
@@ -111,19 +114,23 @@ fun BandalartDeleteAlertDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Button(
+                    AdaptiveButton(
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
                         onClick = onCancelClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.action_cancel),
@@ -133,19 +140,31 @@ fun BandalartDeleteAlertDialog(
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
-                    Button(
+                    AdaptiveButton(
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
                         onClick = onDeleteClick,
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
+                        adaptation = {
+                            material {
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                            }
+                            cupertino {
+                                val tint = MaterialTheme.colorScheme.primary
+                                colors =
+                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
+                                        lightTintColor = tint,
+                                        darkTintColor = tint,
+                                    )
+                            }
+                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.action_delete),
