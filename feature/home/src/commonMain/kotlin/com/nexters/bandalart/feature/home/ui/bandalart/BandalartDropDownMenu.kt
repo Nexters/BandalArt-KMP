@@ -60,7 +60,7 @@ import zone.ien.hig.adaptive.AdaptiveWidget
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import androidx.compose.ui.tooling.preview.Preview
 
-/** iOS(Cupertino)는 hig 유리 메뉴, 그 외는 기존 Material 드롭다운으로 그린다. */
+/** iOS(Cupertino)는 hig Liquid Glass 메뉴, 그 외는 기존 Material 드롭다운으로 그린다. */
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BandalartDropDownMenu(
