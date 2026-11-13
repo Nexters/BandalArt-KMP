@@ -150,6 +150,8 @@ class BandalartWidgetStateTest {
                                 BandalartWidgetTask(6L, "여섯 번째", false),
                                 BandalartWidgetTask(7L, "일곱 번째", false),
                             ),
+                        remainingTaskCount = 4,
+                        streakDays = 3,
                     ),
             ) as BandalartWidgetViewState.Content
 
@@ -157,6 +159,8 @@ class BandalartWidgetStateTest {
         assertEquals("🎯", state.profileEmoji)
         assertEquals(100, state.completionRatio)
         assertEquals(2L, state.subGoalId)
+        assertEquals(4, state.remainingTaskCount)
+        assertEquals(3, state.streakDays)
         assertEquals(5, state.tasks.size)
         assertEquals(2, state.tasksFor(BandalartWidgetLayout.MEDIUM).size)
         assertEquals(5, state.tasksFor(BandalartWidgetLayout.LARGE).size)

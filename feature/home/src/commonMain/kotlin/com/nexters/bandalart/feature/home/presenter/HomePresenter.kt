@@ -131,6 +131,8 @@ class HomePresenter(
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
         val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
+        val completionStreakFlow = remember { bandalartRepository.observeCompletionStreak() }
+        val completionStreak by completionStreakFlow.collectAsState(initial = 0)
         var deadlineNotificationAuthorizationStatus by remember {
             mutableStateOf(DeadlineNotificationAuthorizationStatus.UNSUPPORTED)
         }
@@ -943,6 +945,7 @@ class HomePresenter(
                     !isDropDownMenuOpened &&
                     imageRequest == null &&
                     rewardedAdRequestId == null,
+            completionStreak = completionStreak,
             effect = effect,
         ) { event ->
             when (event) {

@@ -35,6 +35,8 @@ class BandalartWidgetLocalizationTest {
                 "bandalart_widget_unconfigured",
                 "bandalart_widget_deleted",
                 "bandalart_widget_completion_ratio",
+                "bandalart_widget_remaining_tasks",
+                "bandalart_widget_streak",
                 "bandalart_widget_no_subgoal",
                 "bandalart_widget_no_tasks",
                 "bandalart_widget_unnamed_goal",

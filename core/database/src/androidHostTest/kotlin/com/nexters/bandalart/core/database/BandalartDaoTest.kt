@@ -196,6 +196,8 @@ class BandalartDaoTest {
                         dueDate = "2026-09-30T00:00",
                         isCompleted = true,
                     ),
+                    today = TEST_TODAY,
+                    completedAt = TEST_COMPLETED_AT,
                 )
                 bandalartDao.setDailyResetEnabled(bandalartId, enabled = true, today = "2026-09-14")
 
@@ -343,7 +345,7 @@ class BandalartDaoTest {
                     )
 
                 // when
-                bandalartDao.updateTaskCellWithDto(taskCell.id!!, updateDto)
+                bandalartDao.updateTaskCellWithDto(taskCell.id!!, updateDto, today = TEST_TODAY, completedAt = TEST_COMPLETED_AT)
 
                 // then
                 val updatedTaskCell = bandalartDao.getCell(taskCell.id)
@@ -376,6 +378,8 @@ class BandalartDaoTest {
                             dueDate = null,
                             isCompleted = true,
                         ),
+                        today = TEST_TODAY,
+                        completedAt = TEST_COMPLETED_AT,
                     )
 
                     assertEquals(4, awaitItem().single().completionRatio)
@@ -401,7 +405,9 @@ class BandalartDaoTest {
                         description = "태스크 셀 설명",
                         dueDate = null,
                         isCompleted = true
-                    )
+                    ),
+                    today = TEST_TODAY,
+                    completedAt = TEST_COMPLETED_AT,
                 )
 
                 // then: 완료율 확인 (1/25 = 4%)
@@ -418,7 +424,9 @@ class BandalartDaoTest {
                             description = "태스크 셀 설명",
                             dueDate = null,
                             isCompleted = true
-                        )
+                        ),
+                        today = TEST_TODAY,
+                        completedAt = TEST_COMPLETED_AT,
                     )
                 }
 
@@ -456,7 +464,9 @@ class BandalartDaoTest {
                         description = "초기화될 태스크 셀 설명",
                         dueDate = "2025-10-10T10:10:10",
                         isCompleted = true
-                    )
+                    ),
+                    today = TEST_TODAY,
+                    completedAt = TEST_COMPLETED_AT,
                 )
 
                 // when
@@ -499,7 +509,9 @@ class BandalartDaoTest {
                             description = "초기화될 태스크 셀 설명",
                             dueDate = "2025-12-12T12:12:12",
                             isCompleted = true
-                        )
+                        ),
+                        today = TEST_TODAY,
+                        completedAt = TEST_COMPLETED_AT,
                     )
                 }
 
@@ -559,4 +571,115 @@ class BandalartDaoTest {
                 assertEquals(setOf(firstBandalartId, secondBandalartId), cells.map { it.bandalartId }.toSet())
             }
     }
+
+    @Nested
+    @DisplayName("태스크 완료 기록 테스트")
+    inner class CompletionRecordTest {
+        private suspend fun titledTask(): Pair<Long, Long> {
+            val bandalartId = bandalartDao.createEmptyBandalart()
+            val subCell = bandalartDao.getBandalartMainCell(bandalartId).children.first()
+            val task = bandalartDao.getChildCells(subCell.id!!).first()
+            bandalartDao.updateTaskCellWithDto(
+                task.id!!,
+                UpdateBandalartTaskCellDto(title = "걷기", description = null, dueDate = null, isCompleted = false),
+                today = TEST_TODAY,
+                completedAt = TEST_COMPLETED_AT,
+            )
+            return bandalartId to task.id
+        }
+
+        private suspend fun setCompleted(
+            taskId: Long,
+            completed: Boolean,
+            today: String,
+        ) = bandalartDao.updateTaskCellWithDto(
+            taskId,
+            UpdateBandalartTaskCellDto(title = "걷기", description = null, dueDate = null, isCompleted = completed),
+            today = today,
+            completedAt = TEST_COMPLETED_AT,
+        )
+
+        @Test
+        @DisplayName("완료하면 오늘 날짜로 한 번만 기록하고 해제하면 오늘 기록만 지운다")
+        fun completionIsRecordedOncePerDayAndUndoneOnlyForToday() =
+            runTest {
+                val (bandalartId, taskId) = titledTask()
+
+                setCompleted(taskId, completed = true, today = "2026-09-14")
+                setCompleted(taskId, completed = false, today = "2026-09-15")
+                setCompleted(taskId, completed = true, today = "2026-09-15")
+                setCompleted(taskId, completed = false, today = "2026-09-15")
+                setCompleted(taskId, completed = true, today = "2026-09-15")
+                setCompleted(taskId, completed = true, today = "2026-09-15")
+
+                val records = bandalartDao.getAllCompletionRecords()
+                assertEquals(listOf("2026-09-14", "2026-09-15"), records.map { it.completedDate }.sorted())
+                assertTrue(records.all { it.bandalartId == bandalartId && it.cellId == taskId })
+                assertEquals(listOf("2026-09-15", "2026-09-14"), bandalartDao.getCompletedDates())
+            }
+
+        @Test
+        @DisplayName("제목만 수정하면 완료 기록을 남기지 않는다")
+        fun editingWithoutCompletionChangeDoesNotRecord() =
+            runTest {
+                val (_, taskId) = titledTask()
+
+                setCompleted(taskId, completed = false, today = TEST_TODAY)
+
+                assertTrue(bandalartDao.getAllCompletionRecords().isEmpty())
+            }
+
+        @Test
+        @DisplayName("위젯 완료도 기록하고 초기화와 반다라트 삭제 뒤에도 기록을 유지한다")
+        fun widgetCompletionIsRecordedAndSurvivesResets() =
+            runTest {
+                val (bandalartId, taskId) = titledTask()
+                val subGoalId = bandalartDao.getCell(taskId).parentId!!
+                bandalartDao.updateSubCellWithDto(
+                    subGoalId,
+                    UpdateBandalartSubCellDto(title = "운동", description = null, dueDate = null),
+                )
+
+                assertTrue(
+                    bandalartDao.setTaskCompletedIfOwned(
+                        bandalartId = bandalartId,
+                        subGoalId = subGoalId,
+                        taskId = taskId,
+                        completed = true,
+                        today = TEST_TODAY,
+                        completedAt = TEST_COMPLETED_AT,
+                    ),
+                )
+                bandalartDao.resetCompletionsNow(bandalartId, today = TEST_TODAY)
+                bandalartDao.resetTaskCell(taskId)
+                bandalartDao.deleteBandalart(bandalartDao.getBandalart(bandalartId))
+
+                assertEquals(listOf(TEST_TODAY), bandalartDao.getCompletedDates())
+            }
+
+        @Test
+        @DisplayName("남은 할 일은 제목이 있는 미완료 태스크만 센다")
+        fun remainingTasksCountsOnlyTitledIncompleteTasks() =
+            runTest {
+                val (bandalartId, taskId) = titledTask()
+                val subGoalId = bandalartDao.getCell(taskId).parentId!!
+                val otherTask = bandalartDao.getChildCells(subGoalId).first { it.id != taskId }
+                bandalartDao.updateTaskCellWithDto(
+                    otherTask.id!!,
+                    UpdateBandalartTaskCellDto(title = "읽기", description = null, dueDate = null, isCompleted = true),
+                    today = TEST_TODAY,
+                    completedAt = TEST_COMPLETED_AT,
+                )
+                bandalartDao.updateSubCellWithDto(
+                    subGoalId,
+                    UpdateBandalartSubCellDto(title = "운동", description = null, dueDate = null),
+                )
+
+                assertEquals(1, bandalartDao.countRemainingTasks(bandalartId))
+                assertEquals(1, bandalartDao.findWidgetSnapshot(bandalartId, subGoalId)?.remainingTaskCount)
+            }
+    }
 }
+
+private const val TEST_TODAY = "2026-09-14"
+private const val TEST_COMPLETED_AT = 1_789_000_000_000L

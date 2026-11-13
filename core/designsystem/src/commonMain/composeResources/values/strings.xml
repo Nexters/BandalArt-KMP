@@ -24,6 +24,7 @@
     <string name="home_share_url">제가 만든 반다라트를 구경하러오세요!\n%1$s</string>
     <string name="home_empty_title">메인목표를 입력해주세요</string>
     <string name="home_complete_ratio">달성률 %1$d%</string>
+    <string name="home_completion_streak">🔥 %1$d일 연속</string>
     <string name="home_complete">달성 완료!</string>
 
     <!-- BandalartChart.kt -->

@@ -67,6 +67,8 @@ class IosWidgetMappingTest {
                         IosWidgetTaskRecord(id = 22L, title = " ", isCompleted = false),
                         IosWidgetTaskRecord(id = null, title = "미저장", isCompleted = false),
                     ),
+                remainingTaskCount = 3,
+                streakDays = 2,
             ).toIosWidgetSnapshot()
 
         assertEquals(
@@ -78,6 +80,8 @@ class IosWidgetMappingTest {
                 completionRatio = 40,
                 subGoalTitle = "운동",
                 tasks = listOf(IosWidgetTask(id = 21L, title = "달리기", isCompleted = true)),
+                remainingTaskCount = 3,
+                streakDays = 2,
             ),
             snapshot,
         )

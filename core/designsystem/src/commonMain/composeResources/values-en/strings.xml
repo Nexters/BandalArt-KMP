@@ -24,6 +24,7 @@
     <string name="home_share_url">Come and see the Bandalart I made!\n%1$s</string>
     <string name="home_empty_title">Please enter your main goal</string>
     <string name="home_complete_ratio">Completion Rate %1$d%</string>
+    <string name="home_completion_streak">🔥 %1$d-day streak</string>
     <string name="home_complete">All Goals Completed!</string>
 
     <!-- BandalartChart.kt -->

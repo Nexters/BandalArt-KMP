@@ -11,6 +11,8 @@
     <string name="bandalart_widget_unconfigured">표시할 반다라트를 선택해 주세요</string>
     <string name="bandalart_widget_deleted">선택한 목표를 찾을 수 없어요\n눌러서 다시 설정해 주세요</string>
     <string name="bandalart_widget_completion_ratio">달성률 %1$d%%</string>
+    <string name="bandalart_widget_remaining_tasks">남은 할 일 %1$d개</string>
+    <string name="bandalart_widget_streak">🔥 %1$d일 연속</string>
     <string name="bandalart_widget_no_subgoal">세부 목표를 선택하지 않았어요</string>
     <string name="bandalart_widget_no_tasks">등록된 할 일이 없어요</string>
     <string name="bandalart_widget_unnamed_goal">이름 없는 목표</string>
