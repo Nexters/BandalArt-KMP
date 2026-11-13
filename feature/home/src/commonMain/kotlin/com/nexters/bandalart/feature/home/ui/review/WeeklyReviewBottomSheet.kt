@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -57,6 +56,8 @@ import bandalart.core.designsystem.generated.resources.weekly_review_title
 import bandalart.core.designsystem.generated.resources.weekly_review_total
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewBandalartSummary
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -64,6 +65,8 @@ import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.adaptive.AdaptiveIconButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,66 +79,69 @@ internal fun WeeklyReviewBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(bottom = 24.dp),
-        ) {
-            WeeklyReviewHeader(
-                summary = summary,
-                onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
-            )
-            if (summary.completedCount == 0) {
-                Text(
-                    text = stringResource(Res.string.weekly_review_empty),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    fontFamily = pretendardFontFamily(),
-                    lineHeight = 22.sp,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(bottom = 24.dp),
+            ) {
+                WeeklyReviewHeader(
+                    summary = summary,
+                    onCloseClick = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
                 )
-            } else {
-                Text(
-                    text =
-                        stringResource(
-                            Res.string.weekly_review_total,
-                            summary.completedCount,
-                            summary.activeDayCount,
-                        ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
-                    fontFamily = pretendardFontFamily(),
-                    fontWeight = FontWeight.W600,
-                    letterSpacing = (-0.32).sp,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                )
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                )
-                summary.bandalarts.forEach { item ->
-                    WeeklyReviewBandalartRow(
-                        item = item,
-                        title =
-                            bandalartList.find { it.id == item.bandalartId }?.titleText
-                                ?: item.title.orEmpty(),
-                        onClick = { onHomeUiAction(HomeScreen.Event.SelectWeeklyReviewBandalart(item.bandalartId)) },
+                if (summary.completedCount == 0) {
+                    Text(
+                        text = stringResource(Res.string.weekly_review_empty),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 15.sp,
+                        fontFamily = pretendardFontFamily(),
+                        lineHeight = 22.sp,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                     )
+                } else {
+                    Text(
+                        text =
+                            stringResource(
+                                Res.string.weekly_review_total,
+                                summary.completedCount,
+                                summary.activeDayCount,
+                            ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        fontFamily = pretendardFontFamily(),
+                        fontWeight = FontWeight.W600,
+                        letterSpacing = (-0.32).sp,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                    )
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                    summary.bandalarts.forEach { item ->
+                        WeeklyReviewBandalartRow(
+                            item = item,
+                            title =
+                                bandalartList.find { it.id == item.bandalartId }?.titleText
+                                    ?: item.title.orEmpty(),
+                            onClick = { onHomeUiAction(HomeScreen.Event.SelectWeeklyReviewBandalart(item.bandalartId)) },
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun WeeklyReviewHeader(
     summary: WeeklyReviewSummary,
@@ -178,7 +184,7 @@ private fun WeeklyReviewHeader(
                 fontFamily = pretendardFontFamily(),
             )
         }
-        IconButton(onClick = onCloseClick) {
+        AdaptiveIconButton(onClick = onCloseClick) {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = stringResource(Res.string.clear_description),
