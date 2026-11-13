@@ -38,16 +38,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -81,9 +78,13 @@ import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
+import zone.ien.hig.adaptive.AdaptiveButton
+import zone.ien.hig.adaptive.AdaptiveIconButton
+import zone.ien.hig.adaptive.AdaptiveTextButton
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import androidx.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAdaptiveApi::class)
 @Composable
 fun BandalartListBottomSheet(
     bandalartList: ImmutableList<BandalartUiModel>,
@@ -120,7 +121,7 @@ fun BandalartListBottomSheet(
                         .padding(horizontal = 16.dp),
             ) {
                 if (isCreationOptionsVisible) {
-                    IconButton(
+                    AdaptiveIconButton(
                         modifier =
                             Modifier
                                 .align(Alignment.CenterStart)
@@ -155,7 +156,7 @@ fun BandalartListBottomSheet(
                             .padding(horizontal = 48.dp),
                     textAlign = TextAlign.Center,
                 )
-                IconButton(
+                AdaptiveIconButton(
                     modifier =
                         Modifier
                             .align(Alignment.CenterEnd)
@@ -187,6 +188,7 @@ fun BandalartListBottomSheet(
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun BandalartList(
     bandalartList: ImmutableList<BandalartUiModel>,
@@ -214,7 +216,7 @@ private fun BandalartList(
         item {
             Spacer(modifier = Modifier.height(20.dp))
             Row {
-                Button(
+                AdaptiveButton(
                     modifier =
                         Modifier
                             .weight(1f)
@@ -223,11 +225,15 @@ private fun BandalartList(
                     onClick = {
                         onHomeUiAction(HomeScreen.Event.OpenBandalartCreationOptions)
                     },
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
+                    adaptation = {
+                        material {
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                        }
+                    },
                 ) {
                     Row {
                         Icon(
@@ -250,6 +256,7 @@ private fun BandalartList(
     }
 }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 private fun BandalartCreationOptions(onHomeUiAction: (HomeScreen.Event) -> Unit) {
     LazyColumn(
@@ -293,9 +300,17 @@ private fun BandalartCreationOptions(onHomeUiAction: (HomeScreen.Event) -> Unit)
             )
         }
         item {
-            TextButton(
+            AdaptiveTextButton(
                 onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
                 modifier = Modifier.fillMaxWidth().height(52.dp),
+                adaptation = {
+                    // AdaptiveTextButton의 Material 기본값은 Button 기준이라 TextButton 기본값으로 되돌린다.
+                    material {
+                        elevation = null
+                        shape = ButtonDefaults.textShape
+                        contentPadding = ButtonDefaults.TextButtonContentPadding
+                    }
+                },
             ) {
                 Icon(
                     imageVector = Icons.Default.Email,

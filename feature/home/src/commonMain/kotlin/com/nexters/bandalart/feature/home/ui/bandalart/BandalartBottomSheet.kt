@@ -94,9 +94,12 @@ import com.nexters.bandalart.feature.home.HomeScreen
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import zone.ien.hig.CupertinoSwitch
+import zone.ien.hig.adaptive.AdaptiveWidget
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import androidx.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAdaptiveApi::class)
 @Composable
 fun BandalartBottomSheet(
     cellType: CellType,
@@ -373,25 +376,38 @@ fun BandalartBottomSheet(
                                     else
                                         stringResource(Res.string.bottomsheet_in_completed),
                             )
-                            Switch(
-                                checked = bottomSheetData.cellData.isCompleted,
-                                onCheckedChange = { isCompleted ->
-                                    onHomeUiAction(HomeScreen.Event.UpdateCompletion(isCompleted))
+                            AdaptiveWidget(
+                                material = {
+                                    Switch(
+                                        checked = bottomSheetData.cellData.isCompleted,
+                                        onCheckedChange = { isCompleted ->
+                                            onHomeUiAction(HomeScreen.Event.UpdateCompletion(isCompleted))
+                                        },
+                                        colors =
+                                            SwitchDefaults.colors(
+                                                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                                uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+                                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                                checkedBorderColor = MaterialTheme.colorScheme.primary,
+                                            ),
+                                        modifier =
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .width(52.dp)
+                                                .height(28.dp),
+                                    )
                                 },
-                                colors =
-                                    SwitchDefaults.colors(
-                                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                                        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
-                                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                        checkedBorderColor = MaterialTheme.colorScheme.primary,
-                                    ),
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.CenterEnd)
-                                        .width(52.dp)
-                                        .height(28.dp),
+                                cupertino = {
+                                    CupertinoSwitch(
+                                        checked = bottomSheetData.cellData.isCompleted,
+                                        onCheckedChange = { isCompleted ->
+                                            onHomeUiAction(HomeScreen.Event.UpdateCompletion(isCompleted))
+                                        },
+                                        modifier = Modifier.align(Alignment.CenterEnd),
+                                    )
+                                },
                             )
                         }
                         Spacer(modifier = Modifier.height(4.dp))
