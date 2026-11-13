@@ -96,6 +96,9 @@ import com.nexters.bandalart.feature.home.ui.HOME_TOP_BAR_HEIGHT
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import zone.ien.hig.adaptive.Theme
 import zone.ien.hig.adaptive.currentTheme
+import androidx.compose.runtime.CompositionLocalProvider
+import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.nexters.bandalart.core.ui.component.LocalDialogBackdrop
 import zone.ien.hig.utils.rememberDefaultBackdrop
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
@@ -143,6 +146,8 @@ internal fun Home(
 ) {
     val homeGraphicsLayer = rememberGraphicsLayer()
     val completeGraphicsLayer = rememberGraphicsLayer()
+    // iOS 홈 콘텐츠 기록. Liquid Glass 상단 바·공유 버튼과 다이얼로그 면이 이 기록을 비춘다.
+    val glassBackdrop = rememberDefaultBackdrop()
     val updateSnackbarHostState = remember { SnackbarHostState() }
     val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
     var isAppForeground by remember { mutableStateOf(true) }
@@ -218,11 +223,13 @@ internal fun Home(
         eventSink = state.eventSink,
         appVersion = appVersion,
     )
-    HomeDialogs(
-        dialog = state.dialog,
-        bandalartData = state.bandalartData,
-        eventSink = state.eventSink,
-    )
+    CompositionLocalProvider(LocalDialogBackdrop provides glassBackdrop) {
+        HomeDialogs(
+            dialog = state.dialog,
+            bandalartData = state.bandalartData,
+            eventSink = state.eventSink,
+        )
+    }
 
     HomeContent(
         bandalartListSize = state.bandalartList.size,
@@ -237,6 +244,7 @@ internal fun Home(
         completeGraphicsLayer = completeGraphicsLayer,
         updateSnackbarHostState = updateSnackbarHostState,
         bannerAdHost = bannerAdHost,
+        glassBackdrop = glassBackdrop,
         modifier = modifier,
     )
 }
@@ -388,6 +396,7 @@ internal fun HomeContent(
     completeGraphicsLayer: GraphicsLayer,
     updateSnackbarHostState: SnackbarHostState,
     bannerAdHost: BannerAdHost,
+    glassBackdrop: LayerBackdrop,
     modifier: Modifier = Modifier,
 ) {
     val isContentReady = bandalartCellData != null && bandalartData != null
@@ -469,7 +478,6 @@ internal fun HomeContent(
                         }
 
                         val isCupertino = currentTheme == Theme.Cupertino
-                        val glassBackdrop = rememberDefaultBackdrop()
 
                         // iOS는 콘텐츠를 유리 컨트롤이 굴절시킬 배경으로 기록한다. 컨트롤은 기록 레이어 밖에 둔다.
                         Box(
@@ -747,6 +755,7 @@ private fun HomeScreenPreview() {
             completeGraphicsLayer = rememberGraphicsLayer(),
             updateSnackbarHostState = remember { SnackbarHostState() },
             bannerAdHost = com.nexters.bandalart.core.common.NoOpBannerAdHost,
+            glassBackdrop = rememberDefaultBackdrop(),
         )
     }
 }
