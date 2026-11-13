@@ -68,6 +68,10 @@ import bandalart.core.designsystem.generated.resources.bandalart_create_title
 import bandalart.core.designsystem.generated.resources.bandalart_list_add
 import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
+import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.template.BandalartTemplate
 import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
@@ -96,7 +100,7 @@ fun BandalartListBottomSheet(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
-        contentWindowInsets = { bottomSheetContentWindowInsets() },
+        contentWindowInsets = { bandalartSheetWindowInsets(bottomSheetContentWindowInsets()) },
         onDismissRequest = {
             onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
         },
@@ -108,81 +112,83 @@ fun BandalartListBottomSheet(
         containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surface),
-        ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Box(
+        BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .background(bandalartSheetBackgroundColor()),
             ) {
-                if (isCreationOptionsVisible) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    if (isCreationOptionsVisible) {
+                        AdaptiveIconButton(
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterStart)
+                                    .size(48.dp),
+                            onClick = {
+                                onHomeUiAction(HomeScreen.Event.CloseBandalartCreationOptions)
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(Res.string.back_description),
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
+                    Text(
+                        text =
+                            stringResource(
+                                if (isCreationOptionsVisible) {
+                                    Res.string.bandalart_create_title
+                                } else {
+                                    Res.string.bandalart_list_title
+                                },
+                            ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W700,
+                        modifier =
+                            modifier
+                                .align(Alignment.Center)
+                                .fillMaxWidth()
+                                .padding(horizontal = 48.dp),
+                        textAlign = TextAlign.Center,
+                    )
                     AdaptiveIconButton(
                         modifier =
                             Modifier
-                                .align(Alignment.CenterStart)
+                                .align(Alignment.CenterEnd)
                                 .size(48.dp),
                         onClick = {
-                            onHomeUiAction(HomeScreen.Event.CloseBandalartCreationOptions)
+                            onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.back_description),
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = stringResource(Res.string.clear_description),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
-                Text(
-                    text =
-                        stringResource(
-                            if (isCreationOptionsVisible) {
-                                Res.string.bandalart_create_title
-                            } else {
-                                Res.string.bandalart_list_title
-                            },
-                        ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.W700,
-                    modifier =
-                        modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .padding(horizontal = 48.dp),
-                    textAlign = TextAlign.Center,
-                )
-                AdaptiveIconButton(
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterEnd)
-                            .size(48.dp),
-                    onClick = {
-                        onHomeUiAction(HomeScreen.Event.DismissBottomSheet)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = stringResource(Res.string.clear_description),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                Spacer(modifier = Modifier.height(if (isCreationOptionsVisible) 24.dp else 40.dp))
+                if (isCreationOptionsVisible) {
+                    BandalartCreationOptions(
+                        onHomeUiAction = onHomeUiAction,
+                    )
+                } else {
+                    BandalartList(
+                        bandalartList = bandalartList,
+                        currentBandalartId = currentBandalartId,
+                        onHomeUiAction = onHomeUiAction,
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(if (isCreationOptionsVisible) 24.dp else 40.dp))
-            if (isCreationOptionsVisible) {
-                BandalartCreationOptions(
-                    onHomeUiAction = onHomeUiAction,
-                )
-            } else {
-                BandalartList(
-                    bandalartList = bandalartList,
-                    currentBandalartId = currentBandalartId,
-                    onHomeUiAction = onHomeUiAction,
-                )
             }
         }
     }
@@ -357,7 +363,7 @@ private fun CreationOptionRow(
                 .fillMaxWidth()
                 .semantics { role = Role.Button },
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = bandalartSheetTintColor(MaterialTheme.colorScheme.surfaceVariant),
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ) {
         Row(
