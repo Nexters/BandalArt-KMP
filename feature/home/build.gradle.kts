@@ -49,10 +49,8 @@ kotlin {
             implementation(libs.jindong.core)
             implementation(libs.jindong.compose)
             implementation(libs.napier)
-        }
-
-        iosMain.dependencies {
             implementation(libs.compose.hig)
+            implementation(libs.compose.hig.adaptive)
         }
 
         androidHostTest.dependencies {
