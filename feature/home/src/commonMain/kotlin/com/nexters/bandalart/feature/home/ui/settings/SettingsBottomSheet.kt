@@ -81,6 +81,8 @@ import bandalart.core.designsystem.generated.resources.settings_title
 import bandalart.core.designsystem.generated.resources.settings_version
 import bandalart.core.designsystem.generated.resources.settings_version_value
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
+import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.entity.ThemeMode
@@ -441,7 +443,7 @@ private fun ThemeModeRow(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+                    color = if (selected) bandalartSheetTintColor(MaterialTheme.colorScheme.surfaceVariant) else bandalartSheetBackgroundColor(),
                     shape = RoundedCornerShape(12.dp),
                 ).clickable(onClick = onClick)
                 .padding(start = 16.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),

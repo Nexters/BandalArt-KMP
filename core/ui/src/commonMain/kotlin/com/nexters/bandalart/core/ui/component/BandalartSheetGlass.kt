@@ -33,6 +33,10 @@ private fun sheetGlassBackdrop(): LayerBackdrop? = LocalSheetBackdrop.current.ta
 @Composable
 fun bandalartSheetBackgroundColor(): Color = if (sheetGlassBackdrop() != null) Color.Transparent else MaterialTheme.colorScheme.surface
 
+/** 시트 안 강조 면(선택된 행 등)의 색. Liquid Glass 시트면 뒤가 비치도록 반투명하게 둔다. */
+@Composable
+fun bandalartSheetTintColor(color: Color): Color = if (sheetGlassBackdrop() != null) color.copy(alpha = GLASS_TINT_ALPHA) else color
+
 /** `ModalBottomSheet`의 `contentWindowInsets`. Liquid Glass 시트면 inset을 [BandalartSheetContent] 안에서 주므로 비운다. */
 @Composable
 fun bandalartSheetWindowInsets(insets: WindowInsets): WindowInsets = if (sheetGlassBackdrop() != null) WindowInsets(0) else insets
@@ -79,5 +83,6 @@ fun BandalartSheetContent(
 }
 
 private const val GLASS_SURFACE_ALPHA = 0.65f
+private const val GLASS_TINT_ALPHA = 0.6f
 private const val GLASS_SATURATION = 1.5f
 private const val GLASS_HIGHLIGHT_ALPHA = 0.35f
