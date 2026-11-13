@@ -38,7 +38,7 @@ import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import zone.ien.hig.utils.rememberDefaultBackdrop
 import androidx.compose.ui.tooling.preview.Preview
 
-/** iOS(Cupertino)는 유리 버튼, 그 외는 기존 Material 버튼으로 그린다. */
+/** iOS(Cupertino)는 Liquid Glass 버튼, 그 외는 기존 Material 버튼으로 그린다. */
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BottomSheetDeleteButton(
@@ -80,7 +80,7 @@ fun BottomSheetDeleteButton(
     )
 }
 
-/** iOS(Cupertino)는 primary 색 유리 버튼, 그 외는 기존 Material 버튼으로 그린다. */
+/** iOS(Cupertino)는 primary 색 Liquid Glass 버튼, 그 외는 기존 Material 버튼으로 그린다. */
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalCupertinoApi::class)
 @Composable
 fun BottomSheetCompleteButton(
