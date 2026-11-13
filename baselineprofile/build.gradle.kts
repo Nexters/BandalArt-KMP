@@ -5,7 +5,11 @@ plugins {
 
 android {
     namespace = "com.nexters.bandalart.baselineprofile"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk {
+        version = release(libs.versions.compileSdk.get().toInt()) {
+            minorApiLevel = libs.versions.compileSdkMinor.get().toInt()
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

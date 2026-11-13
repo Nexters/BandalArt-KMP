@@ -9,6 +9,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import zone.ien.hig.adaptive.AdaptiveTheme
+import zone.ien.hig.adaptive.CupertinoThemeSpec
+import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
+import zone.ien.hig.adaptive.MaterialThemeSpec
+import zone.ien.hig.theme.darkColorScheme as cupertinoDarkColorScheme
+import zone.ien.hig.theme.lightColorScheme as cupertinoLightColorScheme
 
 private val DarkColorScheme =
     darkColorScheme(
@@ -44,6 +50,7 @@ private val LightColorScheme =
         surfaceContainer = Gray200,
     )
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun BandalartTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -61,7 +68,18 @@ fun BandalartTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = bandalartTypography(),
-            content = content,
-        )
+        ) {
+            // hig-adaptive 컴포넌트가 iOS는 Cupertino, 그 외는 Material로 그리도록 테마 대상을 제공한다.
+            // Material 스펙은 위 MaterialTheme 값을 그대로 넘겨 Android 화면이 바뀌지 않게 하고,
+            // Cupertino 다크 여부는 설정 테마 모드를 반영한 darkTheme을 따른다.
+            AdaptiveTheme(
+                material = MaterialThemeSpec.Default(),
+                cupertino =
+                    CupertinoThemeSpec(
+                        colorScheme = if (darkTheme) cupertinoDarkColorScheme() else cupertinoLightColorScheme(),
+                    ),
+                content = content,
+            )
+        }
     }
 }
