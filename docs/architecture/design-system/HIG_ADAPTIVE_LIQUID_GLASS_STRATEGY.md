@@ -153,6 +153,13 @@ PR은 단계마다 하나로 나눈다.
 - `AdaptiveWidget(material = { ModalBottomSheet(...) }, cupertino = { CupertinoBottomSheet(...) })` 형태의 프로젝트 래퍼를 `core/ui`에 만든다.
 - 시트 상태(`rememberModalBottomSheetState`)와 닫기 동작이 두 구현에서 같게 동작하는지가 핵심 검증 항목이다. 맞추기 어려우면 Material 유지로 결정한다.
 
+#### 5단계 결과 (2026-11-13)
+
+| 항목 | 결과 |
+|---|---|
+| `ModalBottomSheet` (5곳) | **Material 유지.** **[소스]** hig 27.2.6에는 `ModalBottomSheet(onDismissRequest, sheetState)`에 대응하는 모달 시트가 없다. 시트는 화면 전체를 감싸는 `CupertinoBottomSheetScaffold`와 `CupertinoSheetState`(`CupertinoSheetValue`·`PresentationDetent`)로만 제공된다. 래퍼로 바꾸려면 홈 화면 구조를 scaffold 기준으로 다시 짜야 해 이번 범위에서 뺀다. 시트 안 컨트롤은 3단계에서 adaptive로 바꿨다 |
+| `BandalartDropDownMenu` | `AdaptiveWidget(material = 기존 DropdownMenu, cupertino = CupertinoDropdownMenu)`. 두 구현 모두 `expanded`·`onDismissRequest` 모델이라 상태를 그대로 쓴다. iOS 항목은 `MenuAction`으로 그리고 아이콘은 iOS 메뉴 관례대로 제목 오른쪽에 둔다 |
+
 ### 6. 다이얼로그
 
 - 자체 디자인 유지와 `AdaptiveAlertDialog` 전환 중 하나를 디자인 검토로 정한다.
