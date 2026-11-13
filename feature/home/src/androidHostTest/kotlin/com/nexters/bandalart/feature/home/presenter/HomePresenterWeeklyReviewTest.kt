@@ -22,6 +22,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
+import com.nexters.bandalart.core.domain.policy.calculateCompletionHeatmap
 import com.nexters.bandalart.feature.home.HomeScreen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -167,8 +168,28 @@ class HomePresenterWeeklyReviewTest {
                 var state = awaitItem()
                 while (state.bottomSheet !is HomeScreen.BottomSheetState.WeeklyReview) state = awaitItem()
 
-                assertEquals(summary, (state.bottomSheet as HomeScreen.BottomSheetState.WeeklyReview).summary)
+                val sheet = state.bottomSheet as HomeScreen.BottomSheetState.WeeklyReview
+                assertEquals(summary, sheet.summary)
+                assertEquals(heatmap, sheet.heatmap)
                 assertFalse(launchTarget.pending.value)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun openWeeklyReviewEventFromHeaderShowsSummaryAndHeatmap() =
+        runTest {
+            val presenter = presenter(repository = repository())
+
+            presenter.test {
+                var state = awaitItem()
+                while (state.bandalartData?.id != 1L) state = awaitItem()
+                state.eventSink(HomeScreen.Event.OpenWeeklyReview)
+                while (state.bottomSheet !is HomeScreen.BottomSheetState.WeeklyReview) state = awaitItem()
+
+                val sheet = state.bottomSheet as HomeScreen.BottomSheetState.WeeklyReview
+                assertEquals(summary, sheet.summary)
+                assertEquals(heatmap, sheet.heatmap)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -203,6 +224,8 @@ class HomePresenterWeeklyReviewTest {
             bandalarts = emptyList(),
         )
 
+    private val heatmap = calculateCompletionHeatmap(listOf(LocalDate(2026, 3, 3)), today = LocalDate(2026, 3, 4))
+
     private fun presenter(
         repository: FakeBandalartRepository = repository(),
         settings: FakeSettingsRepository = FakeSettingsRepository(),
@@ -229,6 +252,7 @@ class HomePresenterWeeklyReviewTest {
             initialBandalarts = listOf(bandalart(1), bandalart(2)),
             recentBandalartId = 1,
             weeklyReviewSummary = summary,
+            completionHeatmap = heatmap,
         )
 
     private fun bandalart(id: Long) =

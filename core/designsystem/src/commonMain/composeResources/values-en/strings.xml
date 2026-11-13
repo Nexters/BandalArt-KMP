@@ -222,6 +222,10 @@
     <string name="weekly_review_total">%1$d cells completed · active %2$d days</string>
     <string name="weekly_review_bandalart_progress">%1$d completed this week · %2$d% done</string>
     <string name="weekly_review_empty">No cells completed this week yet. Why not start one today?</string>
+    <string name="weekly_review_heatmap_title">Last %1$d weeks</string>
+    <string name="weekly_review_heatmap_summary">Active %1$d days · %2$d completed</string>
+    <string name="weekly_review_heatmap_less">Less</string>
+    <string name="weekly_review_heatmap_more">More</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">Create a Bandalart</string>
