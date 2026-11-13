@@ -2,7 +2,7 @@
 
 - 작성일: 2026-11-12
 - 관련 이슈: [#472 compose-hig 버전 업과 Liquid Glass 적용](https://github.com/Nexters/BandalArt-KMP/issues/472), [ienground/compose-hig#133](https://github.com/ienground/compose-hig/issues/133)
-- 관련 PR: [#473 버전 업](https://github.com/Nexters/BandalArt-KMP/pull/473), [#474 홈 시범 적용](https://github.com/Nexters/BandalArt-KMP/pull/474)
+- 관련 PR: [#473 버전 업](https://github.com/Nexters/BandalArt-KMP/pull/473), [#474 홈 시범 적용(#477로 대체, 닫음)](https://github.com/Nexters/BandalArt-KMP/pull/474), [#475 0단계](https://github.com/Nexters/BandalArt-KMP/pull/475), [#476 1단계](https://github.com/Nexters/BandalArt-KMP/pull/476), [#477 2단계](https://github.com/Nexters/BandalArt-KMP/pull/477)
 - 라이브러리: `zone.ien.hig` 27.2.6 (`hig`, `hig-adaptive`)
 
 > 표기: **[소스]** 27.2.6 소스를 읽고 확인, **[실행]** 시뮬레이터·기기에서 확인, **[미확인]** 아직 확인하지 않음.
@@ -102,7 +102,7 @@ PR은 단계마다 하나로 나눈다.
 | 항목 | 결과 |
 |---|---|
 | 설정 | `minSdk` 29, `compileSdk { version = release(37) { minorApiLevel = 1 } }`. `KmpAndroidPlugin`, `AndroidGradleDsl`, `baselineprofile`에 적용하고 카탈로그에 `compileSdkMinor = "1"` 추가 |
-| 로컬 SDK | `platforms;android-37.1` 설치 필요. CI 환경도 같은 플랫폼이 있어야 한다 **[미확인: CI]** |
+| 로컬 SDK | `platforms;android-37.1` 설치 필요. CI는 `setup-android` 패키지에 37.1을 추가해 GitHub Actions에서 Android lint·build·unit test 통과(#475) |
 | 빌드 | `:androidApp:assembleRelease` 성공 |
 | APK 크기 | 24,982,630바이트(+3,475바이트). Android 코드에서 hig를 아직 호출하지 않아 R8이 대부분 제거한 값이다. 실제 증가량은 2단계 이후 다시 잰다 |
 | 실행 | debug 빌드를 Android 17 기기에 설치해 홈 화면 표시와 크래시 없음 확인 **[실행]**. release 빌드 실행은 미확인 |
@@ -125,6 +125,20 @@ PR은 단계마다 하나로 나눈다.
 - 높이: iOS 컨트롤은 48dp로 맞춘다(#474 결정, 추가 검토 중). **[소스]** `CupertinoLiquidIconButton`은 48dp 고정이고 `cupertino { }`에 크기 항목이 없다. `modifier`는 두 플랫폼 공통이라 플랫폼별 높이는 `adaptation` 블록의 `contentPadding`으로 맞춘다.
 - 공유 이미지 캡처 영역(`homeGraphicsLayer`, `completeGraphicsLayer`)에 유리 컨트롤이 들어가지 않는지 확인한다.
 
+#### 2단계 결과 (2026-11-13, #477)
+
+| 항목 | 결과 |
+|---|---|
+| 구현 | 설정 버튼 `AdaptiveIconButton`, 추가·목록 버튼과 공유 버튼은 `AdaptiveWidget`(Android 기존 `Box`, iOS 48dp `CupertinoLiquidButton`). 아이콘·텍스트는 공통 |
+| `layerBackdrop` | iOS에서만 콘텐츠를 기록하고 상단 바·공유 버튼을 그 위에 띄운다. 분기는 `Home.kt`의 `currentTheme == Theme.Cupertino` 한 곳이라 Android 화면 구조는 그대로다 |
+| 중복 탭 방지 | `core/common`에 `rememberSingleClick` 추가(`clickableSingle`과 같은 500ms) |
+| 테스트 JVM | `zone.ien.capsule`이 Java 21 바이트코드라 Android 호스트 테스트 실행 JVM을 21로 올렸다. 컴파일 대상은 Java 17 유지. `AdaptiveTheme`을 넣는 1단계(#476)부터 필요해 그 PR로 옮겼다 |
+| iPad 세로 | 떠 있는 공유 버튼이 표 아래 테두리와 겹쳤다. 버튼 높이를 `onSizeChanged`로 재서 표 크기 계산에서 비우도록 수정 |
+| iOS 27.2 **[실행]** | iPhone 세로·가로, iPad 세로·가로에서 유리 상단 바·공유 버튼 표시. 세로·가로 공유 이미지 저장에 유리 컨트롤 미포함 |
+| Android **[실행]** | Android 17 기기 debug에서 홈 상단 바·구분선·공유 버튼이 적용 전과 같고 크래시 없음 |
+| CI | `allTests`, Android lint·build, iOS host app build 통과 |
+| iOS 26.5 | `main` Release 시뮬레이터 빌드 성공. 시뮬레이터 런타임 마운트 문제로 화면 확인은 **[미확인]** |
+
 ### 3. 시트 안 컨트롤
 
 - 설정·루틴·목록·편집 시트의 버튼, 아이콘 버튼, 스위치를 adaptive로 바꾼다.
@@ -146,7 +160,8 @@ PR은 단계마다 하나로 나눈다.
 ### 7. iOS 단독 배포
 
 - 적용이 끝나면 iOS만 TestFlight로 배포한다. Android 배포와 묶지 않는다.
-- 절차는 `deploy-ios-testflight` skill을 따른다(별도 작업으로 작성 중).
+- 절차는 `deploy-ios-testflight` skill을 따른다(#478).
+- 2단계(홈)까지를 iOS 1.7.0으로 먼저 배포한다(#479). 3~6단계는 이후 버전에서 진행한다.
 
 ## 검증
 
