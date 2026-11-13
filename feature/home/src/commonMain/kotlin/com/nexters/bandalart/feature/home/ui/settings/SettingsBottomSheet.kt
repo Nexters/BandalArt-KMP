@@ -104,6 +104,7 @@ internal fun SettingsBottomSheet(
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     weeklyReviewReminderEnabled: Boolean,
+    weeklyReviewNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     appVersion: String,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
@@ -219,15 +220,17 @@ internal fun SettingsBottomSheet(
                         onClick = { showDeadlineReminderTimePicker = true },
                     )
                 }
+                // 주간 회고 채널이나 앱 알림이 꺼져 있으면 알림이 오지 않으므로 꺼짐으로 보여 준다.
                 WeeklyReviewReminderRow(
                     enabled =
                         weeklyReviewReminderEnabled &&
-                            deadlineNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE,
+                            weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.REQUESTABLE &&
+                            weeklyReviewNotificationAuthorizationStatus != DeadlineNotificationAuthorizationStatus.BLOCKED,
                     onToggle = { enabled ->
                         if (!enabled) {
                             onHomeUiAction(HomeScreen.Event.SetWeeklyReviewReminderEnabled(false))
                         } else if (
-                            deadlineNotificationAuthorizationStatus ==
+                            weeklyReviewNotificationAuthorizationStatus ==
                             DeadlineNotificationAuthorizationStatus.BLOCKED
                         ) {
                             onHomeUiAction(HomeScreen.Event.ConfirmWeeklyReviewReminderPermission)

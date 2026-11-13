@@ -59,6 +59,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth = DeadlineReminderSchedulingHealth(),
         val deadlinePermissionRequestId: Long? = null,
         val weeklyReviewReminderEnabled: Boolean = false,
+        val weeklyReviewNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus =
+            DeadlineNotificationAuthorizationStatus.UNSUPPORTED,
         val showRoutineSettingsTooltip: Boolean = false,
         val showTaskCompletionTooltip: Boolean = false,
         val completionStreak: Int = 0,

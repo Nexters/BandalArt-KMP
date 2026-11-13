@@ -46,6 +46,7 @@ internal fun HomeBottomSheets(
     deadlineNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     weeklyReviewReminderEnabled: Boolean,
+    weeklyReviewNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     eventSink: (HomeScreen.Event) -> Unit,
     appVersion: String,
 ) {
@@ -87,6 +88,7 @@ internal fun HomeBottomSheets(
                 deadlineNotificationAuthorizationStatus = deadlineNotificationAuthorizationStatus,
                 deadlineReminderSchedulingHealth = deadlineReminderSchedulingHealth,
                 weeklyReviewReminderEnabled = weeklyReviewReminderEnabled,
+                weeklyReviewNotificationAuthorizationStatus = weeklyReviewNotificationAuthorizationStatus,
                 appVersion = appVersion,
                 onHomeUiAction = eventSink,
             )

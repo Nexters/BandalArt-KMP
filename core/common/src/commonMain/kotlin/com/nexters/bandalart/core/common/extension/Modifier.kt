@@ -21,10 +21,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -54,6 +56,14 @@ inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier
             onClick()
         }
     }
+
+/** [clickableSingle]과 같은 간격으로 중복 탭을 막는다. `onClick`만 받는 컴포넌트에 쓴다. */
+@Composable
+fun rememberSingleClick(onClick: () -> Unit): () -> Unit {
+    val multipleEventsCutter = remember { MultipleEventsCutter.get() }
+    val currentOnClick by rememberUpdatedState(onClick)
+    return remember(multipleEventsCutter) { { multipleEventsCutter.processEvent { currentOnClick() } } }
+}
 
 fun Modifier.clickableSingle(
     enabled: Boolean = true,

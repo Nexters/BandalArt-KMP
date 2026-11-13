@@ -38,7 +38,7 @@ class WeeklyReviewReminderWorker(
         val dependencies = AndroidDeadlineReminderDependenciesRegistry.get() ?: return Result.retry()
         if (!dependencies.settingsRepository.weeklyReviewReminderEnabled.first()) return Result.success()
         if (
-            dependencies.deadlineNotificationAuthorization.getStatus() !=
+            dependencies.weeklyReviewNotificationAuthorization.getStatus() !=
             DeadlineNotificationAuthorizationStatus.GRANTED
         ) {
             return Result.success()

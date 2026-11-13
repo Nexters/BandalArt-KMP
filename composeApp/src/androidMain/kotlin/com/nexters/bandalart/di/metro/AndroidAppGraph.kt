@@ -32,11 +32,13 @@ import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorization
 import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
 import com.nexters.bandalart.notification.AndroidWeeklyReviewReminderScheduler
+import com.nexters.bandalart.notification.WeeklyReviewReminderWork
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -59,6 +61,10 @@ private class AndroidPlatformBindings(
     override val supportMailLauncher = AndroidSupportMailLauncher(application)
     override val deadlineReminderScheduler = AndroidDeadlineReminderScheduler(application)
     override val deadlineNotificationAuthorization = AndroidDeadlineNotificationAuthorization(application)
+    override val weeklyReviewNotificationAuthorization =
+        WeeklyReviewNotificationAuthorization(
+            AndroidDeadlineNotificationAuthorization(application, WeeklyReviewReminderWork.CHANNEL_ID),
+        )
     override val weeklyReviewReminderScheduler = AndroidWeeklyReviewReminderScheduler(application)
     override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
         if (backupApiConfig.isConfigured) AndroidDeviceBackupKeyProvider(application) else DeviceBackupKeyProvider { null }
@@ -102,6 +108,8 @@ fun installAndroidDeadlineReminderInfrastructure(
                 get() = appGraph.deadlineNotificationAuthorization
             override val deadlineReminderReconciler
                 get() = appGraph.deadlineReminderReconciler
+            override val weeklyReviewNotificationAuthorization
+                get() = appGraph.weeklyReviewNotificationAuthorization
             override val weeklyReviewReminderReconciler
                 get() = appGraph.weeklyReviewReminderReconciler
 

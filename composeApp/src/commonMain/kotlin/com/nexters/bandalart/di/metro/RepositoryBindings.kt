@@ -59,6 +59,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTimeZoneProvider
 import com.nexters.bandalart.core.domain.notification.BufferedWeeklyReviewLaunchTarget
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderScheduler
 import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
@@ -172,7 +173,7 @@ object RepositoryBindings {
     fun provideWeeklyReviewReminderReconciler(
         settingsRepository: SettingsRepository,
         scheduler: WeeklyReviewReminderScheduler,
-        authorization: DeadlineNotificationAuthorization,
+        authorization: WeeklyReviewNotificationAuthorization,
     ): WeeklyReviewReminderReconciler = DefaultWeeklyReviewReminderReconciler(settingsRepository, scheduler, authorization)
 
     @Provides
