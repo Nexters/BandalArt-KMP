@@ -22,8 +22,9 @@ internal class AndroidApplicationPlugin : BuildLogicPlugin(
                 val major = libs.versions.majorVersion.get().toInt()
                 val minor = libs.versions.minorVersion.get().toInt()
                 val patch = libs.versions.patchVersion.get().toInt()
+                val versionCodeOffset = libs.versions.androidVersionCodeOffset.get().toInt()
 
-                versionCode = (major * 10000) + (minor * 100) + patch
+                versionCode = (major * 10000) + (minor * 100) + patch + versionCodeOffset
                 versionName = "$major.$minor.$patch"
             }
         }
