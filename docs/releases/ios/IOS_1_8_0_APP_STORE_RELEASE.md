@@ -9,11 +9,13 @@
 
 이 문서는 iOS 1.8.0의 한국어·영어·일본어 "이번 버전의 새로운 기능" 문구, App Review 메모와 심사 빌드 선택 기준을 정리한다. 앱 화면 이름은 `core/designsystem/src/commonMain/composeResources/values-en/strings.xml`과 `iosApp/BandalartWidget/en.lproj/Localizable.strings`의 영어 문구에 맞췄다.
 
+App Store Connect의 "이 버전에서 업그레이드된 사항"은 `🔥` 같은 이모지를 유효하지 않은 문자로 거부한다. 출시 노트에는 이모지를 쓰지 않는다. App Review 메모에는 이모지를 써도 저장된다.
+
 ## 한국어 출시 노트
 
 매일의 실천을 이어 가는 재미를 더했어요.
 
-• 할 일을 완료한 날이 이어지면 홈과 위젯에 🔥 N일 연속이 표시돼요.
+• 할 일을 완료한 날이 이어지면 홈과 위젯에 'N일 연속'이 표시돼요.
 • 주간 회고: 이번 주 완료한 셀과 반다라트별 진행을 한눈에 볼 수 있어요. 매주 일요일 저녁 8시에 알림도 받을 수 있어요.
 • 최근 16주 달성 기록을 잔디처럼 색으로 보여 줘요.
 • 위젯에 남은 할 일 수와 연속 달성 일수가 함께 표시돼요.
@@ -23,7 +25,7 @@
 
 Keep your daily progress going.
 
-• Complete tasks on consecutive days to see a 🔥 N-day streak on Home and in widgets.
+• Complete tasks on consecutive days to see an "N-day streak" on Home and in widgets.
 • Weekly review: see this week's completed cells and the progress of each Bandalart at a glance, with an optional reminder every Sunday at 8 PM.
 • A heatmap shows your completions over the last 16 weeks.
 • Widgets now show how many tasks are left and your current streak.
@@ -33,7 +35,7 @@ Keep your daily progress going.
 
 毎日の積み重ねがもっと楽しくなりました。
 
-• タスクを毎日完了すると、ホームとウィジェットに🔥 N日連続が表示されます。
+• タスクを毎日完了すると、ホームとウィジェットに「N日連続」が表示されます。
 • 週間ふりかえり：今週完了したセルとバンダラートごとの進捗をひと目で確認でき、毎週日曜日の夜8時に通知も受け取れます。
 • 直近16週間の達成記録をヒートマップで表示します。
 • ウィジェットに残りのタスク数と連続達成日数が表示されます。
@@ -70,3 +72,8 @@ Streak and heatmap data are stored only on the device and are not sent to any se
 3. 빌드 선택 기준에 맞는 build를 선택한다.
 4. App Review 정보의 메모에 위 App Review 메모를 입력한다.
 5. 심사에 제출한다.
+
+## 제출 기록
+
+- 2026-11-16: build `1.8.0 (2)`로 심사 제출. 출시 방식은 승인 후 자동 출시, 모든 사용자에게 즉시 업데이트, 기존 평가 유지.
+- 노르웨이어 현지화는 기존에 한국어 내용으로 채워져 있어 업데이트 문구도 한국어와 같다.
