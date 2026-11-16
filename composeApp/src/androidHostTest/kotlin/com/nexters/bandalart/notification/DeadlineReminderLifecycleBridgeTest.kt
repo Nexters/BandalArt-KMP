@@ -18,6 +18,7 @@ package com.nexters.bandalart.notification
 
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,26 +33,30 @@ class DeadlineReminderLifecycleBridgeTest {
     fun lifecycleSignalBeforeGraphAttachmentIsReplayed() =
         runTest {
             val reconciler = RecordingReconciler()
+            val weeklyReviewReminderReconciler = RecordingWeeklyReviewReminderReconciler()
             val bridge = DeadlineReminderLifecycleBridge(this)
 
             bridge.record()
-            bridge.attach(reconciler)
+            bridge.attach(reconciler, weeklyReviewReminderReconciler)
             runCurrent()
 
             assertEquals(1, reconciler.reconcileCalls)
+            assertEquals(1, weeklyReviewReminderReconciler.reconcileCalls)
         }
 
     @Test
     fun lifecycleSignalAfterGraphAttachmentReconcilesImmediately() =
         runTest {
             val reconciler = RecordingReconciler()
+            val weeklyReviewReminderReconciler = RecordingWeeklyReviewReminderReconciler()
             val bridge = DeadlineReminderLifecycleBridge(this)
-            bridge.attach(reconciler)
+            bridge.attach(reconciler, weeklyReviewReminderReconciler)
 
             bridge.record()
             runCurrent()
 
             assertEquals(1, reconciler.reconcileCalls)
+            assertEquals(1, weeklyReviewReminderReconciler.reconcileCalls)
         }
 
     private class RecordingReconciler : DeadlineReminderReconciler {
@@ -60,6 +65,14 @@ class DeadlineReminderLifecycleBridgeTest {
         var reconcileCalls = 0
 
         override suspend fun reconcileAll() {
+            reconcileCalls += 1
+        }
+    }
+
+    private class RecordingWeeklyReviewReminderReconciler : WeeklyReviewReminderReconciler {
+        var reconcileCalls = 0
+
+        override suspend fun reconcile() {
             reconcileCalls += 1
         }
     }

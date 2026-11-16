@@ -17,6 +17,7 @@
 package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -29,10 +30,13 @@ class AndroidDeadlineReminderInfrastructureTest {
         runTest {
             val reconciler = mockk<DeadlineReminderReconciler>(relaxed = true)
             val appGraph = mockk<AppGraph>()
+            val weeklyReviewReconciler = mockk<WeeklyReviewReminderReconciler>(relaxed = true)
             every { appGraph.deadlineReminderReconciler } returns reconciler
+            every { appGraph.weeklyReviewReminderReconciler } returns weeklyReviewReconciler
 
             reconcileAndroidDeadlineReminders(appGraph)
 
             coVerify(exactly = 1) { reconciler.reconcileAll() }
+            coVerify(exactly = 1) { weeklyReviewReconciler.reconcile() }
         }
 }

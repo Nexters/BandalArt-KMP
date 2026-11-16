@@ -31,6 +31,7 @@ import com.nexters.bandalart.core.data.repository.DefaultBandalartRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartSlotRepository
 import com.nexters.bandalart.core.data.repository.DefaultBandalartWidgetRepository
 import com.nexters.bandalart.core.data.notification.DefaultDeadlineReminderReconciler
+import com.nexters.bandalart.core.data.notification.DefaultWeeklyReviewReminderReconciler
 import com.nexters.bandalart.core.data.repository.DefaultDeadlineReminderProjectionRepository
 import com.nexters.bandalart.core.data.repository.DefaultInAppUpdateRepository
 import com.nexters.bandalart.core.data.repository.DefaultOnboardingRepository
@@ -56,6 +57,11 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderPlanner
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTimeZoneProvider
+import com.nexters.bandalart.core.domain.notification.BufferedWeeklyReviewLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderScheduler
 import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
@@ -161,6 +167,18 @@ object RepositoryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDeadlineNotificationLaunchTarget(): DeadlineNotificationLaunchTarget = BufferedDeadlineNotificationLaunchTarget()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideWeeklyReviewReminderReconciler(
+        settingsRepository: SettingsRepository,
+        scheduler: WeeklyReviewReminderScheduler,
+        authorization: WeeklyReviewNotificationAuthorization,
+    ): WeeklyReviewReminderReconciler = DefaultWeeklyReviewReminderReconciler(settingsRepository, scheduler, authorization)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideWeeklyReviewLaunchTarget(): WeeklyReviewLaunchTarget = BufferedWeeklyReviewLaunchTarget()
 }
 
 private object UnavailableBackupRpcClient : BackupRpcClient {

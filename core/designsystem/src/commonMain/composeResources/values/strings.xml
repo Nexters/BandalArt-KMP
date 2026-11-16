@@ -214,6 +214,15 @@
     <string name="settings_deadline_reminder_test_sent">테스트 알림을 보냈어요.</string>
     <string name="settings_deadline_reminder_test_failed">테스트 알림을 보내지 못했어요. 시스템 알림 설정을 확인해 주세요.</string>
     <string name="settings_deadline_reminder_test">테스트 알림 보내기</string>
+    <string name="settings_weekly_review_reminder">주간 회고 알림</string>
+    <string name="settings_weekly_review_reminder_body">매주 일요일 저녁 8시에 이번 주 진행을 알려 드려요</string>
+    <string name="settings_weekly_review_reminder_dialog_title">주간 회고 알림을 켤까요?</string>
+    <string name="settings_weekly_review_open">이번 주 회고 보기</string>
+    <string name="weekly_review_title">이번 주 회고</string>
+    <string name="weekly_review_period">%1$d월 %2$d일 ~ %3$d월 %4$d일</string>
+    <string name="weekly_review_total">완료한 셀 %1$d개 · %2$d일 동안 달성</string>
+    <string name="weekly_review_bandalart_progress">이번 주 %1$d개 완료 · 달성률 %2$d%</string>
+    <string name="weekly_review_empty">이번 주에는 아직 완료한 셀이 없어요. 오늘 하나 시작해 볼까요?</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">새 반다라트 만들기</string>

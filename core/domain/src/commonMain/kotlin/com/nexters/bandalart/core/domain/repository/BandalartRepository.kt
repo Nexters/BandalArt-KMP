@@ -6,6 +6,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
 
@@ -126,6 +127,9 @@ interface BandalartRepository {
 
     /** 태스크를 완료한 날이 오늘 또는 어제까지 며칠 연속인지 관찰한다. */
     fun observeCompletionStreak(): Flow<Int>
+
+    /** 이번 주(월요일~오늘) 완료 기록을 반다라트별로 요약한다. */
+    suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary
 
     /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)

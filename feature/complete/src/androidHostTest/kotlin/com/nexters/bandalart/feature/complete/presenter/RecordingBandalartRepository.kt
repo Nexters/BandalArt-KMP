@@ -24,6 +24,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
+import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -103,6 +104,8 @@ internal class RecordingBandalartRepository : BandalartRepository {
     override suspend fun applyDueDailyResets(): Set<Long> = emptySet()
 
     override fun observeCompletionStreak(): Flow<Int> = emptyFlow()
+
+    override suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary = error("Not used")
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) = error("Not used")
 

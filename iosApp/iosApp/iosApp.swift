@@ -15,6 +15,7 @@ import WidgetKit
 
 private let deadlineReminderIdentifierPrefix = "deadline.v1."
 private let deadlineBandalartIdKey = "deadline_bandalart_id"
+private let weeklyReviewReminderIdentifier = "weekly_review.v1"
 private let widgetAppGroupIdentifier = "group.com.nexters.bandalart"
 private let widgetRecentBandalartIdKey = "ios_widget_recent_bandalart_id"
 private let widgetRecentSubGoalIdKey = "ios_widget_recent_sub_goal_id"
@@ -77,7 +78,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        guard notification.request.identifier.hasPrefix(deadlineReminderIdentifierPrefix) else {
+        let identifier = notification.request.identifier
+        guard identifier.hasPrefix(deadlineReminderIdentifierPrefix) || identifier == weeklyReviewReminderIdentifier else {
             completionHandler([])
             return
         }
@@ -92,6 +94,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         defer { completionHandler() }
 
         let request = response.notification.request
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+           request.identifier == weeklyReviewReminderIdentifier {
+            DispatchQueue.main.async { [notificationLaunchBridge] in
+                notificationLaunchBridge.recordWeeklyReview()
+            }
+            return
+        }
         guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
               request.identifier.hasPrefix(deadlineReminderIdentifierPrefix) else {
             return

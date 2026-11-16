@@ -43,6 +43,10 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationLaunchTarget
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduler
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewLaunchTarget
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderReconciler
+import com.nexters.bandalart.core.domain.notification.WeeklyReviewReminderScheduler
 import com.nexters.bandalart.core.domain.repository.DeadlineReminderProjectionRepository
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
@@ -61,6 +65,8 @@ interface PlatformBindings {
     val rewardedAdGateway: RewardedAdGateway
     val deadlineReminderScheduler: DeadlineReminderScheduler
     val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
+    val weeklyReviewNotificationAuthorization: WeeklyReviewNotificationAuthorization
+    val weeklyReviewReminderScheduler: WeeklyReviewReminderScheduler
     val deviceBackupKeyProvider: DeviceBackupKeyProvider
     val backupApiConfig: BackupApiConfig
 }
@@ -98,6 +104,9 @@ interface AppGraph {
     val deadlineReminderProjectionRepository: DeadlineReminderProjectionRepository
     val deadlineReminderReconciler: DeadlineReminderReconciler
     val deadlineNotificationLaunchTarget: DeadlineNotificationLaunchTarget
+    val weeklyReviewNotificationAuthorization: WeeklyReviewNotificationAuthorization
+    val weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler
+    val weeklyReviewLaunchTarget: WeeklyReviewLaunchTarget
     val circuit: Circuit
 
     @DependencyGraph.Factory

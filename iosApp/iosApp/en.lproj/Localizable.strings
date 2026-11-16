@@ -3,3 +3,5 @@
 "deadline_reminder_multiple_body" = "%ld goals are due today.";
 "deadline_reminder_test_title" = "Deadline reminder test";
 "deadline_reminder_test_body" = "If you can see this, notifications are set up correctly.";
+"weekly_review_reminder_title" = "Weekly review";
+"weekly_review_reminder_body" = "Look back on this week's progress and get ready for next week.";

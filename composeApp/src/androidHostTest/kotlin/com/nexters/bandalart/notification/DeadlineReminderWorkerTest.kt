@@ -70,4 +70,13 @@ class DeadlineReminderWorkerTest {
 
             assertTrue(worker.doWork() is ListenableWorker.Result.Retry)
         }
+
+    @Test
+    fun weeklyReviewWorkerRetriesWhenProcessDependenciesAreNotInstalledYet() =
+        runTest {
+            AndroidDeadlineReminderDependenciesRegistry.clearForTest()
+            val worker = TestListenableWorkerBuilder<WeeklyReviewReminderWorker>(context).build()
+
+            assertTrue(worker.doWork() is ListenableWorker.Result.Retry)
+        }
 }

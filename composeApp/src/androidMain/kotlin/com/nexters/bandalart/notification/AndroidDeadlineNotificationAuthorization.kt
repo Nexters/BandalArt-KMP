@@ -31,6 +31,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthor
 
 class AndroidDeadlineNotificationAuthorization(
     private val application: Application,
+    private val channelId: String = DeadlineReminderWork.CHANNEL_ID,
 ) : DeadlineNotificationAuthorization {
     override suspend fun getStatus(): DeadlineNotificationAuthorizationStatus {
         if (
@@ -50,7 +51,7 @@ class AndroidDeadlineNotificationAuthorization(
         val channel =
             application
                 .getSystemService(NotificationManager::class.java)
-                .getNotificationChannel(DeadlineReminderWork.CHANNEL_ID)
+                .getNotificationChannel(channelId)
         return if (channel?.importance == NotificationManager.IMPORTANCE_NONE) {
             DeadlineNotificationAuthorizationStatus.BLOCKED
         } else {

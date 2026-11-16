@@ -214,6 +214,15 @@
     <string name="settings_deadline_reminder_test_sent">テスト通知を送信しました。</string>
     <string name="settings_deadline_reminder_test_failed">テスト通知を送信できませんでした。システムの通知設定を確認してください。</string>
     <string name="settings_deadline_reminder_test">テスト通知を送信</string>
+    <string name="settings_weekly_review_reminder">週間ふりかえり通知</string>
+    <string name="settings_weekly_review_reminder_body">毎週日曜日の夜8時に今週の進み具合をお知らせします</string>
+    <string name="settings_weekly_review_reminder_dialog_title">週間ふりかえり通知をオンにしますか？</string>
+    <string name="settings_weekly_review_open">今週のふりかえりを見る</string>
+    <string name="weekly_review_title">今週のふりかえり</string>
+    <string name="weekly_review_period">%1$d月%2$d日〜%3$d月%4$d日</string>
+    <string name="weekly_review_total">完了したセル %1$d個 · %2$d日間達成</string>
+    <string name="weekly_review_bandalart_progress">今週 %1$d個完了 · 達成率 %2$d%</string>
+    <string name="weekly_review_empty">今週はまだ完了したセルがありません。今日ひとつ始めてみませんか？</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">新しいバンダラート</string>

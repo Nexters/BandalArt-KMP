@@ -22,6 +22,7 @@ import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartTaskCellEntity
+import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import kotlinx.coroutines.flow.Flow
@@ -44,6 +45,7 @@ internal class FakeBandalartRepository(
     private val taskCellUpdateError: Throwable? = null,
     private val publishEmojiRevisionImmediately: Boolean = false,
     private val dueDailyResetIds: Set<Long> = emptySet(),
+    private val weeklyReviewSummary: WeeklyReviewSummary? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
@@ -289,6 +291,8 @@ internal class FakeBandalartRepository(
     }
 
     override fun observeCompletionStreak(): Flow<Int> = completionStreak
+
+    override suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary = checkNotNull(weeklyReviewSummary) { "weeklyReviewSummary is not configured" }
 
     override suspend fun applyDueDailyResets(): Set<Long> {
         dueDailyResetChecks += 1
