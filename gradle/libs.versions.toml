@@ -6,8 +6,8 @@ targetSdk = "36"
 compileSdk = "37"
 compileSdkMinor = "1"
 majorVersion = "2"
-minorVersion = "6"
-patchVersion = "5"
+minorVersion = "7"
+patchVersion = "0"
 packageName = "com.nexters.bandalart"
 
 # Gradle Plugin

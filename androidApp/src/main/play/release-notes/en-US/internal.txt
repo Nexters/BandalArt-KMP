@@ -1,1 +1,4 @@
-• Long memos in cell editing now wrap onto multiple lines so you can see the full text.
+• Complete tasks on consecutive days to see a 🔥 N-day streak on Home and widgets.
+• Weekly review: see this week's completed cells and progress per Bandalart at a glance, with an optional reminder every Sunday at 8 PM.
+• A heatmap shows your completions over the last 16 weeks.
+• Widgets now show remaining tasks and your current streak.
