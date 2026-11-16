@@ -30,7 +30,8 @@ struct BandalartWidgetProvider: AppIntentTimelineProvider {
         for configuration: BandalartWidgetConfigurationIntent,
         in context: Context
     ) async -> Timeline<BandalartWidgetEntry> {
-        Timeline(entries: [await entry(for: configuration)], policy: .never)
+        let nextMidnight = Calendar.current.startOfDay(for: .now.addingTimeInterval(86_400))
+        return Timeline(entries: [await entry(for: configuration)], policy: .after(nextMidnight))
     }
 
     private func entry(
@@ -90,6 +91,12 @@ private struct SmallBandalartWidgetView: View {
                 .foregroundStyle(.primary)
             ProgressView(value: Double(snapshot.completionRatio), total: 100)
                 .tint(.mint)
+            if snapshot.streakDays > 0 {
+                Text("🔥 \(snapshot.streakDays)-day streak")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
         }
     }
 }
@@ -109,6 +116,15 @@ private struct DetailBandalartWidgetView: View {
                 Text("\(snapshot.completionRatio)%")
                     .font(.subheadline.weight(.semibold))
             }
+            HStack(spacing: 8) {
+                Text("\(snapshot.remainingTaskCount) tasks left")
+                if snapshot.streakDays > 0 {
+                    Text("🔥 \(snapshot.streakDays)-day streak")
+                }
+            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
             if let subGoalTitle = snapshot.subGoalTitle {
                 Text(subGoalTitle)
                     .font(.subheadline.weight(.semibold))

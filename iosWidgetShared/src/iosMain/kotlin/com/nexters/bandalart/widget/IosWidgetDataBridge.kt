@@ -20,9 +20,13 @@ import com.nexters.bandalart.core.database.BandalartDatabase
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartWidgetSnapshotDto
 import com.nexters.bandalart.core.database.openExistingSharedBandalartDatabase
+import com.nexters.bandalart.core.database.BandalartDao
 import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
+import com.nexters.bandalart.core.domain.policy.calculateCompletionStreak
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.LocalDate
 import platform.Foundation.NSUserDefaults
+import kotlin.time.Clock
 
 class IosWidgetDataBridge {
     private var sharedDatabase: BandalartDatabase? = null
@@ -56,7 +60,7 @@ class IosWidgetDataBridge {
                 }.toIosWidgetSubGoalOptions(bandalartId = bandalartId, mainCellId = mainCellId)
                 .resolveRecentSubGoalId(defaults.integerForKey(IOS_WIDGET_RECENT_SUB_GOAL_ID_KEY))
 
-        return dao.findWidgetSnapshot(bandalartId, subGoalId)?.toIosWidgetSnapshotRecord()?.toIosWidgetSnapshot()
+        return dao.readSnapshot(bandalartId, subGoalId)
     }
 
     suspend fun setTaskCompleted(
@@ -74,10 +78,25 @@ class IosWidgetDataBridge {
                 subGoalId = subGoalId,
                 taskId = taskId,
                 completed = completed,
+                today = SystemDailyResetDateProvider.today().toString(),
+                completedAt = Clock.System.now().toEpochMilliseconds(),
             )
         if (!wasUpdated) return null
-        return dao.findWidgetSnapshot(bandalartId, subGoalId)?.toIosWidgetSnapshotRecord()?.toIosWidgetSnapshot()
+        return dao.readSnapshot(bandalartId, subGoalId)
     }
+}
+
+private suspend fun BandalartDao.readSnapshot(
+    bandalartId: Long,
+    subGoalId: Long?,
+): IosWidgetSnapshot? {
+    val snapshot = findWidgetSnapshot(bandalartId, subGoalId) ?: return null
+    val streakDays =
+        calculateCompletionStreak(
+            completedDates = getCompletedDates().map(LocalDate::parse),
+            today = SystemDailyResetDateProvider.today(),
+        )
+    return snapshot.toIosWidgetSnapshotRecord(streakDays).toIosWidgetSnapshot()
 }
 
 private const val IOS_WIDGET_APP_GROUP_IDENTIFIER = "group.com.nexters.bandalart"
@@ -91,7 +110,7 @@ private fun BandalartDBEntity.toIosWidgetBandalartRecord() =
         profileEmoji = profileEmoji,
     )
 
-private fun BandalartWidgetSnapshotDto.toIosWidgetSnapshotRecord() =
+private fun BandalartWidgetSnapshotDto.toIosWidgetSnapshotRecord(streakDays: Int) =
     IosWidgetSnapshotRecord(
         bandalartId = requireNotNull(bandalart.id),
         subGoalId = subGoal?.id,
@@ -107,4 +126,6 @@ private fun BandalartWidgetSnapshotDto.toIosWidgetSnapshotRecord() =
                     isCompleted = task.isCompleted,
                 )
             },
+        remainingTaskCount = remainingTaskCount,
+        streakDays = streakDays,
     )

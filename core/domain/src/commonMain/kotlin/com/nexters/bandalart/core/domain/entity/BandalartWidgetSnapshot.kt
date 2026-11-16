@@ -8,6 +8,8 @@ data class BandalartWidgetSnapshot(
     val completionRatio: Int,
     val subGoalTitle: String?,
     val tasks: List<BandalartWidgetTask>,
+    val remainingTaskCount: Int,
+    val streakDays: Int,
 )
 
 data class BandalartWidgetTask(

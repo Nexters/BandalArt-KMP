@@ -15,6 +15,8 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
     let completionRatio: Int
     let subGoalTitle: String?
     let tasks: [BandalartWidgetTaskModel]
+    let remainingTaskCount: Int
+    let streakDays: Int
 
     init(snapshot: IosWidgetSnapshot) {
         bandalartId = snapshot.bandalartId
@@ -30,6 +32,8 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
                 isCompleted: task.isCompleted
             )
         }
+        remainingTaskCount = Int(snapshot.remainingTaskCount)
+        streakDays = Int(snapshot.streakDays)
     }
 
     static var placeholder: BandalartWidgetSnapshotModel {
@@ -56,7 +60,9 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
                     title: String(localized: "Drink enough water"),
                     isCompleted: false
                 ),
-            ]
+            ],
+            remainingTaskCount: 2,
+            streakDays: 3
         )
     }
 
@@ -67,7 +73,9 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
         profileEmoji: String?,
         completionRatio: Int,
         subGoalTitle: String?,
-        tasks: [BandalartWidgetTaskModel]
+        tasks: [BandalartWidgetTaskModel],
+        remainingTaskCount: Int,
+        streakDays: Int
     ) {
         self.bandalartId = bandalartId
         self.subGoalId = subGoalId
@@ -76,6 +84,8 @@ struct BandalartWidgetSnapshotModel: Hashable, Sendable {
         self.completionRatio = completionRatio
         self.subGoalTitle = subGoalTitle
         self.tasks = tasks
+        self.remainingTaskCount = remainingTaskCount
+        self.streakDays = streakDays
     }
 }
 

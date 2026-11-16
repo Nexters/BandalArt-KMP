@@ -208,13 +208,13 @@ class DefaultBandalartRepositoryTest {
                         isCompleted = true,
                     )
 
-                coEvery { mockBandalartDao.updateTaskCellWithDto(any(), any()) } returns Unit
+                coEvery { mockBandalartDao.updateTaskCellWithDto(any(), any(), any(), any()) } returns Unit
 
                 // when
                 bandalartRepository.updateBandalartTaskCell(bandalartId, cellId, updateEntity)
 
                 // then
-                coVerify { mockBandalartDao.updateTaskCellWithDto(cellId, updateEntity.toDto()) }
+                coVerify { mockBandalartDao.updateTaskCellWithDto(cellId, updateEntity.toDto(), any(), any()) }
             }
 
         @Test

@@ -53,6 +53,8 @@ internal class FakeBandalartRepository(
 
     private val recentBandalartFlow = MutableStateFlow(recentBandalartId)
 
+    val completionStreak = MutableStateFlow(0)
+
     var recentBandalartId: Long
         get() = recentBandalartFlow.value
         private set(value) {
@@ -285,6 +287,8 @@ internal class FakeBandalartRepository(
         )
         return true
     }
+
+    override fun observeCompletionStreak(): Flow<Int> = completionStreak
 
     override suspend fun applyDueDailyResets(): Set<Long> {
         dueDailyResetChecks += 1

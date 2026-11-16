@@ -10,6 +10,8 @@
     <string name="bandalart_widget_unconfigured">Choose a BandalArt to display</string>
     <string name="bandalart_widget_deleted">The selected goal is unavailable\nTap to configure again</string>
     <string name="bandalart_widget_completion_ratio">Progress %1$d%%</string>
+    <string name="bandalart_widget_remaining_tasks">%1$d tasks left</string>
+    <string name="bandalart_widget_streak">🔥 %1$d-day streak</string>
     <string name="bandalart_widget_no_subgoal">No sub-goal selected</string>
     <string name="bandalart_widget_no_tasks">No tasks yet</string>
     <string name="bandalart_widget_unnamed_goal">Untitled goal</string>

@@ -58,6 +58,7 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val deadlinePermissionRequestId: Long? = null,
         val showRoutineSettingsTooltip: Boolean = false,
         val showTaskCompletionTooltip: Boolean = false,
+        val completionStreak: Int = 0,
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState

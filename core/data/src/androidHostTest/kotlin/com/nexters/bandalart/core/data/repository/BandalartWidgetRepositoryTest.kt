@@ -132,6 +132,8 @@ class BandalartWidgetRepositoryTest {
 
             assertEquals(true, snapshot?.tasks?.first { it.id == taskId }?.isCompleted)
             assertEquals(4, snapshot?.completionRatio)
+            assertEquals(0, snapshot?.remainingTaskCount)
+            assertEquals(1, snapshot?.streakDays)
             assertEquals("달리기", storedTask.title)
             assertEquals("한강 5km", storedTask.description)
             assertEquals("2026-08-11T07:00", storedTask.dueDate)
@@ -329,7 +331,14 @@ class BandalartWidgetRepositoryTest {
                     .first()
                     .id!!
             val taskId = dao.getChildCells(subGoalId).first().id!!
-            dao.setTaskCompletedIfOwned(bandalartId, subGoalId, taskId, completed = true)
+            dao.setTaskCompletedIfOwned(
+                bandalartId = bandalartId,
+                subGoalId = subGoalId,
+                taskId = taskId,
+                completed = true,
+                today = "2026-09-14",
+                completedAt = 0L,
+            )
             dao.setDailyResetEnabled(bandalartId, enabled = true, today = "2026-09-14")
             bandalartRepository =
                 DefaultBandalartRepository(

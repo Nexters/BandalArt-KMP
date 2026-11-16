@@ -27,6 +27,7 @@ import com.nexters.bandalart.core.database.entity.BandalartCellDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartCellWithChildrenDto
 import com.nexters.bandalart.core.database.entity.BandalartDBEntity
 import com.nexters.bandalart.core.database.entity.BandalartWidgetSnapshotDto
+import com.nexters.bandalart.core.database.entity.CellCompletionRecordDBEntity
 import com.nexters.bandalart.core.database.entity.CreateBandalartDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartEmojiDto
 import com.nexters.bandalart.core.database.entity.UpdateBandalartMainCellDto
@@ -187,11 +188,13 @@ interface BandalartDao {
         val mainCell = findBandalartMainCell(bandalartId)?.cell ?: return null
         if (mainCell.id == null || mainCell.bandalartId != bandalartId || mainCell.parentId != null) return null
 
+        val remainingTaskCount = countRemainingTasks(bandalartId)
         if (subGoalId == null) {
             return BandalartWidgetSnapshotDto(
                 bandalart = bandalart,
                 subGoal = null,
                 tasks = emptyList(),
+                remainingTaskCount = remainingTaskCount,
             )
         }
 
@@ -214,8 +217,23 @@ interface BandalartDao {
             bandalart = bandalart,
             subGoal = subGoal,
             tasks = tasks,
+            remainingTaskCount = remainingTaskCount,
         )
     }
+
+    /** 제목이 있고 아직 완료하지 않은 태스크 셀 수 */
+    @Query(
+        """
+        SELECT COUNT(*) FROM bandalart_cells AS task
+        INNER JOIN bandalart_cells AS subGoal ON task.parentId = subGoal.id
+        WHERE task.bandalartId = :bandalartId
+            AND subGoal.parentId IS NOT NULL
+            AND task.isCompleted = 0
+            AND task.title IS NOT NULL
+            AND TRIM(task.title) != ''
+        """,
+    )
+    suspend fun countRemainingTasks(bandalartId: Long): Int
 
     // Update - 반다라트
 
@@ -367,6 +385,8 @@ interface BandalartDao {
     suspend fun updateTaskCellWithDto(
         cellId: Long,
         updateDto: UpdateBandalartTaskCellDto,
+        today: String,
+        completedAt: Long,
     ) {
         val originalCell = getBandalartCell(cellId).cell
         val updatedCell =
@@ -377,6 +397,7 @@ interface BandalartDao {
                 isCompleted = updateDto.isCompleted ?: originalCell.isCompleted,
             )
         updateCell(updatedCell)
+        recordTaskCompletionChange(originalCell, updatedCell.isCompleted, today, completedAt)
         // 태스크 셀이 업데이트되면 전체 완료 상태 업데이트
         updateCompletionStatus(updatedCell.bandalartId)
     }
@@ -387,6 +408,8 @@ interface BandalartDao {
         subGoalId: Long,
         taskId: Long,
         completed: Boolean,
+        today: String,
+        completedAt: Long,
     ): Boolean {
         if (findBandalart(bandalartId) == null) return false
 
@@ -406,9 +429,52 @@ interface BandalartDao {
         if (!isOwnedTask) return false
 
         updateCell(task.copy(isCompleted = completed))
+        recordTaskCompletionChange(task, completed, today, completedAt)
         updateCompletionStatus(bandalartId)
         return true
     }
+
+    /** 완료로 바뀌면 오늘 기록을 남기고, 완료를 해제하면 오늘 기록만 지운다. */
+    private suspend fun recordTaskCompletionChange(
+        originalTask: BandalartCellDBEntity,
+        isCompleted: Boolean,
+        today: String,
+        completedAt: Long,
+    ) {
+        val taskId = originalTask.id ?: return
+        if (originalTask.isCompleted == isCompleted) return
+        if (isCompleted) {
+            insertCompletionRecord(
+                CellCompletionRecordDBEntity(
+                    bandalartId = originalTask.bandalartId,
+                    cellId = taskId,
+                    completedDate = today,
+                    completedAt = completedAt,
+                ),
+            )
+        } else {
+            deleteCompletionRecord(taskId, today)
+        }
+    }
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCompletionRecord(record: CellCompletionRecordDBEntity)
+
+    @Query("DELETE FROM cell_completion_records WHERE cellId = :cellId AND completedDate = :completedDate")
+    suspend fun deleteCompletionRecord(
+        cellId: Long,
+        completedDate: String,
+    )
+
+    @Query("SELECT * FROM cell_completion_records ORDER BY completedAt")
+    suspend fun getAllCompletionRecords(): List<CellCompletionRecordDBEntity>
+
+    /** 완료 기록이 있는 날짜 목록(최신순) */
+    @Query("SELECT DISTINCT completedDate FROM cell_completion_records ORDER BY completedDate DESC")
+    fun observeCompletedDates(): Flow<List<String>>
+
+    @Query("SELECT DISTINCT completedDate FROM cell_completion_records ORDER BY completedDate DESC")
+    suspend fun getCompletedDates(): List<String>
 
     /** 셀의 이모지 업데이트 */
     @Transaction

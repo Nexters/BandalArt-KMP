@@ -62,6 +62,7 @@ import bandalart.core.designsystem.generated.resources.edit_description
 import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.home_complete
 import bandalart.core.designsystem.generated.resources.home_complete_ratio
+import bandalart.core.designsystem.generated.resources.home_completion_streak
 import bandalart.core.designsystem.generated.resources.home_empty_title
 import bandalart.core.designsystem.generated.resources.home_routine_settings_tooltip
 import bandalart.core.designsystem.generated.resources.ic_edit
@@ -99,6 +100,7 @@ fun HomeHeader(
     showRoutineSettingsTooltip: Boolean = false,
     onRoutineSettingsTooltipDismissed: () -> Unit = {},
     compact: Boolean = false,
+    completionStreak: Int = 0,
     dropDownMenuBackdrop: Backdrop? = null,
 ) {
     Column(modifier.padding(horizontal = 16.dp)) {
@@ -164,6 +166,24 @@ fun HomeHeader(
                 )
                 Text(
                     text = bandalartData.dueDate.toFormatDate(getLocale()),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.W500,
+                    modifier = Modifier.padding(start = 6.dp),
+                    letterSpacing = (-0.24).sp,
+                )
+            }
+            if (completionStreak > 0) {
+                VerticalDivider(
+                    modifier =
+                        Modifier
+                            .height(8.dp)
+                            .padding(start = 6.dp),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+                Text(
+                    text = stringResource(Res.string.home_completion_streak, completionStreak),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.W500,

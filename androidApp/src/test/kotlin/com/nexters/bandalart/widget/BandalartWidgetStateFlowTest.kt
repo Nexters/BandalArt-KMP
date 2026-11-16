@@ -97,5 +97,7 @@ class BandalartWidgetStateFlowTest {
         completionRatio = completionRatio,
         subGoalTitle = "Sub goal",
         tasks = emptyList(),
+        remainingTaskCount = 0,
+        streakDays = 0,
     )
 }

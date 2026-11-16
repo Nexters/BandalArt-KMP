@@ -5,6 +5,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetTask
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartWidgetRepository
+import kotlinx.coroutines.flow.first
 
 class DefaultBandalartWidgetRepository(
     private val bandalartRepository: BandalartRepository,
@@ -38,6 +39,8 @@ class DefaultBandalartWidgetRepository(
                         isCompleted = task.isCompleted,
                     )
                 },
+            remainingTaskCount = storedSnapshot.remainingTaskCount,
+            streakDays = bandalartRepository.observeCompletionStreak().first(),
         )
     }
 

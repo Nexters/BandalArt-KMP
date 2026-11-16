@@ -36,4 +36,27 @@ val BANDALART_MIGRATION_1_2 =
         }
     }
 
-fun RoomDatabase.Builder<BandalartDatabase>.addBandalartMigrations(): RoomDatabase.Builder<BandalartDatabase> = addMigrations(BANDALART_MIGRATION_1_2)
+val BANDALART_MIGRATION_2_3 =
+    object : Migration(2, 3) {
+        override fun migrate(connection: SQLiteConnection) {
+            connection.execSQL(
+                "CREATE TABLE IF NOT EXISTS `cell_completion_records` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "`bandalartId` INTEGER NOT NULL, " +
+                    "`cellId` INTEGER NOT NULL, " +
+                    "`completedDate` TEXT NOT NULL, " +
+                    "`completedAt` INTEGER NOT NULL)",
+            )
+            connection.execSQL(
+                "CREATE UNIQUE INDEX IF NOT EXISTS `index_cell_completion_records_cellId_completedDate` " +
+                    "ON `cell_completion_records` (`cellId`, `completedDate`)",
+            )
+            connection.execSQL(
+                "CREATE INDEX IF NOT EXISTS `index_cell_completion_records_completedDate` " +
+                    "ON `cell_completion_records` (`completedDate`)",
+            )
+        }
+    }
+
+fun RoomDatabase.Builder<BandalartDatabase>.addBandalartMigrations(): RoomDatabase.Builder<BandalartDatabase> =
+    addMigrations(BANDALART_MIGRATION_1_2, BANDALART_MIGRATION_2_3)

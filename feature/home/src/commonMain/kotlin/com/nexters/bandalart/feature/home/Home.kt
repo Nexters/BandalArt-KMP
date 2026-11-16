@@ -240,6 +240,7 @@ internal fun Home(
         bandalartCellData = state.bandalartCellData,
         isDropDownMenuOpened = state.isDropDownMenuOpened,
         showRoutineSettingsTooltip = state.showRoutineSettingsTooltip,
+        completionStreak = state.completionStreak,
         showTaskCompletionTooltip = state.showTaskCompletionTooltip,
         isBannerCreativeVisible = state.isBannerCreativeVisible(),
         eventSink = state.eventSink,
@@ -392,6 +393,7 @@ internal fun HomeContent(
     bandalartCellData: BandalartCellEntity?,
     isDropDownMenuOpened: Boolean,
     showRoutineSettingsTooltip: Boolean,
+    completionStreak: Int,
     showTaskCompletionTooltip: Boolean,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
@@ -419,6 +421,7 @@ internal fun HomeContent(
                     bandalartCellData = bandalartCellData,
                     isDropDownMenuOpened = isDropDownMenuOpened,
                     showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                    completionStreak = completionStreak,
                     showTaskCompletionTooltip = showTaskCompletionTooltip,
                     isBannerCreativeVisible = isBannerCreativeVisible,
                     eventSink = eventSink,
@@ -444,6 +447,7 @@ internal fun HomeContent(
                                     cellData = bandalartCellData,
                                     isDropDownMenuOpened = isDropDownMenuOpened,
                                     showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                                    completionStreak = completionStreak,
                                     onRoutineSettingsTooltipDismissed = {
                                         eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
                                     },
@@ -631,6 +635,7 @@ private fun ShortWideHomeContent(
     bandalartCellData: BandalartCellEntity?,
     isDropDownMenuOpened: Boolean,
     showRoutineSettingsTooltip: Boolean,
+    completionStreak: Int,
     showTaskCompletionTooltip: Boolean,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
@@ -667,6 +672,7 @@ private fun ShortWideHomeContent(
                         cellData = bandalartCellData,
                         isDropDownMenuOpened = isDropDownMenuOpened,
                         showRoutineSettingsTooltip = showRoutineSettingsTooltip,
+                        completionStreak = completionStreak,
                         onRoutineSettingsTooltipDismissed = {
                             eventSink(HomeScreen.Event.DismissRoutineSettingsTooltip)
                         },
@@ -752,6 +758,7 @@ private fun HomeScreenPreview() {
             bandalartCellData = dummyBandalartChartData,
             isDropDownMenuOpened = false,
             showRoutineSettingsTooltip = false,
+            completionStreak = 3,
             showTaskCompletionTooltip = false,
             isBannerCreativeVisible = true,
             eventSink = {},
