@@ -18,6 +18,7 @@ package com.nexters.bandalart.feature.home.presenter
 
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
@@ -46,6 +47,7 @@ internal class FakeBandalartRepository(
     private val publishEmojiRevisionImmediately: Boolean = false,
     private val dueDailyResetIds: Set<Long> = emptySet(),
     private val weeklyReviewSummary: WeeklyReviewSummary? = null,
+    private val completionHeatmap: CompletionHeatmap? = null,
 ) : BandalartRepository {
     private val bandalartFlow = MutableStateFlow(initialBandalarts)
     private val details = details.toMutableMap()
@@ -293,6 +295,8 @@ internal class FakeBandalartRepository(
     override fun observeCompletionStreak(): Flow<Int> = completionStreak
 
     override suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary = checkNotNull(weeklyReviewSummary) { "weeklyReviewSummary is not configured" }
+
+    override suspend fun getCompletionHeatmap(): CompletionHeatmap = checkNotNull(completionHeatmap) { "completionHeatmap is not configured" }
 
     override suspend fun applyDueDailyResets(): Set<Long> {
         dueDailyResetChecks += 1

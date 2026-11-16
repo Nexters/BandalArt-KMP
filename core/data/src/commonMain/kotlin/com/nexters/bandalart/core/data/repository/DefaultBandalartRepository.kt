@@ -25,6 +25,7 @@ import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.entity.CellCompletionRecord
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
@@ -34,8 +35,10 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
 import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
+import com.nexters.bandalart.core.domain.policy.calculateCompletionHeatmap
 import com.nexters.bandalart.core.domain.policy.calculateCompletionStreak
 import com.nexters.bandalart.core.domain.policy.calculateWeeklyReviewSummary
+import com.nexters.bandalart.core.domain.policy.completionHeatmapStartOf
 import com.nexters.bandalart.core.domain.policy.weekStartOf
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateCatalog
@@ -195,6 +198,20 @@ class DefaultBandalartRepository(
         return calculateWeeklyReviewSummary(
             records = records.map { CellCompletionRecord(it.bandalartId, LocalDate.parse(it.completedDate)) },
             bandalarts = bandalartDao.getAllBandalarts().map { it.toEntity() },
+            today = today,
+        )
+    }
+
+    override suspend fun getCompletionHeatmap(): CompletionHeatmap {
+        applyDueDailyResets()
+        val today = dailyResetDateProvider.today()
+        val records =
+            bandalartDao.getCompletionRecordsBetween(
+                startDate = completionHeatmapStartOf(today).toString(),
+                endDate = today.toString(),
+            )
+        return calculateCompletionHeatmap(
+            completedDates = records.map { LocalDate.parse(it.completedDate) },
             today = today,
         )
     }

@@ -223,6 +223,10 @@
     <string name="weekly_review_total">완료한 셀 %1$d개 · %2$d일 동안 달성</string>
     <string name="weekly_review_bandalart_progress">이번 주 %1$d개 완료 · 달성률 %2$d%</string>
     <string name="weekly_review_empty">이번 주에는 아직 완료한 셀이 없어요. 오늘 하나 시작해 볼까요?</string>
+    <string name="weekly_review_heatmap_title">최근 %1$d주 달성 기록</string>
+    <string name="weekly_review_heatmap_summary">%1$d일 달성 · 총 %2$d개 완료</string>
+    <string name="weekly_review_heatmap_less">적게</string>
+    <string name="weekly_review_heatmap_more">많이</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">새 반다라트 만들기</string>

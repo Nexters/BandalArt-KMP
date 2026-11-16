@@ -2,6 +2,7 @@ package com.nexters.bandalart.core.domain.repository
 
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
+import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
@@ -130,6 +131,9 @@ interface BandalartRepository {
 
     /** 이번 주(월요일~오늘) 완료 기록을 반다라트별로 요약한다. */
     suspend fun getWeeklyReviewSummary(): WeeklyReviewSummary
+
+    /** 이번 주를 포함한 최근 16주의 날짜별 완료 수를 읽는다. */
+    suspend fun getCompletionHeatmap(): CompletionHeatmap
 
     /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)
