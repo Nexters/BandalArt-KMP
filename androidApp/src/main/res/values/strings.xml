@@ -7,7 +7,7 @@
     <string name="bandalart_widget_description">선택한 반다라트 목표와 할 일을 홈 화면에서 확인합니다.</string>
     <string name="bandalart_widget_loading">반다라트를 불러오는 중…</string>
     <string name="bandalart_widget_preview_title">나의 핵심 목표</string>
-    <string name="bandalart_widget_preview_ratio">42%%</string>
+    <string name="bandalart_widget_preview_ratio" formatted="false">42%</string>
     <string name="bandalart_widget_unconfigured">표시할 반다라트를 선택해 주세요</string>
     <string name="bandalart_widget_deleted">선택한 목표를 찾을 수 없어요\n눌러서 다시 설정해 주세요</string>
     <string name="bandalart_widget_completion_ratio">달성률 %1$d%%</string>

@@ -50,6 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
@@ -150,57 +152,51 @@ fun HomeHeader(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(Res.string.home_complete_ratio, bandalartData.completionRatio),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W500,
-                letterSpacing = (-0.24).sp,
+            // 폭이 좁으면 항목을 글자 단위로 줄바꿈하지 않고 통째로 다음 줄로 내린다.
+            HomeHeaderInfoLine(
+                modifier = Modifier.weight(1f),
+                items =
+                    buildList {
+                        add {
+                            Text(
+                                text = stringResource(Res.string.home_complete_ratio, bandalartData.completionRatio),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.W500,
+                                letterSpacing = (-0.24).sp,
+                            )
+                        }
+                        if (!bandalartData.dueDate.isNullOrEmpty()) {
+                            add {
+                                Text(
+                                    text = bandalartData.dueDate.toFormatDate(getLocale()),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.W500,
+                                    letterSpacing = (-0.24).sp,
+                                )
+                            }
+                        }
+                        if (completionStreak > 0) {
+                            add {
+                                Text(
+                                    text = stringResource(Res.string.home_completion_streak, completionStreak),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.W500,
+                                    modifier =
+                                        Modifier
+                                            .clickable(
+                                                onClickLabel = stringResource(Res.string.settings_weekly_review_open),
+                                                role = Role.Button,
+                                                onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
+                                            ).padding(vertical = 4.dp),
+                                    letterSpacing = (-0.24).sp,
+                                )
+                            }
+                        }
+                    },
             )
-            if (!bandalartData.dueDate.isNullOrEmpty()) {
-                VerticalDivider(
-                    modifier =
-                        Modifier
-                            .height(8.dp)
-                            .padding(start = 6.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                )
-                Text(
-                    text = bandalartData.dueDate.toFormatDate(getLocale()),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.W500,
-                    modifier = Modifier.padding(start = 6.dp),
-                    letterSpacing = (-0.24).sp,
-                )
-            }
-            if (completionStreak > 0) {
-                VerticalDivider(
-                    modifier =
-                        Modifier
-                            .height(8.dp)
-                            .padding(start = 6.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                )
-                Text(
-                    text = stringResource(Res.string.home_completion_streak, completionStreak),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.W500,
-                    modifier =
-                        Modifier
-                            .padding(start = 6.dp)
-                            .clickable(
-                                onClickLabel = stringResource(Res.string.settings_weekly_review_open),
-                                role = Role.Button,
-                                onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyReview) },
-                            ).padding(vertical = 4.dp),
-                    letterSpacing = (-0.24).sp,
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
             if (bandalartData.isCompleted) {
                 Box(
                     modifier
@@ -236,6 +232,71 @@ fun HomeHeader(
         )
         if (!compact) {
             Spacer(modifier = Modifier.height(18.dp))
+        }
+    }
+}
+
+/**
+ * 홈 헤더의 달성률·마감일·연속 달성 줄.
+ * 항목 사이에 구분선을 두고, 다음 항목이 남은 폭에 들어가지 않으면 그 항목을 구분선 없이 다음 줄 맨 앞에 둔다.
+ */
+@Composable
+private fun HomeHeaderInfoLine(
+    items: List<@Composable () -> Unit>,
+    modifier: Modifier = Modifier,
+) {
+    Layout(
+        modifier = modifier,
+        content = {
+            items.forEachIndexed { index, item ->
+                if (index > 0) {
+                    VerticalDivider(
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 6.dp)
+                                .height(8.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+                }
+                Box { item() }
+            }
+        },
+    ) { measurables, constraints ->
+        val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
+        val placeables = measurables.map { it.measure(looseConstraints) }
+        val maxWidth = constraints.maxWidth
+        // 줄마다 (placeable, x) 목록. 항목은 짝수, 구분선은 홀수 index에 있다.
+        val lines = mutableListOf(mutableListOf<Pair<Placeable, Int>>())
+        var x = 0
+        for (itemIndex in 0 until (placeables.size + 1) / 2) {
+            val item = placeables[itemIndex * 2]
+            if (itemIndex == 0) {
+                lines.last() += item to 0
+                x = item.width
+                continue
+            }
+            val divider = placeables[itemIndex * 2 - 1]
+            if (x + divider.width + item.width <= maxWidth) {
+                lines.last() += divider to x
+                lines.last() += item to x + divider.width
+                x += divider.width + item.width
+            } else {
+                lines += mutableListOf(item to 0)
+                x = item.width
+            }
+        }
+        val lineHeights = lines.map { line -> line.maxOf { (placeable, _) -> placeable.height } }
+        val width = if (constraints.hasBoundedWidth) maxWidth else lines.maxOf { line -> line.maxOf { (p, px) -> px + p.width } }
+        layout(width, lineHeights.sum()) {
+            var y = 0
+            lines.forEachIndexed { lineIndex, line ->
+                val lineHeight = lineHeights[lineIndex]
+                line.forEach { (placeable, px) ->
+                    placeable.placeRelative(px, y + (lineHeight - placeable.height) / 2)
+                }
+                y += lineHeight
+            }
         }
     }
 }
