@@ -6,7 +6,7 @@
     <string name="bandalart_widget_description">View your selected BandalArt goal and tasks on the Home Screen.</string>
     <string name="bandalart_widget_loading">Loading BandalArt…</string>
     <string name="bandalart_widget_preview_title">My main goal</string>
-    <string name="bandalart_widget_preview_ratio">42%%</string>
+    <string name="bandalart_widget_preview_ratio" formatted="false">42%</string>
     <string name="bandalart_widget_unconfigured">Choose a BandalArt to display</string>
     <string name="bandalart_widget_deleted">The selected goal is unavailable\nTap to configure again</string>
     <string name="bandalart_widget_completion_ratio">Progress %1$d%%</string>
