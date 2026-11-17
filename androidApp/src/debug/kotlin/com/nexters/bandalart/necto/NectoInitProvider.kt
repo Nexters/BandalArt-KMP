@@ -20,11 +20,13 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import com.nexters.bandalart.core.data.backup.BackupHttpClientHooks
 import im.toss.necto.android.NectoAndroid
 import im.toss.necto.android.NectoAndroidControlPlugin
 import im.toss.necto.android.NectoProcessMetricPlugin
 import im.toss.necto.plugins.NectoEventsPlugin
 import im.toss.necto.plugins.NectoFilesPlugin
+import im.toss.necto.plugins.NectoNetworkPlugin
 
 /**
  * Debug 빌드에서만 manifest에 병합되어 Necto를 시작한다.
@@ -33,11 +35,15 @@ import im.toss.necto.plugins.NectoFilesPlugin
 class NectoInitProvider : ContentProvider() {
     override fun onCreate(): Boolean {
         val context = requireNotNull(context)
+        val network = NectoNetworkPlugin()
+        // Application.onCreate에서 앱 그래프가 Supabase 클라이언트를 만들기 전에 설정된다.
+        BackupHttpClientHooks.configure = { install(nectoKtorCapture(network)) }
         NectoAndroid.start(
             context,
             listOf(
                 NectoEventsPlugin(),
                 NectoFilesPlugin(context),
+                network,
                 NectoProcessMetricPlugin(context),
                 NectoAndroidControlPlugin(context),
             ),
