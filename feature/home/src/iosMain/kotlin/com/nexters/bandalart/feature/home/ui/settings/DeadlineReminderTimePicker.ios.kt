@@ -16,11 +16,11 @@
 
 package com.nexters.bandalart.feature.home.ui.settings
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.graphics.Color
 import kotlinx.datetime.LocalTime
 import zone.ien.hig.CupertinoTimePicker
 import zone.ien.hig.ExperimentalCupertinoApi
@@ -43,8 +43,9 @@ internal actual fun DeadlineReminderTimePicker(
         snapshotFlow { LocalTime(hour = state.hour, minute = state.minute) }
             .collect { currentOnTimeChange.value(it) }
     }
+    // 다이얼로그 면(Liquid Glass 또는 surface)이 그대로 보이도록 피커 배경은 칠하지 않는다.
     CupertinoTimePicker(
         state = state,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color.Transparent,
     )
 }
