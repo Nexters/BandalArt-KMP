@@ -31,10 +31,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -43,9 +42,11 @@ import bandalart.core.designsystem.generated.resources.action_cancel
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_confirm
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_dialog_message
 import com.nexters.bandalart.core.ui.component.BandalartDialogSurface
+import com.nexters.bandalart.core.ui.component.bandalartDialogContentAlignment
+import com.nexters.bandalart.core.ui.component.bandalartDialogDestructiveTextColor
+import com.nexters.bandalart.core.ui.component.bandalartDialogTextAlign
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.stringResource
-import zone.ien.hig.CupertinoLiquidButtonDefaults
 import zone.ien.hig.adaptive.AdaptiveButton
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
@@ -64,12 +65,13 @@ internal fun ResetCompletionsAlertDialog(
                     modifier
                         .fillMaxWidth()
                         .padding(top = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = bandalartDialogContentAlignment(),
             ) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 24.dp),
                 )
                 Spacer(modifier = Modifier.height(18.dp))
                 Text(
@@ -78,7 +80,7 @@ internal fun ResetCompletionsAlertDialog(
                     fontSize = 20.sp,
                     fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W700,
-                    textAlign = TextAlign.Center,
+                    textAlign = bandalartDialogTextAlign(),
                     lineHeight = 30.sp,
                     letterSpacing = (-0.4).sp,
                     modifier = Modifier.padding(horizontal = 24.dp),
@@ -90,7 +92,7 @@ internal fun ResetCompletionsAlertDialog(
                     fontSize = 14.sp,
                     fontFamily = pretendardFontFamily(),
                     fontWeight = FontWeight.W500,
-                    textAlign = TextAlign.Center,
+                    textAlign = bandalartDialogTextAlign(),
                     letterSpacing = (-0.28).sp,
                     modifier = Modifier.padding(horizontal = 24.dp),
                 )
@@ -125,25 +127,17 @@ internal fun ResetCompletionsAlertDialog(
                         )
                     }
                     Spacer(modifier = Modifier.width(9.dp))
+                    // iOS는 네이티브 alert처럼 취소와 같은 유리 버튼에 빨간 글자로 둔다.
                     AdaptiveButton(
                         onClick = onConfirmClick,
                         modifier =
                             Modifier
                                 .weight(1f)
                                 .height(56.dp),
-                        adaptation = {
-                            cupertino {
-                                val tint = MaterialTheme.colorScheme.primary
-                                colors =
-                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
-                                        lightTintColor = tint,
-                                        darkTintColor = tint,
-                                    )
-                            }
-                        },
                     ) {
                         Text(
                             text = stringResource(Res.string.routine_settings_reset_confirm),
+                            color = bandalartDialogDestructiveTextColor(Color.Unspecified),
                             fontFamily = pretendardFontFamily(),
                             fontWeight = FontWeight.W600,
                         )

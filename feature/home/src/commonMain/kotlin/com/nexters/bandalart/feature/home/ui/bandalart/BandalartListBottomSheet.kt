@@ -69,6 +69,7 @@ import bandalart.core.designsystem.generated.resources.bandalart_list_add
 import bandalart.core.designsystem.generated.resources.bandalart_list_title
 import bandalart.core.designsystem.generated.resources.clear_description
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
@@ -109,7 +110,7 @@ fun BandalartListBottomSheet(
                 .wrapContentSize()
                 .statusBarsPadding(),
         sheetState = bottomSheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
         dragHandle = null,
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {

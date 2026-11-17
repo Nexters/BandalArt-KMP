@@ -41,10 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.nexters.bandalart.core.ui.component.BandalartDialogSurface
+import com.nexters.bandalart.core.ui.component.bandalartDialogContentAlignment
+import com.nexters.bandalart.core.ui.component.bandalartDialogTextAlign
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
-import zone.ien.hig.CupertinoLiquidButtonDefaults
 import zone.ien.hig.adaptive.AdaptiveButton
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 
@@ -63,6 +64,8 @@ fun BandalartActionAlertDialog(
     content: (@Composable () -> Unit)? = null,
 ) {
     val scrollState = rememberScrollState()
+    val contentAlignment = bandalartDialogContentAlignment()
+    val textAlign = bandalartDialogTextAlign()
 
     Dialog(onDismissRequest = onCancelClick) {
         BandalartDialogSurface {
@@ -84,8 +87,9 @@ fun BandalartActionAlertDialog(
                         contentDescription = iconContentDescription,
                         modifier =
                             Modifier
-                                .size(28.dp)
-                                .align(Alignment.CenterHorizontally),
+                                .align(contentAlignment)
+                                .padding(horizontal = 24.dp)
+                                .size(28.dp),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                     Spacer(modifier = Modifier.height(18.dp))
@@ -98,9 +102,9 @@ fun BandalartActionAlertDialog(
                     fontWeight = FontWeight.W700,
                     modifier =
                         Modifier
-                            .align(Alignment.CenterHorizontally)
+                            .align(contentAlignment)
                             .padding(horizontal = 24.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = textAlign,
                     lineHeight = 30.sp,
                     letterSpacing = (-0.4).sp,
                 )
@@ -114,9 +118,9 @@ fun BandalartActionAlertDialog(
                         fontWeight = FontWeight.W500,
                         modifier =
                             Modifier
-                                .align(Alignment.CenterHorizontally)
+                                .align(contentAlignment)
                                 .padding(horizontal = 24.dp),
-                        textAlign = TextAlign.Center,
+                        textAlign = textAlign,
                         lineHeight = 21.sp,
                         letterSpacing = (-0.28).sp,
                     )
@@ -178,14 +182,7 @@ fun BandalartActionAlertDialog(
                                         disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                                     )
                             }
-                            cupertino {
-                                val tint = MaterialTheme.colorScheme.primary
-                                colors =
-                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
-                                        lightTintColor = tint,
-                                        darkTintColor = tint,
-                                    )
-                            }
+                            // iOS는 네이티브 alert처럼 취소와 같은 유리 버튼으로 둔다.
                         },
                     ) {
                         Text(

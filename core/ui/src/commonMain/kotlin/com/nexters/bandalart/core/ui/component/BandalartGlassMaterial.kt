@@ -1,5 +1,6 @@
 package com.nexters.bandalart.core.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,10 @@ import zone.ien.hig.theme.CupertinoTheme
 @Composable
 internal fun isBandalartGlassEnabled(): Boolean = currentTheme == Theme.Cupertino && !Accessibility.isReduceTransparencyEnabled
 
+/** 네이티브 최대 높이 시트의 불투명 면 색 (iOS 27.2 측정값: 다크 `#1C1C1E`, 라이트 흰색). */
+@Composable
+internal fun bandalartFullHeightSheetColor(): Color = if (CupertinoTheme.colorScheme.isDark) FullHeightSheetDark else Color.White
+
 /**
  * 네이티브 iOS alert·중간 높이 시트 재질에 맞춘 유리 면.
  * 측정값과 근거는 `docs/architecture/design-system/HIG_ADAPTIVE_LIQUID_GLASS_STRATEGY.md`의 "다이얼로그·시트 유리 재질 네이티브 맞춤"을 따른다.
@@ -41,7 +46,9 @@ internal fun Modifier.bandalartGlassSurface(
     val isDark = CupertinoTheme.colorScheme.isDark
     val tint = if (isDark) DarkTint else LightTint
     val backdropFilter = if (isDark) DarkBackdropFilter else LightBackdropFilter
-    return drawBackdrop(
+    // 기록된 화면에서 UIKit 뷰(광고 배너) 자리는 투명하게 비어 있어, 그대로 두면 유리 면 너머로 그 뷰가 비친다.
+    // 유리 아래에 불투명 바탕을 깔아 빈 자리만 시트 색으로 채운다.
+    return background(bandalartFullHeightSheetColor(), shape).drawBackdrop(
         backdrop = backdrop,
         shape = { shape },
         effects = {
@@ -72,12 +79,13 @@ private fun dimAndSaturateFilter(dim: Float): ColorFilter {
     )
 }
 
-private const val GLASS_SATURATION = 1.7f
+private const val GLASS_SATURATION = 1.9f
 private const val GLASS_HIGHLIGHT_ALPHA = 0.35f
 private val GLASS_BLUR_RADIUS = 30.dp
 private val GLASS_REFRACTION_HEIGHT = 6.dp
 private val GLASS_REFRACTION_AMOUNT = 8.dp
 
+private val FullHeightSheetDark = Color(0xFF1C1C1E)
 private val DarkTint = Color(0xFF5B5B5B).copy(alpha = 0.35f)
 private val LightTint = Color.White.copy(alpha = 0.53f)
 private val DarkBackdropFilter = dimAndSaturateFilter(dim = 0.52f)

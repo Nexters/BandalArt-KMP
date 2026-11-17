@@ -83,6 +83,7 @@ import bandalart.core.designsystem.generated.resources.settings_weekly_review_re
 import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_body
 import bandalart.core.designsystem.generated.resources.settings_weekly_review_reminder_dialog_title
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetTintColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
@@ -167,7 +168,7 @@ internal fun SettingsBottomSheet(
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier.statusBarsPadding(),
         sheetState = bottomSheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
         dragHandle = null,
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {

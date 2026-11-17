@@ -80,6 +80,7 @@ import bandalart.core.designsystem.generated.resources.empty_emoji_description
 import bandalart.core.designsystem.generated.resources.ic_edit
 import bandalart.core.designsystem.generated.resources.ic_empty_emoji
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetBackgroundColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.common.extension.LocalDateTime
@@ -161,7 +162,7 @@ fun BandalartBottomSheet(
                 .wrapContentSize()
                 .statusBarsPadding(),
         sheetState = bottomSheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
         dragHandle = null,
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
