@@ -23,6 +23,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
 import io.ktor.client.HttpClientConfig
+import kotlin.concurrent.Volatile
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -84,6 +85,7 @@ fun createSupabaseBackupRpcClient(config: BackupApiConfig): BackupRpcClient {
  * 기본값은 아무것도 하지 않으며, release 빌드에서는 설정하는 곳이 없다.
  */
 object BackupHttpClientHooks {
+    @Volatile
     var configure: HttpClientConfig<*>.() -> Unit = {}
 }
 
