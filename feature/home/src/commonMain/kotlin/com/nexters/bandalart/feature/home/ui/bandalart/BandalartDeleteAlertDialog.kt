@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -43,9 +42,11 @@ import bandalart.core.designsystem.generated.resources.action_delete
 import bandalart.core.designsystem.generated.resources.delete_description
 import bandalart.core.designsystem.generated.resources.ic_delete
 import com.nexters.bandalart.core.ui.component.BandalartDialogSurface
+import com.nexters.bandalart.core.ui.component.bandalartDialogContentAlignment
+import com.nexters.bandalart.core.ui.component.bandalartDialogDestructiveTextColor
+import com.nexters.bandalart.core.ui.component.bandalartDialogTextAlign
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import org.jetbrains.compose.resources.stringResource
-import zone.ien.hig.CupertinoLiquidButtonDefaults
 import zone.ien.hig.adaptive.AdaptiveButton
 import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import org.jetbrains.compose.resources.vectorResource
@@ -60,6 +61,11 @@ fun BandalartDeleteAlertDialog(
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val contentAlignment = bandalartDialogContentAlignment()
+    val textAlign = bandalartDialogTextAlign()
+    // 왼쪽 정렬(iOS)일 때만 가장자리 여백을 준다. 가운데 정렬(Android)은 기존 줄바꿈 폭을 유지한다.
+    val textModifier =
+        if (contentAlignment == Alignment.Start) Modifier.padding(horizontal = 24.dp) else Modifier
     Dialog(onDismissRequest = { onCancelClick() }) {
         BandalartDialogSurface {
             Column(
@@ -73,8 +79,9 @@ fun BandalartDeleteAlertDialog(
                     contentDescription = stringResource(Res.string.delete_description),
                     modifier =
                         Modifier
-                            .height(28.dp)
-                            .align(Alignment.CenterHorizontally),
+                            .align(contentAlignment)
+                            .padding(horizontal = 24.dp)
+                            .height(28.dp),
                     tint = Color.Unspecified,
                 )
                 Spacer(modifier = Modifier.height(18.dp))
@@ -83,8 +90,8 @@ fun BandalartDeleteAlertDialog(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.W700,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(contentAlignment).then(textModifier),
+                    textAlign = textAlign,
                     lineHeight = 30.sp,
                     letterSpacing = (-0.4).sp,
                 )
@@ -95,8 +102,8 @@ fun BandalartDeleteAlertDialog(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W500,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(contentAlignment).then(textModifier),
+                        textAlign = textAlign,
                         letterSpacing = (-0.28).sp,
                     )
                 }
@@ -152,19 +159,12 @@ fun BandalartDeleteAlertDialog(
                                         disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                                     )
                             }
-                            cupertino {
-                                val tint = MaterialTheme.colorScheme.primary
-                                colors =
-                                    CupertinoLiquidButtonDefaults.glassProminentButtonColors(
-                                        lightTintColor = tint,
-                                        darkTintColor = tint,
-                                    )
-                            }
+                            // iOS는 네이티브 alert처럼 취소와 같은 유리 버튼에 빨간 글자로 둔다.
                         },
                     ) {
                         Text(
                             text = stringResource(Res.string.action_delete),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = bandalartDialogDestructiveTextColor(MaterialTheme.colorScheme.onPrimary),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W600,
                         )

@@ -48,6 +48,7 @@ import bandalart.core.designsystem.generated.resources.routine_settings_reset_no
 import bandalart.core.designsystem.generated.resources.routine_settings_reset_now_description
 import bandalart.core.designsystem.generated.resources.routine_settings_title
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -74,7 +75,7 @@ internal fun RoutineSettingsBottomSheet(
         onDismissRequest = { onAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
         dragHandle = null,
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {

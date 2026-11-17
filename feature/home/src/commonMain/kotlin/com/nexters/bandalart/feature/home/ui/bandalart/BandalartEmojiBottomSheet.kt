@@ -18,12 +18,12 @@ package com.nexters.bandalart.feature.home.ui.bandalart
 
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -50,7 +50,7 @@ fun BandalartEmojiBottomSheet(
         modifier = modifier.wrapContentSize(),
         sheetState = bottomSheetState,
         dragHandle = null,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
             BandalartEmojiPicker(

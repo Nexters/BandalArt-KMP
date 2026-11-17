@@ -59,6 +59,7 @@ import bandalart.core.designsystem.generated.resources.weekly_review_total
 import com.nexters.bandalart.core.common.extension.toColor
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.component.BandalartSheetContent
+import com.nexters.bandalart.core.ui.component.bandalartSheetContainerColor
 import com.nexters.bandalart.core.ui.component.bandalartSheetWindowInsets
 import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewBandalartSummary
@@ -87,7 +88,7 @@ internal fun WeeklyReviewBottomSheet(
         onDismissRequest = { onHomeUiAction(HomeScreen.Event.DismissBottomSheet) },
         modifier = modifier,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = bandalartSheetContainerColor(),
         dragHandle = null,
     ) {
         BandalartSheetContent(insets = bottomSheetContentWindowInsets()) {
