@@ -143,6 +143,7 @@ dependencies {
         exclude(group = "com.google.firebase", module = "firebase-bom")
     }
     debugImplementation(libs.bundles.necto)
+    debugImplementation(libs.ktor.client.core)
     testImplementation(libs.bundles.android.unit.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
     "baselineProfile"(project(":baselineprofile"))
