@@ -98,8 +98,11 @@ import zone.ien.hig.adaptive.Theme
 import zone.ien.hig.adaptive.currentTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.backdrops.rememberCombinedBackdrop
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.nexters.bandalart.core.ui.component.LocalDialogBackdrop
 import com.nexters.bandalart.core.ui.component.LocalSheetBackdrop
+import com.nexters.bandalart.core.ui.component.LocalSheetLayer
 import zone.ien.hig.utils.rememberDefaultBackdrop
 import com.nexters.bandalart.feature.home.ui.HomeTopBar
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartChart
@@ -149,6 +152,11 @@ internal fun Home(
     val completeGraphicsLayer = rememberGraphicsLayer()
     // iOS 홈 콘텐츠 기록. Liquid Glass 상단 바·공유 버튼과 다이얼로그 면이 이 기록을 비춘다.
     val glassBackdrop = rememberDefaultBackdrop()
+    // iOS 시트 면·내용 기록. 시트가 떠 있는 동안 다이얼로그 면은 홈 기록 위에 이 기록을 겹쳐 비춘다.
+    // 시트를 닫은 뒤에는 마지막 기록이 남아 있으므로 합성하지 않는다.
+    val sheetLayer = rememberLayerBackdrop()
+    val homeWithSheetBackdrop = rememberCombinedBackdrop(glassBackdrop, sheetLayer)
+    val dialogBackdrop = if (state.bottomSheet != null) homeWithSheetBackdrop else glassBackdrop
     val updateSnackbarHostState = remember { SnackbarHostState() }
     val appVersion = remember(appVersionProvider) { appVersionProvider.getAppVersion() }
     var isAppForeground by remember { mutableStateOf(true) }
@@ -212,7 +220,11 @@ internal fun Home(
         supportMailLauncher = supportMailLauncher,
     )
 
-    CompositionLocalProvider(LocalSheetBackdrop provides glassBackdrop) {
+    CompositionLocalProvider(
+        LocalSheetBackdrop provides glassBackdrop,
+        LocalSheetLayer provides sheetLayer,
+        LocalDialogBackdrop provides dialogBackdrop,
+    ) {
         HomeBottomSheets(
             bottomSheet = state.bottomSheet,
             recentEmojis = state.recentEmojis,
@@ -228,7 +240,7 @@ internal fun Home(
             appVersion = appVersion,
         )
     }
-    CompositionLocalProvider(LocalDialogBackdrop provides glassBackdrop) {
+    CompositionLocalProvider(LocalDialogBackdrop provides dialogBackdrop) {
         HomeDialogs(
             dialog = state.dialog,
             bandalartData = state.bandalartData,
