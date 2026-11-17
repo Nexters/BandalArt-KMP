@@ -1,0 +1,5 @@
+# actionlint 1.7.7은 GitHub-hosted 프리뷰 이미지 라벨 xcode-27을 모른다.
+# https://github.com/actions/runner-images/issues/14404
+self-hosted-runner:
+    labels:
+        - xcode-27

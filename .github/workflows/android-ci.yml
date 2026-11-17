@@ -106,8 +106,10 @@ jobs:
 
     unit_tests:
         name: Unit tests
-        runs-on: macos-latest
+        runs-on: xcode-27
         timeout-minutes: 30
+        env:
+            DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
         if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:
@@ -183,10 +185,11 @@ jobs:
     ios:
         name: iOS host app build
         needs: changes
-        runs-on: macos-latest
+        runs-on: xcode-27
         timeout-minutes: 60
         if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') && needs.changes.outputs.ios == 'true' }}
         env:
+            DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
             IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
 
         steps:
@@ -387,8 +390,10 @@ jobs:
 
     release_cd:
         name: Release CD validation
-        runs-on: macos-latest
+        runs-on: xcode-27
         timeout-minutes: 15
+        env:
+            DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
         if: ${{ !github.event.pull_request.draft && !contains(github.event.pull_request.labels.*.name, 'skip-ci') }}
 
         steps:

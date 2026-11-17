@@ -35,9 +35,10 @@ jobs:
     ios-cache-seed:
         name: Seed iOS caches from main
         if: github.ref == 'refs/heads/main'
-        runs-on: macos-latest
+        runs-on: xcode-27
         timeout-minutes: 60
         env:
+            DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
             IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
 
         steps:

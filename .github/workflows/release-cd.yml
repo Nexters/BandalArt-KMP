@@ -178,10 +178,11 @@ jobs:
         name: TestFlight
         needs: guard
         if: ${{ inputs.target == 'both' || inputs.target == 'ios' }}
-        runs-on: macos-latest
+        runs-on: xcode-27
         timeout-minutes: 90
         environment: ios-testflight
         env:
+            DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
             IOS_DERIVED_DATA_PATH: ${{ github.workspace }}/build/ios-derived-data
         steps:
             -   uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
