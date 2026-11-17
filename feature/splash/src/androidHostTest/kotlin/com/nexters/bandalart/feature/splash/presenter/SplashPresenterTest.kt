@@ -21,6 +21,7 @@ import com.nexters.bandalart.core.domain.backup.StartupBackupDecision
 import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.onboarding.OnboardingRecordIntroScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.slack.circuit.runtime.screen.Screen
@@ -35,6 +36,32 @@ class SplashPresenterTest {
     fun completedOnboardingOpensHome() =
         runTest {
             assertDestination(isCompleted = true, expected = HomeScreen)
+        }
+
+    @Test
+    fun completedOnboardingWithoutRecordIntroOpensOnlyTheRecordIntro() =
+        runTest {
+            val repository = FakeOnboardingRepository(initialCompletedStatus = true, recordIntroShown = false)
+            val navigator = FakeNavigator(SplashScreen)
+
+            SplashPresenter(navigator, repository, continuePolicy()).test {
+                awaitItem().eventSink(SplashScreen.Event.CheckOnboardingStatus)
+
+                assertEquals(OnboardingRecordIntroScreen, navigator.awaitResetRoot().newRoot)
+            }
+        }
+
+    @Test
+    fun incompleteOnboardingOpensFullOnboardingEvenWithoutRecordIntro() =
+        runTest {
+            val repository = FakeOnboardingRepository(initialCompletedStatus = false, recordIntroShown = false)
+            val navigator = FakeNavigator(SplashScreen)
+
+            SplashPresenter(navigator, repository, continuePolicy()).test {
+                awaitItem().eventSink(SplashScreen.Event.CheckOnboardingStatus)
+
+                assertEquals(OnboardingScreen, navigator.awaitResetRoot().newRoot)
+            }
         }
 
     @Test

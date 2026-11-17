@@ -31,4 +31,17 @@ internal class FakeOnboardingRepository : OnboardingRepository {
     }
 
     override suspend fun getOnboardingCompletedStatus(): Boolean = isCompleted
+
+    var isRecordIntroShown = false
+        private set
+
+    var recordIntroMarkCount = 0
+        private set
+
+    override suspend fun markOnboardingRecordIntroShown() {
+        recordIntroMarkCount += 1
+        isRecordIntroShown = true
+    }
+
+    override suspend fun getOnboardingRecordIntroShown(): Boolean = isRecordIntroShown
 }

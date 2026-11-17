@@ -139,6 +139,27 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("온보딩 달성 기록 소개 노출 기록 테스트")
+    inner class OnboardingRecordIntroPreferenceTest {
+        @Test
+        @DisplayName("최초에는 달성 기록 소개를 본 적 없어야 한다")
+        fun recordIntroIsNotShownByDefault() =
+            runTest {
+                assertFalse(bandalartDataStore.getOnboardingRecordIntroShown())
+            }
+
+        @Test
+        @DisplayName("달성 기록 소개 노출 기록은 DataStore에 영구 저장되어야 한다")
+        fun recordIntroShownIsStored() =
+            runTest {
+                bandalartDataStore.markOnboardingRecordIntroShown()
+
+                val recreatedDataStore = BandalartDataStore(dataStore)
+                assertTrue(recreatedDataStore.getOnboardingRecordIntroShown())
+            }
+    }
+
+    @Nested
     @DisplayName("위젯 안내 노출 기록 테스트")
     inner class WidgetGuidePreferenceTest {
         @Test

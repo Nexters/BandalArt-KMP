@@ -22,6 +22,7 @@
     <string name="onboarding_record_heatmap_summary">Active %1$d days</string>
     <string name="onboarding_record_sample_label">Preview · Sample data</string>
     <string name="onboarding_record_sample_description">Sample record, not your actual data. %1$d-day streak, %2$d done this week, active %4$d days in the last %3$d weeks.</string>
+    <string name="onboarding_record_intro_confirm">Got it</string>
     <string name="widget_guide_title">See your progress in a widget</string>
     <string name="widget_guide_message">Check your goal progress on your\nHome Screen without opening the app.</string>
     <string name="widget_guide_show_steps">How to add a widget</string>

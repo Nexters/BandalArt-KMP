@@ -22,6 +22,7 @@
     <string name="onboarding_record_heatmap_summary">%1$d일 실천</string>
     <string name="onboarding_record_sample_label">미리보기 · 예시 데이터</string>
     <string name="onboarding_record_sample_description">예시 기록이에요. 실제 기록이 아니에요. %1$d일 연속, 이번 주 %2$d개 완료, 최근 %3$d주 중 %4$d일 실천.</string>
+    <string name="onboarding_record_intro_confirm">확인했어요</string>
     <string name="widget_guide_title">위젯에서 내 진행률 보기</string>
     <string name="widget_guide_message">앱을 열지 않아도 홈 화면에서\n목표의 변화를 확인해요.</string>
     <string name="widget_guide_show_steps">위젯 추가 방법 보기</string>

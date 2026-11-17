@@ -20,6 +20,7 @@ import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 
 internal class FakeOnboardingRepository(
     initialCompletedStatus: Boolean,
+    private var recordIntroShown: Boolean = true,
 ) : OnboardingRepository {
     var isCompleted = initialCompletedStatus
         private set
@@ -35,4 +36,10 @@ internal class FakeOnboardingRepository(
         getCallCount += 1
         return isCompleted
     }
+
+    override suspend fun markOnboardingRecordIntroShown() {
+        recordIntroShown = true
+    }
+
+    override suspend fun getOnboardingRecordIntroShown(): Boolean = recordIntroShown
 }

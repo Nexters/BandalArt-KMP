@@ -90,4 +90,21 @@ class OnboardingRepositoryImplTest {
                 coVerify { mockBandalartDataStore.getOnboardingCompletedStatus() }
             }
     }
+
+    @Nested
+    @DisplayName("달성 기록 소개 노출 기록")
+    inner class OnboardingRecordIntroShownTest {
+        @Test
+        @DisplayName("노출 기록을 저장하고 조회할 수 있어야 한다")
+        fun recordIntroShownIsDelegated() =
+            runTest {
+                coEvery { mockBandalartDataStore.markOnboardingRecordIntroShown() } returns Unit
+                coEvery { mockBandalartDataStore.getOnboardingRecordIntroShown() } returns true
+
+                onboardingRepository.markOnboardingRecordIntroShown()
+
+                assertTrue(onboardingRepository.getOnboardingRecordIntroShown())
+                coVerify(exactly = 1) { mockBandalartDataStore.markOnboardingRecordIntroShown() }
+            }
+    }
 }
