@@ -16,7 +16,7 @@
     <string name="onboarding_start">Get Started</string>
 
     <!-- Complete.kt -->
-    <string name="complete_title">You\'ve achieved all the goals in Bandalart. Truly amazing!</string>
+    <string name="complete_title">You've achieved all the goals in Bandalart. Truly amazing!</string>
     <string name="complete_chart">Completed Bandalart</string>
 
     <!--  Home.kt -->
@@ -156,15 +156,15 @@
     <string name="delete_bandalart_dialog_message">Deleted Bandalart cannot be restored</string>
 
     <string name="delete_bandalart_maincelll_dialog_empty_title">Do you want to delete\nthe main goal?</string>
-    <string name="delete_bandalart_maincell_dialog_title">Do you want to delete\nthe main goal\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_maincell_dialog_title">Do you want to delete\nthe main goal\n'%1$s'?</string>
     <string name="delete_bandalart_maincell_dialog_message">Sub goals and tasks will all be deleted</string>
 
     <string name="delete_bandalart_subcell_dialog_empty_title">Do you want to delete\nthe sub goal?</string>
-    <string name="delete_bandalart_subcell_dialog_title">Do you want to delete\nthe sub goal\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_subcell_dialog_title">Do you want to delete\nthe sub goal\n'%1$s'?</string>
     <string name="delete_bandalart_subcell_dialog_message">All associated tasks will be deleted.</string>
 
     <string name="delete_bandalart_taskcell_dialog_empty_title">Do you want to delete\nthe task?</string>
-    <string name="delete_bandalart_taskcell_dialog_title">Do you want to delete\nthe task\n\&apos;%1$s\&apos;?</string>
+    <string name="delete_bandalart_taskcell_dialog_title">Do you want to delete\nthe task\n'%1$s'?</string>
     <string name="delete_bandalart_taskcell_dialog_message">""</string>
 
     <!-- NetworkErrorAlertDialog -->
@@ -214,9 +214,9 @@
     <string name="settings_deadline_reminder_test_failed">Couldn’t send a test notification. Check system notification settings.</string>
     <string name="settings_deadline_reminder_test">Send test notification</string>
     <string name="settings_weekly_review_reminder">Weekly review reminder</string>
-    <string name="settings_weekly_review_reminder_body">Every Sunday at 8 PM, we\'ll recap your week</string>
+    <string name="settings_weekly_review_reminder_body">Every Sunday at 8 PM, we'll recap your week</string>
     <string name="settings_weekly_review_reminder_dialog_title">Turn on weekly review reminders?</string>
-    <string name="settings_weekly_review_open">View this week\'s review</string>
+    <string name="settings_weekly_review_open">View this week's review</string>
     <string name="weekly_review_title">Weekly review</string>
     <string name="weekly_review_period">%1$d/%2$d – %3$d/%4$d</string>
     <string name="weekly_review_total">%1$d cells completed · active %2$d days</string>
