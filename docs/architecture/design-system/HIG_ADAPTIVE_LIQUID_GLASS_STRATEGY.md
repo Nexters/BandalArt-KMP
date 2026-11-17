@@ -164,6 +164,33 @@ PR은 단계마다 하나로 나눈다.
 
 - 자체 디자인 유지와 `AdaptiveAlertDialog` 전환 중 하나를 디자인 검토로 정한다.
 
+#### 시트 위 다이얼로그 backdrop (#503)
+
+**문제.** `BandalartDialogSurface`는 `LocalDialogBackdrop`이 있을 때만 유리로 그린다. 이 값은 `HomeDialogs`에만 홈 콘텐츠 기록(`glassBackdrop`)으로 넘어간다. 그래서 아래 두 경우가 생긴다.
+
+- 설정 시트에서 뜨는 다이얼로그 4개(마감일 알림, 주간 회고 알림, 알림 시간 행의 권한 안내, 알림 시간 선택)는 backdrop이 없어 불투명 면으로 그려진다.
+- 셀 편집 시트에서 여는 셀 삭제 다이얼로그는 유리로 그려지지만, 홈 콘텐츠만 비친다. 바로 뒤에 있는 시트는 건너뛴다.
+
+**[측정] 네이티브 동작 (2026-11-17, iOS 27.2 시뮬레이터, 다크).** SwiftUI `.sheet` + `.alert` 테스트 앱으로 확인했다.
+
+- 중간 높이 시트 위 alert는 화면에서 바로 뒤에 합성된 결과를 굴절시킨다. 시트 안 내용과 시트 위로 보이는 뒤 화면이 함께 비친다. 뒤 화면은 어두워지지만 alert 면 안은 어두워지기 전 색으로 보인다.
+- 최대 높이 시트는 불투명해진다. 그 위 alert는 어두운 시트 면만 비쳐 거의 불투명한 회색으로 보인다.
+- 시스템은 겹친 층이라고 일부러 불투명하게 바꾸지 않는다. 뒤가 단색이면 결과적으로 불투명해 보일 뿐이다.
+
+**결정.** 시트가 떠 있는 동안 다이얼로그 backdrop은 "홈 기록 + 시트 기록"을 차례로 그린 합성으로 둔다.
+
+- `Home()`이 시트 기록용 `LayerBackdrop`(`sheetLayer`)을 하나 만든다. `LocalSheetLayer`로 내려 주면 `BandalartSheetContent`가 iOS 유리 경로에서 바깥 Box에 `layerBackdrop(sheetLayer)`를 건다. 시트 면이 그리는 홈 굴절과 시트 내용이 함께 기록되고, 시트 파일 6곳은 고치지 않는다.
+- `LocalDialogBackdrop`의 타입을 `Backdrop`으로 넓힌다. 시트가 떠 있으면 `rememberCombinedBackdrop(glassBackdrop, sheetLayer)`, 아니면 `glassBackdrop`을 넘긴다. 시트를 닫은 뒤에는 `sheetLayer`에 마지막 기록이 남아 있으므로 합성을 쓰지 않는다.
+- 이 값을 `HomeDialogs`와 `HomeBottomSheets` 양쪽에 제공한다. 설정 시트 다이얼로그는 `ModalBottomSheet` 바깥의 `SettingsBottomSheet`에서 선언되므로 `HomeBottomSheets` 쪽 제공이 필요하다.
+- 설정 시트는 `skipPartiallyExpanded = true`라 최대 높이로만 열린다. 맞게 적용해도 네이티브 최대 높이 캡처처럼 거의 불투명한 면에 가장자리 하이라이트가 생기는 정도로 보인다.
+- Android는 `currentTheme`이 Cupertino가 아니라 기록과 합성을 하지 않는다. 화면이 바뀌지 않아야 한다.
+
+**이번 범위에서 뺀 것 (결정 필요).**
+
+- 클라우드 백업 화면 확인 다이얼로그 2개: 화면 콘텐츠 기록을 새로 만들어야 한다.
+- 네트워크·서버 오류 다이얼로그: #487에서 뺀 이유(색 `White` 고정, 여러 화면에서 뜸)가 그대로다.
+- 휴대폰 가로 홈: `ShortWideHomeContent`가 홈 콘텐츠를 기록하지 않는다.
+
 ### 7. iOS 단독 배포
 
 - 적용이 끝나면 iOS만 TestFlight로 배포한다. Android 배포와 묶지 않는다.

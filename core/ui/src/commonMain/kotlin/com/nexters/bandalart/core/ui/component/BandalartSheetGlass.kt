@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.colorControls
@@ -24,6 +25,9 @@ import zone.ien.hig.adaptive.currentTheme
 
 /** 바텀 시트 뒤에 비칠 화면 기록. 콘텐츠를 `layerBackdrop`으로 기록하는 화면(iOS 홈)만 제공한다. */
 val LocalSheetBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
+
+/** 시트가 그린 면과 내용을 기록할 곳. 시트 위 다이얼로그가 바로 뒤의 시트를 비추도록 iOS 홈이 제공한다. */
+val LocalSheetLayer = staticCompositionLocalOf<LayerBackdrop?> { null }
 
 @OptIn(ExperimentalAdaptiveApi::class)
 @Composable
@@ -60,10 +64,12 @@ fun BandalartSheetContent(
     }
     val shape = BottomSheetDefaults.ExpandedShape
     val surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = GLASS_SURFACE_ALPHA)
+    val sheetLayer = LocalSheetLayer.current
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
+                .then(if (sheetLayer != null) Modifier.layerBackdrop(sheetLayer) else Modifier)
                 .drawBackdrop(
                     backdrop = backdrop,
                     shape = { shape },

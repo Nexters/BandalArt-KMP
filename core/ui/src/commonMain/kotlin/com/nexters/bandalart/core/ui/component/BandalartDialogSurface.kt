@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.colorControls
@@ -18,8 +18,11 @@ import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
 import zone.ien.hig.adaptive.Theme
 import zone.ien.hig.adaptive.currentTheme
 
-/** 다이얼로그 뒤에 비칠 화면 기록. 콘텐츠를 `layerBackdrop`으로 기록하는 화면(iOS 홈)만 제공한다. */
-val LocalDialogBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
+/**
+ * 다이얼로그 뒤에 비칠 화면 기록. 콘텐츠를 `layerBackdrop`으로 기록하는 화면(iOS 홈)만 제공한다.
+ * 시트가 떠 있으면 홈 기록과 시트 기록을 합성한 값이라 바로 뒤의 시트가 비친다.
+ */
+val LocalDialogBackdrop = staticCompositionLocalOf<Backdrop?> { null }
 
 private val DialogShape = RoundedCornerShape(16.dp)
 
