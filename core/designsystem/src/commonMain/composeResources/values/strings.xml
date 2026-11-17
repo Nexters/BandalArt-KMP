@@ -14,6 +14,23 @@
     <string name="onboarding_first_title">복잡하고 막막한\n만다라트 계획표는 이제 안녕!</string>
     <string name="onboarding_second_title">이제 반다라트와 함께\n부담 없이 계획을 세워봐요</string>
     <string name="onboarding_start">시작하기</string>
+    <string name="onboarding_record_title">작은 실천이 쌓이는 걸\n확인해요</string>
+    <string name="onboarding_record_message">완료한 날과 할 일이 기록으로 남아요.\n나의 꾸준함을 한눈에 돌아보세요.</string>
+    <string name="onboarding_record_streak">%1$d일 연속</string>
+    <string name="onboarding_record_weekly">이번 주 %1$d개 완료</string>
+    <string name="onboarding_record_heatmap_title">%1$d주 동안 쌓인 작은 실천</string>
+    <string name="onboarding_record_heatmap_summary">%1$d일 실천</string>
+    <string name="onboarding_record_sample_label">미리보기 · 예시 데이터</string>
+    <string name="onboarding_record_sample_description">예시 기록이에요. 실제 기록이 아니에요. %1$d일 연속, 이번 주 %2$d개 완료, 최근 %3$d주 중 %4$d일 실천.</string>
+    <string name="widget_guide_title">위젯에서 내 진행률 보기</string>
+    <string name="widget_guide_message">앱을 열지 않아도 홈 화면에서\n목표의 변화를 확인해요.</string>
+    <string name="widget_guide_show_steps">위젯 추가 방법 보기</string>
+    <string name="widget_guide_later">나중에</string>
+    <string name="widget_guide_steps_title">위젯 추가 방법</string>
+    <string name="widget_guide_steps_android">1. 홈 화면의 빈 곳을 길게 누르세요.\n2. ‘위젯’을 누르고 반다라트를 찾으세요.\n3. 원하는 위젯을 길게 눌러 홈 화면에 놓으세요.</string>
+    <string name="widget_guide_steps_ios">1. 홈 화면의 빈 곳을 길게 누르세요.\n2. 왼쪽 위의 ‘편집’이나 ‘+’를 누르고 ‘위젯 추가’를 고르세요.\n3. 반다라트를 검색해 원하는 위젯을 추가하세요.</string>
+    <string name="widget_guide_steps_confirm">확인</string>
+    <string name="widget_guide_steps_close">닫기</string>
 
     <!-- Complete.kt -->
     <string name="complete_title">반다라트의 모든 목표를 달성했어요.\n정말 대단해요!</string>

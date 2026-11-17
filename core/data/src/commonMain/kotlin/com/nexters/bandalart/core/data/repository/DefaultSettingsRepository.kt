@@ -39,6 +39,7 @@ class DefaultSettingsRepository(
         bandalartDataStore.taskCompletionTooltipDismissed
     override val routineSettingsTooltipDismissed: Flow<Boolean> =
         bandalartDataStore.routineSettingsTooltipDismissed
+    override val widgetGuideShown: Flow<Boolean> = bandalartDataStore.widgetGuideShown
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         bandalartDataStore.setThemeMode(themeMode.storageValue)
@@ -66,5 +67,9 @@ class DefaultSettingsRepository(
 
     override suspend fun dismissRoutineSettingsTooltip() {
         bandalartDataStore.dismissRoutineSettingsTooltip()
+    }
+
+    override suspend fun markWidgetGuideShown() {
+        bandalartDataStore.markWidgetGuideShown()
     }
 }

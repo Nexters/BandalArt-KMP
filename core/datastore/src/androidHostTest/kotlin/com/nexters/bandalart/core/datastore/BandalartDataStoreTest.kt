@@ -139,6 +139,27 @@ class BandalartDataStoreTest {
     }
 
     @Nested
+    @DisplayName("위젯 안내 노출 기록 테스트")
+    inner class WidgetGuidePreferenceTest {
+        @Test
+        @DisplayName("최초에는 위젯 안내를 본 적 없어야 한다")
+        fun widgetGuideIsNotShownByDefault() =
+            runTest {
+                assertFalse(bandalartDataStore.widgetGuideShown.first())
+            }
+
+        @Test
+        @DisplayName("위젯 안내 노출 기록은 DataStore에 영구 저장되어야 한다")
+        fun widgetGuideShownIsStored() =
+            runTest {
+                bandalartDataStore.markWidgetGuideShown()
+
+                val recreatedDataStore = BandalartDataStore(dataStore)
+                assertTrue(recreatedDataStore.widgetGuideShown.first())
+            }
+    }
+
+    @Nested
     @DisplayName("루틴 설정 툴팁 테스트")
     inner class RoutineSettingsTooltipPreferenceTest {
         @Test

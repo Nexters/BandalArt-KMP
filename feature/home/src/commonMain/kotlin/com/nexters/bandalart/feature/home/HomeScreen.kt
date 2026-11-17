@@ -27,6 +27,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderScheduling
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
 import kotlinx.datetime.LocalTime
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
+import com.nexters.bandalart.core.domain.widget.HomeWidgetPlatform
 import com.nexters.bandalart.core.navigation.CommonParcelize
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
@@ -119,6 +120,14 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
             val cellId: Long,
             val cellType: CellType,
             val cellTitle: String?,
+        ) : DialogState
+
+        data class WidgetGuide(
+            val platform: HomeWidgetPlatform,
+        ) : DialogState
+
+        data class WidgetGuideSteps(
+            val platform: HomeWidgetPlatform,
         ) : DialogState
     }
 
@@ -270,6 +279,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object OpenResetCompletionsDialog : Event
+
+        data object ShowWidgetGuideSteps : Event
 
         data class ConfirmResetCompletions(
             val bandalartId: Long,

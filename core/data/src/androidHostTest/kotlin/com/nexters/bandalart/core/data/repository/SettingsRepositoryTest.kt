@@ -41,6 +41,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
 
             val repository = DefaultSettingsRepository(dataStore)
@@ -57,6 +58,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.setThemeMode(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -75,6 +77,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.addRecentEmoji(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -94,6 +97,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.setDeadlineReminderEnabled(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -113,6 +117,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(450)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.setDeadlineReminderMinuteOfDay(any()) } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -132,6 +137,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(true)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.dismissTaskCompletionTooltip() } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -151,6 +157,7 @@ class SettingsRepositoryTest {
             every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
             every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
             every { dataStore.routineSettingsTooltipDismissed } returns flowOf(true)
+            every { dataStore.widgetGuideShown } returns flowOf(false)
             every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
             coEvery { dataStore.dismissRoutineSettingsTooltip() } returns Unit
             val repository = DefaultSettingsRepository(dataStore)
@@ -159,5 +166,25 @@ class SettingsRepositoryTest {
             repository.dismissRoutineSettingsTooltip()
 
             coVerify(exactly = 1) { dataStore.dismissRoutineSettingsTooltip() }
+        }
+
+    @Test
+    fun widgetGuideShownIsExposedAndStored() =
+        runTest {
+            every { dataStore.themeMode } returns flowOf(null)
+            every { dataStore.recentEmojis } returns flowOf(emptyList())
+            every { dataStore.deadlineReminderEnabled } returns flowOf(false)
+            every { dataStore.deadlineReminderMinuteOfDay } returns flowOf(540)
+            every { dataStore.taskCompletionTooltipDismissed } returns flowOf(false)
+            every { dataStore.routineSettingsTooltipDismissed } returns flowOf(false)
+            every { dataStore.widgetGuideShown } returns flowOf(true)
+            every { dataStore.weeklyReviewReminderEnabled } returns flowOf(false)
+            coEvery { dataStore.markWidgetGuideShown() } returns Unit
+            val repository = DefaultSettingsRepository(dataStore)
+
+            assertEquals(true, repository.widgetGuideShown.first())
+            repository.markWidgetGuideShown()
+
+            coVerify(exactly = 1) { dataStore.markWidgetGuideShown() }
         }
 }

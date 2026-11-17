@@ -82,7 +82,7 @@ internal fun Onboarding(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        val pageCount = 2
+        val pageCount = 3
         val pagerState = rememberPagerState(pageCount = { pageCount })
 
         Column(
@@ -207,16 +207,6 @@ internal fun Onboarding(
                                     }
                                 }
                             }
-                            BandalartButton(
-                                onClick = { state.eventSink(OnboardingScreen.Event.NavigateToHome) },
-                                text = stringResource(Res.string.onboarding_start),
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
-                                        .clip(shape = RoundedCornerShape(50.dp))
-                                        .background(MaterialTheme.colorScheme.secondary),
-                            )
 //                            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                                BandalartButton(
 //                                    onClick = { setOnboardingCompletedStatus(true) },
@@ -241,6 +231,23 @@ internal fun Onboarding(
 //                                )
 //                            }
                         }
+                    }
+
+                    2 -> {
+                        OnboardingRecordPage(
+                            bottomContent = {
+                                BandalartButton(
+                                    onClick = { state.eventSink(OnboardingScreen.Event.NavigateToHome) },
+                                    text = stringResource(Res.string.onboarding_start),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
+                                            .clip(shape = RoundedCornerShape(50.dp))
+                                            .background(MaterialTheme.colorScheme.secondary),
+                                )
+                            },
+                        )
                     }
                 }
             }

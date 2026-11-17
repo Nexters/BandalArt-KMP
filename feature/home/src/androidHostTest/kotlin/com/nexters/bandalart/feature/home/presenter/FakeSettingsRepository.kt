@@ -30,6 +30,7 @@ class FakeSettingsRepository(
     initialWeeklyReviewReminderEnabled: Boolean = false,
     initialTaskCompletionTooltipDismissed: Boolean = false,
     initialRoutineSettingsTooltipDismissed: Boolean = false,
+    initialWidgetGuideShown: Boolean = false,
     private val beforeRecentEmojiSave: suspend (String) -> Unit = {},
 ) : SettingsRepository {
     private val themeModeState = MutableStateFlow(initialThemeMode)
@@ -41,6 +42,7 @@ class FakeSettingsRepository(
         MutableStateFlow(initialTaskCompletionTooltipDismissed)
     private val routineSettingsTooltipDismissedState =
         MutableStateFlow(initialRoutineSettingsTooltipDismissed)
+    private val widgetGuideShownState = MutableStateFlow(initialWidgetGuideShown)
 
     override val themeMode = themeModeState.asStateFlow()
     override val recentEmojis = recentEmojisState.asStateFlow()
@@ -49,12 +51,15 @@ class FakeSettingsRepository(
     override val weeklyReviewReminderEnabled = weeklyReviewReminderEnabledState.asStateFlow()
     override val taskCompletionTooltipDismissed = taskCompletionTooltipDismissedState.asStateFlow()
     override val routineSettingsTooltipDismissed = routineSettingsTooltipDismissedState.asStateFlow()
+    override val widgetGuideShown = widgetGuideShownState.asStateFlow()
 
     val savedThemeModes = mutableListOf<ThemeMode>()
     val savedRecentEmojis = mutableListOf<String>()
     var taskCompletionTooltipDismissals = 0
         private set
     var routineSettingsTooltipDismissals = 0
+        private set
+    var widgetGuideShownMarks = 0
         private set
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
@@ -90,5 +95,10 @@ class FakeSettingsRepository(
     override suspend fun dismissRoutineSettingsTooltip() {
         routineSettingsTooltipDismissals += 1
         routineSettingsTooltipDismissedState.value = true
+    }
+
+    override suspend fun markWidgetGuideShown() {
+        widgetGuideShownMarks += 1
+        widgetGuideShownState.value = true
     }
 }

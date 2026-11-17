@@ -14,6 +14,23 @@
     <string name="onboarding_first_title">Say goodbye to complex and\noverwhelming Mandalart!</string>
     <string name="onboarding_second_title">Now, plan effortlessly\nwith Bandalart!</string>
     <string name="onboarding_start">Get Started</string>
+    <string name="onboarding_record_title">See your small steps\nadd up</string>
+    <string name="onboarding_record_message">Days and tasks you complete are recorded.\nLook back on your consistency at a glance.</string>
+    <string name="onboarding_record_streak">%1$d-day streak</string>
+    <string name="onboarding_record_weekly">%1$d done this week</string>
+    <string name="onboarding_record_heatmap_title">Small steps over %1$d weeks</string>
+    <string name="onboarding_record_heatmap_summary">Active %1$d days</string>
+    <string name="onboarding_record_sample_label">Preview · Sample data</string>
+    <string name="onboarding_record_sample_description">Sample record, not your actual data. %1$d-day streak, %2$d done this week, active %4$d days in the last %3$d weeks.</string>
+    <string name="widget_guide_title">See your progress in a widget</string>
+    <string name="widget_guide_message">Check your goal progress on your\nHome Screen without opening the app.</string>
+    <string name="widget_guide_show_steps">How to add a widget</string>
+    <string name="widget_guide_later">Later</string>
+    <string name="widget_guide_steps_title">How to add a widget</string>
+    <string name="widget_guide_steps_android">1. Touch and hold an empty area of your home screen.\n2. Tap 'Widgets' and find Bandalart.\n3. Touch and hold a widget, then place it on your home screen.</string>
+    <string name="widget_guide_steps_ios">1. Touch and hold an empty area of your Home Screen.\n2. Tap 'Edit' or '+' in the top-left corner, then choose 'Add Widget'.\n3. Search for Bandalart and add the widget you want.</string>
+    <string name="widget_guide_steps_confirm">OK</string>
+    <string name="widget_guide_steps_close">Close</string>
 
     <!-- Complete.kt -->
     <string name="complete_title">You've achieved all the goals in Bandalart. Truly amazing!</string>
