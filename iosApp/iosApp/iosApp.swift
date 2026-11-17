@@ -12,6 +12,14 @@ import Firebase
 import FirebaseCrashlytics
 import UserNotifications
 import WidgetKit
+#if DEBUG
+import NectoEventsPlugin
+import NectoFilesPlugin
+import NectoProcessMetricPlugin
+import NectoSDK
+import NectoUIControlPlugin
+import NectoURLSessionCapturePlugin
+#endif
 
 private let deadlineReminderIdentifierPrefix = "deadline.v1."
 private let deadlineBandalartIdKey = "deadline_bandalart_id"
@@ -36,6 +44,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        #if DEBUG
+        NectoSDK.register(URLSessionNetworkPlugin())
+        NectoSDK.register(NectoEventsPlugin())
+        NectoSDK.register(NectoFilesPlugin(groups: [widgetAppGroupIdentifier]))
+        NectoSDK.register(ProcessPerformancePlugin())
+        NectoSDK.register(NectoUIControlPlugin())
+        NectoSDK.start()
+        #endif
         FirebaseApp.configure()
         let crashlytics = Crashlytics.crashlytics()
         crashlytics.setCustomValue("firebase_configured", forKey: "startup_phase")
