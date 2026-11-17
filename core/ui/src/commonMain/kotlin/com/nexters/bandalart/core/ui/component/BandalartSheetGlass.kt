@@ -11,17 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
-import com.kyant.backdrop.drawBackdrop
-import com.kyant.backdrop.effects.blur
-import com.kyant.backdrop.effects.colorControls
-import com.kyant.backdrop.effects.lens
-import com.kyant.backdrop.highlight.Highlight
-import zone.ien.hig.adaptive.ExperimentalAdaptiveApi
-import zone.ien.hig.adaptive.Theme
-import zone.ien.hig.adaptive.currentTheme
 
 /** 바텀 시트 뒤에 비칠 화면 기록. 콘텐츠를 `layerBackdrop`으로 기록하는 화면(iOS 홈)만 제공한다. */
 val LocalSheetBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
@@ -29,9 +20,8 @@ val LocalSheetBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
 /** 시트가 그린 면과 내용을 기록할 곳. 시트 위 다이얼로그가 바로 뒤의 시트를 비추도록 iOS 홈이 제공한다. */
 val LocalSheetLayer = staticCompositionLocalOf<LayerBackdrop?> { null }
 
-@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
-private fun sheetGlassBackdrop(): LayerBackdrop? = LocalSheetBackdrop.current.takeIf { currentTheme == Theme.Cupertino }
+private fun sheetGlassBackdrop(): LayerBackdrop? = LocalSheetBackdrop.current.takeIf { isBandalartGlassEnabled() }
 
 /** 시트 내용 최상위 배경색. Liquid Glass 시트면 면이 가려지지 않게 투명하게 둔다. */
 @Composable
@@ -62,25 +52,13 @@ fun BandalartSheetContent(
         content()
         return
     }
-    val shape = BottomSheetDefaults.ExpandedShape
-    val surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = GLASS_SURFACE_ALPHA)
     val sheetLayer = LocalSheetLayer.current
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .then(if (sheetLayer != null) Modifier.layerBackdrop(sheetLayer) else Modifier)
-                .drawBackdrop(
-                    backdrop = backdrop,
-                    shape = { shape },
-                    effects = {
-                        colorControls(saturation = GLASS_SATURATION)
-                        blur(24.dp.toPx())
-                        lens(12.dp.toPx(), 24.dp.toPx())
-                    },
-                    highlight = { Highlight.Default.copy(alpha = GLASS_HIGHLIGHT_ALPHA) },
-                    onDrawSurface = { drawRect(surfaceColor) },
-                ),
+                .bandalartGlassSurface(backdrop = backdrop, shape = BottomSheetDefaults.ExpandedShape),
     ) {
         Box(modifier = Modifier.windowInsetsPadding(insets)) {
             content()
@@ -88,7 +66,4 @@ fun BandalartSheetContent(
     }
 }
 
-private const val GLASS_SURFACE_ALPHA = 0.65f
 private const val GLASS_TINT_ALPHA = 0.6f
-private const val GLASS_SATURATION = 1.5f
-private const val GLASS_HIGHLIGHT_ALPHA = 0.35f
