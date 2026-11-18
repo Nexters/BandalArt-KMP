@@ -87,14 +87,16 @@ NEVER: build number를 직접 정하거나 `Info.plist`의 `CFBundleVersion`을 
 
 ### 6. 광고 모드 선택
 
-사용자에게 매번 `production` 또는 `test`를 묻고 답을 받는다.
+기본값은 `production`이다. 사용자에게 광고 모드를 묻지 않는다. 사용자가 이번 요청에서 `test`(광고 QA 빌드)를 명시한 경우에만 `test`를 쓴다.
 
-- `production`: App Store 심사 후보. 테스터는 광고 배치만 보고 클릭하지 않는다.
+- `production`: App Store 심사 후보. TestFlight 빌드는 그대로 심사에 승격하므로 기본값이다. 테스터는 광고 배치만 보고 클릭하지 않는다.
 - `test`: 광고 상호작용 QA용. 이 build는 심사에 제출하지 않는다.
 
-ALWAYS: 광고 모드는 사용자 답으로만 정한다. 이유: workflow 기본값이 `production`이라 입력을 빼면 의도와 다른 광고 SDK 설정으로 빌드되고, `test` build를 심사에 올리거나 `production` build에서 실제 광고를 반복 클릭하면 계정 정책 문제가 생긴다.
+이유: 사용자가 TestFlight 빌드를 바로 App Store 심사로 승격하므로 항상 `production`으로 올리라고 정했다(2026-11-18). 매번 묻는 것은 불필요한 확인이다.
 
-통과 조건: 사용자가 광고 모드를 명시했다.
+ALWAYS: 8단계 명령에 `-f ios_ads_mode=production`(또는 사용자가 명시한 `test`)을 생략하지 않고 넘기고, 7단계 최종 확인 내용에 광고 모드를 표시한다. 이유: 입력을 빼면 workflow 기본값에 의존하게 되어 workflow가 바뀌었을 때 의도와 다른 광고 SDK 설정으로 빌드될 수 있고, `test` build를 심사에 올리거나 `production` build에서 실제 광고를 반복 클릭하면 계정 정책 문제가 생긴다.
+
+통과 조건: 광고 모드가 `production`이거나, 사용자가 이번 요청에서 `test`를 명시했다.
 
 ### 7. 최종 확인
 
@@ -173,7 +175,7 @@ plugins/bandalart/skills/deploy-ios-testflight/scripts/verify_run.sh <run-id> <p
 ## 관리 정보
 
 - owner: easyhooon
-- 검토일: 2026-11-12
+- 검토일: 2026-11-18
 - 다음 검토: `release-cd.yml`의 iOS 입력·secret 계약 또는 `fastlane/Fastfile`의 `ios beta` lane이 바뀔 때
 
 ### 변경 이력
@@ -181,3 +183,4 @@ plugins/bandalart/skills/deploy-ios-testflight/scripts/verify_run.sh <run-id> <p
 | 날짜 | 변경 |
 | --- | --- |
 | 2026-11-12 | 최초 작성. Release CD `target=ios` 경로, preflight·verify script 추가. preflight는 실제 저장소에서 PASS, verify는 실패 run `38582292448`(exit 1)과 성공 run `42479169122`로 확인. `42479169122`는 `target=both` run이라 Android job 검사에서 exit 1이 기대값이다. `target=ios` 성공 경로와 실제 workflow 실행은 아직 검증하지 않음 |
+| 2026-11-18 | 6단계 광고 모드 기본값을 `production`으로 바꾸고 묻지 않도록 수정(`test`는 사용자가 명시할 때만). `target=ios` 실제 실행 검증: run `44256931302`에서 preflight PASS, verify PASS(`1.8.1 (1)`, production, Android job skipped) |
