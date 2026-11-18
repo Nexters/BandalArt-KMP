@@ -34,6 +34,7 @@ import com.nexters.bandalart.core.domain.entity.BandalartEntity
 import com.nexters.bandalart.core.domain.entity.BandalartWidgetSnapshot
 import com.nexters.bandalart.core.domain.notification.WeeklyReviewNotificationAuthorization
 import com.nexters.bandalart.notification.AndroidDeadlineNotificationAuthorization
+import com.nexters.bandalart.widget.AndroidHomeWidgetSupport
 import com.nexters.bandalart.notification.AndroidDeadlineReminderScheduler
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependencies
 import com.nexters.bandalart.notification.AndroidDeadlineReminderDependenciesRegistry
@@ -66,6 +67,7 @@ private class AndroidPlatformBindings(
             AndroidDeadlineNotificationAuthorization(application, WeeklyReviewReminderWork.CHANNEL_ID),
         )
     override val weeklyReviewReminderScheduler = AndroidWeeklyReviewReminderScheduler(application)
+    override val homeWidgetSupport = AndroidHomeWidgetSupport(application)
     override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
         if (backupApiConfig.isConfigured) AndroidDeviceBackupKeyProvider(application) else DeviceBackupKeyProvider { null }
 }

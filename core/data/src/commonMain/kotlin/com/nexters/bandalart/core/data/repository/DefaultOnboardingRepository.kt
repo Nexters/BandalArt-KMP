@@ -27,4 +27,10 @@ class DefaultOnboardingRepository(
     }
 
     override suspend fun getOnboardingCompletedStatus(): Boolean = bandalartDataStore.getOnboardingCompletedStatus()
+
+    override suspend fun markOnboardingRecordIntroShown() {
+        bandalartDataStore.markOnboardingRecordIntroShown()
+    }
+
+    override suspend fun getOnboardingRecordIntroShown(): Boolean = bandalartDataStore.getOnboardingRecordIntroShown()
 }

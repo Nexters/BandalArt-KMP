@@ -27,6 +27,7 @@ import com.nexters.bandalart.core.domain.backup.StartupBackupPolicy
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.onboarding.OnboardingRecordIntroScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -56,10 +57,17 @@ class SplashPresenter(
                         isChecking = true
                         scope.launch {
                             val onboardingCompleted = repository.getOnboardingCompletedStatus()
+                            // 온보딩을 이미 끝낸 사용자에게는 새로 추가한 달성 기록 소개 장만 한 번 보여 준다.
+                            val home =
+                                if (onboardingCompleted && !repository.getOnboardingRecordIntroShown()) {
+                                    OnboardingRecordIntroScreen
+                                } else {
+                                    HomeScreen
+                                }
                             val destination =
                                 when (val decision = startupBackupPolicy.evaluate()) {
                                     StartupBackupDecision.Continue -> {
-                                        if (onboardingCompleted) HomeScreen else OnboardingScreen
+                                        if (onboardingCompleted) home else OnboardingScreen
                                     }
                                     is StartupBackupDecision.OfferRestore ->
                                         CloudBackupScreen(

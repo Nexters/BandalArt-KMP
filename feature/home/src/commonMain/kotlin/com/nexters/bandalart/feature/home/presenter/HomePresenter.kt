@@ -55,6 +55,8 @@ import com.nexters.bandalart.core.domain.repository.SettingsRepository
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
 import com.nexters.bandalart.core.domain.widget.BufferedBandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.domain.widget.HomeWidgetSupport
+import com.nexters.bandalart.core.domain.widget.UnsupportedHomeWidgetSupport
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -100,6 +102,7 @@ class HomePresenter(
         WeeklyReviewNotificationAuthorization(NoOpDeadlineNotificationAuthorization),
     private val weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler = NoOpWeeklyReviewReminderReconciler,
     private val weeklyReviewLaunchTarget: WeeklyReviewLaunchTarget = BufferedWeeklyReviewLaunchTarget(),
+    private val homeWidgetSupport: HomeWidgetSupport = UnsupportedHomeWidgetSupport,
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
@@ -138,6 +141,9 @@ class HomePresenter(
             settingsRepository.taskCompletionTooltipDismissed.collectAsState(initial = true)
         val routineSettingsTooltipDismissed by
             settingsRepository.routineSettingsTooltipDismissed.collectAsState(initial = true)
+        val widgetGuideShown by settingsRepository.widgetGuideShown.collectAsState(initial = true)
+        // 완료 축하 화면에 다녀와도 첫 완료 기록이 남도록 retained로 둔다.
+        var isWidgetGuidePending by rememberRetained { mutableStateOf(false) }
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
         val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
@@ -183,6 +189,12 @@ class HomePresenter(
             if (routineSettingsTooltipDismissed || isRoutineSettingsTooltipDismissalRequested) return
             isRoutineSettingsTooltipDismissalRequested = true
             scope.launch { settingsRepository.dismissRoutineSettingsTooltip() }
+        }
+
+        fun requestWidgetGuide() {
+            if (widgetGuideShown || isWidgetGuidePending) return
+            if (homeWidgetSupport.supportedPlatform() == null) return
+            isWidgetGuidePending = true
         }
 
         fun emitEffect(newEffect: HomeScreen.Effect) {
@@ -686,6 +698,13 @@ class HomePresenter(
                             ),
                     )
             }
+            if (
+                currentSheet.cellType == CellType.TASK &&
+                !currentSheet.initialCellData.isCompleted &&
+                currentCell.isCompleted
+            ) {
+                requestWidgetGuide()
+            }
             bottomSheet = null
         }
 
@@ -731,6 +750,7 @@ class HomePresenter(
                             refreshedCell.isCompleted == updatedCompletion
                         ) {
                             emitEffect(HomeScreen.Effect.PlayTaskCompletionHaptic(currentCell.id))
+                            if (updatedCompletion) requestWidgetGuide()
                         }
                     }
                 }.onFailure { exception ->
@@ -997,6 +1017,26 @@ class HomePresenter(
             weeklyReviewLaunchTarget.acknowledge()
         }
 
+        // 첫 할 일 완료 뒤 홈에 아무것도 떠 있지 않을 때 한 번만 위젯 안내를 띄운다.
+        // 반다라트 완료 축하(isBandalartCompleted, imageRequest)와 완료된 표 위에서는 기다린다.
+        val canShowWidgetGuide =
+            isWidgetGuidePending &&
+                !widgetGuideShown &&
+                bottomSheet == null &&
+                dialog == null &&
+                imageRequest == null &&
+                rewardedAdRequestId == null &&
+                !isBandalartCompleted &&
+                bandalartData?.isCompleted != true
+        LaunchedEffect(canShowWidgetGuide) {
+            if (!canShowWidgetGuide) return@LaunchedEffect
+            isWidgetGuidePending = false
+            val platform = homeWidgetSupport.supportedPlatform() ?: return@LaunchedEffect
+            dialog = HomeScreen.DialogState.WidgetGuide(platform)
+            // dialog가 바뀌면 이 effect가 취소되므로 저장은 presenter scope에서 끝까지 진행한다.
+            scope.launch { settingsRepository.markWidgetGuideShown() }
+        }
+
         LaunchedEffect(isBandalartCompleted, bandalartData?.id) {
             val completedBandalart = bandalartData
             if (
@@ -1102,6 +1142,13 @@ class HomePresenter(
                         isMainCellTitleEmpty = event.isMainCellTitleEmpty,
                         cellData = event.cellData,
                     )
+
+                HomeScreen.Event.ShowWidgetGuideSteps -> {
+                    val currentDialog = dialog as? HomeScreen.DialogState.WidgetGuide
+                    if (currentDialog != null) {
+                        dialog = HomeScreen.DialogState.WidgetGuideSteps(currentDialog.platform)
+                    }
+                }
 
                 is HomeScreen.Event.ToggleTaskCompletion -> {
                     scope.launch { toggleTaskCompletion(event.cellData) }

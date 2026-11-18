@@ -46,6 +46,8 @@ class BandalartDataStore(
         private const val WEEKLY_REVIEW_REMINDER_ENABLED = "weekly_review_reminder_enabled"
         private const val TASK_COMPLETION_TOOLTIP_DISMISSED_V1 = "task_completion_tooltip_dismissed_v1"
         private const val ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1 = "routine_settings_tooltip_dismissed_v1"
+        private const val WIDGET_GUIDE_SHOWN_V1 = "widget_guide_shown_v1"
+        private const val ONBOARDING_RECORD_INTRO_SHOWN_V1 = "onboarding_record_intro_shown_v1"
         private const val MAX_BANDALART_SLOTS = "max_bandalart_slots"
         private const val PENDING_REWARDED_REQUEST_ID = "pending_rewarded_request_id"
         private const val PENDING_REWARDED_TARGET_SLOTS = "pending_rewarded_target_slots"
@@ -66,6 +68,8 @@ class BandalartDataStore(
         booleanPreferencesKey(TASK_COMPLETION_TOOLTIP_DISMISSED_V1)
     private val routineSettingsTooltipDismissedKey =
         booleanPreferencesKey(ROUTINE_SETTINGS_TOOLTIP_DISMISSED_V1)
+    private val widgetGuideShownKey = booleanPreferencesKey(WIDGET_GUIDE_SHOWN_V1)
+    private val onboardingRecordIntroShownKey = booleanPreferencesKey(ONBOARDING_RECORD_INTRO_SHOWN_V1)
     private val maxBandalartSlotsKey = intPreferencesKey(MAX_BANDALART_SLOTS)
     private val pendingRewardedRequestIdKey = longPreferencesKey(PENDING_REWARDED_REQUEST_ID)
     private val pendingRewardedTargetSlotsKey = intPreferencesKey(PENDING_REWARDED_TARGET_SLOTS)
@@ -265,6 +269,15 @@ class BandalartDataStore(
                 if (exception is IOException) emit(emptyPreferences()) else throw exception
             }.map { preferences -> preferences[routineSettingsTooltipDismissedKey] ?: false }
 
+    val widgetGuideShown =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.map { preferences -> preferences[widgetGuideShownKey] ?: false }
+
     val recentBandalartId =
         dataStore.data
             .catch { exception ->
@@ -437,6 +450,21 @@ class BandalartDataStore(
                     throw exception
             }.first()[onboardingCompletedKey] ?: false
 
+    suspend fun markOnboardingRecordIntroShown() {
+        dataStore.edit { preferences ->
+            preferences[onboardingRecordIntroShownKey] = true
+        }
+    }
+
+    suspend fun getOnboardingRecordIntroShown() =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException)
+                    emit(emptyPreferences())
+                else
+                    throw exception
+            }.first()[onboardingRecordIntroShownKey] ?: false
+
     suspend fun setThemeMode(themeMode: String) {
         dataStore.edit { preferences ->
             preferences[themeModeKey] = themeMode
@@ -470,6 +498,12 @@ class BandalartDataStore(
     suspend fun dismissRoutineSettingsTooltip() {
         dataStore.edit { preferences ->
             preferences[routineSettingsTooltipDismissedKey] = true
+        }
+    }
+
+    suspend fun markWidgetGuideShown() {
+        dataStore.edit { preferences ->
+            preferences[widgetGuideShownKey] = true
         }
     }
 

@@ -29,6 +29,7 @@ interface SettingsRepository {
     val weeklyReviewReminderEnabled: Flow<Boolean>
     val taskCompletionTooltipDismissed: Flow<Boolean>
     val routineSettingsTooltipDismissed: Flow<Boolean>
+    val widgetGuideShown: Flow<Boolean>
 
     suspend fun setThemeMode(themeMode: ThemeMode)
 
@@ -43,4 +44,6 @@ interface SettingsRepository {
     suspend fun dismissTaskCompletionTooltip()
 
     suspend fun dismissRoutineSettingsTooltip()
+
+    suspend fun markWidgetGuideShown()
 }

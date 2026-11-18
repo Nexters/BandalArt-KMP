@@ -33,6 +33,7 @@ import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.BandalartWidgetRepository
 import com.nexters.bandalart.core.domain.widget.BandalartWidgetLaunchTarget
+import com.nexters.bandalart.core.domain.widget.HomeWidgetSupport
 import com.nexters.bandalart.core.domain.repository.InAppUpdateRepository
 import com.nexters.bandalart.core.domain.repository.OnboardingRepository
 import com.nexters.bandalart.core.domain.repository.SettingsRepository
@@ -67,6 +68,7 @@ interface PlatformBindings {
     val deadlineNotificationAuthorization: DeadlineNotificationAuthorization
     val weeklyReviewNotificationAuthorization: WeeklyReviewNotificationAuthorization
     val weeklyReviewReminderScheduler: WeeklyReviewReminderScheduler
+    val homeWidgetSupport: HomeWidgetSupport
     val deviceBackupKeyProvider: DeviceBackupKeyProvider
     val backupApiConfig: BackupApiConfig
 }

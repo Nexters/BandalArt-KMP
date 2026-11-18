@@ -51,6 +51,8 @@ class OnboardingPresenter(
                         isCompleting = true
                         scope.launch {
                             repository.setOnboardingCompletedStatus(true)
+                            // 신규 사용자는 온보딩 안에서 달성 기록 소개 장을 봤으므로 따로 다시 띄우지 않는다.
+                            repository.markOnboardingRecordIntroShown()
                             navigator.resetRoot(HomeScreen)
                         }
                     }

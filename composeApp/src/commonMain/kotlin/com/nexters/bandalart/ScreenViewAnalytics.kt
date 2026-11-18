@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import com.nexters.bandalart.core.navigation.CloudBackupScreen
 import com.nexters.bandalart.feature.complete.CompleteScreen
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.onboarding.OnboardingRecordIntroScreen
 import com.nexters.bandalart.feature.onboarding.OnboardingScreen
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.slack.circuit.runtime.screen.Screen
@@ -39,6 +40,8 @@ internal fun Screen.analyticsScreen(): AnalyticsScreen? =
     when (this) {
         SplashScreen -> AnalyticsScreen(name = "splash", className = "SplashScreen")
         OnboardingScreen -> AnalyticsScreen(name = "onboarding", className = "OnboardingScreen")
+        OnboardingRecordIntroScreen ->
+            AnalyticsScreen(name = "onboarding_record_intro", className = "OnboardingRecordIntroScreen")
         HomeScreen -> AnalyticsScreen(name = "home", className = "HomeScreen")
         is CompleteScreen -> AnalyticsScreen(name = "complete", className = "CompleteScreen")
         is CloudBackupScreen -> AnalyticsScreen(name = "cloud_backup", className = "CloudBackupScreen")

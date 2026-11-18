@@ -38,6 +38,7 @@ class OnboardingPresenterTest {
 
                 assertEquals(HomeScreen, navigator.awaitResetRoot().newRoot)
                 assertTrue(repository.isCompleted)
+                assertTrue(repository.isRecordIntroShown)
                 assertEquals(1, repository.setCallCount)
             }
         }
