@@ -6,3 +6,4 @@
   
 */
 "CFBundleDisplayName" = "Bandalart";
+"NSUserTrackingUsageDescription" = "This allows Bandalart to show you more relevant ads and measure ad performance. All features remain available if you don't allow it.";

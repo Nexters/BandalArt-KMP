@@ -23,7 +23,7 @@
 
 | 항목 | 이유 |
 | --- | --- |
-| iOS ATT(IDFA 안내 메시지) | 개인정보 라벨 변경과 별도 UX 결정이 필요하다. 후속 단계로 둔다. |
+| iOS ATT(IDFA 설명 메시지) | 처음에는 범위 밖으로 두었으나, iOS 비맞춤 강제를 제거하면 맞춤 광고가 Apple 기준의 추적에 해당할 수 있어 #519에서 도입했다. |
 | `putPublisherFirstPartyIdEnabled(false)`, `setPublisherFirstPartyIDEnabled(false)` | 동의와 별개인 게시자 식별자 설정이다. 이번에는 유지한다. |
 | Firebase `google_analytics_adid_collection_enabled`, `google_analytics_default_allow_ad_personalization_signals` | Analytics 설정이며 AdMob 광고 수익과 직접 관련이 없다. 유지한다. |
 | Android 보상형 광고 사전 로드 방식 변경 | 요청 낭비 문제로 별도 작업이다. |

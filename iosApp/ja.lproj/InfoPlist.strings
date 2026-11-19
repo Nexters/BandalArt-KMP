@@ -6,3 +6,4 @@
   
 */
 "CFBundleDisplayName" = "バンダラート";
+"NSUserTrackingUsageDescription" = "より関連性の高い広告の表示と広告効果の測定に使用します。許可しなくても、すべての機能を引き続きご利用いただけます。";

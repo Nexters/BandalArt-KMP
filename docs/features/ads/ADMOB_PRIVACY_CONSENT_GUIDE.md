@@ -65,9 +65,11 @@ UMP 연동([전략 문서](ADMOB_UMP_CONSENT_STRATEGY.md))을 이해하는 데 �
 | 플랫폼 | 식별자 | 사용 조건 |
 | --- | --- | --- |
 | Android | 광고 ID(AAID) | 사용자가 OS 설정에서 삭제하거나 맞춤 광고를 끌 수 있다. |
-| iOS | IDFA | ATT 권한 팝업에서 허용해야 쓸 수 있다. BandalArt는 ATT를 요청하지 않으므로 iOS에서는 IDFA를 쓰지 않는다. |
+| iOS | IDFA | ATT 권한 팝업에서 허용해야 쓸 수 있다. BandalArt는 #519부터 UMP의 IDFA 설명 메시지로 ATT를 요청한다. |
 
-UMP의 "IDFA 안내 메시지"를 AdMob 콘솔에 만들면 UMP가 ATT 팝업 앞에 설명 화면을 띄운다. BandalArt는 아직 이 메시지를 만들지 않는다.
+UMP의 "IDFA 설명 메시지"를 AdMob 콘솔에 만들면 UMP가 ATT 팝업 앞에 설명 화면을 띄운다. 앱 코드에는 `NSUserTrackingUsageDescription` 문구만 추가하면 된다.
+
+비맞춤 강제를 제거하면 iOS에서는 맞춤 광고가 Apple 기준의 추적에 해당할 수 있다. Apple은 타사 SDK가 앱 데이터를 다른 앱 데이터와 결합해 광고를 타깃팅하는 경우를 추적의 예로 들고, 추적에는 ATT 허용을 요구한다. BandalArt는 1.8.2 제출 준비 중 개인정보 라벨의 추적 질문에서 이를 확인해 ATT를 함께 도입했다.
 
 ## 미국 주 개인정보법
 

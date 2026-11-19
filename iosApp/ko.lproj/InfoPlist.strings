@@ -6,3 +6,4 @@
   
 */
 "CFBundleDisplayName" = "반다라트";
+"NSUserTrackingUsageDescription" = "맞춤형 광고를 보여 드리고 광고 성과를 측정하는 데 사용돼요. 허용하지 않아도 모든 기능을 그대로 이용할 수 있어요.";
