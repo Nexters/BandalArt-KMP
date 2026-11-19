@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -72,6 +73,7 @@ import bandalart.core.designsystem.generated.resources.settings_deadline_reminde
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_overflow
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_section
 import bandalart.core.designsystem.generated.resources.settings_contact
+import bandalart.core.designsystem.generated.resources.settings_privacy_options
 import bandalart.core.designsystem.generated.resources.settings_theme_dark
 import bandalart.core.designsystem.generated.resources.settings_theme_light
 import bandalart.core.designsystem.generated.resources.settings_theme_system
@@ -114,6 +116,8 @@ internal fun SettingsBottomSheet(
     appVersion: String,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
+    isPrivacyOptionsVisible: Boolean = false,
+    onOpenPrivacyOptions: () -> Unit = {},
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showDeadlineReminderConfirmation by remember { mutableStateOf(false) }
@@ -270,6 +274,9 @@ internal fun SettingsBottomSheet(
                 SettingsContactRow(
                     onClick = { onHomeUiAction(HomeScreen.Event.ContactSupport) },
                 )
+                if (isPrivacyOptionsVisible) {
+                    SettingsPrivacyOptionsRow(onClick = onOpenPrivacyOptions)
+                }
                 Row(
                     modifier =
                         Modifier
@@ -457,6 +464,43 @@ private fun DeadlineReminderRow(
         AdaptiveSwitch(
             checked = enabled,
             onCheckedChange = onToggle,
+        )
+    }
+}
+
+@Composable
+private fun SettingsPrivacyOptionsRow(onClick: () -> Unit) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Lock,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(22.dp),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = stringResource(Res.string.settings_privacy_options),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 15.sp,
+            fontFamily = pretendardFontFamily(),
+            fontWeight = FontWeight.W600,
+            letterSpacing = (-0.3).sp,
+            lineHeight = 21.sp,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
         )
     }
 }

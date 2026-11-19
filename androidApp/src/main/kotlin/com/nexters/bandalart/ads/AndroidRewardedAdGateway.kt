@@ -105,7 +105,6 @@ class AndroidRewardedAdGateway(
         val adRequest =
             AdRequest
                 .Builder(application.getString(request.purpose.adUnitResource))
-                .setGoogleExtrasBundle(nonPersonalizedAdExtras())
                 .build()
         val preloadedAd = RewardedAdPreloader.pollAd(adRequest.adUnitId)
         if (preloadedAd != null) {

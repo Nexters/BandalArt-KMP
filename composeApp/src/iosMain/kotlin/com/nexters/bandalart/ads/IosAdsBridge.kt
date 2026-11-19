@@ -31,4 +31,9 @@ interface IosAdsBridge {
     )
 
     fun consumeRewarded(requestId: Long)
+
+    /** UMP 개인정보 옵션 필요 여부가 바뀔 때마다 호출한다. 등록 즉시 현재 값도 전달한다. */
+    fun observePrivacyOptionsRequired(onChange: (Boolean) -> Unit)
+
+    fun showPrivacyOptions()
 }

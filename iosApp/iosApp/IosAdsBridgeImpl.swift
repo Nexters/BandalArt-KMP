@@ -17,6 +17,7 @@
 import ComposeApp
 import GoogleMobileAds
 import UIKit
+import UserMessagingPlatform
 
 private enum AdUnitID {
 #if DEBUG || BANDALART_TEST_ADS
@@ -48,6 +49,10 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
     private let bannerViews = NSHashTable<IosBannerAdView>.weakObjects()
 
     private var isInitialized = false
+    private var isConsentRequested = false
+    private var isMobileAdsStartRequested = false
+    private var isAdsUnavailable = false
+    private var privacyOptionsRequirementListener: ((KotlinBoolean) -> Void)?
     private var loadingRewardedAdUnitIDs = Set<String>()
     private var rewardedAds: [String: RewardedAd] = [:]
     private var activeRewardedAd: RewardedAd?
@@ -58,9 +63,102 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
     private var didEarnReward = false
     private var isRewardedDismissed = false
 
+    /// 앱이 active가 될 때마다 호출한다. 진행 중이거나 이미 확인을 마쳤으면 무시한다.
+    /// 동의 양식은 표시할 view controller가 있어야 하므로 didFinishLaunching이 아니라 active 시점에 시작한다.
     func start() {
+        guard !isConsentRequested else { return }
+        isConsentRequested = true
+
+        ConsentInformation.shared.requestConsentInfoUpdate(with: consentRequestParameters()) { [weak self] error in
+            Task { @MainActor in
+                guard let self else { return }
+                if let error {
+                    NSLog("Consent info update failed: %@", error.localizedDescription)
+                    self.finishConsentGathering()
+                    return
+                }
+                ConsentForm.loadAndPresentIfRequired(from: Self.topViewController()) { [weak self] formError in
+                    Task { @MainActor in
+                        if let formError {
+                            NSLog("Consent form failed: %@", formError.localizedDescription)
+                        }
+                        self?.finishConsentGathering()
+                    }
+                }
+            }
+        }
+        // 이전 실행에서 받은 동의가 있으면 갱신 응답을 기다리지 않고 광고를 준비한다.
+        if ConsentInformation.shared.canRequestAds {
+            startMobileAdsIfNeeded()
+        }
+    }
+
+    func observePrivacyOptionsRequired(onChange: @escaping (KotlinBoolean) -> Void) {
+        privacyOptionsRequirementListener = onChange
+        onChange(KotlinBoolean(value: isPrivacyOptionsRequired))
+    }
+
+    func showPrivacyOptions() {
+        ConsentForm.presentPrivacyOptionsForm(from: Self.topViewController()) { [weak self] formError in
+            Task { @MainActor in
+                if let formError {
+                    NSLog("Privacy options form failed: %@", formError.localizedDescription)
+                }
+                self?.finishConsentGathering()
+            }
+        }
+    }
+
+    private var isPrivacyOptionsRequired: Bool {
+        ConsentInformation.shared.privacyOptionsRequirementStatus == .required
+    }
+
+    private func finishConsentGathering() {
+        privacyOptionsRequirementListener?(KotlinBoolean(value: isPrivacyOptionsRequired))
+        if ConsentInformation.shared.canRequestAds {
+            startMobileAdsIfNeeded()
+        } else if !isMobileAdsStartRequested {
+            // 지금은 광고를 요청할 수 없다. 대기 중인 보상형은 실패로 끝내 생성 흐름을 막지 않고,
+            // 다음 active 시점에 동의 확인을 다시 시도한다.
+            isAdsUnavailable = true
+            isConsentRequested = false
+            if pendingRequestID != nil, activeRewardedAd == nil {
+                finishRewarded(with: .failed)
+            }
+        }
+    }
+
+    private func consentRequestParameters() -> RequestParameters {
+        let parameters = RequestParameters()
+        #if DEBUG
+        // Xcode scheme 환경 변수 UMP_DEBUG_EEA=1이면 시뮬레이터를 EEA 사용자로 보고 동의 양식을 확인한다.
+        if ProcessInfo.processInfo.environment["UMP_DEBUG_EEA"] == "1" {
+            let debugSettings = DebugSettings()
+            debugSettings.geography = .EEA
+            parameters.debugSettings = debugSettings
+        }
+        #endif
+        return parameters
+    }
+
+    private static func topViewController() -> UIViewController? {
+        let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)
+        var top = keyWindow?.rootViewController
+        while let presented = top?.presentedViewController {
+            top = presented
+        }
+        return top
+    }
+
+    private func startMobileAdsIfNeeded() {
+        guard !isMobileAdsStartRequested else { return }
+        isMobileAdsStartRequested = true
+        isAdsUnavailable = false
+
         let requestConfiguration = MobileAds.shared.requestConfiguration
-        requestConfiguration.publisherPrivacyPersonalizationState = .disabled
         requestConfiguration.setPublisherFirstPartyIDEnabled(false)
 
         MobileAds.shared.start { [weak self] _ in
@@ -87,7 +185,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
         purpose: CommonRewardedAdPurpose,
         completion: @escaping (CommonRewardedAdResult) -> Void
     ) {
-        guard pendingRequestID == nil, activeRewardedAd == nil else {
+        guard pendingRequestID == nil, activeRewardedAd == nil, !isAdsUnavailable else {
             completion(.failed)
             return
         }

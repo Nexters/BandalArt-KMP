@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +73,7 @@ import bandalart.core.designsystem.generated.resources.settings_contact_subject
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_sent
 import bandalart.core.designsystem.generated.resources.settings_deadline_reminder_test_failed
 import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.AdPrivacyOptionsHost
 import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
@@ -147,7 +149,9 @@ internal fun Home(
     supportMailLauncher: SupportMailLauncher,
     bannerAdHost: BannerAdHost,
     rewardedAdGateway: RewardedAdGateway,
+    adPrivacyOptionsHost: AdPrivacyOptionsHost,
 ) {
+    val isPrivacyOptionsRequired by adPrivacyOptionsHost.isRequired.collectAsState()
     val homeGraphicsLayer = rememberGraphicsLayer()
     val completeGraphicsLayer = rememberGraphicsLayer()
     // iOS 홈 콘텐츠 기록. Liquid Glass 상단 바·공유 버튼과 다이얼로그 면이 이 기록을 비춘다.
@@ -238,6 +242,8 @@ internal fun Home(
             weeklyReviewNotificationAuthorizationStatus = state.weeklyReviewNotificationAuthorizationStatus,
             eventSink = state.eventSink,
             appVersion = appVersion,
+            isPrivacyOptionsVisible = isPrivacyOptionsRequired,
+            onOpenPrivacyOptions = adPrivacyOptionsHost::show,
         )
     }
     CompositionLocalProvider(LocalDialogBackdrop provides dialogBackdrop) {

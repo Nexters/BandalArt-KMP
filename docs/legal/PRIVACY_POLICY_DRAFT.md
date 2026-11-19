@@ -6,7 +6,7 @@ korean-privacy-terms e390f7b9feb825e368c26726363ea5ce11a34083의 KR-PIPA 구조�
 
 # 반다라트 개인정보처리방침
 
-시행 예정일: 2026년 8월 10일
+시행일: 2026년 11월 19일
 
 이지훈(이하 “운영자”)은 반다라트 모바일 애플리케이션(이하 “서비스”) 이용자의 개인정보를 중요하게 생각합니다. 이 방침은 대한민국 개인정보 보호법을 기본으로 하며, 미국 및 일본 이용자에게도 아래의 지역별 권리를 제공합니다.
 
@@ -21,15 +21,17 @@ korean-privacy-terms e390f7b9feb825e368c26726363ea5ce11a34083의 KR-PIPA 구조�
 | Firebase Analytics | 앱 인스턴스 ID, 앱 실행·세션·화면 조회·상호작용, 앱 버전, 운영체제·기기 정보, 마스킹된 IP 주소에서 파생된 대략적 지역 | 서비스 이용 현황 분석 및 품질 개선 | 사용자·이벤트 단위 데이터는 2개월. 집계 보고서는 개인을 식별하지 않는 형태로 더 오래 보관될 수 있습니다. |
 | Firebase Crashlytics | 충돌 스택 추적, 충돌 당시 앱 상태, 기기·운영체제 정보, 앱 버전, 충돌 시각, Crashlytics 설치 UUID·Firebase 설치 ID·세션 ID | 오류 진단, 안정성 및 보안 개선 | 수집일부터 90일 후 삭제 절차를 시작합니다. |
 | Firebase Remote Config | 국가·언어·시간대 코드, 운영체제·플랫폼 버전, 앱 ID·패키지명·앱 버전·SDK 버전, Firebase 설치 ID | 앱 업데이트 없이 기능 설정을 안전하게 제공하고 서비스 품질을 유지 | 서비스 제공 중 보유하며, 삭제 요청에 따라 Firebase 설치 ID 삭제를 요청합니다. Google은 삭제 요청 후 라이브·백업 시스템에서 관련 데이터를 제거하는 데 최대 180일이 걸릴 수 있습니다. |
-| Google AdMob — Android·iOS | IP 주소와 그로부터 파생된 대략적 위치, 광고 노출·탭·동영상 조회와 같은 상호작용, 앱·광고 SDK 성능 및 진단 정보, 광고 ID 또는 앱·개발자 범위의 기기 식별자, 기기·브라우저 정보 | 비맞춤형 문맥 광고 제공, 노출 빈도 제한, 집계 보고, 광고 부정 사용 방지 | 사용자 활동 보고서는 90일, 광고 활동·코호트·개인정보 메시지 보고서는 최대 2,555일. 광고 서버 로그의 IP 일부는 9개월 후, 쿠키 정보는 18개월 후 익명화됩니다. 보안·부정 사용 방지 또는 법적 의무에 필요한 정보는 Google 정책에 따라 더 오래 보관될 수 있습니다. |
+| Google AdMob — Android·iOS | IP 주소와 그로부터 파생된 대략적 위치, 광고 노출·탭·동영상 조회와 같은 상호작용, 앱·광고 SDK 성능 및 진단 정보, 광고 ID 또는 앱·개발자 범위의 기기 식별자, 기기·브라우저 정보 | 맞춤형 또는 비맞춤형 광고 제공, 노출 빈도 제한, 집계 보고, 광고 부정 사용 방지 | 사용자 활동 보고서는 90일, 광고 활동·코호트·개인정보 메시지 보고서는 최대 2,555일. 광고 서버 로그의 IP 일부는 9개월 후, 쿠키 정보는 18개월 후 익명화됩니다. 보안·부정 사용 방지 또는 법적 의무에 필요한 정보는 Google 정책에 따라 더 오래 보관될 수 있습니다. |
 
 운영자는 회원가입, 로그인 또는 운영자 서버를 통한 목표 데이터 동기화 기능을 제공하지 않습니다. 사용자가 사진 보관함 저장을 선택하면 생성된 이미지는 사용자의 기기에만 저장되며 운영자에게 전송되지 않습니다.
 
-## 2. 자동 수집 기술과 비맞춤형 광고
+## 2. 자동 수집 기술과 광고
 
-Android 및 iOS 버전은 Google AdMob의 비맞춤형 광고만 요청합니다. 광고는 과거의 앱·웹 이용 이력을 이용한 관심사 기반 타기팅이 아니라 현재 앱의 문맥과 대략적 지역 같은 정보로 선택됩니다.
+Android 및 iOS 버전은 Google AdMob을 통해 맞춤형 또는 비맞춤형 광고를 제공합니다. 맞춤형 광고는 광고 식별자 등과 연결된 관심사를 이용할 수 있고, 비맞춤형 광고는 과거의 앱·웹 이용 이력이 아니라 현재 앱의 문맥과 대략적 지역 같은 정보로 선택됩니다.
 
-비맞춤형 광고도 다음 목적에는 광고 ID, 앱 식별자 또는 이와 유사한 기술을 사용할 수 있습니다.
+유럽경제지역(EEA), 영국 및 스위스 등 동의가 필요한 지역의 이용자에게는 앱 실행 시 Google의 동의 관리 도구(User Messaging Platform)로 동의 여부를 묻고, 이용자의 선택에 따라 맞춤형 광고, 비맞춤형 광고 또는 제한된 광고를 제공합니다. 해당 이용자는 앱의 설정 > 개인정보 옵션에서 언제든지 선택을 변경할 수 있습니다.
+
+광고 종류와 관계없이 다음 목적에는 광고 ID, 앱 식별자 또는 이와 유사한 기술을 사용할 수 있습니다.
 
 - 동일 광고의 과도한 노출 방지
 - 집계된 광고 성과 측정
@@ -46,7 +48,7 @@ Android 및 iOS 버전은 Google AdMob의 비맞춤형 광고만 요청합니다
 | 처리자 | 업무 | 처리 정보 | 처리 장소 |
 |---|---|---|---|
 | Google LLC 및 Firebase 재수탁자 | Firebase Analytics, Crashlytics, Remote Config 제공 | 제1조의 Firebase 항목 | 미국 및 Google 또는 그 대리인이 시설을 운영하는 국가 |
-| Google LLC 및 Google의 승인된 광고 기술 제공업체 | Android·iOS 비맞춤형 광고 제공·측정·부정 사용 방지 | 제1조의 AdMob 항목. 비맞춤형 입찰 요청에서는 광고 ID와 Google 사용자 ID 같은 식별자를 제거하지만, 축약된 IP 주소와 user-agent 같은 신호가 전송될 수 있습니다. | 미국 및 각 광고 기술 제공업체의 처리 국가 |
+| Google LLC 및 Google의 승인된 광고 기술 제공업체 | Android·iOS 맞춤형·비맞춤형 광고 제공·측정·부정 사용 방지 | 제1조의 AdMob 항목. 비맞춤형 광고 요청에서는 광고 ID와 Google 사용자 ID 같은 식별자를 제거하지만, 축약된 IP 주소와 user-agent 같은 신호가 전송될 수 있습니다. | 미국 및 각 광고 기술 제공업체의 처리 국가 |
 
 처리자 목록과 소재 국가는 서비스 구성 및 공급자 정책 변경에 따라 달라질 수 있습니다. 최신 Google 재수탁자와 광고 기술 제공업체는 다음 페이지에서 확인할 수 있습니다.
 
@@ -59,7 +61,7 @@ Android 및 iOS 버전은 Google AdMob의 비맞춤형 광고만 요청합니다
 
 | 수령인 및 문의처 | 이전 국가 | 이전 시점·방법 | 이전 항목 | 목적 | 보유기간 |
 |---|---|---|---|---|---|
-| Google LLC, Google Privacy Help: https://support.google.com/policies/troubleshooter/7575787 | 미국 및 Google 또는 대리인이 시설을 운영하는 국가 | 앱 실행, 분석 이벤트·충돌 발생, 원격 설정 조회 또는 Android·iOS 광고 요청 시 암호화된 네트워크로 전송 | 제1조의 Firebase 및 AdMob 항목 | 분석, 오류 진단, 원격 설정, 비맞춤형 광고, 보안·부정 사용 방지 | 제1조의 각 보유기간 |
+| Google LLC, Google Privacy Help: https://support.google.com/policies/troubleshooter/7575787 | 미국 및 Google 또는 대리인이 시설을 운영하는 국가 | 앱 실행, 분석 이벤트·충돌 발생, 원격 설정 조회 또는 Android·iOS 광고 요청 시 암호화된 네트워크로 전송 | 제1조의 Firebase 및 AdMob 항목 | 분석, 오류 진단, 원격 설정, 맞춤형·비맞춤형 광고, 보안·부정 사용 방지 | 제1조의 각 보유기간 |
 
 이용자는 운영자에게 국외 이전 중지 또는 삭제를 요청할 수 있습니다. 필수적인 원격 설정·오류 진단·광고 처리를 거부하면 일부 분석 기능이 중단되고 광고가 제한되거나 제공되지 않을 수 있으나, 기기 내 목표 관리 기능은 계속 사용할 수 있습니다.
 
@@ -109,13 +111,14 @@ Android 및 iOS 버전은 Google AdMob의 비맞춤형 광고만 요청합니다
 이 방침의 내용이 바뀌면 시행 전에 앱 또는 공개된 개인정보처리방침 페이지에서 알립니다. 이용자 권리에 중대한 영향을 주는 변경은 합리적인 사전 통지 기간을 둡니다.
 
 - 최초 시행: 2024년 11월 22일
-- 전면 개정 예정: 2026년 8월 10일
+- 전면 개정: 2026년 8월 10일
+- 개정 시행: 2026년 11월 19일 (동의 기반 맞춤형 광고)
 
 ---
 
 # Bandalart Privacy Policy
 
-Planned effective date: August 10, 2026
+Effective date: November 19, 2026
 
 Jihoon Lee (the “Operator”) respects the privacy of users of the Bandalart mobile application (the “Service”). This Policy is based primarily on the Personal Information Protection Act of South Korea and also provides the regional rights described below to users in the United States and Japan.
 
@@ -130,13 +133,17 @@ The Service is intended only for users aged 14 or older. The Operator does not k
 | Firebase Analytics | App-instance ID; app launches, sessions, screen views and interactions; app version; OS and device data; general region derived from masked IP | Usage analytics and service improvement | User- and event-level data for 2 months. Non-identifying aggregate reports may remain longer. |
 | Firebase Crashlytics | Crash stack traces and app state; device and OS data; app version and crash time; Crashlytics installation UUID, Firebase installation ID, and session ID | Error diagnosis, reliability, and security | Deletion begins 90 days after collection. |
 | Firebase Remote Config | Country, language and time-zone codes; OS and platform version; app ID, package name, app and SDK versions; Firebase installation ID | Secure remote configuration and service quality | While needed to provide the Service. Following a deletion request, removal from Google’s live and backup systems may take up to 180 days. |
-| Google AdMob — Android and iOS | IP address and approximate location; ad impressions, taps and video views; app and SDK diagnostics; advertising ID or other app- or developer-bounded device identifiers; device and browser data | Contextual non-personalized ads, frequency capping, aggregate reporting, fraud prevention | User Activity reports: 90 days. Ads Activity, Cohort, and Privacy & Messaging reports: up to 2,555 days. Google anonymizes part of IP addresses in advertising server logs after 9 months and cookie data after 18 months. Limited security, fraud-prevention, and legal records may be kept longer under Google’s policies. |
+| Google AdMob — Android and iOS | IP address and approximate location; ad impressions, taps and video views; app and SDK diagnostics; advertising ID or other app- or developer-bounded device identifiers; device and browser data | Personalized or non-personalized ads, frequency capping, aggregate reporting, fraud prevention | User Activity reports: 90 days. Ads Activity, Cohort, and Privacy & Messaging reports: up to 2,555 days. Google anonymizes part of IP addresses in advertising server logs after 9 months and cookie data after 18 months. Limited security, fraud-prevention, and legal records may be kept longer under Google’s policies. |
 
 The Service has no account, login, or Operator-hosted goal synchronization. Images saved to the photo library at the user’s request remain on the device and are not sent to the Operator.
 
-## 2. Automatic technologies and non-personalized ads
+## 2. Automatic technologies and ads
 
-The Android and iOS apps request only non-personalized ads. Ads are selected using current context and approximate location, not a user’s historical app or web activity. Identifiers may still be used for frequency capping, aggregate measurement, fraud prevention, and security.
+The Android and iOS apps show personalized or non-personalized ads through Google AdMob. Personalized ads may use interests associated with advertising identifiers; non-personalized ads are selected using current context and approximate location, not a user’s historical app or web activity.
+
+Users in regions where consent is required, such as the European Economic Area (EEA), the United Kingdom, and Switzerland, are asked for consent through Google’s consent management tool (User Messaging Platform) when the app starts. Depending on their choices, they receive personalized, non-personalized, or limited ads, and they can change their choices at any time in Settings > Privacy options.
+
+Regardless of ad type, identifiers may be used for frequency capping, aggregate measurement, fraud prevention, and security.
 
 The Operator disables AdMob Publisher first-party ID, Android Analytics advertising-ID collection, and advertising-personalization signals for Analytics on Android and iOS. Health data, school or classroom data, and the content of goals or notes are never used for ad targeting.
 
@@ -146,7 +153,7 @@ Users may reset or delete their advertising ID in Android privacy settings, mana
 
 The Operator does not sell personal information. Google LLC and its subprocessors provide Firebase Analytics, Crashlytics, Remote Config, and AdMob for Android and iOS. Data described in Section 1 may be processed in the United States and other locations where Google, its agents, or approved ad technology providers operate facilities.
 
-For non-personalized bid requests, identifiers such as advertising ID and Google user ID are removed, while signals such as truncated IP address and user-agent may still be sent. Current provider lists are available at:
+For non-personalized ad requests, identifiers such as advertising ID and Google user ID are removed, while signals such as truncated IP address and user-agent may still be sent. Current provider lists are available at:
 
 - Firebase subprocessors: https://firebase.google.com/terms/subprocessors
 - Google ad technology providers: https://support.google.com/admob/answer/9012903
@@ -177,7 +184,7 @@ To the extent Japan’s APPI applies, users may request notice of purpose, discl
 
 ## 9. Security
 
-The Operator uses encrypted transmission, least-privilege access to Google accounts, on-device storage by default, disabled ad-personalization signals, dependency security updates, access review, and scheduled deletion of expired inquiries.
+The Operator uses encrypted transmission, least-privilege access to Google accounts, on-device storage by default, disabled ad-personalization signals for Analytics, dependency security updates, access review, and scheduled deletion of expired inquiries.
 
 ## 10. Contact and complaints
 
@@ -191,13 +198,14 @@ South Korean users may also contact the Privacy Infringement Report Center (http
 Changes will be announced in the app or on the published policy page before they take effect. Material changes affecting user rights will receive reasonable advance notice.
 
 - First effective: November 22, 2024
-- Full revision planned: August 10, 2026
+- Full revision: August 10, 2026
+- Revision effective: November 19, 2026 (consent-based personalized ads)
 
 ---
 
 # Bandalart プライバシーポリシー
 
-施行予定日：2026年8月10日
+施行日：2026年11月19日
 
 イ・ジフン（以下「運営者」）は、Bandalartモバイルアプリ（以下「本サービス」）の利用者のプライバシーを尊重します。本ポリシーは韓国の個人情報保護法を主な基準とし、米国および日本の利用者にも以下の地域別権利を提供します。
 
@@ -212,13 +220,17 @@ Changes will be announced in the app or on the published policy page before they
 | Firebase Analytics | アプリインスタンスID、起動・セッション・画面表示・操作、アプリバージョン、OS・端末情報、マスクされたIPから推定されるおおよその地域 | 利用状況の分析および品質改善 | ユーザー・イベント単位データは2か月。個人を識別しない集計レポートはより長く保存される場合があります。 |
 | Firebase Crashlytics | クラッシュのスタックトレース、アプリ状態、端末・OS情報、アプリバージョン、発生時刻、CrashlyticsインストールUUID、FirebaseインストールID、セッションID | 不具合診断、安定性・セキュリティ向上 | 収集から90日後に削除処理を開始します。 |
 | Firebase Remote Config | 国・言語・タイムゾーン、OS・プラットフォーム、アプリID・パッケージ名・アプリ/SDKバージョン、FirebaseインストールID | 安全な遠隔設定および品質維持 | サービス提供中。削除依頼後、Googleの稼働・バックアップシステムからの削除に最大180日かかる場合があります。 |
-| Google AdMob（Android・iOS） | IPアドレスとおおよその位置、広告表示・タップ・動画視聴、アプリ・SDK診断情報、広告IDまたはアプリ・開発者単位の端末識別子、端末・ブラウザ情報 | 文脈に基づく非パーソナライズ広告、表示回数制限、集計、詐欺防止 | User Activityは90日、Ads Activity・Cohort・Privacy & Messagingは最大2,555日。広告サーバーログのIPの一部は9か月後、Cookie情報は18か月後に匿名化されます。セキュリティ、詐欺防止、法令対応の記録はGoogleの方針により長く保存される場合があります。 |
+| Google AdMob（Android・iOS） | IPアドレスとおおよその位置、広告表示・タップ・動画視聴、アプリ・SDK診断情報、広告IDまたはアプリ・開発者単位の端末識別子、端末・ブラウザ情報 | パーソナライズ広告または非パーソナライズ広告、表示回数制限、集計、詐欺防止 | User Activityは90日、Ads Activity・Cohort・Privacy & Messagingは最大2,555日。広告サーバーログのIPの一部は9か月後、Cookie情報は18か月後に匿名化されます。セキュリティ、詐欺防止、法令対応の記録はGoogleの方針により長く保存される場合があります。 |
 
 本サービスにはアカウント、ログイン、運営者サーバーへの目標同期はありません。利用者が写真ライブラリへの保存を選択した画像は端末内に保存され、運営者へ送信されません。
 
-## 2. 自動収集技術と非パーソナライズ広告
+## 2. 自動収集技術と広告
 
-Android版およびiOS版は非パーソナライズ広告のみをリクエストします。広告は過去のアプリ・ウェブ行動ではなく、現在の文脈やおおよその地域に基づいて選択されます。ただし、表示回数制限、集計測定、詐欺防止およびセキュリティのために識別子が使用される場合があります。
+Android版およびiOS版はGoogle AdMobを通じてパーソナライズ広告または非パーソナライズ広告を表示します。パーソナライズ広告は広告識別子などに関連付けられた興味・関心を利用する場合があり、非パーソナライズ広告は過去のアプリ・ウェブ行動ではなく、現在の文脈やおおよその地域に基づいて選択されます。
+
+欧州経済領域（EEA）、英国、スイスなど同意が必要な地域の利用者には、アプリ起動時にGoogleの同意管理ツール（User Messaging Platform）で同意を確認し、選択に応じてパーソナライズ広告、非パーソナライズ広告または制限付き広告を表示します。選択はアプリの設定 > プライバシー設定からいつでも変更できます。
+
+広告の種類にかかわらず、表示回数制限、集計測定、詐欺防止およびセキュリティのために識別子が使用される場合があります。
 
 運営者はAdMobのPublisher first-party ID、Android Analyticsの広告ID収集、およびAndroid・iOSのAnalytics広告パーソナライズシグナルを無効にします。健康情報、学校・教室情報、目標やメモの内容を広告ターゲティングに使用しません。
 
@@ -228,7 +240,7 @@ Android版およびiOS版は非パーソナライズ広告のみをリクエス�
 
 運営者は個人情報を販売しません。Google LLCとその再委託先はFirebase Analytics、Crashlytics、Remote ConfigおよびAndroid・iOS向けAdMobを提供し、第1項の情報を米国その他Google、代理人または承認済み広告技術事業者の施設所在地で処理する場合があります。
 
-非パーソナライズ入札リクエストでは、広告IDやGoogleユーザーIDなどは除去されますが、短縮されたIPアドレスやuser-agentなどは送信される場合があります。最新の事業者一覧：
+非パーソナライズ広告のリクエストでは、広告IDやGoogleユーザーIDなどは除去されますが、短縮されたIPアドレスやuser-agentなどは送信される場合があります。最新の事業者一覧：
 
 - Firebase再委託先：https://firebase.google.com/terms/subprocessors
 - Google広告技術事業者：https://support.google.com/admob/answer/9012903
@@ -259,7 +271,7 @@ Android版およびiOS版は非パーソナライズ広告のみをリクエス�
 
 ## 9. 安全管理措置
 
-運営者は、通信の暗号化、Googleアカウントへの最小権限アクセス、端末内保存の原則、広告パーソナライズシグナルの無効化、依存関係のセキュリティ更新、アクセス確認および保存期間を過ぎた問い合わせの定期削除を実施します。
+運営者は、通信の暗号化、Googleアカウントへの最小権限アクセス、端末内保存の原則、Analyticsの広告パーソナライズシグナルの無効化、依存関係のセキュリティ更新、アクセス確認および保存期間を過ぎた問い合わせの定期削除を実施します。
 
 ## 10. 問い合わせおよび苦情
 
@@ -273,4 +285,5 @@ Android版およびiOS版は非パーソナライズ広告のみをリクエス�
 変更は施行前にアプリまたは公開ポリシーページで告知します。利用者の権利に重大な影響を与える変更については、合理的な事前通知期間を設けます。
 
 - 初回施行：2024年11月22日
-- 全面改定予定：2026年8月10日
+- 全面改定：2026年8月10日
+- 改定施行：2026年11月19日（同意に基づくパーソナライズ広告）

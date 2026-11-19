@@ -56,6 +56,12 @@ android {
         getByName("debug") {
             isDebuggable = true
             applicationIdSuffix = ".dev"
+            // `-PumpDebugEea=true`로 빌드하면 에뮬레이터를 EEA 사용자로 보고 UMP 동의 양식을 확인할 수 있다.
+            buildConfigField(
+                "boolean",
+                "UMP_DEBUG_GEOGRAPHY_EEA",
+                (providers.gradleProperty("umpDebugEea").orNull == "true").toString(),
+            )
             resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
             resValue("string", "admob_rewarded_bandalart_creation_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
             resValue("string", "admob_rewarded_cloud_backup_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")
@@ -71,6 +77,7 @@ android {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
+            buildConfigField("boolean", "UMP_DEBUG_GEOGRAPHY_EEA", "false")
             signingConfig = signingConfigs.getByName("release")
             resValue("string", "admob_app_id", "ca-app-pub-5570932833347277~6079637815")
             resValue("string", "admob_rewarded_bandalart_creation_ad_unit_id", "ca-app-pub-5570932833347277/6659503579")
@@ -130,6 +137,7 @@ dependencies {
     implementation(libs.firebase.common)
     implementation(libs.firebase.performance)
     implementation(libs.google.mobile.ads.next.gen)
+    implementation(libs.google.ump)
 
     implementation(libs.cmptoast)
     implementation(libs.compose.components.resources)

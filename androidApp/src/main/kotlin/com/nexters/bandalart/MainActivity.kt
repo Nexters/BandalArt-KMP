@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
             (application as BandalartApplication).reconcileDeadlineRemindersOnUserLaunch()
         }
         recordWidgetLaunch(intent)
+        (application as BandalartApplication).adConsentManager.onActivityCreated(this)
         appUpdateManager = AppUpdateManagerFactory.create(this)
         skipNextResumeForSplash = savedInstanceState == null
         updateResultLauncher =

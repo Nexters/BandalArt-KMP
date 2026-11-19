@@ -97,7 +97,6 @@ class AndroidBannerAdHost(
                     adView.loadAd(
                         BannerAdRequest
                             .Builder(activity.getString(R.string.admob_banner_ad_unit_id), adSize)
-                            .setGoogleExtrasBundle(nonPersonalizedAdExtras())
                             .build(),
                         object : AdLoadCallback<BannerAd> {
                             override fun onAdLoaded(ad: BannerAd) {
