@@ -31,6 +31,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         timelineReloader: IosWidgetTimelineReloaderImpl()
     )
     private var timeZoneObserver: NSObjectProtocol?
+    private var didBecomeActiveObserver: NSObjectProtocol?
 
     func application(
         _ application: UIApplication,
@@ -46,7 +47,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
             forKey: "app_group_container_available"
         )
         crashlytics.log("Application did finish launching")
-        adsBridge.start()
+        // UMP 동의 양식은 key window가 있어야 띄울 수 있어 앱이 active가 된 뒤 시작한다.
+        // cold launch에서도 전달되는 앱 수준 알림을 쓴다. start()는 중복 호출을 무시한다.
+        didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.adsBridge.start()
+            }
+        }
         UNUserNotificationCenter.current().delegate = self
         timeZoneObserver = NotificationCenter.default.addObserver(
             forName: NSNotification.Name.NSSystemTimeZoneDidChange,
@@ -70,6 +81,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     deinit {
         if let timeZoneObserver {
             NotificationCenter.default.removeObserver(timeZoneObserver)
+        }
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
         }
     }
 

@@ -16,12 +16,21 @@
 
 package com.nexters.bandalart.ads
 
-import android.os.Bundle
+import com.nexters.bandalart.core.common.AdPrivacyOptionsHost
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-internal fun nonPersonalizedAdExtras(): Bundle =
-    Bundle().apply {
-        putInt(NON_PERSONALIZED_ADS_KEY, NON_PERSONALIZED_ADS_ENABLED)
+class IosAdPrivacyOptionsHost(
+    private val adsBridge: IosAdsBridge,
+) : AdPrivacyOptionsHost {
+    private val required = MutableStateFlow(false)
+
+    override val isRequired: StateFlow<Boolean> = required.asStateFlow()
+
+    init {
+        adsBridge.observePrivacyOptionsRequired { isRequired -> required.value = isRequired }
     }
 
-private const val NON_PERSONALIZED_ADS_KEY = "npa"
-private const val NON_PERSONALIZED_ADS_ENABLED = 1
+    override fun show() = adsBridge.showPrivacyOptions()
+}

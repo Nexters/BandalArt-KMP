@@ -22,7 +22,9 @@ import com.nexters.bandalart.backup.AndroidDeviceBackupKeyProvider
 import com.nexters.bandalart.core.common.AndroidSupportMailLauncher
 import com.nexters.bandalart.core.common.AppVersionProvider
 import com.nexters.bandalart.core.common.BannerAdHost
+import com.nexters.bandalart.core.common.AdPrivacyOptionsHost
 import com.nexters.bandalart.core.common.ExitDialogHost
+import com.nexters.bandalart.core.common.NoOpAdPrivacyOptionsHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
 import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
@@ -52,6 +54,7 @@ private class AndroidPlatformBindings(
     application: Application,
     override val bannerAdHost: BannerAdHost,
     override val exitDialogHost: ExitDialogHost,
+    override val adPrivacyOptionsHost: AdPrivacyOptionsHost,
     override val rewardedAdGateway: RewardedAdGateway,
     override val backupApiConfig: BackupApiConfig,
 ) : PlatformBindings {
@@ -77,6 +80,7 @@ fun createAndroidAppGraph(
     bannerAdHost: BannerAdHost,
     exitDialogHost: ExitDialogHost,
     rewardedAdGateway: RewardedAdGateway,
+    adPrivacyOptionsHost: AdPrivacyOptionsHost = NoOpAdPrivacyOptionsHost,
     backupApiConfig: BackupApiConfig = BackupApiConfig(url = "", publishableKey = ""),
 ): AppGraph =
     createAppGraph(
@@ -84,6 +88,7 @@ fun createAndroidAppGraph(
             application,
             bannerAdHost,
             exitDialogHost,
+            adPrivacyOptionsHost,
             rewardedAdGateway,
             backupApiConfig,
         ),

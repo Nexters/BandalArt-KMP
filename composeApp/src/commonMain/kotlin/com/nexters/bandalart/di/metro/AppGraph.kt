@@ -17,6 +17,7 @@
 package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.core.common.AppVersionProvider
+import com.nexters.bandalart.core.common.AdPrivacyOptionsHost
 import com.nexters.bandalart.core.common.BannerAdHost
 import com.nexters.bandalart.core.common.ExitDialogHost
 import com.nexters.bandalart.core.common.ImageHandlerProvider
@@ -61,6 +62,7 @@ interface PlatformBindings {
     val appVersionProvider: AppVersionProvider
     val bannerAdHost: BannerAdHost
     val exitDialogHost: ExitDialogHost
+    val adPrivacyOptionsHost: AdPrivacyOptionsHost
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway
@@ -89,6 +91,7 @@ interface AppGraph {
     val appVersionProvider: AppVersionProvider
     val bannerAdHost: BannerAdHost
     val exitDialogHost: ExitDialogHost
+    val adPrivacyOptionsHost: AdPrivacyOptionsHost
     val imageHandlerProvider: ImageHandlerProvider
     val supportMailLauncher: SupportMailLauncher
     val rewardedAdGateway: RewardedAdGateway

@@ -34,7 +34,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoader
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdRequest
-import com.nexters.bandalart.ads.nonPersonalizedAdExtras
 import io.github.aakira.napier.Napier
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
@@ -83,7 +82,6 @@ internal fun rememberNativeAdPreloader(
                     NativeAdLoader.load(
                         NativeAdRequest
                             .Builder(adUnitId, listOf(NativeAd.NativeAdType.NATIVE))
-                            .setGoogleExtrasBundle(nonPersonalizedAdExtras())
                             .build(),
                         callback,
                     )

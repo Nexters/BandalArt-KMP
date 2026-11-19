@@ -49,6 +49,8 @@ internal fun HomeBottomSheets(
     weeklyReviewNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
     eventSink: (HomeScreen.Event) -> Unit,
     appVersion: String,
+    isPrivacyOptionsVisible: Boolean,
+    onOpenPrivacyOptions: () -> Unit,
 ) {
     when (bottomSheet) {
         is HomeScreen.BottomSheetState.Cell -> {
@@ -90,6 +92,8 @@ internal fun HomeBottomSheets(
                 weeklyReviewReminderEnabled = weeklyReviewReminderEnabled,
                 weeklyReviewNotificationAuthorizationStatus = weeklyReviewNotificationAuthorizationStatus,
                 appVersion = appVersion,
+                isPrivacyOptionsVisible = isPrivacyOptionsVisible,
+                onOpenPrivacyOptions = onOpenPrivacyOptions,
                 onHomeUiAction = eventSink,
             )
         }

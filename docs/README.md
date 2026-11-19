@@ -89,6 +89,8 @@
 - [AdMob 광고 갱신 검증](features/ads/ADMOB_AD_REFRESH_VERIFICATION.md)
 - [AdMob 보상형 생성 gate](features/ads/ADMOB_REWARDED_CREATE_GATE_STRATEGY.md)
 - [AdMob 슬롯 기반](features/ads/ADMOB_SLOT_FOUNDATION_STRATEGY.md)
+- [AdMob UMP 동의 흐름](features/ads/ADMOB_UMP_CONSENT_STRATEGY.md)
+- [AdMob 개인정보 동의 개념 가이드](features/ads/ADMOB_PRIVACY_CONSENT_GUIDE.md)
 
 ### Emoji
 

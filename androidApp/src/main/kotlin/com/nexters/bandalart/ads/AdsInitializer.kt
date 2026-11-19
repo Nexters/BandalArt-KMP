@@ -26,17 +26,21 @@ import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdPreloader
 import com.nexters.bandalart.R
 import io.github.aakira.napier.Napier
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AdsInitializer(
     private val context: Context,
 ) {
     private val isInitializationStarted = AtomicBoolean(false)
-    private val initialization = CompletableDeferred<Boolean>()
+
+    /** null: 동의 대기, true: 초기화 완료, false: 광고 불가 또는 초기화 실패 */
+    private val initialization = MutableStateFlow<Boolean?>(null)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun initialize() {
@@ -60,7 +64,6 @@ class AdsInitializer(
                             PreloadConfiguration(
                                 AdRequest
                                     .Builder(adUnitId)
-                                    .setGoogleExtrasBundle(nonPersonalizedAdExtras())
                                     .build(),
                             ),
                         )
@@ -70,20 +73,27 @@ class AdsInitializer(
                     }
                 }
 
-                initialization.complete(true)
+                initialization.value = true
                 Napier.d("GMA Next-Gen SDK initialized", tag = "AdsInitializer")
             }.onFailure { exception ->
-                initialization.complete(false)
+                initialization.value = false
                 Log.e("AdsInitializer", "GMA Next-Gen SDK initialization failed", exception)
                 Napier.e("GMA Next-Gen SDK initialization failed", exception, tag = "AdsInitializer")
             }
         }
     }
 
-    suspend fun awaitInitialized(): Boolean {
-        initialize()
-        return initialization.await()
+    /**
+     * 동의 흐름이 끝났는데 광고를 요청할 수 없을 때 호출한다.
+     * 대기 중인 광고 지면은 false를 받는다. 이후 동의를 받으면 [initialize]로 다시 초기화할 수 있다.
+     */
+    fun markUnavailable() {
+        if (isInitializationStarted.get()) return
+        initialization.value = false
     }
+
+    /** 초기화는 [initialize] 또는 [markUnavailable]이 결정한다. 광고 동의 전에는 초기화를 시작하지 않는다. */
+    suspend fun awaitInitialized(): Boolean = initialization.filterNotNull().first()
 }
 
 internal fun distinctRewardedAdUnitIds(vararg adUnitIds: String): Set<String> = adUnitIds.toSet()

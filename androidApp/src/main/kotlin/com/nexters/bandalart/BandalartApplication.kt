@@ -23,6 +23,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import com.nexters.bandalart.ads.AdsInitializer
+import com.nexters.bandalart.ads.AdConsentManager
 import com.nexters.bandalart.ads.AndroidBannerAdHost
 import com.nexters.bandalart.ads.AndroidExitDialogHost
 import com.nexters.bandalart.ads.AndroidRewardedAdGateway
@@ -51,6 +52,7 @@ class BandalartApplication : Application() {
     lateinit var appGraph: AppGraph
         private set
     private val adsInitializer by lazy { AdsInitializer(applicationContext) }
+    internal val adConsentManager by lazy { AdConsentManager(applicationContext, adsInitializer) }
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val widgetRefreshRunner = BandalartWidgetRefreshRunner(::refreshWidgets)
     private val widgetProcessLifecycleObserver =
@@ -71,6 +73,7 @@ class BandalartApplication : Application() {
                 application = this,
                 bannerAdHost = bannerAdHost,
                 exitDialogHost = exitDialogHost,
+                adPrivacyOptionsHost = adConsentManager,
                 rewardedAdGateway = rewardedAdGateway,
                 backupApiConfig =
                     BackupApiConfig(
@@ -111,7 +114,6 @@ class BandalartApplication : Application() {
         }
 
         Firebase.initialize(this)
-        adsInitializer.initialize()
 
         multiplatform.network.cmptoast.AppContext
             .apply { set(applicationContext) }

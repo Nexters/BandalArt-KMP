@@ -16,6 +16,7 @@
 
 package com.nexters.bandalart.di.metro
 
+import com.nexters.bandalart.ads.IosAdPrivacyOptionsHost
 import com.nexters.bandalart.ads.IosAdsBridge
 import com.nexters.bandalart.ads.IosBannerAdHost
 import com.nexters.bandalart.ads.IosRewardedAdGateway
@@ -44,6 +45,7 @@ private class IosPlatformBindings(
     override val appVersionProvider = AppVersionProvider()
     override val bannerAdHost = IosBannerAdHost(adsBridge)
     override val exitDialogHost = NoOpExitDialogHost
+    override val adPrivacyOptionsHost = IosAdPrivacyOptionsHost(adsBridge)
     override val imageHandlerProvider = ImageHandlerProvider()
     override val supportMailLauncher = IosSupportMailLauncher()
     override val rewardedAdGateway = IosRewardedAdGateway(adsBridge)
