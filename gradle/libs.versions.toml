@@ -6,10 +6,10 @@ targetSdk = "36"
 compileSdk = "37"
 compileSdkMinor = "1"
 majorVersion = "2"
-minorVersion = "7"
+minorVersion = "8"
 patchVersion = "0"
 # 같은 versionName으로 Play에 다시 올릴 때만 올린다. 마이너 이상을 올리면 0으로 되돌린다.
-androidVersionCodeOffset = "1"
+androidVersionCodeOffset = "0"
 packageName = "com.nexters.bandalart"
 
 # Gradle Plugin

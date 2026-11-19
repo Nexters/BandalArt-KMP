@@ -1,4 +1,5 @@
-• Complete tasks on consecutive days to see a 🔥 N-day streak on Home and widgets.
-• Weekly review: see this week's completed cells and progress per Bandalart at a glance, with an optional reminder every Sunday at 8 PM.
-• A heatmap shows your completions over the last 16 weeks.
-• Widgets now show remaining tasks and your current streak.
+• Onboarding now introduces your achievement history. Existing users see it once after updating.
+• After you complete your first task, we show you how to add a Home screen widget.
+• In the EEA, the UK, and Switzerland, we now ask for ad privacy consent, which you can change anytime in Settings > Privacy options.
+• Settings now scroll fully on devices with shorter screens.
+• Fixed stray backslashes in some dialog text.
