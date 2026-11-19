@@ -17,19 +17,22 @@ korean-privacy-terms e390f7b9feb825e368c26726363ea5ce11a34083의 KR-PIPA 구조�
 | 구분 | 처리 항목 | 목적 | 보유기간 |
 |---|---|---|---|
 | 기기 내 서비스 데이터 | 목표·세부 목표·진행 상태·색상·이모지·메모·마감일·알림 설정 | 목표 관리 및 로컬 알림 제공 | 이용자가 앱에서 삭제하거나 앱 데이터 삭제 또는 앱 제거 시까지. 이 데이터는 운영자 서버로 전송되지 않습니다. |
+| 클라우드 백업(선택) | 반다라트와 셀의 목표, 세부 목표, 진행 상태, 색상, 이모지, 메모, 마감일, 테마 등 복원 대상 앱 설정, 기기에서 생성한 백업 식별 키(Android 기기 식별값 또는 iOS 키체인에 저장한 난수에서 파생한 해시), 마지막 백업 시각 | 이용자가 "지금 백업하기"를 실행한 경우 같은 기기에서 앱 데이터를 복원 | 이용자가 앱에서 백업을 삭제할 때까지 |
 | 이메일 문의 | 발신 이메일 주소, 문의 제목·본문, 이용자가 직접 첨부한 파일 | 문의·불만 처리 및 답변 | 문의 처리 완료 후 1년. 분쟁 또는 법령상 보존 의무가 있는 경우 해당 기간까지 보관 후 삭제합니다. |
 | Firebase Analytics | 앱 인스턴스 ID, 앱 실행·세션·화면 조회·상호작용, 앱 버전, 운영체제·기기 정보, 마스킹된 IP 주소에서 파생된 대략적 지역 | 서비스 이용 현황 분석 및 품질 개선 | 사용자·이벤트 단위 데이터는 2개월. 집계 보고서는 개인을 식별하지 않는 형태로 더 오래 보관될 수 있습니다. |
 | Firebase Crashlytics | 충돌 스택 추적, 충돌 당시 앱 상태, 기기·운영체제 정보, 앱 버전, 충돌 시각, Crashlytics 설치 UUID·Firebase 설치 ID·세션 ID | 오류 진단, 안정성 및 보안 개선 | 수집일부터 90일 후 삭제 절차를 시작합니다. |
 | Firebase Remote Config | 국가·언어·시간대 코드, 운영체제·플랫폼 버전, 앱 ID·패키지명·앱 버전·SDK 버전, Firebase 설치 ID | 앱 업데이트 없이 기능 설정을 안전하게 제공하고 서비스 품질을 유지 | 서비스 제공 중 보유하며, 삭제 요청에 따라 Firebase 설치 ID 삭제를 요청합니다. Google은 삭제 요청 후 라이브·백업 시스템에서 관련 데이터를 제거하는 데 최대 180일이 걸릴 수 있습니다. |
 | Google AdMob — Android·iOS | IP 주소와 그로부터 파생된 대략적 위치, 광고 노출·탭·동영상 조회와 같은 상호작용, 앱·광고 SDK 성능 및 진단 정보, 광고 ID 또는 앱·개발자 범위의 기기 식별자, 기기·브라우저 정보 | 맞춤형 또는 비맞춤형 광고 제공, 노출 빈도 제한, 집계 보고, 광고 부정 사용 방지 | 사용자 활동 보고서는 90일, 광고 활동·코호트·개인정보 메시지 보고서는 최대 2,555일. 광고 서버 로그의 IP 일부는 9개월 후, 쿠키 정보는 18개월 후 익명화됩니다. 보안·부정 사용 방지 또는 법적 의무에 필요한 정보는 Google 정책에 따라 더 오래 보관될 수 있습니다. |
 
-운영자는 회원가입, 로그인 또는 운영자 서버를 통한 목표 데이터 동기화 기능을 제공하지 않습니다. 사용자가 사진 보관함 저장을 선택하면 생성된 이미지는 사용자의 기기에만 저장되며 운영자에게 전송되지 않습니다.
+운영자는 회원가입과 로그인 기능을 제공하지 않습니다. 목표 데이터는 이용자가 클라우드 백업을 실행한 경우에만 운영자가 이용하는 Supabase 서버에 저장되며, 실시간 동기화나 다른 기기로의 복원은 제공하지 않습니다. 사용자가 사진 보관함 저장을 선택하면 생성된 이미지는 사용자의 기기에만 저장되며 운영자에게 전송되지 않습니다.
 
 ## 2. 자동 수집 기술과 광고
 
 Android 및 iOS 버전은 Google AdMob을 통해 맞춤형 또는 비맞춤형 광고를 제공합니다. 맞춤형 광고는 광고 식별자 등과 연결된 관심사를 이용할 수 있고, 비맞춤형 광고는 과거의 앱·웹 이용 이력이 아니라 현재 앱의 문맥과 대략적 지역 같은 정보로 선택됩니다.
 
 유럽경제지역(EEA), 영국 및 스위스 등 동의가 필요한 지역의 이용자에게는 앱 실행 시 Google의 동의 관리 도구(User Messaging Platform)로 동의 여부를 묻고, 이용자의 선택에 따라 맞춤형 광고, 비맞춤형 광고 또는 제한된 광고를 제공합니다. 해당 이용자는 앱의 설정 > 개인정보 옵션에서 언제든지 선택을 변경할 수 있습니다.
+
+iOS 버전은 실행 시 Apple의 앱 추적 투명성(ATT) 권한을 요청하며, 이용자가 허용한 경우에만 광고 식별자(IDFA)를 맞춤형 광고와 광고 성과 측정에 사용합니다. 허용 여부는 iOS의 설정 > 개인정보 보호 및 보안 > 추적에서 언제든지 바꿀 수 있습니다.
 
 광고 종류와 관계없이 다음 목적에는 광고 ID, 앱 식별자 또는 이와 유사한 기술을 사용할 수 있습니다.
 
@@ -49,6 +52,7 @@ Android 및 iOS 버전은 Google AdMob을 통해 맞춤형 또는 비맞춤형 �
 |---|---|---|---|
 | Google LLC 및 Firebase 재수탁자 | Firebase Analytics, Crashlytics, Remote Config 제공 | 제1조의 Firebase 항목 | 미국 및 Google 또는 그 대리인이 시설을 운영하는 국가 |
 | Google LLC 및 Google의 승인된 광고 기술 제공업체 | Android·iOS 맞춤형·비맞춤형 광고 제공·측정·부정 사용 방지 | 제1조의 AdMob 항목. 비맞춤형 광고 요청에서는 광고 ID와 Google 사용자 ID 같은 식별자를 제거하지만, 축약된 IP 주소와 user-agent 같은 신호가 전송될 수 있습니다. | 미국 및 각 광고 기술 제공업체의 처리 국가 |
+| Supabase, Inc. | 클라우드 백업 저장소 제공 | 제1조의 클라우드 백업 항목 | 대한민국(서울, AWS ap-northeast-2) |
 
 처리자 목록과 소재 국가는 서비스 구성 및 공급자 정책 변경에 따라 달라질 수 있습니다. 최신 Google 재수탁자와 광고 기술 제공업체는 다음 페이지에서 확인할 수 있습니다.
 
@@ -129,19 +133,22 @@ The Service is intended only for users aged 14 or older. The Operator does not k
 | Category | Information | Purpose | Retention |
 |---|---|---|---|
 | On-device service data | Goals, sub-goals, progress, colors, emoji, notes, deadlines, and reminder settings | Goal management and local reminders | Until deleted by the user, app data is cleared, or the app is uninstalled. It is not transmitted to the Operator’s server. |
+| Cloud backup (optional) | Goals, sub-goals, progress, colors, emoji, notes, and deadlines of each Bandalart; app settings to restore such as theme; a backup key generated on the device (a hash derived from an Android device identifier or from a random value stored in the iOS Keychain); last backup time | Restoring app data on the same device when the user runs "Back up now" | Until the user deletes the backup in the app |
 | Email inquiries | Sender email address, subject, message, and files voluntarily attached | Support, complaints, and responses | One year after completion, unless longer retention is required for a dispute or by law. |
 | Firebase Analytics | App-instance ID; app launches, sessions, screen views and interactions; app version; OS and device data; general region derived from masked IP | Usage analytics and service improvement | User- and event-level data for 2 months. Non-identifying aggregate reports may remain longer. |
 | Firebase Crashlytics | Crash stack traces and app state; device and OS data; app version and crash time; Crashlytics installation UUID, Firebase installation ID, and session ID | Error diagnosis, reliability, and security | Deletion begins 90 days after collection. |
 | Firebase Remote Config | Country, language and time-zone codes; OS and platform version; app ID, package name, app and SDK versions; Firebase installation ID | Secure remote configuration and service quality | While needed to provide the Service. Following a deletion request, removal from Google’s live and backup systems may take up to 180 days. |
 | Google AdMob — Android and iOS | IP address and approximate location; ad impressions, taps and video views; app and SDK diagnostics; advertising ID or other app- or developer-bounded device identifiers; device and browser data | Personalized or non-personalized ads, frequency capping, aggregate reporting, fraud prevention | User Activity reports: 90 days. Ads Activity, Cohort, and Privacy & Messaging reports: up to 2,555 days. Google anonymizes part of IP addresses in advertising server logs after 9 months and cookie data after 18 months. Limited security, fraud-prevention, and legal records may be kept longer under Google’s policies. |
 
-The Service has no account, login, or Operator-hosted goal synchronization. Images saved to the photo library at the user’s request remain on the device and are not sent to the Operator.
+The Service has no account or login. Goal data is stored on the Supabase server used by the Operator only when the user runs a cloud backup; real-time sync and restoring to another device are not provided. Images saved to the photo library at the user’s request remain on the device and are not sent to the Operator.
 
 ## 2. Automatic technologies and ads
 
 The Android and iOS apps show personalized or non-personalized ads through Google AdMob. Personalized ads may use interests associated with advertising identifiers; non-personalized ads are selected using current context and approximate location, not a user’s historical app or web activity.
 
 Users in regions where consent is required, such as the European Economic Area (EEA), the United Kingdom, and Switzerland, are asked for consent through Google’s consent management tool (User Messaging Platform) when the app starts. Depending on their choices, they receive personalized, non-personalized, or limited ads, and they can change their choices at any time in Settings > Privacy options.
+
+The iOS app asks for Apple's App Tracking Transparency (ATT) permission at launch and uses the advertising identifier (IDFA) for personalized ads and ad measurement only if the user allows it. Users can change this at any time in iOS Settings > Privacy & Security > Tracking.
 
 Regardless of ad type, identifiers may be used for frequency capping, aggregate measurement, fraud prevention, and security.
 
@@ -151,7 +158,7 @@ Users may reset or delete their advertising ID in Android privacy settings, mana
 
 ## 3. Service providers and disclosure
 
-The Operator does not sell personal information. Google LLC and its subprocessors provide Firebase Analytics, Crashlytics, Remote Config, and AdMob for Android and iOS. Data described in Section 1 may be processed in the United States and other locations where Google, its agents, or approved ad technology providers operate facilities.
+The Operator does not sell personal information. Google LLC and its subprocessors provide Firebase Analytics, Crashlytics, Remote Config, and AdMob for Android and iOS. Data described in Section 1 may be processed in the United States and other locations where Google, its agents, or approved ad technology providers operate facilities. Supabase, Inc. provides the cloud backup storage, and backup data is stored in the Republic of Korea (Seoul, AWS ap-northeast-2).
 
 For non-personalized ad requests, identifiers such as advertising ID and Google user ID are removed, while signals such as truncated IP address and user-agent may still be sent. Current provider lists are available at:
 
@@ -216,19 +223,22 @@ Changes will be announced in the app or on the published policy page before they
 | 区分 | 情報 | 目的 | 保存期間 |
 |---|---|---|---|
 | 端末内のサービスデータ | 目標、詳細目標、進捗、色、絵文字、メモ、期限、通知設定 | 目標管理およびローカル通知 | 利用者による削除、アプリデータの消去、またはアンインストールまで。運営者のサーバーには送信されません。 |
+| クラウドバックアップ（任意） | 各バンダラートとセルの目標、詳細目標、進捗、色、絵文字、メモ、期限、テーマなど復元対象のアプリ設定、端末で生成したバックアップ識別キー（Androidの端末識別値またはiOSキーチェーンに保存した乱数から導出したハッシュ）、最終バックアップ日時 | 利用者が「今すぐバックアップ」を実行した場合に同じ端末でアプリデータを復元 | 利用者がアプリでバックアップを削除するまで |
 | メールでのお問い合わせ | 送信元メールアドレス、件名、本文、利用者が任意に添付したファイル | 問い合わせ・苦情対応 | 対応完了後1年間。紛争または法令上必要な場合はその期間まで。 |
 | Firebase Analytics | アプリインスタンスID、起動・セッション・画面表示・操作、アプリバージョン、OS・端末情報、マスクされたIPから推定されるおおよその地域 | 利用状況の分析および品質改善 | ユーザー・イベント単位データは2か月。個人を識別しない集計レポートはより長く保存される場合があります。 |
 | Firebase Crashlytics | クラッシュのスタックトレース、アプリ状態、端末・OS情報、アプリバージョン、発生時刻、CrashlyticsインストールUUID、FirebaseインストールID、セッションID | 不具合診断、安定性・セキュリティ向上 | 収集から90日後に削除処理を開始します。 |
 | Firebase Remote Config | 国・言語・タイムゾーン、OS・プラットフォーム、アプリID・パッケージ名・アプリ/SDKバージョン、FirebaseインストールID | 安全な遠隔設定および品質維持 | サービス提供中。削除依頼後、Googleの稼働・バックアップシステムからの削除に最大180日かかる場合があります。 |
 | Google AdMob（Android・iOS） | IPアドレスとおおよその位置、広告表示・タップ・動画視聴、アプリ・SDK診断情報、広告IDまたはアプリ・開発者単位の端末識別子、端末・ブラウザ情報 | パーソナライズ広告または非パーソナライズ広告、表示回数制限、集計、詐欺防止 | User Activityは90日、Ads Activity・Cohort・Privacy & Messagingは最大2,555日。広告サーバーログのIPの一部は9か月後、Cookie情報は18か月後に匿名化されます。セキュリティ、詐欺防止、法令対応の記録はGoogleの方針により長く保存される場合があります。 |
 
-本サービスにはアカウント、ログイン、運営者サーバーへの目標同期はありません。利用者が写真ライブラリへの保存を選択した画像は端末内に保存され、運営者へ送信されません。
+本サービスにはアカウントやログインはありません。目標データは、利用者がクラウドバックアップを実行した場合にのみ運営者が利用するSupabaseサーバーに保存され、リアルタイム同期や他の端末への復元は提供しません。利用者が写真ライブラリへの保存を選択した画像は端末内に保存され、運営者へ送信されません。
 
 ## 2. 自動収集技術と広告
 
 Android版およびiOS版はGoogle AdMobを通じてパーソナライズ広告または非パーソナライズ広告を表示します。パーソナライズ広告は広告識別子などに関連付けられた興味・関心を利用する場合があり、非パーソナライズ広告は過去のアプリ・ウェブ行動ではなく、現在の文脈やおおよその地域に基づいて選択されます。
 
 欧州経済領域（EEA）、英国、スイスなど同意が必要な地域の利用者には、アプリ起動時にGoogleの同意管理ツール（User Messaging Platform）で同意を確認し、選択に応じてパーソナライズ広告、非パーソナライズ広告または制限付き広告を表示します。選択はアプリの設定 > プライバシー設定からいつでも変更できます。
+
+iOS版は起動時にAppleのApp Tracking Transparency（ATT）の許可を求め、利用者が許可した場合にのみ広告識別子（IDFA）をパーソナライズ広告と広告効果の測定に使用します。許可はiOSの設定 > プライバシーとセキュリティ > トラッキングからいつでも変更できます。
 
 広告の種類にかかわらず、表示回数制限、集計測定、詐欺防止およびセキュリティのために識別子が使用される場合があります。
 
@@ -238,7 +248,7 @@ Android版およびiOS版はGoogle AdMobを通じてパーソナライズ広告�
 
 ## 3. 委託先および第三者への提供
 
-運営者は個人情報を販売しません。Google LLCとその再委託先はFirebase Analytics、Crashlytics、Remote ConfigおよびAndroid・iOS向けAdMobを提供し、第1項の情報を米国その他Google、代理人または承認済み広告技術事業者の施設所在地で処理する場合があります。
+運営者は個人情報を販売しません。Google LLCとその再委託先はFirebase Analytics、Crashlytics、Remote ConfigおよびAndroid・iOS向けAdMobを提供し、第1項の情報を米国その他Google、代理人または承認済み広告技術事業者の施設所在地で処理する場合があります。Supabase, Inc.はクラウドバックアップの保存先を提供し、バックアップデータは大韓民国（ソウル、AWS ap-northeast-2）に保存されます。
 
 非パーソナライズ広告のリクエストでは、広告IDやGoogleユーザーIDなどは除去されますが、短縮されたIPアドレスやuser-agentなどは送信される場合があります。最新の事業者一覧：
 

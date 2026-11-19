@@ -41,6 +41,8 @@
     <string>1</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This allows Bandalart to show you more relevant ads and measure ad performance. All features remain available if you don't allow it.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>앱의 스크린샷을 앨범에 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.</string>
     <key>SKAdNetworkItems</key>
