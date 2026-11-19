@@ -75,10 +75,17 @@ unless release_workflow.include?("Reuse cached Kotlin frameworks") &&
        release_workflow.include?("ios-device-build-v2-") &&
        release_workflow.include?("composeApp/build/xcode-frameworks/Release") &&
        release_workflow.include?("iosWidgetShared/build/xcode-frameworks/Release") &&
-       release_workflow.include?("IOS_REUSE_CACHED_KMP_FRAMEWORKS") &&
+       release_workflow.include?("Restore KMP framework cache") &&
+       release_workflow.include?("Save KMP framework cache") &&
+       release_workflow.include?("ios-kmp-frameworks-release-v1-") &&
+       release_workflow.include?("BuildProductsPath/Release-iphoneos/ComposeApp.framework") &&
+       release_workflow.include?("BuildProductsPath/Release-iphoneos/IosWidgetShared.framework") &&
+       release_workflow.include?("steps.kotlin-build-config.outputs.hash") &&
+       release_workflow.include?("if: steps.kmp-framework-cache.outputs.cache-hit == 'true'") &&
+       release_workflow.include?("IOS_REUSE_CACHED_KMP_FRAMEWORKS: ${{ steps.kmp-framework-cache.outputs.cache-hit }}") &&
        fastfile.include?('ENV["IOS_REUSE_CACHED_KMP_FRAMEWORKS"] == "true"') &&
        fastfile.include?("OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED=YES")
-  raise "Exact TestFlight build cache hits must reuse cached Kotlin frameworks"
+  raise "TestFlight must reuse Kotlin frameworks when Kotlin inputs are unchanged, even if iOS app files changed"
 end
 
 puts "iOS CI cache configuration test passed"
