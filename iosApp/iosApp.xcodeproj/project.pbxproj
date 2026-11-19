@@ -7,12 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1C22AA73CEE298B716A667 /* NectoProcessMetricPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 524B48DDD4C22F168944121C /* NectoProcessMetricPlugin */; };
+		673BE6A6747CCA155FAA774F /* NectoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = B69BA00727A29C1150F44D77 /* NectoSDK */; };
+		789D29F7AF48F6577BCA7C82 /* NectoURLSessionCapturePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = FC8BB5DD36BA8E6762273F2F /* NectoURLSessionCapturePlugin */; };
 		847E3CF02D6DAD8300588455 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 847E3CEE2D6DAD8300588455 /* InfoPlist.strings */; };
 		84E46B3E2D7ADDDB007026FD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 84E46B3D2D7ADDDB007026FD /* FirebaseAnalytics */; };
 		84E46B402D7ADDDB007026FD /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 84E46B3F2D7ADDDB007026FD /* FirebaseCrashlytics */; };
 		84E46B422D7ADDDB007026FD /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 84E46B412D7ADDDB007026FD /* FirebasePerformance */; };
-		F300000D2F3000000000000D /* BandalartWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000012F30000000000001 /* BandalartWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8765163FFFA70A2F3FBA1424 /* NectoEventsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 1BADBAEC3B33E75D52402047 /* NectoEventsPlugin */; };
+		D7E15622CCF591C499BA4EEA /* NectoUIControlPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = D262B78A2538CF3FA49C9870 /* NectoUIControlPlugin */; };
 		F2AD00012E4A000100000001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = F2AD00032E4A000100000001 /* GoogleMobileAds */; };
+		F300000D2F3000000000000D /* BandalartWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000012F30000000000001 /* BandalartWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FC98489EBF76CD535A36CA18 /* NectoFilesPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 2CB53386EA875C95420EA721 /* NectoFilesPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +99,12 @@
 				84E46B402D7ADDDB007026FD /* FirebaseCrashlytics in Frameworks */,
 				84E46B422D7ADDDB007026FD /* FirebasePerformance in Frameworks */,
 				F2AD00012E4A000100000001 /* GoogleMobileAds in Frameworks */,
+				673BE6A6747CCA155FAA774F /* NectoSDK in Frameworks */,
+				8765163FFFA70A2F3FBA1424 /* NectoEventsPlugin in Frameworks */,
+				FC98489EBF76CD535A36CA18 /* NectoFilesPlugin in Frameworks */,
+				2C1C22AA73CEE298B716A667 /* NectoProcessMetricPlugin in Frameworks */,
+				D7E15622CCF591C499BA4EEA /* NectoUIControlPlugin in Frameworks */,
+				789D29F7AF48F6577BCA7C82 /* NectoURLSessionCapturePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +165,12 @@
 				84E46B3F2D7ADDDB007026FD /* FirebaseCrashlytics */,
 				84E46B412D7ADDDB007026FD /* FirebasePerformance */,
 				F2AD00032E4A000100000001 /* GoogleMobileAds */,
+				B69BA00727A29C1150F44D77 /* NectoSDK */,
+				1BADBAEC3B33E75D52402047 /* NectoEventsPlugin */,
+				2CB53386EA875C95420EA721 /* NectoFilesPlugin */,
+				524B48DDD4C22F168944121C /* NectoProcessMetricPlugin */,
+				D262B78A2538CF3FA49C9870 /* NectoUIControlPlugin */,
+				FC8BB5DD36BA8E6762273F2F /* NectoURLSessionCapturePlugin */,
 			);
 			productName = iosApp;
 			productReference = 226F38562D5A407D00A1512E /* iosApp.app */;
@@ -213,6 +231,7 @@
 			packageReferences = (
 				849ED28B2D65C66E00DDA7A4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				F2AD00022E4A000100000001 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 226F38572D5A407D00A1512E /* Products */;
@@ -518,6 +537,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 8R5768RCRA;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "Necto*";
 				GENERATE_INFOPLIST_FILE = NO;
 				"INFOPLIST_FILE[sdk=*]" = "$(SRCROOT)/iosApp/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Bandalart;
@@ -663,9 +683,32 @@
 				minimumVersion = 13.7.0;
 			};
 		};
+		F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/toss/necto.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1BADBAEC3B33E75D52402047 /* NectoEventsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoEventsPlugin;
+		};
+		2CB53386EA875C95420EA721 /* NectoFilesPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoFilesPlugin;
+		};
+		524B48DDD4C22F168944121C /* NectoProcessMetricPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoProcessMetricPlugin;
+		};
 		84E46B3D2D7ADDDB007026FD /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 849ED28B2D65C66E00DDA7A4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -681,10 +724,25 @@
 			package = 849ED28B2D65C66E00DDA7A4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebasePerformance;
 		};
+		B69BA00727A29C1150F44D77 /* NectoSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoSDK;
+		};
+		D262B78A2538CF3FA49C9870 /* NectoUIControlPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoUIControlPlugin;
+		};
 		F2AD00032E4A000100000001 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F2AD00022E4A000100000001 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		FC8BB5DD36BA8E6762273F2F /* NectoURLSessionCapturePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4A93E42DE7C74F17414F3A9 /* XCRemoteSwiftPackageReference "necto" */;
+			productName = NectoURLSessionCapturePlugin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
