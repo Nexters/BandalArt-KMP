@@ -31,6 +31,8 @@ private val DarkColorScheme =
         outline = DarkOutline,
         outlineVariant = DarkOutlineVariant,
         surfaceContainer = DarkOutlineVariant,
+        inverseSurface = Gray200,
+        inverseOnSurface = Gray900,
     )
 
 private val LightColorScheme =
@@ -48,6 +50,8 @@ private val LightColorScheme =
         outline = Gray300,
         outlineVariant = Gray100,
         surfaceContainer = Gray200,
+        inverseSurface = Gray800,
+        inverseOnSurface = Gray100,
     )
 
 @OptIn(ExperimentalAdaptiveApi::class)
