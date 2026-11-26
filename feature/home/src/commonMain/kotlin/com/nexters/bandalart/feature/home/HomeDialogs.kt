@@ -46,6 +46,7 @@ import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.domain.widget.HomeWidgetPlatform
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.CellType
+import com.nexters.bandalart.feature.home.ui.bandalart.AdTrackingGuideDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartActionAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartDeleteAlertDialog
 import com.nexters.bandalart.feature.home.ui.bandalart.RewardedBandalartAlertDialog
@@ -169,6 +170,13 @@ internal fun HomeDialogs(
                         fontWeight = FontWeight.W500,
                         lineHeight = 24.sp,
                     )
+                },
+            )
+        }
+        HomeScreen.DialogState.AdTrackingGuide -> {
+            AdTrackingGuideDialog(
+                onConfirmClick = {
+                    eventSink(HomeScreen.Event.ConfirmAdTrackingGuide)
                 },
             )
         }

@@ -48,7 +48,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         )
         crashlytics.log("Application did finish launching")
         // UMP 동의 양식은 key window가 있어야 띄울 수 있어 앱이 active가 된 뒤 시작한다.
-        // cold launch에서도 전달되는 앱 수준 알림을 쓴다. start()는 중복 호출을 무시한다.
+        // cold launch에서도 전달되는 앱 수준 알림을 쓴다. start()는 중복 호출을 무시하고,
+        // 동의 양식은 홈에서 ATT 확인을 마친 뒤에만 띄운다.
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,

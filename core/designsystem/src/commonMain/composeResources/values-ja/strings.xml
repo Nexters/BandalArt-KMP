@@ -32,6 +32,9 @@
     <string name="widget_guide_steps_ios">1. ホーム画面の空いている場所を長押しします。\n2. 左上の「編集」または「+」をタップし、「ウィジェットを追加」を選びます。\n3. バンダラートを検索して、追加したいウィジェットを選びます。</string>
     <string name="widget_guide_steps_confirm">OK</string>
     <string name="widget_guide_steps_close">閉じる</string>
+    <string name="ad_tracking_guide_title">パーソナライズ広告の許可についてお聞きします</string>
+    <string name="ad_tracking_guide_message">バンダラートは広告によって無料で提供しています。次の画面で許可すると、興味に合った広告が表示されます。許可しなくてもすべての機能をそのまま使えます。設定 &gt; プライバシーとセキュリティ &gt; トラッキングからいつでも変更できます。</string>
+    <string name="ad_tracking_guide_confirm">続ける</string>
 
     <!-- Complete.kt -->
     <string name="complete_title">バンダラートのすべての目標を達成しました。\n素晴らしいですね！</string>

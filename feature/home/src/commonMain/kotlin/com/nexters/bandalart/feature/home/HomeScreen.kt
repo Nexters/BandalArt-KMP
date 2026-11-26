@@ -129,6 +129,9 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class WidgetGuideSteps(
             val platform: HomeWidgetPlatform,
         ) : DialogState
+
+        /** iOS 광고 추적 권한(ATT) 시스템 팝업 직전에 이유를 설명한다. */
+        data object AdTrackingGuide : DialogState
     }
 
     sealed interface Effect {
@@ -185,6 +188,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         ) : Event
 
         data object ConfirmRewardedCreate : Event
+
+        data object ConfirmAdTrackingGuide : Event
 
         data class RewardedAdFinished(
             val requestId: Long,

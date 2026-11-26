@@ -30,6 +30,7 @@ import com.nexters.bandalart.core.common.RewardedAdGateway
 import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.data.backup.BackupApiConfig
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
+import com.nexters.bandalart.core.domain.ads.NoOpAdTrackingPermission
 import com.nexters.bandalart.core.domain.backup.DeviceBackupKeyProvider
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.BandalartEntity
@@ -71,6 +72,7 @@ private class AndroidPlatformBindings(
         )
     override val weeklyReviewReminderScheduler = AndroidWeeklyReviewReminderScheduler(application)
     override val homeWidgetSupport = AndroidHomeWidgetSupport(application)
+    override val adTrackingPermission = NoOpAdTrackingPermission
     override val deviceBackupKeyProvider: DeviceBackupKeyProvider =
         if (backupApiConfig.isConfigured) AndroidDeviceBackupKeyProvider(application) else DeviceBackupKeyProvider { null }
 }

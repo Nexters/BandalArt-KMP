@@ -17,6 +17,7 @@
 package com.nexters.bandalart.di.metro
 
 import com.nexters.bandalart.ads.IosAdPrivacyOptionsHost
+import com.nexters.bandalart.ads.IosAdTrackingPermission
 import com.nexters.bandalart.ads.IosAdsBridge
 import com.nexters.bandalart.ads.IosBannerAdHost
 import com.nexters.bandalart.ads.IosRewardedAdGateway
@@ -55,6 +56,7 @@ private class IosPlatformBindings(
         WeeklyReviewNotificationAuthorization(deadlineNotificationAuthorization)
     override val weeklyReviewReminderScheduler = IosWeeklyReviewReminderScheduler()
     override val homeWidgetSupport = IosHomeWidgetSupport()
+    override val adTrackingPermission = IosAdTrackingPermission(adsBridge)
     override val backupApiConfig =
         BackupApiConfig(
             url = BackupBuildConfig.SUPABASE_URL,

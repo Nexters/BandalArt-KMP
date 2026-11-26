@@ -27,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import com.nexters.bandalart.core.common.Language
 import com.nexters.bandalart.core.common.RewardedAdResult
+import com.nexters.bandalart.core.domain.ads.AdTrackingPermission
+import com.nexters.bandalart.core.domain.ads.NoOpAdTrackingPermission
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
@@ -103,6 +105,7 @@ class HomePresenter(
     private val weeklyReviewReminderReconciler: WeeklyReviewReminderReconciler = NoOpWeeklyReviewReminderReconciler,
     private val weeklyReviewLaunchTarget: WeeklyReviewLaunchTarget = BufferedWeeklyReviewLaunchTarget(),
     private val homeWidgetSupport: HomeWidgetSupport = UnsupportedHomeWidgetSupport,
+    private val adTrackingPermission: AdTrackingPermission = NoOpAdTrackingPermission,
 ) : Presenter<HomeScreen.State> {
     @Composable
     override fun present(): HomeScreen.State {
@@ -144,6 +147,8 @@ class HomePresenter(
         val widgetGuideShown by settingsRepository.widgetGuideShown.collectAsState(initial = true)
         // 완료 축하 화면에 다녀와도 첫 완료 기록이 남도록 retained로 둔다.
         var isWidgetGuidePending by rememberRetained { mutableStateOf(false) }
+        // 홈에 처음 들어왔을 때 한 번만 광고 추적 권한과 광고 동의 확인을 시작한다.
+        var isAdConsentHandled by rememberRetained { mutableStateOf(false) }
         val deadlineReminderSchedulingHealth by deadlineReminderReconciler.schedulingHealth.collectAsState()
         val pendingDeadlineLaunchId by deadlineNotificationLaunchTarget.pendingBandalartId.collectAsState()
         val pendingWidgetLaunchId by bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
@@ -1017,6 +1022,24 @@ class HomePresenter(
             weeklyReviewLaunchTarget.acknowledge()
         }
 
+        // ATT를 아직 묻지 않았으면 시스템 팝업 전에 반다라트 설명 다이얼로그를 띄우고,
+        // 이미 답했으면 바로 광고 동의 확인을 시작한다. 다른 시트나 다이얼로그가 떠 있으면 기다린다.
+        val canStartAdConsent =
+            !isAdConsentHandled &&
+                bottomSheet == null &&
+                dialog == null &&
+                imageRequest == null &&
+                rewardedAdRequestId == null
+        LaunchedEffect(canStartAdConsent) {
+            if (!canStartAdConsent) return@LaunchedEffect
+            isAdConsentHandled = true
+            if (adTrackingPermission.isRequestNeeded()) {
+                dialog = HomeScreen.DialogState.AdTrackingGuide
+            } else {
+                adTrackingPermission.startAdConsent()
+            }
+        }
+
         // 첫 할 일 완료 뒤 홈에 아무것도 떠 있지 않을 때 한 번만 위젯 안내를 띄운다.
         // 반다라트 완료 축하(isBandalartCompleted, imageRequest)와 완료된 표 위에서는 기다린다.
         val canShowWidgetGuide =
@@ -1176,6 +1199,13 @@ class HomePresenter(
                 }
                 HomeScreen.Event.DismissDropDownMenu -> isDropDownMenuOpened = false
                 HomeScreen.Event.DismissBottomSheet -> bottomSheet = null
+                HomeScreen.Event.ConfirmAdTrackingGuide -> {
+                    dialog = null
+                    scope.launch {
+                        adTrackingPermission.request()
+                        adTrackingPermission.startAdConsent()
+                    }
+                }
                 HomeScreen.Event.DismissDialog -> {
                     if (dialog == HomeScreen.DialogState.RewardedCreate) {
                         rewardedCreateCoordinator.dismissDialog()
