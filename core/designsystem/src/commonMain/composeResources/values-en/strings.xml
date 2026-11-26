@@ -32,6 +32,9 @@
     <string name="widget_guide_steps_ios">1. Touch and hold an empty area of your Home Screen.\n2. Tap 'Edit' or '+' in the top-left corner, then choose 'Add Widget'.\n3. Search for Bandalart and add the widget you want.</string>
     <string name="widget_guide_steps_confirm">OK</string>
     <string name="widget_guide_steps_close">Close</string>
+    <string name="ad_tracking_guide_title">We’ll ask about personalized ads</string>
+    <string name="ad_tracking_guide_message">Bandalart stays free with ads. If you allow tracking on the next screen, you’ll see ads that match your interests. Every feature works either way, and you can change this anytime in Settings &gt; Privacy &amp; Security &gt; Tracking.</string>
+    <string name="ad_tracking_guide_confirm">Continue</string>
 
     <!-- Complete.kt -->
     <string name="complete_title">You've achieved all the goals in Bandalart. Truly amazing!</string>

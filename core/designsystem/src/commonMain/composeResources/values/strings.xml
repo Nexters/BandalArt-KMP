@@ -32,6 +32,9 @@
     <string name="widget_guide_steps_ios">1. 홈 화면의 빈 곳을 길게 누르세요.\n2. 왼쪽 위의 ‘편집’이나 ‘+’를 누르고 ‘위젯 추가’를 고르세요.\n3. 반다라트를 검색해 원하는 위젯을 추가하세요.</string>
     <string name="widget_guide_steps_confirm">확인</string>
     <string name="widget_guide_steps_close">닫기</string>
+    <string name="ad_tracking_guide_title">맞춤형 광고 허용 여부를 물어볼게요</string>
+    <string name="ad_tracking_guide_message">반다라트는 광고로 무료 서비스를 운영해요.\n다음 화면에서 허용하면\n관심사에 맞는 광고가 보여요.\n허용하지 않아도 모든 기능을 그대로 쓸 수 있고,\n설정 &gt; 개인정보 보호 및 보안 &gt; 추적에서\n언제든 바꿀 수 있어요.</string>
+    <string name="ad_tracking_guide_confirm">계속</string>
 
     <!-- Complete.kt -->
     <string name="complete_title">반다라트의 모든 목표를 달성했어요.\n정말 대단해요!</string>

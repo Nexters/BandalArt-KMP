@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import AppTrackingTransparency
 import ComposeApp
 import GoogleMobileAds
 import UIKit
@@ -50,6 +51,7 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
 
     private var isInitialized = false
     private var isConsentRequested = false
+    private var isHomeReached = false
     private var isMobileAdsStartRequested = false
     private var isAdsUnavailable = false
     private var privacyOptionsRequirementListener: ((KotlinBoolean) -> Void)?
@@ -63,10 +65,38 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
     private var didEarnReward = false
     private var isRewardedDismissed = false
 
+    func isTrackingAuthorizationNotDetermined() -> Bool {
+        ATTrackingManager.trackingAuthorizationStatus == .notDetermined
+    }
+
+    /// 홈의 반다라트 설명 다이얼로그에서 확인을 누르면 호출된다. 사용자 탭 직후라 앱은 active 상태다.
+    func requestTrackingAuthorization(completion: @escaping () -> Void) {
+        ATTrackingManager.requestTrackingAuthorization { _ in
+            // 결과 콜백은 background queue에서 올 수 있어 main actor로 옮긴 뒤 Kotlin에 알린다.
+            Task { @MainActor in
+                completion()
+            }
+        }
+    }
+
+    /// 홈에서 ATT 확인을 마친 뒤 호출한다. 온보딩과 시작 복원 화면 위에 동의 양식이 뜨지 않고,
+    /// ATT를 먼저 물어 UMP의 IDFA 설명 메시지 대신 반다라트 설명 다이얼로그가 보이도록 이 호출 이후에만 시작한다.
+    func requestConsentOnHome() {
+        isHomeReached = true
+        // active가 아닐 때 요청하면 ATT 팝업이 뜨지 않고 끝나므로, 그때는 다음 active 알림의 start()에 맡긴다.
+        if UIApplication.shared.applicationState == .active {
+            start()
+        }
+    }
+
     /// 앱이 active가 될 때마다 호출한다. 진행 중이거나 이미 확인을 마쳤으면 무시한다.
     /// 동의 양식은 표시할 view controller가 있어야 하므로 didFinishLaunching이 아니라 active 시점에 시작한다.
     func start() {
-        guard !isConsentRequested else { return }
+        // 이전 실행에서 받은 동의가 있으면 홈 진입이나 갱신 응답을 기다리지 않고 광고를 준비한다.
+        if ConsentInformation.shared.canRequestAds {
+            startMobileAdsIfNeeded()
+        }
+        guard isHomeReached, !isConsentRequested else { return }
         isConsentRequested = true
 
         ConsentInformation.shared.requestConsentInfoUpdate(with: consentRequestParameters()) { [weak self] error in
@@ -86,10 +116,6 @@ final class IosAdsBridgeImpl: NSObject, @preconcurrency IosAdsBridge, FullScreen
                     }
                 }
             }
-        }
-        // 이전 실행에서 받은 동의가 있으면 갱신 응답을 기다리지 않고 광고를 준비한다.
-        if ConsentInformation.shared.canRequestAds {
-            startMobileAdsIfNeeded()
         }
     }
 

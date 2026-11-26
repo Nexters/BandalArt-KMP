@@ -30,6 +30,7 @@ import com.nexters.bandalart.core.database.BandalartDatabaseFactory
 import com.nexters.bandalart.core.datastore.BandalartDataStore
 import com.nexters.bandalart.core.datastore.BandalartDataStoreFactory
 import com.nexters.bandalart.core.datastore.InAppUpdateDataStore
+import com.nexters.bandalart.core.domain.ads.AdTrackingPermission
 import com.nexters.bandalart.core.domain.repository.BandalartRepository
 import com.nexters.bandalart.core.domain.repository.BandalartSlotRepository
 import com.nexters.bandalart.core.domain.repository.BandalartWidgetRepository
@@ -71,6 +72,7 @@ interface PlatformBindings {
     val weeklyReviewNotificationAuthorization: WeeklyReviewNotificationAuthorization
     val weeklyReviewReminderScheduler: WeeklyReviewReminderScheduler
     val homeWidgetSupport: HomeWidgetSupport
+    val adTrackingPermission: AdTrackingPermission
     val deviceBackupKeyProvider: DeviceBackupKeyProvider
     val backupApiConfig: BackupApiConfig
 }

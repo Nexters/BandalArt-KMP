@@ -36,4 +36,13 @@ interface IosAdsBridge {
     fun observePrivacyOptionsRequired(onChange: (Boolean) -> Unit)
 
     fun showPrivacyOptions()
+
+    /** ATT 권한을 아직 묻지 않았으면 true. */
+    fun isTrackingAuthorizationNotDetermined(): Boolean
+
+    /** ATT 시스템 팝업을 띄우고, 사용자가 답하면 main thread에서 [completion]을 호출한다. */
+    fun requestTrackingAuthorization(completion: () -> Unit)
+
+    /** 홈에서 ATT 확인을 마친 뒤 호출한다. 이때부터 UMP 동의 양식을 띄울 수 있다. */
+    fun requestConsentOnHome()
 }
