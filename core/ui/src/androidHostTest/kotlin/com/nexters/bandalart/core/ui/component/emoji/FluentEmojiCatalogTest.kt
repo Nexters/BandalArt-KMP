@@ -101,10 +101,30 @@ class FluentEmojiCatalogTest {
         val target = FluentEmojiCatalog.items.single { it.unicode == "🎯" }
         assertEquals("목표", target.displayName(Language.KOREAN))
         assertEquals("bullseye", target.displayName(Language.ENGLISH))
-        assertEquals("🎯", target.displayName(Language.JAPANESE))
+        assertEquals("的", target.displayName(Language.JAPANESE))
 
         val uncategorizedAlias = FluentEmojiCatalog.items.first { it.koreanAliases.isEmpty() }
-        assertEquals(uncategorizedAlias.unicode, uncategorizedAlias.displayName(Language.KOREAN))
+        assertEquals(uncategorizedAlias.koreanName, uncategorizedAlias.displayName(Language.KOREAN))
+    }
+
+    @Test
+    fun searchMatchesCldrKoreanAndJapaneseAnnotations() {
+        assertTrue(filterFluentEmojiItems("고양이", null).any { it.unicode == "🐱" })
+        assertTrue(filterFluentEmojiItems("猫", null).any { it.unicode == "🐱" })
+        assertTrue(filterFluentEmojiItems("불타는 사랑", null).any { it.unicode == "❤️‍🔥" })
+        assertTrue(filterFluentEmojiItems("燃えるハート", null).any { it.unicode == "❤️‍🔥" })
+    }
+
+    @Test
+    fun everyCatalogItemHasKoreanAndJapaneseSearchData() {
+        assertTrue(
+            FluentEmojiCatalog.items.all { item ->
+                item.koreanName.isNotBlank() &&
+                    item.koreanKeywords.isNotEmpty() &&
+                    item.japaneseName.isNotBlank() &&
+                    item.japaneseKeywords.isNotEmpty()
+            },
+        )
     }
 
     @Test

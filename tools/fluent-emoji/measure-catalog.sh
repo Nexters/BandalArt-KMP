@@ -5,6 +5,8 @@ export TZ=UTC
 
 readonly UPSTREAM_REPOSITORY="https://github.com/microsoft/fluentui-emoji.git"
 readonly UPSTREAM_COMMIT="62ecdc0d7ca5c6df32148c169556bc8d3782fca4"
+readonly CLDR_JSON_VERSION="49.0.0"
+readonly CLDR_JSON_BASE_URL="https://raw.githubusercontent.com/unicode-org/cldr-json/${CLDR_JSON_VERSION}/cldr-json"
 readonly IMAGE_SIZE="128"
 readonly WEBP_QUALITY="92"
 readonly REQUIRED_RSVG_VERSION="2.60.0"
@@ -25,7 +27,7 @@ elif [[ -n "${1:-}" ]]; then
     exit 1
 fi
 
-for command_name in git jq node rsvg-convert cwebp zip shasum; do
+for command_name in curl git jq node rsvg-convert cwebp zip shasum; do
     if ! command -v "${command_name}" >/dev/null 2>&1; then
         echo "Required command is missing: ${command_name}" >&2
         exit 1
@@ -171,11 +173,26 @@ jq -s \
 if [[ "${sync_runtime_resources}" == true ]]; then
     runtime_drawable_staging_dir="${temporary_dir}/runtime-drawable"
     runtime_kotlin_staging_path="${temporary_dir}/FluentEmojiCatalog.generated.kt"
+    cldr_dir="${temporary_dir}/cldr"
     mkdir -p "${runtime_drawable_staging_dir}"
     cp "${generated_dir}"/*.webp "${runtime_drawable_staging_dir}/"
+    for cldr_language in ko ja; do
+        for cldr_kind in annotations annotationsDerived; do
+            if [[ "${cldr_kind}" == annotations ]]; then
+                cldr_package="cldr-annotations-full"
+            else
+                cldr_package="cldr-annotations-derived-full"
+            fi
+            mkdir -p "${cldr_dir}/${cldr_kind}/${cldr_language}"
+            curl -fsSL \
+                --output "${cldr_dir}/${cldr_kind}/${cldr_language}/annotations.json" \
+                "${CLDR_JSON_BASE_URL}/${cldr_package}/${cldr_kind}/${cldr_language}/annotations.json"
+        done
+    done
     node "${SCRIPT_DIR}/generate-runtime-catalog.mjs" \
         "${candidate_catalog_path}" \
-        "${runtime_kotlin_staging_path}"
+        "${runtime_kotlin_staging_path}" \
+        "${cldr_dir}"
 
     runtime_asset_count="$(find "${runtime_drawable_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
     if [[ "${runtime_asset_count}" -ne 300 ]]; then

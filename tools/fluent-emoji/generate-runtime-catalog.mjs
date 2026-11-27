@@ -1,11 +1,38 @@
 import fs from "node:fs";
+import path from "node:path";
 
-const [catalogPath, outputPath] = process.argv.slice(2);
+const [catalogPath, outputPath, cldrDirectory] = process.argv.slice(2);
 
-if (!catalogPath || !outputPath) {
+if (!catalogPath || !outputPath || !cldrDirectory) {
   throw new Error(
-    "Usage: node generate-runtime-catalog.mjs <catalog-candidate.json> <output.kt>",
+    "Usage: node generate-runtime-catalog.mjs <catalog-candidate.json> <output.kt> <cldr-annotations-dir>",
   );
+}
+
+function readCldrAnnotations(language) {
+  const readJson = (relativePath) =>
+    JSON.parse(fs.readFileSync(path.join(cldrDirectory, relativePath), "utf8"));
+  const derived = readJson(`annotationsDerived/${language}/annotations.json`);
+  const base = readJson(`annotations/${language}/annotations.json`);
+  return {
+    ...derived.annotationsDerived.annotations,
+    ...base.annotations.annotations,
+  };
+}
+
+const cldrAnnotationsByLanguage = new Map(
+  ["ko", "ja"].map((language) => [language, readCldrAnnotations(language)]),
+);
+
+function localizedAnnotation(language, glyph) {
+  const annotations = cldrAnnotationsByLanguage.get(language);
+  // CLDR keys omit the emoji presentation selector (U+FE0F).
+  const annotation = annotations[glyph] ?? annotations[glyph.replaceAll("\uFE0F", "")];
+  const name = annotation?.tts?.[0];
+  if (!name) {
+    throw new Error(`Missing CLDR ${language} annotation for ${glyph}.`);
+  }
+  return { name, keywords: annotation.default ?? [] };
 }
 
 const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
@@ -33,6 +60,8 @@ const entries = catalog.items
     }
     const keywords = item.keywords.map(JSON.stringify).join(", ");
     const koreanAliases = item.koreanAliases.map(JSON.stringify).join(", ");
+    const korean = localizedAnnotation("ko", item.glyph);
+    const japanese = localizedAnnotation("ja", item.glyph);
     return `            FluentEmojiItem(
                 unicode = ${JSON.stringify(item.glyph)},
                 resourceKey = ${JSON.stringify(item.resourceKey)},
@@ -40,6 +69,10 @@ const entries = catalog.items
                 cldrName = ${JSON.stringify(item.cldrName)},
                 keywords = listOf(${keywords}),
                 koreanAliases = listOf(${koreanAliases}),
+                koreanName = ${JSON.stringify(korean.name)},
+                koreanKeywords = listOf(${korean.keywords.map(JSON.stringify).join(", ")}),
+                japaneseName = ${JSON.stringify(japanese.name)},
+                japaneseKeywords = listOf(${japanese.keywords.map(JSON.stringify).join(", ")}),
             ),`;
   })
   .join("\n");
