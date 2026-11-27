@@ -38,12 +38,16 @@ internal data class FluentEmojiItem(
     val cldrName: String,
     val keywords: List<String>,
     val koreanAliases: List<String>,
+    val koreanName: String,
+    val koreanKeywords: List<String>,
+    val japaneseName: String,
+    val japaneseKeywords: List<String>,
 ) {
     fun displayName(language: Language): String =
         when (language) {
-            Language.KOREAN -> koreanAliases.firstOrNull() ?: unicode
+            Language.KOREAN -> koreanAliases.firstOrNull() ?: koreanName
             Language.ENGLISH -> cldrName
-            Language.JAPANESE -> unicode
+            Language.JAPANESE -> japaneseName
         }
 }
 
@@ -70,7 +74,11 @@ internal fun filterFluentEmojiItems(
                 item.unicode.contains(normalizedQuery) ||
                 item.cldrName.lowercase().contains(normalizedQuery) ||
                 item.keywords.any { it.lowercase().contains(normalizedQuery) } ||
-                item.koreanAliases.any { it.lowercase().contains(normalizedQuery) }
+                item.koreanAliases.any { it.lowercase().contains(normalizedQuery) } ||
+                item.koreanName.contains(normalizedQuery) ||
+                item.koreanKeywords.any { it.contains(normalizedQuery) } ||
+                item.japaneseName.contains(normalizedQuery) ||
+                item.japaneseKeywords.any { it.contains(normalizedQuery) }
         matchesCategory && matchesQuery
     }
 }

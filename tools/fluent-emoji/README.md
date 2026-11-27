@@ -39,6 +39,6 @@ Sync the finalized 300 Color assets and generated Kotlin catalog into the KMP mo
 
 The measurement script uses a blob-filtered temporary Git checkout at the pinned commit, balances Fluent metadata groups, prioritizes goal-related terms, excludes gender-specific man/woman sequences, and commits only the selected catalog and measurement report. ZIP input timestamps and file modes are normalized, and the Info-ZIP version is checked. The temporary 300 WebP files and ZIP payloads are not added to the repository.
 
-The generated Kotlin catalog contains the same Unicode/resource mapping plus normalized category, CLDR name, English keywords, and curated Korean aliases used by the common picker UI. Do not edit it manually; regenerate it through the sync command above.
+The generated Kotlin catalog contains the same Unicode/resource mapping plus normalized category, CLDR name, English keywords, curated Korean aliases, and Korean/Japanese names and keywords used by the common picker UI. The sync command downloads the pinned `ko` and `ja` emoji annotations from unicode-org/cldr-json (`CLDR_JSON_VERSION` in `measure-catalog.sh`) and fails if any catalog item has no annotation. Curated Korean aliases take precedence over the CLDR Korean name for display. Do not edit the generated catalog manually; regenerate it through the sync command above.
 
-Fluent UI Emoji is distributed under the Microsoft MIT license preserved in `LICENSE`.
+Fluent UI Emoji is distributed under the Microsoft MIT license preserved in `LICENSE`. CLDR annotations are distributed under the Unicode License v3 preserved in `licenses/Unicode-3.0.txt`.
