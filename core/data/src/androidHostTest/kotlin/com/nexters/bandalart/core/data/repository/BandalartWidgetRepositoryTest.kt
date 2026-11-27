@@ -53,7 +53,7 @@ class BandalartWidgetRepositoryTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(context, BandalartDatabase::class.java).build()
         dao = database.bandalartDao
-        bandalartRepository = DefaultBandalartRepository(mockk<BandalartDataStore>(), dao)
+        bandalartRepository = DefaultBandalartRepository(mockk<BandalartDataStore>(relaxed = true), dao)
         repository =
             DefaultBandalartWidgetRepository(
                 bandalartRepository = bandalartRepository,

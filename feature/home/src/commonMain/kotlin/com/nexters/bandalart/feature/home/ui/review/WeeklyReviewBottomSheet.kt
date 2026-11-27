@@ -51,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
 import bandalart.core.designsystem.generated.resources.clear_description
+import bandalart.core.designsystem.generated.resources.weekly_focus_edit_entry
+import bandalart.core.designsystem.generated.resources.weekly_focus_pick
 import bandalart.core.designsystem.generated.resources.weekly_review_bandalart_progress
 import bandalart.core.designsystem.generated.resources.weekly_review_empty
 import bandalart.core.designsystem.generated.resources.weekly_review_period
@@ -65,6 +67,7 @@ import com.nexters.bandalart.core.domain.entity.CompletionHeatmap
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewBandalartSummary
 import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.feature.home.WeeklyFocusEntry
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.ui.bottomSheetContentWindowInsets
 import kotlinx.collections.immutable.ImmutableList
@@ -78,6 +81,7 @@ internal fun WeeklyReviewBottomSheet(
     summary: WeeklyReviewSummary,
     heatmap: CompletionHeatmap,
     bandalartList: ImmutableList<BandalartUiModel>,
+    weeklyFocusEntry: WeeklyFocusEntry?,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -142,6 +146,16 @@ internal fun WeeklyReviewBottomSheet(
                         )
                     }
                 }
+                if (weeklyFocusEntry != null) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                    WeeklyFocusEntryRow(
+                        entry = weeklyFocusEntry,
+                        onClick = { onHomeUiAction(HomeScreen.Event.OpenWeeklyFocusSelection) },
+                    )
+                }
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.padding(horizontal = 20.dp),
@@ -205,6 +219,41 @@ private fun WeeklyReviewHeader(
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
+    }
+}
+
+@Composable
+private fun WeeklyFocusEntryRow(
+    entry: WeeklyFocusEntry,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text =
+                stringResource(
+                    when (entry) {
+                        WeeklyFocusEntry.PICK -> Res.string.weekly_focus_pick
+                        WeeklyFocusEntry.EDIT -> Res.string.weekly_focus_edit_entry
+                    },
+                ),
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 15.sp,
+            fontFamily = pretendardFontFamily(),
+            fontWeight = FontWeight.W600,
+            modifier = Modifier.weight(1f),
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 

@@ -135,6 +135,18 @@ internal class FakeBandalartRepository(
 
     override suspend fun getChildCells(parentId: Long): List<BandalartCellEntity> = childCells[parentId].orEmpty()
 
+    /** 반다라트별 이번 주 할 일 칸 id. 테스트가 직접 넣거나 비워 주 경계를 흉내 낸다. */
+    val weeklyFocusTaskIds = mutableMapOf<Long, List<Long>>()
+
+    override suspend fun getWeeklyFocusTaskIds(bandalartId: Long): List<Long> = weeklyFocusTaskIds[bandalartId].orEmpty()
+
+    override suspend fun setWeeklyFocusTaskIds(
+        bandalartId: Long,
+        cellIds: List<Long>,
+    ) {
+        weeklyFocusTaskIds[bandalartId] = cellIds.distinct().take(3)
+    }
+
     override suspend fun setRecentBandalartId(recentBandalartId: Long) {
         this.recentBandalartId = recentBandalartId
         recentSubGoalFlow.value = recentSubGoalIds[recentBandalartId] ?: 0L

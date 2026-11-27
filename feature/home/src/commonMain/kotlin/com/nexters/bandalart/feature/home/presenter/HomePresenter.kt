@@ -73,6 +73,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import com.nexters.bandalart.core.domain.policy.WEEKLY_FOCUS_TASK_LIMIT
+import com.nexters.bandalart.core.domain.policy.weeklyFocusCandidatesOf
+import com.nexters.bandalart.core.domain.policy.weeklyFocusTasksOf
 import io.github.aakira.napier.Napier
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -263,6 +266,7 @@ class HomePresenter(
                 bandalartData = loadedBandalartData,
                 bandalartCellData = loadedBandalartCellData,
                 isCompleted = isCompleted,
+                weeklyFocusTaskIds = bandalartRepository.getWeeklyFocusTaskIds(bandalartId),
             )
         }
 
@@ -363,6 +367,45 @@ class HomePresenter(
                     summary = bandalartRepository.getWeeklyReviewSummary(),
                     heatmap = bandalartRepository.getCompletionHeatmap(),
                 )
+        }
+
+        fun openWeeklyFocusSelection() {
+            val current = loadedBandalart ?: return
+            val selectedIds =
+                weeklyFocusTasksOf(current.bandalartCellData, current.weeklyFocusTaskIds).map { it.cell.id }
+            bottomSheet =
+                HomeScreen.BottomSheetState.WeeklyFocusSelection(
+                    bandalartId = current.bandalartData.id,
+                    candidates = weeklyFocusCandidatesOf(current.bandalartCellData, selectedIds).toPersistentList(),
+                    selectedIds = selectedIds.toPersistentList(),
+                )
+        }
+
+        fun toggleWeeklyFocusSelection(cellId: Long) {
+            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.WeeklyFocusSelection ?: return
+            val selectedIds =
+                when {
+                    cellId in currentSheet.selectedIds -> currentSheet.selectedIds - cellId
+                    currentSheet.selectedIds.size >= WEEKLY_FOCUS_TASK_LIMIT -> return
+                    currentSheet.candidates.none { it.cell.id == cellId } -> return
+                    else -> currentSheet.selectedIds + cellId
+                }
+            bottomSheet = currentSheet.copy(selectedIds = selectedIds.toPersistentList())
+        }
+
+        suspend fun saveWeeklyFocusSelection() {
+            val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.WeeklyFocusSelection ?: return
+            bandalartRepository.setWeeklyFocusTaskIds(currentSheet.bandalartId, currentSheet.selectedIds)
+            val savedIds = bandalartRepository.getWeeklyFocusTaskIds(currentSheet.bandalartId)
+            loadedBandalart =
+                loadedBandalart?.let { current ->
+                    if (current.bandalartData.id == currentSheet.bandalartId) {
+                        current.copy(weeklyFocusTaskIds = savedIds)
+                    } else {
+                        current
+                    }
+                }
+            if (bottomSheet == currentSheet) bottomSheet = null
         }
 
         suspend fun selectBandalart(
@@ -847,6 +890,18 @@ class HomePresenter(
                                 loadedBandalart?.bandalartData?.id == currentBandalartId
                         },
                     )
+                } else if (currentBandalartId != null) {
+                    // 앱을 연 채 새 주가 되면 지난주 선택이 사라지므로 카드도 다시 맞춘다.
+                    val focusTaskIds =
+                        runCatching { bandalartRepository.getWeeklyFocusTaskIds(currentBandalartId) }
+                            .onFailure { exception ->
+                                if (exception is CancellationException) throw exception
+                                Napier.e("Failed to read weekly focus tasks", exception, tag = "HomePresenter")
+                            }.getOrNull() ?: return@withLock
+                    val current = loadedBandalart
+                    if (current?.bandalartData?.id == currentBandalartId && current.weeklyFocusTaskIds != focusTaskIds) {
+                        loadedBandalart = current.copy(weeklyFocusTaskIds = focusTaskIds)
+                    }
                 }
             }
         }
@@ -1078,6 +1133,13 @@ class HomePresenter(
             }
         }
 
+        val weeklyFocusTasks =
+            remember(loadedBandalart) {
+                loadedBandalart
+                    ?.let { weeklyFocusTasksOf(it.bandalartCellData, it.weeklyFocusTaskIds).toPersistentList() }
+                    ?: persistentListOf()
+            }
+
         return HomeScreen.State(
             bandalartList = bandalartList,
             bandalartData = bandalartData,
@@ -1120,6 +1182,7 @@ class HomePresenter(
                     imageRequest == null &&
                     rewardedAdRequestId == null,
             completionStreak = completionStreak,
+            weeklyFocusTasks = weeklyFocusTasks,
             effect = effect,
         ) { event ->
             when (event) {
@@ -1405,6 +1468,17 @@ class HomePresenter(
                     explicitSelectionTargetId = event.bandalartId
                 }
 
+                HomeScreen.Event.OpenWeeklyFocusSelection -> openWeeklyFocusSelection()
+
+                is HomeScreen.Event.ToggleWeeklyFocusSelection -> toggleWeeklyFocusSelection(event.cellId)
+
+                HomeScreen.Event.ClearWeeklyFocusSelection -> {
+                    val currentSheet = bottomSheet as? HomeScreen.BottomSheetState.WeeklyFocusSelection
+                    currentSheet?.let { bottomSheet = it.copy(selectedIds = persistentListOf()) }
+                }
+
+                HomeScreen.Event.SaveWeeklyFocusSelection -> scope.launch { saveWeeklyFocusSelection() }
+
                 HomeScreen.Event.ContactSupport -> emitEffect(HomeScreen.Effect.OpenSupportMail)
                 HomeScreen.Event.RequestShare -> imageRequest = HomeScreen.ImageRequest.Share
                 HomeScreen.Event.RequestSave -> {
@@ -1471,6 +1545,7 @@ private data class LoadedBandalart(
     val bandalartData: BandalartUiModel,
     val bandalartCellData: BandalartCellEntity,
     val isCompleted: Boolean,
+    val weeklyFocusTaskIds: List<Long> = emptyList(),
 )
 
 @Suppress("TooGenericExceptionCaught")

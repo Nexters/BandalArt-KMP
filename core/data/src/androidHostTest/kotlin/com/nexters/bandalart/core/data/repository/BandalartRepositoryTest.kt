@@ -25,6 +25,7 @@ import com.nexters.bandalart.core.database.entity.BandalartDBEntity
 import com.nexters.bandalart.core.database.entity.CreateBandalartDto
 import com.nexters.bandalart.core.database.entity.CreateBandalartSubGoalDto
 import com.nexters.bandalart.core.datastore.BandalartDataStore
+import com.nexters.bandalart.core.datastore.StoredWeeklyFocusTasks
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartEmojiEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartMainCellEntity
 import com.nexters.bandalart.core.domain.entity.UpdateBandalartSubCellEntity
@@ -237,6 +238,46 @@ class DefaultBandalartRepositoryTest {
     }
 
     @Nested
+    @DisplayName("이번 주 할 일 테스트")
+    inner class WeeklyFocusTaskTest {
+        // 2026-11-26은 목요일, 그 주 월요일은 2026-11-23
+        private fun repositoryOn(today: LocalDate) =
+            DefaultBandalartRepository(
+                bandalartDataStore = mockBandalartDataStore,
+                bandalartDao = mockBandalartDao,
+                dailyResetDateProvider = DailyResetDateProvider { today },
+            )
+
+        @Test
+        fun selectionFromThisWeekIsReturned() =
+            runTest {
+                coEvery { mockBandalartDataStore.getWeeklyFocusTasks(1L) } returns
+                    StoredWeeklyFocusTasks(weekStart = "2026-11-23", cellIds = listOf(11L, 12L))
+
+                assertEquals(listOf(11L, 12L), repositoryOn(LocalDate(2026, 11, 29)).getWeeklyFocusTaskIds(1L))
+            }
+
+        @Test
+        fun selectionFromLastWeekIsEmptyOnMonday() =
+            runTest {
+                coEvery { mockBandalartDataStore.getWeeklyFocusTasks(1L) } returns
+                    StoredWeeklyFocusTasks(weekStart = "2026-11-23", cellIds = listOf(11L))
+
+                assertEquals(emptyList<Long>(), repositoryOn(LocalDate(2026, 11, 30)).getWeeklyFocusTaskIds(1L))
+            }
+
+        @Test
+        fun savingStoresThisWeekWithoutDuplicatesUpToThree() =
+            runTest {
+                coEvery { mockBandalartDataStore.setWeeklyFocusTasks(any(), any(), any()) } returns Unit
+
+                repositoryOn(LocalDate(2026, 11, 26)).setWeeklyFocusTaskIds(1L, listOf(11L, 11L, 12L, 13L, 14L))
+
+                coVerify { mockBandalartDataStore.setWeeklyFocusTasks(1L, "2026-11-23", listOf(11L, 12L, 13L)) }
+            }
+    }
+
+    @Nested
     @DisplayName("반다라트 삭제 및 조회 테스트")
     inner class BandalartDeletionAndRetrievalTest {
         @Test
@@ -256,6 +297,7 @@ class DefaultBandalartRepositoryTest {
 
                 coEvery { mockBandalartDao.getBandalartMainCell(bandalartId) } returns mockMainCellWithChildren
                 coEvery { mockBandalartDao.deleteCellOrReset(any()) } returns Unit
+                coEvery { mockBandalartDataStore.removeWeeklyFocusTasks(bandalartId) } returns Unit
 
                 // when
                 bandalartRepository.deleteBandalart(bandalartId)
@@ -263,6 +305,7 @@ class DefaultBandalartRepositoryTest {
                 // then
                 coVerify { mockBandalartDao.getBandalartMainCell(bandalartId) }
                 coVerify { mockBandalartDao.deleteCellOrReset(2L) }
+                coVerify { mockBandalartDataStore.removeWeeklyFocusTasks(bandalartId) }
             }
 
         @Test

@@ -110,6 +110,13 @@ internal class RecordingBandalartRepository : BandalartRepository {
 
     override suspend fun getCompletionHeatmap(): CompletionHeatmap = error("Not used")
 
+    override suspend fun getWeeklyFocusTaskIds(bandalartId: Long): List<Long> = error("Not used")
+
+    override suspend fun setWeeklyFocusTaskIds(
+        bandalartId: Long,
+        cellIds: List<Long>,
+    ) = error("Not used")
+
     override suspend fun setRecentBandalartId(recentBandalartId: Long) = error("Not used")
 
     override suspend fun getRecentBandalartId(): Long = error("Not used")

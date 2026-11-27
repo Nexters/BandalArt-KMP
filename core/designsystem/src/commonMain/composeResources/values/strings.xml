@@ -249,6 +249,16 @@
     <string name="weekly_review_heatmap_summary">%1$d일 달성 · 총 %2$d개 완료</string>
     <string name="weekly_review_heatmap_less">적게</string>
     <string name="weekly_review_heatmap_more">많이</string>
+    <string name="weekly_focus_pick">이번 주 할 일 고르기</string>
+    <string name="weekly_focus_edit_entry">이번 주 할 일 수정</string>
+    <string name="weekly_focus_title">이번 주 할 일</string>
+    <string name="weekly_focus_selection_count">%1$d/%2$d</string>
+    <string name="weekly_focus_selection_body">이번 주에 집중할 할 일을 최대 %1$d개 골라 주세요</string>
+    <string name="weekly_focus_selection_empty">고를 수 있는 할 일이 없어요. 표에 할 일을 먼저 적어 주세요.</string>
+    <string name="weekly_focus_clear_all">전체 해제</string>
+    <string name="weekly_focus_progress">%1$d/%2$d 완료</string>
+    <string name="weekly_focus_edit">수정</string>
+    <string name="weekly_focus_chip">이번 주 %1$d/%2$d</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">새 반다라트 만들기</string>

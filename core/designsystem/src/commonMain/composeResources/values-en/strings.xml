@@ -248,6 +248,16 @@
     <string name="weekly_review_heatmap_summary">Active %1$d days · %2$d completed</string>
     <string name="weekly_review_heatmap_less">Less</string>
     <string name="weekly_review_heatmap_more">More</string>
+    <string name="weekly_focus_pick">Pick this week's tasks</string>
+    <string name="weekly_focus_edit_entry">Edit this week's tasks</string>
+    <string name="weekly_focus_title">This week's tasks</string>
+    <string name="weekly_focus_selection_count">%1$d/%2$d</string>
+    <string name="weekly_focus_selection_body">Pick up to %1$d tasks to focus on this week</string>
+    <string name="weekly_focus_selection_empty">No tasks to pick. Add tasks to your board first.</string>
+    <string name="weekly_focus_clear_all">Clear all</string>
+    <string name="weekly_focus_progress">%1$d/%2$d done</string>
+    <string name="weekly_focus_edit">Edit</string>
+    <string name="weekly_focus_chip">This week %1$d/%2$d</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">Create a Bandalart</string>

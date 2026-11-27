@@ -106,6 +106,7 @@
 - [넓은 화면 반다라트 표 레이아웃](features/home/WIDE_SCREEN_BOARD_LAYOUT_STRATEGY.md)
 - [연속 달성과 위젯 진행률](features/home/COMPLETION_STREAK_WIDGET_PROGRESS_STRATEGY.md)
 - [완료 기록 히트맵(잔디)](features/home/COMPLETION_HEATMAP_STRATEGY.md)
+- [이번 주 할 일 3개 고르기](features/home/WEEKLY_FOCUS_TASKS_STRATEGY.md)
 - [온보딩 달성 기록 소개와 첫 완료 뒤 위젯 안내](features/home/ONBOARDING_RECORD_INTRO_WIDGET_GUIDE_STRATEGY.md)
 - [반다라트 템플릿 catalog v1](features/templates/BANDALART_TEMPLATE_CATALOG_V1_STRATEGY.md)
 - [마감일 알림 정책 가이드](features/notifications/DEADLINE_NOTIFICATION_POLICY_GUIDE.md)

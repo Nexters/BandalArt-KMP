@@ -49,6 +49,10 @@ import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.designsystem.theme.pretendardFontFamily
 import com.nexters.bandalart.core.ui.component.AppTitle
 import com.nexters.bandalart.feature.home.HomeScreen
+import com.nexters.bandalart.core.domain.policy.WeeklyFocusTask
+import com.nexters.bandalart.feature.home.ui.focus.WeeklyFocusMenu
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.foundation.layout.PaddingValues
@@ -67,7 +71,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 /** 유리 상단 바 컨트롤 높이. hig `CupertinoLiquidIconButton`의 고정 크기와 같다. */
 internal val HOME_TOP_BAR_HEIGHT = 62.dp
-private val GLASS_CONTROL_HEIGHT = 48.dp
+internal val GLASS_CONTROL_HEIGHT = 48.dp
 
 /**
  * iOS(Cupertino)는 배경 없이 콘텐츠 위에 뜨는 유리 컨트롤로, 그 외는 기존 Material 상단 바로 그린다.
@@ -79,6 +83,7 @@ internal fun HomeTopBar(
     bandalartCount: Int,
     onHomeUiAction: (HomeScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
+    weeklyFocusTasks: ImmutableList<WeeklyFocusTask> = persistentListOf(),
     backdrop: LayerBackdrop = rememberDefaultBackdrop(),
 ) {
     val isCupertino = currentTheme == Theme.Cupertino
@@ -101,7 +106,23 @@ internal fun HomeTopBar(
                         .align(Alignment.CenterVertically)
                         .padding(start = 20.dp, top = 2.dp),
             )
-            Spacer(modifier = Modifier.weight(1f))
+            // 이번 주 할 일 칩은 남는 폭에 오른쪽 정렬로 둔다. 좁으면 글자를 줄인다.
+            Box(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                if (weeklyFocusTasks.isNotEmpty()) {
+                    WeeklyFocusMenu(
+                        tasks = weeklyFocusTasks,
+                        onHomeUiAction = onHomeUiAction,
+                        backdrop = backdrop,
+                        contentColor = contentColor,
+                    )
+                }
+            }
             AdaptiveIconButton(
                 onClick = { onHomeUiAction(HomeScreen.Event.OpenSettings) },
                 modifier = Modifier.size(48.dp),

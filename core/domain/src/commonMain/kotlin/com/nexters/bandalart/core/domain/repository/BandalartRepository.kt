@@ -135,6 +135,15 @@ interface BandalartRepository {
     /** 이번 주를 포함한 최근 16주의 날짜별 완료 수를 읽는다. */
     suspend fun getCompletionHeatmap(): CompletionHeatmap
 
+    /** 이번 주에 고른 할 일 칸 id를 고른 순서대로 읽는다. 지난주에 고른 것이면 빈 목록이다. */
+    suspend fun getWeeklyFocusTaskIds(bandalartId: Long): List<Long>
+
+    /** 이번 주 할 일 칸 id를 저장한다. 중복은 빼고 앞에서 3개만 남긴다. */
+    suspend fun setWeeklyFocusTaskIds(
+        bandalartId: Long,
+        cellIds: List<Long>,
+    )
+
     /** 마지막으로 본 반다라트 고유 id를 저장한다. */
     suspend fun setRecentBandalartId(recentBandalartId: Long)
 

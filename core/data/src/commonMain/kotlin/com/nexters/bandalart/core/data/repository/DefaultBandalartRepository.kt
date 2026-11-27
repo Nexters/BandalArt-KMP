@@ -35,6 +35,7 @@ import com.nexters.bandalart.core.domain.notification.DeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.notification.NoOpDeadlineReminderReconciler
 import com.nexters.bandalart.core.domain.policy.DailyResetDateProvider
 import com.nexters.bandalart.core.domain.policy.SystemDailyResetDateProvider
+import com.nexters.bandalart.core.domain.policy.WEEKLY_FOCUS_TASK_LIMIT
 import com.nexters.bandalart.core.domain.policy.calculateCompletionHeatmap
 import com.nexters.bandalart.core.domain.policy.calculateCompletionStreak
 import com.nexters.bandalart.core.domain.policy.calculateWeeklyReviewSummary
@@ -84,6 +85,7 @@ class DefaultBandalartRepository(
         mainCell.id?.let { cellId ->
             bandalartDao.deleteCellOrReset(cellId)
         }
+        bandalartDataStore.removeWeeklyFocusTasks(bandalartId)
         deadlineReminderReconciler.reconcileAll()
     }
 
@@ -232,6 +234,23 @@ class DefaultBandalartRepository(
         bandalartDataStore.markBandalartsIncomplete(pendingIds.toSet())
         bandalartDao.clearCompletionResetSyncPending(pendingIds)
         return true
+    }
+
+    override suspend fun getWeeklyFocusTaskIds(bandalartId: Long): List<Long> {
+        val stored = bandalartDataStore.getWeeklyFocusTasks(bandalartId) ?: return emptyList()
+        val currentWeekStart = weekStartOf(dailyResetDateProvider.today()).toString()
+        return if (stored.weekStart == currentWeekStart) stored.cellIds else emptyList()
+    }
+
+    override suspend fun setWeeklyFocusTaskIds(
+        bandalartId: Long,
+        cellIds: List<Long>,
+    ) {
+        bandalartDataStore.setWeeklyFocusTasks(
+            bandalartId = bandalartId,
+            weekStart = weekStartOf(dailyResetDateProvider.today()).toString(),
+            cellIds = cellIds.distinct().take(WEEKLY_FOCUS_TASK_LIMIT),
+        )
     }
 
     override suspend fun setRecentBandalartId(recentBandalartId: Long) {
