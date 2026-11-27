@@ -16,10 +16,13 @@
 
 package com.nexters.bandalart.core.ui.component.emoji
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -27,9 +30,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bandalart.core.designsystem.generated.resources.Res
-import bandalart.core.designsystem.generated.resources.allDrawableResources
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -39,16 +41,18 @@ fun BandalartEmoji(
     modifier: Modifier = Modifier,
     size: Dp = 22.dp,
 ) {
-    val drawableResource =
-        FluentEmojiCatalog
-            .resourceKeyFor(unicode)
-            ?.let(Res.allDrawableResources::get)
+    // Skip the image when the loaded catalog already says it has no Fluent asset for this value.
+    var showSystemEmoji by remember(unicode) {
+        mutableStateOf(FluentEmojiCatalog.containsIfLoaded(unicode) == false)
+    }
 
-    if (drawableResource != null) {
-        Image(
-            painter = painterResource(drawableResource),
+    if (!showSystemEmoji) {
+        val imageUri = remember(unicode) { Res.getUri(fluentEmojiImagePath(unicode)) }
+        AsyncImage(
+            model = imageUri,
             contentDescription = contentDescription,
             modifier = modifier.size(size),
+            onError = { showSystemEmoji = true },
         )
     } else {
         val fallbackModifier =

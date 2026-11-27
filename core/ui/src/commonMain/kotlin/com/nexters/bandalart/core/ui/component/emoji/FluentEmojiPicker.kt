@@ -50,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
@@ -154,15 +155,17 @@ internal fun visibleFluentEmojiCategoryTabs(hasRecentEmojis: Boolean): List<Flue
     }
 
 internal fun fluentEmojiPickerItems(
+    items: List<FluentEmojiItem>,
     category: FluentEmojiCategory?,
     recentEmojis: List<String>,
 ): List<FluentEmojiItem> {
     if (category != null && category != FluentEmojiCategory.RECENT) {
-        return filterFluentEmojiItems(query = "", category = category)
+        return filterFluentEmojiItems(items = items, query = "", category = category)
     }
 
     val recentItems =
         filterFluentEmojiItems(
+            items = items,
             query = "",
             category = FluentEmojiCategory.RECENT,
             recentEmojis = recentEmojis,
@@ -172,7 +175,7 @@ internal fun fluentEmojiPickerItems(
     }
 
     val recentUnicode = recentItems.mapTo(mutableSetOf(), FluentEmojiItem::unicode)
-    return recentItems + FluentEmojiCatalog.items.filterNot { it.unicode in recentUnicode }
+    return recentItems + items.filterNot { it.unicode in recentUnicode }
 }
 
 @Composable
@@ -185,9 +188,15 @@ fun FluentEmojiPicker(
 ) {
     var selectedCategoryName by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedEmoji by rememberSaveable(currentEmoji) { mutableStateOf(currentEmoji) }
+    // Null while the catalog JSON is being read, so loading stays distinct from an empty result.
+    // The grid stays empty at its fixed height meanwhile.
+    val catalogItems by produceState<List<FluentEmojiItem>?>(null) {
+        value = FluentEmojiCatalog.items()
+    }
     val hasRecentEmojis =
-        remember(recentEmojis) {
+        remember(catalogItems, recentEmojis) {
             fluentEmojiPickerItems(
+                items = catalogItems.orEmpty(),
                 category = FluentEmojiCategory.RECENT,
                 recentEmojis = recentEmojis,
             ).isNotEmpty()
@@ -198,8 +207,9 @@ fun FluentEmojiPicker(
                 FluentEmojiCategory.entries.firstOrNull { it.name == savedName }
             }?.takeUnless { it == FluentEmojiCategory.RECENT && !hasRecentEmojis }
     val pickerItems =
-        remember(selectedCategory, recentEmojis) {
+        remember(catalogItems, selectedCategory, recentEmojis) {
             fluentEmojiPickerItems(
+                items = catalogItems.orEmpty(),
                 category = selectedCategory,
                 recentEmojis = recentEmojis,
             )

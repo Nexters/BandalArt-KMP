@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.entity.ThemeMode
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
+import com.nexters.bandalart.core.ui.component.emoji.preloadFluentEmojiCatalog
 import com.nexters.bandalart.di.metro.AppGraph
 import com.nexters.bandalart.feature.splash.SplashScreen
 import com.nexters.bandalart.feature.home.HomeScreen
@@ -64,6 +65,9 @@ fun BandalartApp(appGraph: AppGraph) {
                     appGraph.bandalartWidgetLaunchTarget.pendingBandalartId.collectAsState()
                 val currentScreen = backStack.topRecord?.screen ?: SplashScreen
                 TrackScreenView(currentScreen)
+                LaunchedEffect(Unit) {
+                    preloadFluentEmojiCatalog()
+                }
                 appGraph.exitDialogHost.Content(enabled = currentScreen is HomeScreen)
                 LaunchedEffect(pendingWidgetLaunchId, currentScreen) {
                     widgetLaunchDestination(currentScreen, pendingWidgetLaunchId)?.let { destination ->

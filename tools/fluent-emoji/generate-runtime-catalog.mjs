@@ -5,7 +5,7 @@ const [catalogPath, outputPath, cldrDirectory] = process.argv.slice(2);
 
 if (!catalogPath || !outputPath || !cldrDirectory) {
   throw new Error(
-    "Usage: node generate-runtime-catalog.mjs <catalog-candidate.json> <output.kt> <cldr-annotations-dir>",
+    "Usage: node generate-runtime-catalog.mjs <catalog-candidate.json> <output.json> <cldr-annotations-dir>",
   );
 }
 
@@ -36,10 +36,11 @@ function localizedAnnotation(language, glyph) {
 }
 
 const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
-if (catalog.items.length !== 300) {
-  throw new Error(`Runtime catalog must contain 300 items, found ${catalog.items.length}.`);
+if (catalog.items.length === 0 || catalog.items.length !== catalog.candidateCount) {
+  throw new Error(
+    `Runtime catalog must contain every candidate (${catalog.candidateCount}), found ${catalog.items.length}.`,
+  );
 }
-
 const categoryByGroup = new Map([
   ["Smileys & Emotion", "SMILEYS_AND_EMOTION"],
   ["People & Body", "PEOPLE_AND_BODY"],
@@ -52,63 +53,37 @@ const categoryByGroup = new Map([
   ["Flags", "FLAGS"],
 ]);
 
-const entries = catalog.items
-  .map((item) => {
-    const category = categoryByGroup.get(item.group);
-    if (!category) {
-      throw new Error(`Unsupported Fluent Emoji group: ${item.group}`);
-    }
-    const keywords = item.keywords.map(JSON.stringify).join(", ");
-    const koreanAliases = item.koreanAliases.map(JSON.stringify).join(", ");
-    const korean = localizedAnnotation("ko", item.glyph);
-    const japanese = localizedAnnotation("ja", item.glyph);
-    return `            FluentEmojiItem(
-                unicode = ${JSON.stringify(item.glyph)},
-                resourceKey = ${JSON.stringify(item.resourceKey)},
-                category = FluentEmojiCategory.${category},
-                cldrName = ${JSON.stringify(item.cldrName)},
-                keywords = listOf(${keywords}),
-                koreanAliases = listOf(${koreanAliases}),
-                koreanName = ${JSON.stringify(korean.name)},
-                koreanKeywords = listOf(${korean.keywords.map(JSON.stringify).join(", ")}),
-                japaneseName = ${JSON.stringify(japanese.name)},
-                japaneseKeywords = listOf(${japanese.keywords.map(JSON.stringify).join(", ")}),
-            ),`;
-  })
-  .join("\n");
-
-const kotlinSource = `/*
- * Copyright 2026 easyhooon
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.nexters.bandalart.core.ui.component.emoji
-
-@Suppress("LargeClass")
-internal object FluentEmojiCatalog {
-    val items =
-        listOf(
-${entries}
-        )
-
-    private val resourceKeys = items.associate { it.unicode to it.resourceKey }
-
-    val size: Int
-        get() = resourceKeys.size
-
-    fun resourceKeyFor(unicode: String): String? = resourceKeys[unicode]
+// The app derives the drawable name from the code points, so the JSON does not store it.
+function resourceKeyFromGlyph(glyph) {
+  return `fluent_${[...glyph].map((char) => char.codePointAt(0).toString(16).padStart(4, "0")).join("_")}`;
 }
-`;
 
-fs.writeFileSync(outputPath, kotlinSource);
+const runtimeItems = catalog.items.map((item) => {
+  const category = categoryByGroup.get(item.group);
+  if (!category) {
+    throw new Error(`Unsupported Fluent Emoji group: ${item.group}`);
+  }
+  if (resourceKeyFromGlyph(item.glyph) !== item.resourceKey) {
+    throw new Error(`Resource key ${item.resourceKey} does not follow the code point rule for ${item.glyph}.`);
+  }
+  const korean = localizedAnnotation("ko", item.glyph);
+  const japanese = localizedAnnotation("ja", item.glyph);
+  const runtimeItem = {
+    u: item.glyph,
+    c: category,
+    n: item.cldrName,
+    k: item.keywords,
+  };
+  if (item.koreanAliases.length > 0) {
+    runtimeItem.a = item.koreanAliases;
+  }
+  return {
+    ...runtimeItem,
+    kn: korean.name,
+    kk: korean.keywords,
+    jn: japanese.name,
+    jk: japanese.keywords,
+  };
+});
+
+fs.writeFileSync(outputPath, `${JSON.stringify(runtimeItems)}\n`);
