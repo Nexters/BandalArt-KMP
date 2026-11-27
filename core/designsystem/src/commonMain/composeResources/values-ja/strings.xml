@@ -156,6 +156,9 @@
     <string name="bottomsheet_title">目標名（必須）</string>
     <string name="bottomsheet_title_placeholder">24文字以内で入力してください</string>
     <string name="bottomsheet_color">カラーテーマ</string>
+    <string name="bottomsheet_color_custom">カスタム</string>
+    <string name="bottomsheet_color_hue">色相</string>
+    <string name="bottomsheet_color_lightness">明るさ</string>
     <string name="bottomsheet_duedate">期限（任意）</string>
     <string name="bottomsheet_duedate_placeholder">期限を選択してください</string>
     <string name="bottomsheet_description">メモ（任意）</string>

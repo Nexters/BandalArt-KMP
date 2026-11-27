@@ -156,6 +156,9 @@
     <string name="bottomsheet_title">목표 이름 (필수)</string>
     <string name="bottomsheet_title_placeholder">15자 이내로 입력해주세요</string>
     <string name="bottomsheet_color">색상 테마</string>
+    <string name="bottomsheet_color_custom">직접 선택</string>
+    <string name="bottomsheet_color_hue">색조</string>
+    <string name="bottomsheet_color_lightness">밝기</string>
     <string name="bottomsheet_duedate">마감일 (선택)</string>
     <string name="bottomsheet_duedate_placeholder">마감일을 선택해주세요</string>
     <string name="bottomsheet_description">메모 (선택)</string>
