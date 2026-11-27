@@ -249,6 +249,16 @@
     <string name="weekly_review_heatmap_summary">%1$d日達成 · 合計%2$d個完了</string>
     <string name="weekly_review_heatmap_less">少</string>
     <string name="weekly_review_heatmap_more">多</string>
+    <string name="weekly_focus_pick">今週のタスクを選ぶ</string>
+    <string name="weekly_focus_edit_entry">今週のタスクを編集</string>
+    <string name="weekly_focus_title">今週のタスク</string>
+    <string name="weekly_focus_selection_count">%1$d/%2$d</string>
+    <string name="weekly_focus_selection_body">今週集中するタスクを最大%1$d個選んでください</string>
+    <string name="weekly_focus_selection_empty">選べるタスクがありません。まず表にタスクを書いてください。</string>
+    <string name="weekly_focus_clear_all">すべて解除</string>
+    <string name="weekly_focus_progress">%1$d/%2$d 完了</string>
+    <string name="weekly_focus_edit">編集</string>
+    <string name="weekly_focus_chip">今週 %1$d/%2$d</string>
 
     <!-- template catalog -->
     <string name="bandalart_create_title">新しいバンダラート</string>

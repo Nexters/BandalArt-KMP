@@ -87,6 +87,47 @@ class BandalartDataStoreTest {
             }
     }
 
+    @Nested
+    @DisplayName("이번 주 할 일 저장 테스트")
+    inner class WeeklyFocusTasksTest {
+        @Test
+        fun weeklyFocusTasksRoundTripPerBandalart() =
+            runTest {
+                bandalartDataStore.setWeeklyFocusTasks(1L, "2026-11-23", listOf(11L, 12L, 13L))
+                bandalartDataStore.setWeeklyFocusTasks(2L, "2026-11-23", listOf(21L))
+
+                assertEquals(
+                    StoredWeeklyFocusTasks(weekStart = "2026-11-23", cellIds = listOf(11L, 12L, 13L)),
+                    bandalartDataStore.getWeeklyFocusTasks(1L),
+                )
+                assertEquals(listOf(21L), bandalartDataStore.getWeeklyFocusTasks(2L)?.cellIds)
+                assertEquals(null, bandalartDataStore.getWeeklyFocusTasks(3L))
+            }
+
+        @Test
+        fun savingEmptySelectionRemovesKey() =
+            runTest {
+                bandalartDataStore.setWeeklyFocusTasks(1L, "2026-11-23", listOf(11L))
+                bandalartDataStore.setWeeklyFocusTasks(1L, "2026-11-23", emptyList())
+
+                assertEquals(null, bandalartDataStore.getWeeklyFocusTasks(1L))
+            }
+
+        @Test
+        fun removeAndBackupRestoreClearWeeklyFocusTasks() =
+            runTest {
+                bandalartDataStore.setWeeklyFocusTasks(1L, "2026-11-23", listOf(11L))
+                bandalartDataStore.setWeeklyFocusTasks(2L, "2026-11-23", listOf(21L))
+                val backup = bandalartDataStore.createBackupPreferences(listOf(1L, 2L))
+
+                bandalartDataStore.removeWeeklyFocusTasks(1L)
+                bandalartDataStore.restoreBackupPreferences(backup = backup, bandalartIdsToClear = listOf(2L))
+
+                assertEquals(null, bandalartDataStore.getWeeklyFocusTasks(1L))
+                assertEquals(null, bandalartDataStore.getWeeklyFocusTasks(2L))
+            }
+    }
+
     @Test
     fun markingBandalartsIncompleteUpdatesAndCreatesCompletionSnapshots() =
         runTest {

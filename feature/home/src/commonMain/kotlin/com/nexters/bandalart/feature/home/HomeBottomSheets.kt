@@ -29,6 +29,7 @@ import com.nexters.bandalart.feature.home.ui.bandalart.BandalartBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartEmojiBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.BandalartListBottomSheet
 import com.nexters.bandalart.feature.home.ui.bandalart.RoutineSettingsBottomSheet
+import com.nexters.bandalart.feature.home.ui.focus.WeeklyFocusSelectionBottomSheet
 import com.nexters.bandalart.feature.home.ui.review.WeeklyReviewBottomSheet
 import com.nexters.bandalart.feature.home.ui.settings.SettingsBottomSheet
 import kotlinx.collections.immutable.ImmutableList
@@ -47,6 +48,7 @@ internal fun HomeBottomSheets(
     deadlineReminderSchedulingHealth: DeadlineReminderSchedulingHealth,
     weeklyReviewReminderEnabled: Boolean,
     weeklyReviewNotificationAuthorizationStatus: DeadlineNotificationAuthorizationStatus,
+    weeklyFocusEntry: WeeklyFocusEntry?,
     eventSink: (HomeScreen.Event) -> Unit,
     appVersion: String,
     isPrivacyOptionsVisible: Boolean,
@@ -103,6 +105,14 @@ internal fun HomeBottomSheets(
                 summary = bottomSheet.summary,
                 heatmap = bottomSheet.heatmap,
                 bandalartList = updateBandalartListTitles(bandalartList).toImmutableList(),
+                weeklyFocusEntry = weeklyFocusEntry,
+                onHomeUiAction = eventSink,
+            )
+        }
+
+        is HomeScreen.BottomSheetState.WeeklyFocusSelection -> {
+            WeeklyFocusSelectionBottomSheet(
+                state = bottomSheet,
                 onHomeUiAction = eventSink,
             )
         }
@@ -116,6 +126,12 @@ internal fun HomeBottomSheets(
 
         null -> {}
     }
+}
+
+/** 회고 시트의 이번 주 할 일 진입 버튼. 홈에 반다라트가 없으면 null이다. */
+internal enum class WeeklyFocusEntry {
+    PICK,
+    EDIT,
 }
 
 @Composable

@@ -25,6 +25,7 @@ import com.nexters.bandalart.core.domain.entity.WeeklyReviewSummary
 import com.nexters.bandalart.core.domain.notification.DeadlineNotificationAuthorizationStatus
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderSchedulingHealth
 import com.nexters.bandalart.core.domain.notification.DeadlineReminderTime
+import com.nexters.bandalart.core.domain.policy.WeeklyFocusTask
 import kotlinx.datetime.LocalTime
 import com.nexters.bandalart.core.domain.template.BandalartTemplateId
 import com.nexters.bandalart.core.domain.widget.HomeWidgetPlatform
@@ -65,6 +66,8 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         val showRoutineSettingsTooltip: Boolean = false,
         val showTaskCompletionTooltip: Boolean = false,
         val completionStreak: Int = 0,
+        /** 현재 반다라트에서 이번 주에 고른 할 일. 고른 순서대로이며 제목이 빈 칸은 빠진다. */
+        val weeklyFocusTasks: ImmutableList<WeeklyFocusTask> = persistentListOf(),
         val effect: Effect? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -96,6 +99,17 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class WeeklyReview(
             val summary: WeeklyReviewSummary,
             val heatmap: CompletionHeatmap,
+        ) : BottomSheetState
+
+        /**
+         * 이번 주 할 일 선택. [selectedIds]는 저장 전 시트 안의 선택이다.
+         *
+         * @property candidates 제목이 있는 미완료 할 일과 이미 고른 할 일
+         */
+        data class WeeklyFocusSelection(
+            val bandalartId: Long,
+            val candidates: ImmutableList<WeeklyFocusTask>,
+            val selectedIds: ImmutableList<Long>,
         ) : BottomSheetState
 
         data class RoutineSettings(
@@ -328,6 +342,16 @@ data object HomeScreen : ParcelableScreen, StaticScreen {
         data class SelectWeeklyReviewBandalart(
             val bandalartId: Long,
         ) : Event
+
+        data object OpenWeeklyFocusSelection : Event
+
+        data class ToggleWeeklyFocusSelection(
+            val cellId: Long,
+        ) : Event
+
+        data object ClearWeeklyFocusSelection : Event
+
+        data object SaveWeeklyFocusSelection : Event
 
         data object ContactSupport : Event
 

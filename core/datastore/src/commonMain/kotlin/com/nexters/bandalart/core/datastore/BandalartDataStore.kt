@@ -37,6 +37,7 @@ class BandalartDataStore(
     private companion object {
         private const val RECENT_BANDALART_ID = "recent_bandalart_id"
         private const val RECENT_SUB_GOAL_ID_PREFIX = "recent_sub_goal_id_"
+        private const val WEEKLY_FOCUS_TASKS_PREFIX = "weekly_focus_tasks_"
         private const val COMPLETED_BANDALART_LIST_ID = "completed_bandalart_list_id"
         private const val ONBOARDING_COMPLETED_ID = "completed_onboarding_id"
         private const val THEME_MODE = "theme_mode"
@@ -180,6 +181,7 @@ class BandalartDataStore(
         dataStore.edit { preferences ->
             bandalartIdsToClear.forEach { bandalartId ->
                 preferences.remove(recentSubGoalKey(bandalartId))
+                preferences.remove(weeklyFocusTasksKey(bandalartId))
             }
             preferences[recentBandalartKey] = backup.recentBandalartId
             backup.recentSubGoalIds.forEach { (bandalartId, subGoalId) ->
@@ -341,6 +343,46 @@ class BandalartDataStore(
             }.first()[recentSubGoalKey(bandalartId)] ?: 0L
 
     private fun recentSubGoalKey(bandalartId: Long) = longPreferencesKey("$RECENT_SUB_GOAL_ID_PREFIX$bandalartId")
+
+    /** 반다라트별로 저장한 이번 주 할 일 칸 id와 저장한 주의 시작일을 읽는다. */
+    suspend fun getWeeklyFocusTasks(bandalartId: Long): StoredWeeklyFocusTasks? {
+        val value =
+            dataStore.data
+                .catch { exception ->
+                    if (exception is IOException) emit(emptyPreferences()) else throw exception
+                }.first()[weeklyFocusTasksKey(bandalartId)] ?: return null
+        val weekStart = value.substringBefore(WEEKLY_FOCUS_SEPARATOR)
+        val cellIds =
+            value
+                .substringAfter(WEEKLY_FOCUS_SEPARATOR, missingDelimiterValue = "")
+                .split(WEEKLY_FOCUS_ID_SEPARATOR)
+                .mapNotNull(String::toLongOrNull)
+        return StoredWeeklyFocusTasks(weekStart = weekStart, cellIds = cellIds)
+    }
+
+    /** 빈 목록을 저장하면 키를 지운다. */
+    suspend fun setWeeklyFocusTasks(
+        bandalartId: Long,
+        weekStart: String,
+        cellIds: List<Long>,
+    ) {
+        dataStore.edit { preferences ->
+            if (cellIds.isEmpty()) {
+                preferences.remove(weeklyFocusTasksKey(bandalartId))
+            } else {
+                preferences[weeklyFocusTasksKey(bandalartId)] =
+                    weekStart + WEEKLY_FOCUS_SEPARATOR + cellIds.joinToString(WEEKLY_FOCUS_ID_SEPARATOR)
+            }
+        }
+    }
+
+    suspend fun removeWeeklyFocusTasks(bandalartId: Long) {
+        dataStore.edit { preferences ->
+            preferences.remove(weeklyFocusTasksKey(bandalartId))
+        }
+    }
+
+    private fun weeklyFocusTasksKey(bandalartId: Long) = stringPreferencesKey("$WEEKLY_FOCUS_TASKS_PREFIX$bandalartId")
 
     private fun Preferences.pendingRewardedCreation(): StoredPendingRewardedCreation? {
         val requestId = this[pendingRewardedRequestIdKey] ?: return null
@@ -520,6 +562,14 @@ class BandalartDataStore(
         }
     }
 }
+
+private const val WEEKLY_FOCUS_SEPARATOR = ";"
+private const val WEEKLY_FOCUS_ID_SEPARATOR = ","
+
+data class StoredWeeklyFocusTasks(
+    val weekStart: String,
+    val cellIds: List<Long>,
+)
 
 data class RecentBandalartSelection(
     val bandalartId: Long,

@@ -86,6 +86,7 @@ import com.nexters.bandalart.core.common.extension.captureToGraphicsLayer
 import com.nexters.bandalart.core.common.openWithClipboardFallback
 import com.nexters.bandalart.core.designsystem.theme.BandalartTheme
 import com.nexters.bandalart.core.domain.entity.BandalartCellEntity
+import com.nexters.bandalart.core.domain.policy.WeeklyFocusTask
 import com.nexters.bandalart.core.ui.LocalShowSnackbar
 import com.nexters.bandalart.feature.home.model.BandalartUiModel
 import com.nexters.bandalart.feature.home.model.dummy.dummyBandalartChartData
@@ -114,6 +115,8 @@ import dev.zacsweers.metro.Inject
 import io.github.compose.jindong.Jindong
 import io.github.compose.jindong.core.model.HapticIntensity
 import io.github.compose.jindong.dsl.Haptic
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -240,6 +243,12 @@ internal fun Home(
             deadlineReminderSchedulingHealth = state.deadlineReminderSchedulingHealth,
             weeklyReviewReminderEnabled = state.weeklyReviewReminderEnabled,
             weeklyReviewNotificationAuthorizationStatus = state.weeklyReviewNotificationAuthorizationStatus,
+            weeklyFocusEntry =
+                when {
+                    state.bandalartData == null -> null
+                    state.weeklyFocusTasks.isEmpty() -> WeeklyFocusEntry.PICK
+                    else -> WeeklyFocusEntry.EDIT
+                },
             eventSink = state.eventSink,
             appVersion = appVersion,
             isPrivacyOptionsVisible = isPrivacyOptionsRequired,
@@ -262,6 +271,7 @@ internal fun Home(
         showRoutineSettingsTooltip = state.showRoutineSettingsTooltip,
         completionStreak = state.completionStreak,
         showTaskCompletionTooltip = state.showTaskCompletionTooltip,
+        weeklyFocusTasks = state.weeklyFocusTasks,
         isBannerCreativeVisible = state.isBannerCreativeVisible(),
         eventSink = state.eventSink,
         homeGraphicsLayer = homeGraphicsLayer,
@@ -415,6 +425,7 @@ internal fun HomeContent(
     showRoutineSettingsTooltip: Boolean,
     completionStreak: Int,
     showTaskCompletionTooltip: Boolean,
+    weeklyFocusTasks: ImmutableList<WeeklyFocusTask>,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
     homeGraphicsLayer: GraphicsLayer,
@@ -443,6 +454,7 @@ internal fun HomeContent(
                     showRoutineSettingsTooltip = showRoutineSettingsTooltip,
                     completionStreak = completionStreak,
                     showTaskCompletionTooltip = showTaskCompletionTooltip,
+                    weeklyFocusTasks = weeklyFocusTasks,
                     isBannerCreativeVisible = isBannerCreativeVisible,
                     eventSink = eventSink,
                     homeGraphicsLayer = homeGraphicsLayer,
@@ -530,6 +542,7 @@ internal fun HomeContent(
                                         HomeTopBar(
                                             bandalartCount = bandalartListSize,
                                             onHomeUiAction = eventSink,
+                                            weeklyFocusTasks = weeklyFocusTasks,
                                         )
                                         HorizontalDivider(
                                             thickness = 1.dp,
@@ -613,6 +626,7 @@ internal fun HomeContent(
                             HomeTopBar(
                                 bandalartCount = bandalartListSize,
                                 onHomeUiAction = eventSink,
+                                weeklyFocusTasks = weeklyFocusTasks,
                                 backdrop = glassBackdrop,
                                 modifier = Modifier.align(Alignment.TopCenter),
                             )
@@ -657,6 +671,7 @@ private fun ShortWideHomeContent(
     showRoutineSettingsTooltip: Boolean,
     completionStreak: Int,
     showTaskCompletionTooltip: Boolean,
+    weeklyFocusTasks: ImmutableList<WeeklyFocusTask>,
     isBannerCreativeVisible: Boolean,
     eventSink: (HomeScreen.Event) -> Unit,
     homeGraphicsLayer: GraphicsLayer,
@@ -730,6 +745,7 @@ private fun ShortWideHomeContent(
             HomeTopBar(
                 bandalartCount = bandalartListSize,
                 onHomeUiAction = eventSink,
+                weeklyFocusTasks = weeklyFocusTasks,
             )
             Spacer(modifier = Modifier.weight(1f))
             if (bandalartData != null && bandalartCellData != null) {
@@ -780,6 +796,7 @@ private fun HomeScreenPreview() {
             showRoutineSettingsTooltip = false,
             completionStreak = 3,
             showTaskCompletionTooltip = false,
+            weeklyFocusTasks = persistentListOf(),
             isBannerCreativeVisible = true,
             eventSink = {},
             homeGraphicsLayer = rememberGraphicsLayer(),
