@@ -156,6 +156,9 @@
     <string name="bottomsheet_title">Goal Name (Required)</string>
     <string name="bottomsheet_title_placeholder">Enter within 24 characters</string>
     <string name="bottomsheet_color">Color Theme</string>
+    <string name="bottomsheet_color_custom">Custom</string>
+    <string name="bottomsheet_color_hue">Hue</string>
+    <string name="bottomsheet_color_lightness">Lightness</string>
     <string name="bottomsheet_duedate">Due Date (Optional)</string>
     <string name="bottomsheet_duedate_placeholder">Please select a due date</string>
     <string name="bottomsheet_description">Notes (Optional)</string>
