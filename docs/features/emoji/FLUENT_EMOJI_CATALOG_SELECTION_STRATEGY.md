@@ -53,7 +53,7 @@ Kotlin 코드로 생성한 1,428개 카탈로그(200개씩 파일, 25개씩 함�
 - 파싱: `core:ui`에 `bandalart.kotlin.serialization`을 적용해 kotlinx.serialization으로 읽는다. 파서는 JSON 문자열을 받는 순수 함수로 둔다.
 - 로딩: `FluentEmojiCatalog.items()`는 suspend 함수이고, 읽기와 파싱은 `Dispatchers.Default`에서 하며 처음 성공한 결과를 메모리에 캐시한다.
 - 미리 로드: `BandalartApp`이 첫 화면 구성 뒤 `LaunchedEffect`에서 `preloadFluentEmojiCatalog()`를 부른다. 실패는 무시하고 캐시하지 않으므로 피커를 열 때 다시 읽는다(사용자 결정).
-- 피커: 로딩 중 카탈로그 값은 `null`이라 빈 검색 결과와 구분된다. 로딩 중 그리드는 비어 있고 높이가 고정이라 레이아웃이 흔들리지 않는다(사용자 결정).
+- 피커: 이미 읽은 카탈로그가 있으면 첫 프레임부터 그 값으로 그린다. 아직 읽는 중이면 카탈로그 값은 `null`이라 빈 검색 결과와 구분되고, 그리드는 높이가 고정된 채 비어 있다(사용자 결정). 이때 최근 사용 탭은 카탈로그를 읽은 뒤 나타난다.
 - 검색·필터: `filterFluentEmojiItems`와 `fluentEmojiPickerItems`는 항목 목록을 인자로 받는다. 동작은 바꾸지 않는다.
 - 테스트: androidHostTest는 JSON 파일을 직접 읽어 파서로 만든 목록으로 기존 검증을 그대로 돌린다. 리소스 키 규칙도 검증한다.
 
@@ -63,7 +63,7 @@ JSON 전환 뒤에도 iOS 설치 크기 증가가 +5,734,096B로 5MB 예산을 �
 
 - 위치: `core/designsystem/src/commonMain/composeResources/files/fluent_emoji/fluent_<code points>.webp`. 파일 이름과 resource key 규칙은 그대로다. `files/`는 접근자 코드를 만들지 않는다.
 - 렌더링: `BandalartEmoji`는 `core:ui`에 이미 있는 Coil의 `AsyncImage`로 `Res.getUri("files/fluent_emoji/<key>.webp")`를 그린다. 디코딩은 메인 스레드 밖에서 하고, Coil 메모리 캐시가 같은 이모지를 다시 읽지 않게 한다. 이미지는 앱 안에 있으므로 목표 아이콘은 오프라인에서도 보인다.
-- 대체 표시: 이미지 로드가 실패하면 시스템 이모지 `Text`로 바꾼다. 미리 로드한 카탈로그가 있으면 카탈로그 밖 값은 이미지를 시도하지 않고 바로 `Text`로 그린다. 카탈로그를 읽기 전에는 이미지를 먼저 시도한다.
+- 대체 표시: 미리 로드한 카탈로그가 있으면 카탈로그 밖 값은 이미지를 시도하지 않고 바로 `Text`로 그린다. 카탈로그를 읽기 전에는 이미지 URI를 먼저 구한다. Android의 `Res.getUri`는 파일이 없으면 예외를 던지므로 이 호출을 감싸고, 실패하거나 Coil 로드가 실패하면 `Text`로 바꾼다.
 - 바뀌는 동작: 런타임 화면 확인은 Android 17 에뮬레이터에서 adb 입력이 앱에 전달되지 않아 하지 못했다. APK의 `assets/composeResources/.../files/fluent_emoji/`에 WebP 1,428개가 들어간 것은 확인했다. drawable은 동기로 그렸지만 이제 처음 그릴 때 이미지가 비동기로 나타난다. 같은 크기의 빈 영역이 잠깐 보인 뒤 채워진다(사용자가 받아들인 trade-off).
 - 동기 API `FluentEmojiCatalog.resourceKeyFor`는 `Res.allDrawableResources`에 의존했으므로 없앤다. 존재 여부는 카탈로그와 이미지 로드 결과로 판단한다.
 - 동기화: `measure-catalog.sh --sync-resources`는 WebP를 `files/fluent_emoji/`로 복사한다.

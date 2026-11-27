@@ -56,9 +56,6 @@ internal data class FluentEmojiItem(
     @SerialName("jn") val japaneseName: String,
     @SerialName("jk") val japaneseKeywords: List<String>,
 ) {
-    val resourceKey: String
-        get() = fluentEmojiResourceKey(unicode)
-
     fun displayName(language: Language): String =
         when (language) {
             Language.KOREAN -> koreanAliases.firstOrNull() ?: koreanName
@@ -87,6 +84,9 @@ internal object FluentEmojiCatalog {
             }
         }
 
+    /** The catalog if it has already been read, so a screen can start from it without waiting. */
+    fun loadedOrNull(): List<FluentEmojiItem>? = loadedItems
+
     /** Null until the catalog has been read, so callers can tell "unknown" from "not in the catalog". */
     fun containsIfLoaded(unicode: String): Boolean? = loadedUnicodes?.contains(unicode)
 }
@@ -102,9 +102,24 @@ suspend fun preloadFluentEmojiCatalog() {
 
 internal fun fluentEmojiImagePath(unicode: String): String = "files/fluent_emoji/${fluentEmojiResourceKey(unicode)}.webp"
 
+/**
+ * The image URI for [unicode], or null when it should be drawn as a system emoji.
+ * Android's resource reader throws for a missing file, so a value outside the catalog must not
+ * reach [resolveUri] uncaught, even before the catalog has been read.
+ */
+internal fun fluentEmojiImageUri(
+    unicode: String,
+    resolveUri: (String) -> String,
+): String? =
+    if (FluentEmojiCatalog.containsIfLoaded(unicode) == false) {
+        null
+    } else {
+        runCatching { resolveUri(fluentEmojiImagePath(unicode)) }.getOrNull()
+    }
+
 internal fun parseFluentEmojiCatalog(json: String): List<FluentEmojiItem> = Json.decodeFromString(json)
 
-// Drawable names are "fluent_" followed by each code point as lowercase hex, at least 4 digits.
+// Image file names are "fluent_" followed by each code point as lowercase hex, at least 4 digits.
 internal fun fluentEmojiResourceKey(unicode: String): String =
     buildString {
         append("fluent")

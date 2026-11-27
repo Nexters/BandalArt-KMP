@@ -53,7 +53,7 @@ const categoryByGroup = new Map([
   ["Flags", "FLAGS"],
 ]);
 
-// The app derives the drawable name from the code points, so the JSON does not store it.
+// The app derives the image file name from the code points, so the JSON does not store it.
 function resourceKeyFromGlyph(glyph) {
   return `fluent_${[...glyph].map((char) => char.codePointAt(0).toString(16).padStart(4, "0")).join("_")}`;
 }

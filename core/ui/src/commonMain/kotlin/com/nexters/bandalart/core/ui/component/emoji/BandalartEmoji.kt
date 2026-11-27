@@ -41,18 +41,15 @@ fun BandalartEmoji(
     modifier: Modifier = Modifier,
     size: Dp = 22.dp,
 ) {
-    // Skip the image when the loaded catalog already says it has no Fluent asset for this value.
-    var showSystemEmoji by remember(unicode) {
-        mutableStateOf(FluentEmojiCatalog.containsIfLoaded(unicode) == false)
-    }
+    val imageUri = remember(unicode) { fluentEmojiImageUri(unicode, Res::getUri) }
+    var imageFailed by remember(unicode) { mutableStateOf(false) }
 
-    if (!showSystemEmoji) {
-        val imageUri = remember(unicode) { Res.getUri(fluentEmojiImagePath(unicode)) }
+    if (imageUri != null && !imageFailed) {
         AsyncImage(
             model = imageUri,
             contentDescription = contentDescription,
             modifier = modifier.size(size),
-            onError = { showSystemEmoji = true },
+            onError = { imageFailed = true },
         )
     } else {
         val fallbackModifier =

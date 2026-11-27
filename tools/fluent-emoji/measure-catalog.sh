@@ -19,7 +19,7 @@ readonly REQUIRED_ZIP_VERSION="3.0"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly OUTPUT_DIR="${SCRIPT_DIR}/measurement"
-readonly RUNTIME_DRAWABLE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji"
+readonly RUNTIME_IMAGE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji"
 readonly RUNTIME_CATALOG_JSON_PATH="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji_catalog.json"
 
 sync_runtime_resources=false
@@ -184,11 +184,11 @@ jq -s \
     }' "${report_items_path}" > "${working_output_dir}/measurement-report.json"
 
 if [[ "${sync_runtime_resources}" == true ]]; then
-    runtime_drawable_staging_dir="${temporary_dir}/runtime-drawable"
+    runtime_image_staging_dir="${temporary_dir}/runtime-images"
     runtime_catalog_staging_path="${temporary_dir}/fluent_emoji_catalog.json"
     cldr_dir="${temporary_dir}/cldr"
-    mkdir -p "${runtime_drawable_staging_dir}"
-    cp "${generated_dir}"/*.webp "${runtime_drawable_staging_dir}/"
+    mkdir -p "${runtime_image_staging_dir}"
+    cp "${generated_dir}"/*.webp "${runtime_image_staging_dir}/"
     for cldr_language in ko ja; do
         for cldr_kind in annotations annotationsDerived; do
             if [[ "${cldr_kind}" == annotations ]]; then
@@ -207,20 +207,20 @@ if [[ "${sync_runtime_resources}" == true ]]; then
         "${runtime_catalog_staging_path}" \
         "${cldr_dir}"
 
-    runtime_asset_count="$(find "${runtime_drawable_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
+    runtime_asset_count="$(find "${runtime_image_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
     if [[ "${runtime_asset_count}" -ne "${catalog_count_total}" ]]; then
         echo "Expected ${catalog_count_total} runtime assets, but found ${runtime_asset_count}." >&2
         exit 1
     fi
 
-    mkdir -p "${RUNTIME_DRAWABLE_DIR}" "$(dirname "${RUNTIME_CATALOG_JSON_PATH}")"
-    cp "${runtime_drawable_staging_dir}"/*.webp "${RUNTIME_DRAWABLE_DIR}/"
+    mkdir -p "${RUNTIME_IMAGE_DIR}" "$(dirname "${RUNTIME_CATALOG_JSON_PATH}")"
+    cp "${runtime_image_staging_dir}"/*.webp "${RUNTIME_IMAGE_DIR}/"
     while IFS= read -r -d '' existing_asset_path; do
         asset_name="${existing_asset_path##*/}"
-        if [[ ! -f "${runtime_drawable_staging_dir}/${asset_name}" ]]; then
+        if [[ ! -f "${runtime_image_staging_dir}/${asset_name}" ]]; then
             rm -f "${existing_asset_path}"
         fi
-    done < <(find "${RUNTIME_DRAWABLE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
+    done < <(find "${RUNTIME_IMAGE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
     cp "${runtime_catalog_staging_path}" "${RUNTIME_CATALOG_JSON_PATH}.tmp"
     mv "${RUNTIME_CATALOG_JSON_PATH}.tmp" "${RUNTIME_CATALOG_JSON_PATH}"
 fi

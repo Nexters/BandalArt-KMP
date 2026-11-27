@@ -189,8 +189,8 @@ fun FluentEmojiPicker(
     var selectedCategoryName by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedEmoji by rememberSaveable(currentEmoji) { mutableStateOf(currentEmoji) }
     // Null while the catalog JSON is being read, so loading stays distinct from an empty result.
-    // The grid stays empty at its fixed height meanwhile.
-    val catalogItems by produceState<List<FluentEmojiItem>?>(null) {
+    // The grid stays empty at its fixed height meanwhile. An already read catalog is used at once.
+    val catalogItems by produceState(FluentEmojiCatalog.loadedOrNull()) {
         value = FluentEmojiCatalog.items()
     }
     val hasRecentEmojis =

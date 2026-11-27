@@ -31,6 +31,7 @@ import bandalart.core.designsystem.generated.resources.emoji_category_nav_travel
 import com.nexters.bandalart.core.common.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -54,6 +55,18 @@ class FluentEmojiCatalogTest {
             assertTrue(catalogItems.none { it.unicode == unicode })
             assertFalse(composeResourceFile(fluentEmojiImagePath(unicode)).exists())
         }
+    }
+
+    @Test
+    fun missingImageFallsBackToSystemEmojiInsteadOfThrowing() {
+        // Android's resource reader throws for a missing file; this runs before the catalog is read.
+        val uri =
+            fluentEmojiImageUri("👩‍💻") { path ->
+                throw IllegalStateException("Missing resource with path: $path")
+            }
+
+        assertNull(uri)
+        assertEquals("uri:files/fluent_emoji/fluent_1f3af.webp", fluentEmojiImageUri("🎯") { "uri:$it" })
     }
 
     @Test
