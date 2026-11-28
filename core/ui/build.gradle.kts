@@ -4,6 +4,7 @@ plugins {
     id("bandalart.kmp.android")
     id("bandalart.kmp.ios")
     id("bandalart.kmp.compose")
+    id("bandalart.kotlin.serialization")
 }
 
 kotlin {

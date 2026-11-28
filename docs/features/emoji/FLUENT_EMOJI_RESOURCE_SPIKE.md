@@ -60,6 +60,46 @@ Color도 단색 flat이 아니라 Fluent 특유의 gradient와 그림자를 제�
 
 300개도 ZIP payload가 1MB 미만이고 200개 대비 증가는 325,571B에 불과하다. 검색과 카테고리의 선택 폭을 확보하는 편익이 더 크므로 v1 catalog는 **300개**로 확정한다. 최종 AAB/iOS artifact 증가는 자산을 Compose resource로 옮기는 renderer 단계에서 다시 측정하며 5MB 예산을 넘으면 200개로 축소한다.
 
+### 전체 1,428개 release artifact 측정 (2026-11-27)
+
+300개 상한을 없애고 지원 그룹의 Fluent 후보 전부(1,428개)를 넣는 안을 실측했다. 선정 방식과 JSON 전환 설계는 [카탈로그 전체 포함 전략](FLUENT_EMOJI_CATALOG_SELECTION_STRATEGY.md)에 있다. 기준선은 300개 카탈로그(95개 교체, 미커밋)다. Android는 `./gradlew clean :androidApp:bundleRelease`, iOS는 Xcode 27.2에서 `xcodebuild -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO`로 빌드했다.
+
+- Kotlin 카탈로그: 카탈로그 데이터를 Kotlin 코드로 생성(200개씩 파일, 25개씩 함수).
+- JSON 카탈로그: 카탈로그 데이터를 `files/fluent_emoji_catalog.json`(415,812 B)으로 옮기고 resource key는 규칙으로 계산. 측정은 앱 시작 시 미리 로드 코드를 넣기 전 상태다.
+- JSON + files WebP(최종): JSON 카탈로그에 더해 WebP를 `drawable/`에서 `files/fluent_emoji/`로 옮겨 drawable 접근자 코드를 없앤 상태. 미리 로드 코드를 포함한다.
+
+| 항목 | 300개 | 1,428개 Kotlin 카탈로그 | 1,428개 JSON 카탈로그 | 1,428개 JSON + files WebP |
+| --- | ---: | ---: | ---: | ---: |
+| Android release AAB | 24,671,936 B | 28,918,799 B (+4,246,863) | 28,717,043 B (+4,045,107) | 28,734,614 B (+4,062,678) |
+| iOS `.app` 파일 바이트 합 | 82,942,553 B | 90,411,133 B (+7,468,580) | 88,676,649 B (+5,734,096) | 85,629,193 B (+2,686,640) |
+| iOS `.app` 디렉터리(`du`) | 83,746,816 B | 93,011,968 B (+9,265,152) | 91,279,360 B (+7,532,544) | 88,231,936 B (+4,485,120) |
+| iOS `.app` zip | 26,494,293 B | 30,981,215 B (+4,486,922) | 30,547,799 B (+4,053,506) | 30,168,435 B (+3,674,142) |
+| iOS `iosApp` 실행 바이너리 | 67,154,296 B | 71,208,032 B (+4,053,736) | 69,057,792 B (+1,903,496) | 66,010,328 B (−1,143,968) |
+
+JSON 카탈로그의 iOS 증가분(파일 바이트 합 +5,734,096 B) 내역은 다음과 같다.
+
+- Fluent WebP: 968,732 B → 4,383,528 B (+3,414,796 B).
+- 실행 바이너리 +1,903,496 B: Compose resource가 drawable마다 생성하는 `Res.drawable.fluent_*` 접근자 코드다. 바이너리의 `fluent_` 심볼이 1,500개에서 7,140개로 늘었고, 새 drawable 1,128개 기준 개당 약 1.7KB다.
+- 카탈로그 JSON +415,812 B.
+- 디렉터리 크기는 새 파일 1,128개의 블록 단위 할당 때문에 파일 바이트 합보다 더 늘어난다.
+
+압축 크기(AAB, zip)는 모든 방식에서 5MB 예산 안이지만, iOS 설치 크기(파일 바이트 합)는 JSON 카탈로그에서도 5MB를 약 0.73MB 넘었다. WebP를 `files/`로 옮기면 기존 300개의 접근자 코드까지 없어져 실행 바이너리가 오히려 1,143,968 B 줄고, 모든 지표가 5MB 예산 안에 든다(최종안). 바이너리의 `fluent_` 심볼은 0개다.
+
+iOS Release 빌드 시간은 다음과 같다. 측정 중 16GB 장비의 swap 사용량이 9GB 이상이었으므로 절대값보다 상대 비교로 본다. 300개를 새 daemon 조건으로는 재지 않았으므로 530초와 새 daemon 측정값은 조건이 다르다.
+
+| 조건 | 시간 |
+| --- | ---: |
+| 300개, Android release 빌드 직후 같은 Gradle daemon에서 xcodebuild | 530초 |
+| Kotlin 카탈로그(파일 1개, 100개씩 함수), 같은 조건 | 2시간 이상, 중단 |
+| Kotlin 카탈로그(25개씩 분할), 같은 조건 | 40분 초과, 중단 |
+| Kotlin 카탈로그(25개씩 분할), clean 후 새 daemon에서 xcodebuild | 840초 |
+| JSON 카탈로그, clean 후 새 daemon에서 xcodebuild | 827초 |
+| JSON + files WebP, clean 후 새 daemon에서 xcodebuild | 449초 |
+| `:composeApp:linkReleaseFrameworkIosArm64` 단독, 100개씩 함수 | 641초 |
+| `:composeApp:linkReleaseFrameworkIosArm64` 단독, 25개씩 분할 | 353초 |
+
+Kotlin 카탈로그는 오래 쓴 daemon에서 Release 빌드가 끝나지 않을 만큼 느려졌다. JSON 카탈로그는 새 daemon 조건에서 Kotlin 카탈로그(25개씩 분할)와 비슷한 시간이 걸렸다. drawable 접근자 코드까지 없앤 최종안은 449초로 변경 전 530초보다 짧았다. 피커 첫 오픈 지연과 이모지 화면 표시는 Android 17 에뮬레이터에서 adb 입력이 앱에 전달되지 않아 측정하지 못했다.
+
 ## 1단계 완료 상태
 
 - [x] pinned upstream에서 대표 20개 Color/3D 생성

@@ -1,40 +1,59 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const [upstreamDirectory, treePath, spikeCatalogPath, outputPath] = process.argv.slice(2);
+const [upstreamDirectory, treePath, spikeCatalogPath, emojiTestPath, outputPath] =
+  process.argv.slice(2);
 
-if (!upstreamDirectory || !treePath || !spikeCatalogPath || !outputPath) {
+if (!upstreamDirectory || !treePath || !spikeCatalogPath || !emojiTestPath || !outputPath) {
   throw new Error(
-    "Usage: node select-catalog.mjs <upstream-dir> <tree-paths> <spike-catalog> <output>",
+    "Usage: node select-catalog.mjs <upstream-dir> <tree-paths> <spike-catalog> <emoji-test> <output>",
   );
 }
 
-const groupQuotas = new Map([
-  ["Smileys & Emotion", 30],
-  ["People & Body", 30],
-  ["Animals & Nature", 35],
-  ["Food & Drink", 35],
-  ["Travel & Places", 35],
-  ["Activities", 45],
-  ["Objects", 60],
-  ["Symbols", 25],
-  ["Flags", 5],
+const supportedGroups = new Set([
+  "Smileys & Emotion",
+  "People & Body",
+  "Animals & Nature",
+  "Food & Drink",
+  "Travel & Places",
+  "Activities",
+  "Objects",
+  "Symbols",
+  "Flags",
 ]);
-const goalTerms = [
-  "goal", "target", "check", "success", "award", "medal", "trophy", "study",
-  "book", "school", "graduate", "write", "pencil", "work", "office", "briefcase",
-  "computer", "chart", "money", "coin", "bank", "save", "health", "exercise",
-  "sport", "run", "walk", "bicycle", "swim", "food", "vegetable", "fruit",
-  "water", "sleep", "time", "calendar", "alarm", "habit", "growth", "plant",
-  "seedling", "fire", "rocket", "star", "sparkle", "heart", "home", "travel",
-  "music", "art", "clean", "cook", "family", "friend",
-];
 const treePaths = fs.readFileSync(treePath, "utf8").trim().split("\n");
 const spikeCatalog = JSON.parse(fs.readFileSync(spikeCatalogPath, "utf8"));
 const curatedAliases = new Map(
   spikeCatalog.items.map((item) => [item.unicode, item.koreanAliases]),
 );
-const curatedUnicode = new Set(curatedAliases.keys());
+const emojiTestOrder = readEmojiTestOrder(emojiTestPath);
+
+function readEmojiTestOrder(filePath) {
+  const order = new Map();
+  for (const line of fs.readFileSync(filePath, "utf8").split("\n")) {
+    const match = line.match(/^([0-9A-F ]+?)\s*; (fully-qualified|minimally-qualified|unqualified|component)\b/);
+    if (match) {
+      const key = withoutVariationSelector(match[1].toLowerCase());
+      if (!order.has(key)) order.set(key, order.size);
+    }
+  }
+  return order;
+}
+
+function withoutVariationSelector(unicode) {
+  return unicode
+    .split(" ")
+    .filter((codePoint) => codePoint !== "fe0f")
+    .join(" ");
+}
+
+function emojiTestRank(item) {
+  const rank = emojiTestOrder.get(withoutVariationSelector(item.unicode));
+  if (rank === undefined) {
+    throw new Error(`${item.unicode} (${item.cldrName}) is missing from emoji-test.txt.`);
+  }
+  return rank;
+}
 
 function collectMetadata(directory) {
   const results = [];
@@ -70,15 +89,6 @@ function colorPathFor(metadataPath) {
   );
 }
 
-function relevanceScore(item) {
-  const searchable = [item.cldrName, ...item.keywords].join(" ").toLowerCase();
-  const goalScore = goalTerms.reduce(
-    (score, term) => score + (searchable.includes(term) ? 10 : 0),
-    0,
-  );
-  return goalScore + (curatedUnicode.has(item.unicode) ? 10_000 : 0);
-}
-
 function isGenderVariant(item) {
   const codePoints = item.unicode.split(" ");
   const genderSpecificCodePoints = new Set(["2640", "2642", "1f468", "1f469"]);
@@ -110,7 +120,7 @@ const candidates = collectMetadata(path.join(upstreamDirectory, "assets"))
   })
   .filter(
     (item) =>
-      groupQuotas.has(item.group) &&
+      supportedGroups.has(item.group) &&
       item.unicode &&
       item.colorSourcePath &&
       !isGenderVariant(item),
@@ -121,41 +131,20 @@ const candidates = collectMetadata(path.join(upstreamDirectory, "assets"))
     return true;
   });
 
-const rankedByGroup = new Map();
-for (const [group, quota] of groupQuotas) {
-  const ranked = candidates
-    .filter((item) => item.group === group)
-    .sort(
-      (left, right) =>
-        relevanceScore(right) - relevanceScore(left) ||
-        compareText(left.cldrName, right.cldrName),
-    );
-  if (ranked.length < quota) {
-    throw new Error(`${group} has ${ranked.length} candidates, below quota ${quota}.`);
+for (const unicode of curatedAliases.keys()) {
+  if (!seenUnicode.has(unicode)) {
+    throw new Error(`Spike emoji ${unicode} is not a selectable Fluent candidate.`);
   }
-  rankedByGroup.set(group, ranked);
 }
 
-const selectedCounts = new Map([...groupQuotas.keys()].map((group) => [group, 0]));
-const selected = [];
-while (selected.length < 300) {
-  const group = [...groupQuotas.keys()]
-    .filter((candidateGroup) => selectedCounts.get(candidateGroup) < groupQuotas.get(candidateGroup))
-    .sort((left, right) => {
-      const leftRatio = selectedCounts.get(left) / groupQuotas.get(left);
-      const rightRatio = selectedCounts.get(right) / groupQuotas.get(right);
-      return leftRatio - rightRatio;
-    })[0];
-  const itemIndex = selectedCounts.get(group);
-  selected.push(rankedByGroup.get(group)[itemIndex]);
-  selectedCounts.set(group, itemIndex + 1);
-}
+const selected = [...candidates].sort(
+  (left, right) => emojiTestRank(left) - emojiTestRank(right),
+);
 
 const output = {
   sourceCommit: "62ecdc0d7ca5c6df32148c169556bc8d3782fca4",
   selectionMethod:
-    "goal-term relevance within balanced Fluent metadata group quotas; gender-specific man/woman sequences excluded",
-  groupQuotas: Object.fromEntries(groupQuotas),
+    "every Fluent candidate in the supported metadata groups, ordered by Unicode emoji-test; gender-specific man/woman sequences excluded",
   candidateCount: candidates.length,
   items: selected.map((item, index) => ({
     rank: index + 1,

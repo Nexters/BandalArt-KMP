@@ -30,95 +30,118 @@ import bandalart.core.designsystem.generated.resources.emoji_category_nav_symbol
 import bandalart.core.designsystem.generated.resources.emoji_category_nav_travel
 import com.nexters.bandalart.core.common.Language
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class FluentEmojiCatalogTest {
     @Test
-    fun finalizedCatalogContainsThreeHundredItems() {
-        assertEquals(300, FluentEmojiCatalog.size)
+    fun finalizedCatalogContainsEveryFluentCandidate() {
+        assertEquals(CATALOG_SIZE, catalogItems.size)
     }
 
     @Test
     fun registeredUnicodeMapsToStableResourceKey() {
-        assertEquals("fluent_1f3af", FluentEmojiCatalog.resourceKeyFor("🎯"))
-        assertEquals(
-            "fluent_2764_fe0f_200d_1f525",
-            FluentEmojiCatalog.resourceKeyFor("❤️‍🔥"),
-        )
+        assertEquals("fluent_1f3af", fluentEmojiResourceKey("🎯"))
+        assertEquals("fluent_2764_fe0f_200d_1f525", fluentEmojiResourceKey("❤️‍🔥"))
+        assertEquals("files/fluent_emoji/fluent_1f3af.webp", fluentEmojiImagePath("🎯"))
     }
 
     @Test
     fun unregisteredLegacyUnicodeIsNotClaimedByFluentCatalog() {
-        assertNull(FluentEmojiCatalog.resourceKeyFor("😎"))
-        assertNull(FluentEmojiCatalog.resourceKeyFor("👨‍⚕️"))
+        listOf("👩‍💻", "👨‍⚕️").forEach { unicode ->
+            assertTrue(catalogItems.none { it.unicode == unicode })
+            assertFalse(composeResourceFile(fluentEmojiImagePath(unicode)).exists())
+        }
+    }
+
+    @Test
+    fun missingImageFallsBackToSystemEmojiInsteadOfThrowing() {
+        // Android's resource reader throws for a missing file; this runs before the catalog is read.
+        val uri =
+            fluentEmojiImageUri("👩‍💻") { path ->
+                throw IllegalStateException("Missing resource with path: $path")
+            }
+
+        assertNull(uri)
+        assertEquals("uri:files/fluent_emoji/fluent_1f3af.webp", fluentEmojiImageUri("🎯") { "uri:$it" })
     }
 
     @Test
     fun everyCatalogItemHasUniqueUnicodeAndKnownCategory() {
         assertEquals(
-            300,
-            FluentEmojiCatalog.items
+            CATALOG_SIZE,
+            catalogItems
                 .map { it.unicode }
                 .distinct()
                 .size,
         )
         assertEquals(
             FluentEmojiCategory.entries.filterNot { it == FluentEmojiCategory.RECENT }.toSet(),
-            FluentEmojiCatalog.items.map { it.category }.toSet(),
+            catalogItems.map { it.category }.toSet(),
         )
         assertTrue(
-            FluentEmojiCatalog.items.all { item ->
-                FluentEmojiCatalog.resourceKeyFor(item.unicode) == item.resourceKey
-            },
+            catalogItems.all { item -> composeResourceFile(fluentEmojiImagePath(item.unicode)).isFile },
+        )
+        assertEquals(
+            CATALOG_SIZE,
+            composeResourceFile("files/fluent_emoji").listFiles { file -> file.extension == "webp" }?.size,
         )
     }
 
     @Test
     fun searchMatchesEnglishNameKeywordAndKoreanAlias() {
-        assertTrue(filterFluentEmojiItems("bullseye", null).any { it.unicode == "🎯" })
-        assertTrue(filterFluentEmojiItems("dart", null).any { it.unicode == "🎯" })
-        assertTrue(filterFluentEmojiItems("저축", null).any { it.unicode == "🪙" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "bullseye", null).any { it.unicode == "🎯" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "dart", null).any { it.unicode == "🎯" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "저축", null).any { it.unicode == "🪙" })
     }
 
     @Test
     fun categoryAndQueryFiltersCanBeCombined() {
-        val activities = filterFluentEmojiItems("", FluentEmojiCategory.ACTIVITIES)
+        val activities = filterFluentEmojiItems(catalogItems, "", FluentEmojiCategory.ACTIVITIES)
 
         assertTrue(activities.isNotEmpty())
         assertTrue(activities.all { it.category == FluentEmojiCategory.ACTIVITIES })
-        val targetResults = filterFluentEmojiItems("target", FluentEmojiCategory.ACTIVITIES)
+        val targetResults = filterFluentEmojiItems(catalogItems, "target", FluentEmojiCategory.ACTIVITIES)
         assertTrue(targetResults.any { it.unicode == "🎯" })
         assertTrue(targetResults.all { it.category == FluentEmojiCategory.ACTIVITIES })
-        assertTrue(filterFluentEmojiItems("없는 검색어", null).isEmpty())
+        assertTrue(filterFluentEmojiItems(catalogItems, "없는 검색어", null).isEmpty())
     }
 
     @Test
     fun blankQueryReturnsTheWholeCatalogAndKoreanNameUsesCuratedAlias() {
-        assertEquals(300, filterFluentEmojiItems("   ", null).size)
+        assertEquals(CATALOG_SIZE, filterFluentEmojiItems(catalogItems, "   ", null).size)
 
-        val target = FluentEmojiCatalog.items.single { it.unicode == "🎯" }
+        val target = catalogItems.single { it.unicode == "🎯" }
         assertEquals("목표", target.displayName(Language.KOREAN))
         assertEquals("bullseye", target.displayName(Language.ENGLISH))
         assertEquals("的", target.displayName(Language.JAPANESE))
 
-        val uncategorizedAlias = FluentEmojiCatalog.items.first { it.koreanAliases.isEmpty() }
+        val uncategorizedAlias = catalogItems.first { it.koreanAliases.isEmpty() }
         assertEquals(uncategorizedAlias.koreanName, uncategorizedAlias.displayName(Language.KOREAN))
     }
 
     @Test
     fun searchMatchesCldrKoreanAndJapaneseAnnotations() {
-        assertTrue(filterFluentEmojiItems("고양이", null).any { it.unicode == "🐱" })
-        assertTrue(filterFluentEmojiItems("猫", null).any { it.unicode == "🐱" })
-        assertTrue(filterFluentEmojiItems("불타는 사랑", null).any { it.unicode == "❤️‍🔥" })
-        assertTrue(filterFluentEmojiItems("燃えるハート", null).any { it.unicode == "❤️‍🔥" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "고양이", null).any { it.unicode == "🐱" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "猫", null).any { it.unicode == "🐱" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "불타는 사랑", null).any { it.unicode == "❤️‍🔥" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "燃えるハート", null).any { it.unicode == "❤️‍🔥" })
+    }
+
+    @Test
+    fun representativeDogFaceIsSearchableInEveryLanguage() {
+        assertTrue(filterFluentEmojiItems(catalogItems, "강아지", null).any { it.unicode == "🐶" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "犬", null).any { it.unicode == "🐶" })
+        assertTrue(filterFluentEmojiItems(catalogItems, "dog", null).any { it.unicode == "🐶" })
     }
 
     @Test
     fun everyCatalogItemHasKoreanAndJapaneseSearchData() {
         assertTrue(
-            FluentEmojiCatalog.items.all { item ->
+            catalogItems.all { item ->
                 item.koreanName.isNotBlank() &&
                     item.koreanKeywords.isNotEmpty() &&
                     item.japaneseName.isNotBlank() &&
@@ -131,15 +154,17 @@ class FluentEmojiCatalogTest {
     fun recentFilterKeepsStoredOrderAndDropsItemsOutsideTheCatalog() {
         val recentItems =
             filterFluentEmojiItems(
+                items = catalogItems,
                 query = "",
                 category = FluentEmojiCategory.RECENT,
-                recentEmojis = listOf("🚀", "😎", "🎯", "🚀"),
+                recentEmojis = listOf("🚀", "👩‍💻", "🎯", "🚀"),
             )
 
         assertEquals(listOf("🚀", "🎯"), recentItems.map { it.unicode })
         assertEquals(
             listOf("🎯"),
             filterFluentEmojiItems(
+                items = catalogItems,
                 query = "target",
                 category = FluentEmojiCategory.RECENT,
                 recentEmojis = listOf("🚀", "🎯"),
@@ -151,13 +176,14 @@ class FluentEmojiCatalogTest {
     fun allPickerViewKeepsRecentItemsFirstWithoutDuplicatingCatalogItems() {
         val items =
             fluentEmojiPickerItems(
+                items = catalogItems,
                 category = null,
-                recentEmojis = listOf("🚀", "😎", "🎯", "🚀"),
+                recentEmojis = listOf("🚀", "👩‍💻", "🎯", "🚀"),
             )
 
         assertEquals(listOf("🚀", "🎯"), items.take(2).map { it.unicode })
-        assertEquals(300, items.size)
-        assertEquals(300, items.map { it.unicode }.distinct().size)
+        assertEquals(CATALOG_SIZE, items.size)
+        assertEquals(CATALOG_SIZE, items.map { it.unicode }.distinct().size)
     }
 
     @Test
@@ -165,7 +191,12 @@ class FluentEmojiCatalogTest {
         FluentEmojiCategory.entries
             .filterNot { it == FluentEmojiCategory.RECENT }
             .forEach { category ->
-                val items = fluentEmojiPickerItems(category = category, recentEmojis = emptyList())
+                val items =
+                    fluentEmojiPickerItems(
+                        items = catalogItems,
+                        category = category,
+                        recentEmojis = emptyList(),
+                    )
 
                 assertTrue(items.isNotEmpty())
                 assertTrue(items.all { it.category == category })
@@ -211,5 +242,14 @@ class FluentEmojiCatalogTest {
             tabs.size,
             tabs.map { it.iconResource }.distinct().size,
         )
+    }
+
+    private companion object {
+        const val CATALOG_SIZE = 1428
+
+        // Gradle runs host tests from the module directory.
+        fun composeResourceFile(path: String) = File("../designsystem/src/commonMain/composeResources/$path")
+
+        val catalogItems = parseFluentEmojiCatalog(composeResourceFile("files/fluent_emoji_catalog.json").readText())
     }
 }

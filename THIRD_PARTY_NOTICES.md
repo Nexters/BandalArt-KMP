@@ -16,7 +16,7 @@ The application links against Balloon to render Compose Multiplatform tooltips o
 - License: MIT (`tools/fluent-emoji/LICENSE`)
 - Copyright: Microsoft Corporation
 
-The generated WebP comparison assets under `tools/fluent-emoji/generated/color/` and runtime assets under `core/designsystem/src/commonMain/composeResources/drawable/fluent_*.webp` are derived from Fluent UI Emoji Color SVG assets. Files under `tools/fluent-emoji/generated/3d/` are derived from Fluent UI Emoji 3D PNG assets. The application does not download Fluent UI Emoji resources at runtime.
+The generated WebP comparison assets under `tools/fluent-emoji/generated/color/` and runtime assets under `core/designsystem/src/commonMain/composeResources/files/fluent_emoji/fluent_*.webp` are derived from Fluent UI Emoji Color SVG assets. Files under `tools/fluent-emoji/generated/3d/` are derived from Fluent UI Emoji 3D PNG assets. The application does not download Fluent UI Emoji resources at runtime.
 
 ## Unicode CLDR emoji annotations
 
@@ -26,7 +26,7 @@ The generated WebP comparison assets under `tools/fluent-emoji/generated/color/`
 - License: Unicode License v3 ([local license text](licenses/Unicode-3.0.txt))
 - Copyright: Unicode, Inc.
 
-The Korean and Japanese emoji names and search keywords in `core/ui/src/commonMain/kotlin/com/nexters/bandalart/core/ui/component/emoji/FluentEmojiCatalog.generated.kt` are taken from the CLDR emoji annotations. The application does not download CLDR data at runtime.
+The Korean and Japanese emoji names and search keywords in `core/designsystem/src/commonMain/composeResources/files/fluent_emoji_catalog.json` are taken from the CLDR emoji annotations. The application does not download CLDR data at runtime.
 
 ## Google Material Symbols
 

@@ -7,6 +7,9 @@ readonly UPSTREAM_REPOSITORY="https://github.com/microsoft/fluentui-emoji.git"
 readonly UPSTREAM_COMMIT="62ecdc0d7ca5c6df32148c169556bc8d3782fca4"
 readonly CLDR_JSON_VERSION="49.0.0"
 readonly CLDR_JSON_BASE_URL="https://raw.githubusercontent.com/unicode-org/cldr-json/${CLDR_JSON_VERSION}/cldr-json"
+readonly EMOJI_TEST_VERSION="16.0"
+readonly EMOJI_TEST_URL="https://unicode.org/Public/emoji/${EMOJI_TEST_VERSION}/emoji-test.txt"
+readonly EMOJI_TEST_SHA256="24f0c534e86cf142e2496953e8f0e46a3e702392911eddcd29c6cced85139697"
 readonly IMAGE_SIZE="128"
 readonly WEBP_QUALITY="92"
 readonly REQUIRED_RSVG_VERSION="2.60.0"
@@ -16,8 +19,8 @@ readonly REQUIRED_ZIP_VERSION="3.0"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly OUTPUT_DIR="${SCRIPT_DIR}/measurement"
-readonly RUNTIME_DRAWABLE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/drawable"
-readonly RUNTIME_KOTLIN_PATH="${PROJECT_DIR}/core/ui/src/commonMain/kotlin/com/nexters/bandalart/core/ui/component/emoji/FluentEmojiCatalog.generated.kt"
+readonly RUNTIME_IMAGE_DIR="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji"
+readonly RUNTIME_CATALOG_JSON_PATH="${PROJECT_DIR}/core/designsystem/src/commonMain/composeResources/files/fluent_emoji_catalog.json"
 
 sync_runtime_resources=false
 if [[ "${1:-}" == "--sync-resources" ]]; then
@@ -67,16 +70,26 @@ git -C "${upstream_dir}" fetch --quiet --depth=1 --filter=blob:none origin "${UP
 git -C "${upstream_dir}" checkout --quiet --detach FETCH_HEAD
 git -C "${upstream_dir}" ls-tree -r --name-only FETCH_HEAD > "${tree_path}"
 
+emoji_test_path="${temporary_dir}/emoji-test.txt"
+curl --fail --silent --show-error --location --output "${emoji_test_path}" "${EMOJI_TEST_URL}"
+emoji_test_sha256="$(shasum -a 256 "${emoji_test_path}" | awk '{ print $1 }')"
+if [[ "${emoji_test_sha256}" != "${EMOJI_TEST_SHA256}" ]]; then
+    echo "emoji-test.txt ${EMOJI_TEST_VERSION} checksum mismatch: ${emoji_test_sha256}" >&2
+    exit 1
+fi
+
 node "${SCRIPT_DIR}/select-catalog.mjs" \
     "${upstream_dir}" \
     "${tree_path}" \
     "${SCRIPT_DIR}/generated/catalog.json" \
+    "${emoji_test_path}" \
     "${candidate_catalog_path}"
 
 {
     printf '/assets/*/metadata.json\n'
     jq -r '.items[].colorSourcePath | "/" + .' "${candidate_catalog_path}"
 } | git -C "${upstream_dir}" sparse-checkout set --stdin
+catalog_count_total="$(jq '.items | length' "${candidate_catalog_path}")"
 
 while IFS=$'\t' read -r unicode resource_key color_source_path; do
     color_png_path="${temporary_dir}/${resource_key}.png"
@@ -96,14 +109,14 @@ while IFS=$'\t' read -r unicode resource_key color_source_path; do
 done < <(jq -r '.items[] | [.unicode, .resourceKey, .colorSourcePath] | @tsv' "${candidate_catalog_path}")
 
 generated_count="$(find "${generated_dir}" -name '*.webp' -type f | wc -l | tr -d '[:space:]')"
-if [[ "${generated_count}" -ne 300 ]]; then
-    echo "Expected 300 generated assets, but found ${generated_count}." >&2
+if [[ "${generated_count}" -ne "${catalog_count_total}" ]]; then
+    echo "Expected ${catalog_count_total} generated assets, but found ${generated_count}." >&2
     exit 1
 fi
 
 report_items_path="${temporary_dir}/report-items.ndjson"
 : > "${report_items_path}"
-for catalog_count in 100 200 300; do
+for catalog_count in 300 600 1000 "${catalog_count_total}"; do
     package_dir="${temporary_dir}/package-${catalog_count}"
     package_assets_dir="${package_dir}/assets"
     subset_catalog_path="${package_dir}/catalog.json"
@@ -171,11 +184,11 @@ jq -s \
     }' "${report_items_path}" > "${working_output_dir}/measurement-report.json"
 
 if [[ "${sync_runtime_resources}" == true ]]; then
-    runtime_drawable_staging_dir="${temporary_dir}/runtime-drawable"
-    runtime_kotlin_staging_path="${temporary_dir}/FluentEmojiCatalog.generated.kt"
+    runtime_image_staging_dir="${temporary_dir}/runtime-images"
+    runtime_catalog_staging_path="${temporary_dir}/fluent_emoji_catalog.json"
     cldr_dir="${temporary_dir}/cldr"
-    mkdir -p "${runtime_drawable_staging_dir}"
-    cp "${generated_dir}"/*.webp "${runtime_drawable_staging_dir}/"
+    mkdir -p "${runtime_image_staging_dir}"
+    cp "${generated_dir}"/*.webp "${runtime_image_staging_dir}/"
     for cldr_language in ko ja; do
         for cldr_kind in annotations annotationsDerived; do
             if [[ "${cldr_kind}" == annotations ]]; then
@@ -191,30 +204,30 @@ if [[ "${sync_runtime_resources}" == true ]]; then
     done
     node "${SCRIPT_DIR}/generate-runtime-catalog.mjs" \
         "${candidate_catalog_path}" \
-        "${runtime_kotlin_staging_path}" \
+        "${runtime_catalog_staging_path}" \
         "${cldr_dir}"
 
-    runtime_asset_count="$(find "${runtime_drawable_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
-    if [[ "${runtime_asset_count}" -ne 300 ]]; then
-        echo "Expected 300 runtime assets, but found ${runtime_asset_count}." >&2
+    runtime_asset_count="$(find "${runtime_image_staging_dir}" -name 'fluent_*.webp' -type f | wc -l | tr -d '[:space:]')"
+    if [[ "${runtime_asset_count}" -ne "${catalog_count_total}" ]]; then
+        echo "Expected ${catalog_count_total} runtime assets, but found ${runtime_asset_count}." >&2
         exit 1
     fi
 
-    mkdir -p "${RUNTIME_DRAWABLE_DIR}" "$(dirname "${RUNTIME_KOTLIN_PATH}")"
-    cp "${runtime_drawable_staging_dir}"/*.webp "${RUNTIME_DRAWABLE_DIR}/"
+    mkdir -p "${RUNTIME_IMAGE_DIR}" "$(dirname "${RUNTIME_CATALOG_JSON_PATH}")"
+    cp "${runtime_image_staging_dir}"/*.webp "${RUNTIME_IMAGE_DIR}/"
     while IFS= read -r -d '' existing_asset_path; do
         asset_name="${existing_asset_path##*/}"
-        if [[ ! -f "${runtime_drawable_staging_dir}/${asset_name}" ]]; then
+        if [[ ! -f "${runtime_image_staging_dir}/${asset_name}" ]]; then
             rm -f "${existing_asset_path}"
         fi
-    done < <(find "${RUNTIME_DRAWABLE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
-    cp "${runtime_kotlin_staging_path}" "${RUNTIME_KOTLIN_PATH}.tmp"
-    mv "${RUNTIME_KOTLIN_PATH}.tmp" "${RUNTIME_KOTLIN_PATH}"
+    done < <(find "${RUNTIME_IMAGE_DIR}" -maxdepth 1 -name 'fluent_*.webp' -type f -print0)
+    cp "${runtime_catalog_staging_path}" "${RUNTIME_CATALOG_JSON_PATH}.tmp"
+    mv "${RUNTIME_CATALOG_JSON_PATH}.tmp" "${RUNTIME_CATALOG_JSON_PATH}"
 fi
 
 rm -rf "${OUTPUT_DIR}"
 mv "${working_output_dir}" "${OUTPUT_DIR}"
-echo "Measured actual 100, 200, and 300 item Color catalogs in ${OUTPUT_DIR}."
+echo "Measured actual 300, 600, 1000, and ${catalog_count_total} item Color catalogs in ${OUTPUT_DIR}."
 if [[ "${sync_runtime_resources}" == true ]]; then
-    echo "Synced 300 Color assets and the generated Kotlin runtime catalog."
+    echo "Synced ${catalog_count_total} Color assets and the runtime catalog JSON."
 fi
