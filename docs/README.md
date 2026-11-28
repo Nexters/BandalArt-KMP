@@ -53,6 +53,7 @@
 ### Design System
 
 - [hig-adaptive 기반 Liquid Glass 적용](architecture/design-system/HIG_ADAPTIVE_LIQUID_GLASS_STRATEGY.md)
+- [테마 색상 직접 선택의 OKLCH 전환 조사](architecture/design-system/OKLCH_THEME_COLOR_RESEARCH.md) ([인터랙티브 비교](architecture/design-system/OKLCH_THEME_COLOR_COMPARE.html))
 
 ### KMP
 
