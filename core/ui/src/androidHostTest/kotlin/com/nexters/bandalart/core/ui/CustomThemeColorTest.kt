@@ -12,9 +12,12 @@ class CustomThemeColorTest {
 
     @Test
     fun everyHueAndToneKeepsCellTextReadable() {
-        for (hue in 0..360) {
-            for (tone in listOf(0f, 0.25f, 0.5f, 0.75f, 1f)) {
-                val color = CustomThemeColor.toThemeColor(hue.toFloat(), tone)
+        // 슬라이더 값은 연속이므로 정수 각도 사이와 밝기 중간값까지 촘촘하게 확인한다.
+        for (hueStep in 0..1440) {
+            val hue = hueStep / 4f
+            for (toneStep in 0..10) {
+                val tone = toneStep / 10f
+                val color = CustomThemeColor.toThemeColor(hue, tone)
                 assertTrue(hexPattern.matches(color.mainColor), "hue=$hue tone=$tone -> ${color.mainColor}")
                 assertTrue(
                     CustomThemeColor.textContrast(color.mainColor) >= CustomThemeColor.MIN_CONTRAST,
@@ -36,6 +39,20 @@ class CustomThemeColorTest {
                 val restored = CustomThemeColor.toThemeColor(h, t).mainColor
                 assertTrue(CustomThemeColor.isSameColor(hex, restored) || nearlySame(hex, restored), "$hex -> $restored")
             }
+        }
+    }
+
+    @Test
+    fun colorsNotMadeByGeneratorMapToValidSliderPosition() {
+        // 프리셋, 2.8.0의 HSL 생성기가 만든 색, 회색처럼 지금 생성기로 다시 만들 수 없는 색도
+        // 피커를 열 때 슬라이더 위치로 바뀌어야 한다.
+        val inputs = allColor.map { it.mainColor } + listOf("#FF3FFFBA", "#E119E1", "#87870F", "#FBFBDA", "#FFFFFF", "#000000", "#808080", "#111827")
+        for (hex in inputs) {
+            val hueTone = CustomThemeColor.toHueTone(hex)
+            assertNotNull(hueTone, hex)
+            val (h, t) = hueTone!!
+            assertTrue(h.isFinite() && h in 0f..360f, "$hex -> hue=$h")
+            assertTrue(t.isFinite() && t in 0f..1f, "$hex -> tone=$t")
         }
     }
 

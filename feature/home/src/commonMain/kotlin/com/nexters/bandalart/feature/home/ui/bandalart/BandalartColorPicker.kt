@@ -199,11 +199,11 @@ fun BandalartColorPicker(
                 ColorSlider(
                     label = stringResource(Res.string.bottomsheet_color_lightness),
                     value = tone,
+                    // OKLCH 밝기는 sRGB에서 선형이 아니라서 양 끝 두 색만으로는 트랙이 실제 결과와 어긋난다.
                     trackColors =
-                        listOf(
-                            CustomThemeColor.toThemeColor(hue, 0f).mainColor.toColor(),
-                            CustomThemeColor.toThemeColor(hue, 1f).mainColor.toColor(),
-                        ),
+                        (0..LIGHTNESS_STOP_COUNT).map { i ->
+                            CustomThemeColor.toThemeColor(hue, i.toFloat() / LIGHTNESS_STOP_COUNT).mainColor.toColor()
+                        },
                     onValueChange = {
                         tone = it
                         selectCustom()
@@ -316,6 +316,7 @@ private fun hueStops(): List<Color> =
 private const val COLORS_PER_ROW = 6
 private const val MAX_HUE = 360f
 private const val HUE_STOP_COUNT = 12
+private const val LIGHTNESS_STOP_COUNT = 4
 private const val DEFAULT_HUE = 200f
 private const val DEFAULT_TONE = 0.5f
 private val SLIDER_THUMB_SIZE = 24.dp
